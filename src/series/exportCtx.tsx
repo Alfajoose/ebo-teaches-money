@@ -1,0 +1,80 @@
+import React, {createContext, useContext} from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {Easing, interpolate} from 'remotion';
+
+/**
+ * Export support for turning an episode into an Adobe Animate .fla.
+ *
+ * - `LayerModeContext`: 'full' (normal video) or 'bg' (only sets/props — no characters,
+ *   graphics or captions), used to render the background image layer.
+ * - `CaptureContext`: when present, characters, graphics and captions report what they
+ *   draw on the current frame, so scripts/export-fla can rebuild them as editable
+ *   Animate layers (rig keyframes, vector graphics, text).
+ */
+
+export type M6 = [number, number, number, number, number, number];
+export const IDENT: M6 = [1, 0, 0, 1, 0, 0];
+export const mmul = (m1: M6, m2: M6): M6 => {
+  const [a1, b1, c1, d1, x1, y1] = m1;
+  const [a2, b2, c2, d2, x2, y2] = m2;
+  return [a1 * a2 + c1 * b2, b1 * a2 + d1 * b2, a1 * c2 + c1 * d2, b1 * c2 + d1 * d2, a1 * x2 + c1 * y2 + x1, b1 * x2 + d1 * y2 + y1];
+};
+export const T = (x: number, y: number): M6 => [1, 0, 0, 1, x, y];
+export const S = (x: number, y: number): M6 => [x, 0, 0, y, 0, 0];
+export const R = (deg: number, cx = 0, cy = 0): M6 => {
+  const r = (deg * Math.PI) / 180;
+  const c = Math.cos(r);
+  const s = Math.sin(r);
+  return mmul(T(cx, cy), mmul([c, s, -s, c, 0, 0], T(-cx, -cy)));
+};
+
+export type CharRecord = {who: string; outer: M6; locals: Record<string, M6>; frames: Record<string, number>};
+export type GraphicRecord = {key: string; matrix: M6; alpha: number; svg: string};
+export type Capture = {chars: CharRecord[]; graphics: GraphicRecord[]; caption: string | null};
+
+export const CaptureContext = createContext<Capture | null>(null);
+export const CameraContext = createContext<M6>(IDENT);
+export const LayerModeContext = createContext<'full' | 'bg'>('full');
+
+export const useCapture = () => useContext(CaptureContext);
+export const useLayerMode = () => useContext(LayerModeContext);
+
+const hash = (s: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return (h >>> 0).toString(36);
+};
+
+const VW_HALF = 540;
+
+/** Graphic that slams in from above with a twist (translation + rotation only). */
+export const Slam: React.FC<{t: number; at: number; dist?: number; twist?: number; children: React.ReactNode}> = ({
+  t,
+  at,
+  dist = -260,
+  twist = -14,
+  children,
+}) => {
+  const cap = useCapture();
+  const mode = useLayerMode();
+  if (mode === 'bg' || t < at) return null;
+  const u = interpolate((t - at) * 30, [0, 5], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.back(2.2))});
+  const matrix = mmul(T(0, (1 - u) * dist), R((1 - u) * twist, VW_HALF, 0));
+  if (cap) {
+    const svg = renderToStaticMarkup(<g>{children}</g>);
+    cap.graphics.push({key: `${at.toFixed(3)}:${hash(svg)}`, matrix, alpha: 1, svg});
+  }
+  return <g transform={`matrix(${matrix.join(',')})`}>{children}</g>;
+};
+
+/** A graphic that just sits on screen (no motion). */
+export const Still: React.FC<{children: React.ReactNode}> = ({children}) => {
+  const cap = useCapture();
+  const mode = useLayerMode();
+  if (mode === 'bg') return null;
+  if (cap) {
+    const svg = renderToStaticMarkup(<g>{children}</g>);
+    cap.graphics.push({key: `still:${hash(svg)}`, matrix: IDENT, alpha: 1, svg});
+  }
+  return <g>{children}</g>;
+};

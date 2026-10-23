@@ -1,0 +1,51 @@
+MIA CREATES — EPISODE 01
+How Vending Machines Actually Make Money
+Voice: conversational American English. Sarcastic, warm, like a friend telling you a story. 58 seconds.
+Word count: 129 (spoken lines only)
+
+[BEAT 1 — THE HOOK | 0:00–0:07]
+(0:00) This is Benny. Benny is broke.
+(0:02) Benny dreams of money that shows up while he sleeps.
+(0:05) Enter: the vending machine.
+
+[BEAT 2 — THE BUSINESS | 0:07–0:17]
+(0:07) So Benny buys one, stuffs it with soda, and does the math.
+(0:11) Buy a can for eighty cents. Sell it for two bucks.
+(0:14) That's a dollar twenty of pure profit. Benny is a genius.
+
+[BEAT 3 — REALITY | 0:17–0:28]
+(0:17) He parks it in a quiet hallway... and waits.
+        (beat — let the silence land)
+(0:20) Days pass. Weeks pass. A spider moves in.
+        (beat)
+(0:25) Grand total: three dollars.
+
+[BEAT 4 — THE DISCOVERY | 0:28–0:43]
+(0:28) Then the bills show up. Electricity. Maintenance. Location fees.
+(0:32) Turns out revenue isn't profit. Revenue is just money visiting.
+(0:35) So Benny moves the machine where thirsty people actually live: an office.
+(0:40) Suddenly, everyone's buying.
+
+[BEAT 5 — THE PAYOFF | 0:43–0:58]
+(0:43) Benny celebrates. Passive income, baby!
+(0:47) He finally goes home to sleep.
+        (beat — snoring)
+(0:50) Then... his phone rings.
+(0:53) The machine is broken.
+        (long beat — let the face do the work)
+(0:56) Passive. Income.
+
+
+--- PLAIN SCRIPT (for recording / TTS) ---
+
+This is Benny. Benny is broke. Benny dreams of money that shows up while he sleeps. Enter: the vending machine.
+
+So Benny buys one, stuffs it with soda, and does the math. Buy a can for eighty cents. Sell it for two bucks. That's a dollar twenty of pure profit. Benny is a genius.
+
+He parks it in a quiet hallway... and waits. Days pass. Weeks pass. A spider moves in. Grand total: three dollars.
+
+Then the bills show up. Electricity. Maintenance. Location fees. Turns out revenue isn't profit. Revenue is just money visiting. So Benny moves the machine where thirsty people actually live: an office. Suddenly, everyone's buying.
+
+Benny celebrates. Passive income, baby! He finally goes home to sleep. Then... his phone rings. The machine is broken.
+
+Passive. Income.
