@@ -1,4 +1,5 @@
 import React from 'react';
+import {Rough} from '../handDrawn';
 import {random} from 'remotion';
 import {C, FONT} from '../theme';
 import {useNoScale} from '../noScale';
@@ -195,7 +196,7 @@ export const Whiteboard: React.FC<{x: number; y: number; children?: React.ReactN
   </g>
 );
 
-export const Crate: React.FC<{x: number; y: number; cans?: number}> = ({x, y}) => (
+const CrateDrawing: React.FC<{x: number; y: number; cans?: number}> = ({x, y}) => (
   <g transform={`translate(${x} ${y})`}>
     <rect x={-110} y={-90} width={220} height={90} rx={8} fill="#C99A62" {...S} />
     <line x1={-110} x2={110} y1={-45} y2={-45} {...S} strokeWidth={5} />
@@ -227,7 +228,7 @@ export const DeliveryBox: React.FC<{x: number; y: number; open?: number}> = ({x,
 
 // ───────────────────────── Hallway ─────────────────────────
 
-export const Calendar: React.FC<{x: number; y: number; day: number; month: string; flip?: number}> = ({x, y, day, month, flip = 0}) => {
+const CalendarDrawing: React.FC<{x: number; y: number; day: number; month: string; flip?: number}> = ({x, y, day, month, flip = 0}) => {
   const noScale = useNoScale();
   return (
   <g transform={`translate(${x} ${y})`}>
@@ -442,3 +443,17 @@ export const Exclaim: React.FC<{x: number; y: number; scale: number; text?: stri
     </g>
   );
 };
+
+/** Crate, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+export const Crate: typeof CrateDrawing = (props) => (
+  <Rough>
+    <CrateDrawing {...props} />
+  </Rough>
+);
+
+/** Calendar, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+export const Calendar: typeof CalendarDrawing = (props) => (
+  <Rough>
+    <CalendarDrawing {...props} />
+  </Rough>
+);

@@ -1,9 +1,10 @@
 import React from 'react';
+import {Rough} from '../handDrawn';
 import {random} from 'remotion';
 import {C, FONT} from '../theme';
 import {useNoScale} from '../noScale';
 
-export const DollarBill: React.FC<{x?: number; y?: number; rotate?: number; scale?: number; flip?: number}> = ({
+const DollarBillDrawing: React.FC<{x?: number; y?: number; rotate?: number; scale?: number; flip?: number}> = ({
   x = 0,
   y = 0,
   rotate = 0,
@@ -20,7 +21,7 @@ export const DollarBill: React.FC<{x?: number; y?: number; rotate?: number; scal
   </g>
 );
 
-export const Coin: React.FC<{x?: number; y?: number; r?: number; spin?: number}> = ({x = 0, y = 0, r = 26, spin = 0}) => {
+const CoinDrawing: React.FC<{x?: number; y?: number; r?: number; spin?: number}> = ({x = 0, y = 0, r = 26, spin = 0}) => {
   const noScale = useNoScale();
   const sx = Math.max(0.12, Math.abs(Math.cos(spin)));
   return (
@@ -34,7 +35,7 @@ export const Coin: React.FC<{x?: number; y?: number; r?: number; spin?: number}>
   );
 };
 
-export const Can: React.FC<{x?: number; y?: number; color?: string; scale?: number; rotate?: number; label?: boolean}> = ({
+const CanDrawing: React.FC<{x?: number; y?: number; color?: string; scale?: number; rotate?: number; label?: boolean}> = ({
   x = 0,
   y = 0,
   color = C.red,
@@ -105,3 +106,24 @@ export const CoinBurst: React.FC<{t: number; x: number; y: number; count?: numbe
     </g>
   );
 };
+
+/** DollarBill, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+export const DollarBill: typeof DollarBillDrawing = (props) => (
+  <Rough>
+    <DollarBillDrawing {...props} />
+  </Rough>
+);
+
+/** Coin, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+export const Coin: typeof CoinDrawing = (props) => (
+  <Rough>
+    <CoinDrawing {...props} />
+  </Rough>
+);
+
+/** Can, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+export const Can: typeof CanDrawing = (props) => (
+  <Rough>
+    <CanDrawing {...props} />
+  </Rough>
+);

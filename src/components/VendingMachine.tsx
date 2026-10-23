@@ -1,4 +1,5 @@
 import React from 'react';
+import {Rough} from '../handDrawn';
 import {C, FONT} from '../theme';
 import {Can} from './Money';
 import {useNoScale} from '../noScale';
@@ -26,7 +27,7 @@ type Props = {
 
 const CAN_COLORS = [C.red, C.blue, C.yellow, '#56B870'];
 
-export const VendingMachine: React.FC<Props> = ({
+const VendingMachineDrawing: React.FC<Props> = ({
   x = 0,
   y = 0,
   scale = 1,
@@ -199,4 +200,11 @@ const Web: React.FC = () => (
     <path d="M 60 0 Q 54 28 50 34 Q 36 50 0 60" />
     <path d="M 95 0 Q 84 44 76 52 Q 54 78 0 95" />
   </g>
+);
+
+/** VendingMachine, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+export const VendingMachine: typeof VendingMachineDrawing = (props) => (
+  <Rough>
+    <VendingMachineDrawing {...props} />
+  </Rough>
 );

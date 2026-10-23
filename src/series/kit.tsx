@@ -3,6 +3,7 @@ import {AbsoluteFill, Easing, interpolate, random} from 'remotion';
 import {C, FONT} from '../theme';
 import {mixPose, Pose} from '../components/Character';
 import {CameraContext, mmul, T, S, Slam, useCapture, useLayerMode} from './exportCtx';
+import {HandDrawnDefs} from '../handDrawn';
 
 /**
  * "Ebo Teaches Money" — vertical shorts kit.
@@ -59,6 +60,7 @@ export const VStage: React.FC<{
     <AbsoluteFill style={{backgroundColor: bg}}>
       <svg viewBox={`0 0 ${VW} ${VH}`} width={VW} height={VH} style={{position: 'absolute', inset: 0}}>
         <defs>
+          <HandDrawnDefs />
           <filter id="bgblur" x="-10%" y="-10%" width="120%" height="120%">
             <feGaussianBlur stdDeviation={2.2 / Math.max(1, zoom / 2)} />
           </filter>

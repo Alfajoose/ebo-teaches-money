@@ -31,6 +31,7 @@ import {
 } from './kit';
 import {C, FONT, lin} from '../theme';
 import {Slam, Still, LayerModeContext} from './exportCtx';
+import {HandDrawnContext} from '../handDrawn';
 import wordsJson from './data/ep01-words.json';
 import envJson from './data/ep01-env.json';
 
@@ -638,25 +639,27 @@ export const shotIndexAt = (f: number) => {
 };
 
 /** One frame of the episode (pure — also used by the .fla exporter). */
-export const Ep01Frame: React.FC<{f: number}> = ({f}) => {
+export const Ep01Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDrawn = true}) => {
   const t = f / VFPS;
   const shot = SHOTS[shotIndexAt(f)];
   return (
     <NoScaleContext.Provider value>
-      <AbsoluteFill style={{background: '#000'}}>
-        {shot.render(t, f, t - shot.at)}
-        <TopCaption chunks={CHUNKS} tSec={t} />
-      </AbsoluteFill>
+      <HandDrawnContext.Provider value={handDrawn}>
+        <AbsoluteFill style={{background: '#000'}}>
+          {shot.render(t, f, t - shot.at)}
+          <TopCaption chunks={CHUNKS} tSec={t} />
+        </AbsoluteFill>
+      </HandDrawnContext.Provider>
     </NoScaleContext.Provider>
   );
 };
 
 /** layer='bg' renders only sets/props (for the Animate background image layer). */
-export const EboEp01: React.FC<{layer?: 'full' | 'bg'}> = ({layer = 'full'}) => {
+export const EboEp01: React.FC<{layer?: 'full' | 'bg'; handDrawn?: boolean}> = ({layer = 'full', handDrawn = true}) => {
   const f = useCurrentFrame();
   return (
     <LayerModeContext.Provider value={layer}>
-      <Ep01Frame f={f} />
+      <Ep01Frame f={f} handDrawn={handDrawn} />
       {layer === 'full' && <Html5Audio src={staticFile('ebo-ep01/voice.mp3')} />}
     </LayerModeContext.Provider>
   );
