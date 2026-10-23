@@ -31,6 +31,7 @@ The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`Vendin
 - Snappy, pose-to-pose motion: 2–3 frame snaps with overshoot, then dead-still holds.
 - **Translation and rotation only. Nothing animates scale.** Framing changes only on hard cuts.
 - Talk-to-camera with hard cuts between wide, medium and close shots, and a black caption pill at the top.
+- Only characters and props animate. No decorative effects (webs, tumbleweeds, money rain, smoke, shakes, animated backgrounds).
 
 ## Render
 

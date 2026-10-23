@@ -15,6 +15,7 @@ type Props = {
   fill?: number; // 0–1 how stocked it is
   display?: string; // LED text
   glow?: number; // 0–1 "magic" glow
+  fx?: boolean; // false = prop only: no smoke, sparks or screen flicker
   broken?: number; // 0–1 smoke, sparks, tilt, OUT OF ORDER sign
   cobwebs?: number; // 0–1
   dust?: number; // 0–1 grey overlay
@@ -33,6 +34,7 @@ export const VendingMachine: React.FC<Props> = ({
   fill = 1,
   display = '$2.00',
   glow = 0,
+  fx = true,
   broken = 0,
   cobwebs = 0,
   dust = 0,
@@ -45,7 +47,7 @@ export const VendingMachine: React.FC<Props> = ({
   const W = 300;
   const H = 540;
   const cans = Math.round(fill * 16);
-  const flicker = broken > 0.5 ? (Math.sin(t * 2.7) > 0.2 ? 1 : 0.25) : 1;
+  const flicker = fx && broken > 0.5 ? (Math.sin(t * 2.7) > 0.2 ? 1 : 0.25) : 1;
   const tilt = rotate + broken * 3;
 
   return (
@@ -161,7 +163,7 @@ export const VendingMachine: React.FC<Props> = ({
               ORDER
             </text>
           </g>
-          {Array.from({length: 5}).map((_, i) => {
+          {fx && Array.from({length: 5}).map((_, i) => {
             const life = ((t * 1.2 + i * 22) % 110) / 110;
             return (
               <circle
@@ -174,7 +176,7 @@ export const VendingMachine: React.FC<Props> = ({
               />
             );
           })}
-          {Math.sin(t * 1.7) > 0.4 && (
+          {fx && Math.sin(t * 1.7) > 0.4 && (
             <path
               d={`M ${W / 2 - 40} ${-H + 200} l 30 -16 l -10 22 l 34 -14`}
               stroke={C.yellow}

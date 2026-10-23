@@ -5,8 +5,8 @@ import {RigCharacter} from '../cast/RigCharacter';
 import {CastId} from '../cast/castConfig';
 import {POSES, Pose, walkPose} from '../components/Character';
 import {VendingMachine} from '../components/VendingMachine';
-import {Coin, CoinBurst, Can, MoneyRain, DollarBill} from '../components/Money';
-import {Calendar, Tumbleweed, Spider, Crate, Impact, Confetti} from '../components/Props';
+import {Coin, Can, DollarBill} from '../components/Money';
+import {Calendar, Crate} from '../components/Props';
 import {Hallway, Office, FLOOR_Y} from '../backgrounds/Backgrounds';
 import {SITTING} from '../castep/shared';
 import {Studio, Gym, School} from './sets';
@@ -28,8 +28,6 @@ import {
   TopCaption,
   BigText,
   LessonCard,
-  Scribble,
-  RedBurst,
 } from './kit';
 import {C, FONT, lin} from '../theme';
 import {Slam, Still, LayerModeContext} from './exportCtx';
@@ -95,7 +93,7 @@ const Cast: React.FC<{who: CastId; f: number; pose: Pose; x: number; facing?: 1 
 /** A shot = start time + renderer. Hard cut to the next shot. */
 type Shot = {at: number; render: (t: number, f: number, local: number) => React.ReactNode};
 
-const studio = (t: number) => <Studio t={t * VFPS} />;
+const studio = (_t: number) => <Studio t={0} />;
 
 const SHOTS: Shot[] = [
   // ── HOOK ──
@@ -130,7 +128,7 @@ const SHOTS: Shot[] = [
           </g>
         }
       >
-        <VendingMachine x={MX + 60} y={FLOOR_Y} t={f} fill={1} glow={0.5} />
+        <VendingMachine fx={false} x={MX + 60} y={FLOOR_Y} t={f} fill={1} />
         <Ebo f={f} pose={withFace(G.present, 'happy')} />
       </VStage>
     ),
@@ -153,7 +151,7 @@ const SHOTS: Shot[] = [
       return (
         <VStage
           framing={WIDE(1150, 640)}
-          blurBg={<Office t={f} />}
+          blurBg={<Office t={0} />}
           overlay={
             <g>
               <Slam t={t} at={at('eighty')}>
@@ -179,7 +177,7 @@ const SHOTS: Shot[] = [
           }
         >
           <Crate x={760} y={FLOOR_Y} />
-          <VendingMachine x={MX} y={FLOOR_Y} t={f} fill={1} dispense={disp > 0 && disp < 1 ? disp : -1} />
+          <VendingMachine fx={false} x={MX} y={FLOOR_Y} t={f} fill={1} dispense={disp > 0 && disp < 1 ? disp : -1} />
           {coinP > 0 && coinP < 1 && <Coin x={1290 - 120 * coinP} y={720 - 100 * coinP - Math.sin(coinP * Math.PI) * 60} r={16} spin={f * 0.5} />}
           <Cast
             who="christy"
@@ -216,7 +214,6 @@ const SHOTS: Shot[] = [
         }
       >
         <Ebo f={f} pose={withFace(G.hips, 'half', {mouth: 'smirk'})} />
-        <CoinBurst t={(t - at('dollar twenty')) * VFPS} x={EBO_X + 40} y={640} count={10} seed="e1" power={0.5} />
       </VStage>
     ),
   },
@@ -232,9 +229,8 @@ const SHOTS: Shot[] = [
   {
     at: at('Put your'),
     render: (t, f) => (
-      <VStage framing={WIDE(970, 640)} blurBg={<Hallway t={f} />} overlay={<CricketsTag t={t} from={at('empty')} />}>
-        <VendingMachine x={MX + 80} y={FLOOR_Y} t={f} fill={1} />
-        <Tumbleweed x={lin(t, [at('Put your'), at('and you\'ll')], [300, 1700])} y={FLOOR_Y - 44} t={f} />
+      <VStage framing={WIDE(970, 640)} blurBg={<Hallway t={0} />} overlay={<CricketsTag t={t} from={at('empty')} />}>
+        <VendingMachine fx={false} x={MX + 80} y={FLOOR_Y} t={f} fill={1} />
         <Cast who="obuor" f={f} x={800} pose={{...POSES.standing, armL: [38, -110], armR: [38, -110], eyes: 'open', mouth: 'smile', brows: 'up', lookX: (f % 40) < 20 ? -12 : 12}} />
       </VStage>
     ),
@@ -244,10 +240,9 @@ const SHOTS: Shot[] = [
     render: (t, f) => {
       const k = Math.floor((t - at("and you'll")) * 12);
       return (
-        <VStage framing={WIDE(970, 620)} blurBg={<Hallway t={f} dim={0.25} flicker />}>
+        <VStage framing={WIDE(970, 620)} blurBg={<Hallway t={0} dim={0.25} />}>
           <Calendar x={560} y={430} day={(k * 7) % 30 + 1} month={['JAN', 'FEB', 'MAR', 'APR', 'MAY'][Math.floor(k / 4) % 5]} flip={(t * 12) % 1} />
-          <VendingMachine x={MX + 80} y={FLOOR_Y} t={f} fill={1} cobwebs={1} dust={0.7} display="$3.00" />
-          <Spider x={MX + 150} y={60} drop={300} t={f} />
+          <VendingMachine fx={false} x={MX + 80} y={FLOOR_Y} t={f} fill={1} display="$3.00" />
           <Cast who="obuor" f={f} x={800} pose={{...SITTING, eyes: 'half', mouth: 'flat'}} />
         </VStage>
       );
@@ -258,14 +253,14 @@ const SHOTS: Shot[] = [
     render: (t, f) => (
       <VStage
         framing={{zoom: 4.6, cx: 810, cy: 560}}
-        screenBg={<Scribble frame={f} />}
+        screenBg={<rect width={VW} height={VH} fill="#141416" />}
         overlay={
           <Slam t={t} at={at('three dollars') + 0.1}>
             <BigText text="$3 / MONTH" x={VW / 2} y={1500} size={150} fill={C.red} rotate={-5} />
           </Slam>
         }
       >
-        <Cast who="obuor" f={f} x={800} pose={{...POSES.devastated, eyes: 'wide', mouth: 'scream', headTilt: (f % 4) - 2}} />
+        <Cast who="obuor" f={f} x={800} pose={{...POSES.devastated, eyes: 'wide', mouth: 'scream'}} />
       </VStage>
     ),
   },
@@ -290,14 +285,14 @@ const SHOTS: Shot[] = [
       render: (t, f) => (
         <VStage
           framing={WIDE(1110, 640)}
-          blurBg={set === 'office' ? <Office t={f} /> : set === 'gym' ? <Gym /> : <School />}
+          blurBg={set === 'office' ? <Office t={0} /> : set === 'gym' ? <Gym /> : <School />}
           overlay={
             <Slam t={t} at={at(word)}>
               <BigText text={label} x={VW / 2} y={1450} size={170} fill={C.yellow} rotate={-4} />
             </Slam>
           }
         >
-          <VendingMachine x={MX - 120} y={FLOOR_Y} t={f} fill={1} glow={0.35} />
+          <VendingMachine fx={false} x={MX - 120} y={FLOOR_Y} t={f} fill={1} />
           {who.map((w, i) => (
             <Cast
               key={w}
@@ -336,7 +331,7 @@ const SHOTS: Shot[] = [
       return (
         <VStage
           framing={WIDE(1000, 640)}
-          blurBg={<Office t={f} />}
+          blurBg={<Office t={0} />}
           overlay={
             <g>
               {bills.map(([a, title, amt, col], i) =>
@@ -358,7 +353,7 @@ const SHOTS: Shot[] = [
             </g>
           }
         >
-          <VendingMachine x={MX + 120} y={FLOOR_Y} t={f} fill={1} />
+          <VendingMachine fx={false} x={MX + 120} y={FLOOR_Y} t={f} fill={1} />
           <Cast
             who="mica"
             f={f}
@@ -416,8 +411,8 @@ const SHOTS: Shot[] = [
     render: (t, f) => {
       const kick = Math.floor((t - at('Because')) * 6) % 2 === 0;
       return (
-        <VStage framing={WIDE(1150, 640)} blurBg={<Office t={f} />}>
-          <VendingMachine x={MX} y={FLOOR_Y} t={f + 50} fill={0.7} broken={1} rotate={kick ? 2 : 0} />
+        <VStage framing={WIDE(1150, 640)} blurBg={<Office t={0} />}>
+          <VendingMachine fx={false} x={MX} y={FLOOR_Y} t={f + 50} fill={0.7} broken={1} rotate={kick ? 2 : 0} />
           <Cast
             who="mica"
             f={f}
@@ -429,7 +424,6 @@ const SHOTS: Shot[] = [
                 : {...POSES.standing, armR: [100, -40], armL: [30, 20], eyes: 'half', mouth: 'frown', brows: 'angry'}
             }
           />
-          <Impact x={MX + 150} y={FLOOR_Y - 120} scale={kick ? 0.5 : 0} text="BONK" />
         </VStage>
       );
     },
@@ -439,15 +433,14 @@ const SHOTS: Shot[] = [
     render: (t, f) => (
       <VStage
         framing={{zoom: 2.6, cx: MX, cy: 640}}
-        shakeX={((f % 4) - 1.5) * 6}
-        screenBg={<RedBurst frame={f} />}
+        screenBg={<rect width={VW} height={VH} fill="#D93A3A" />}
         overlay={
           <Slam t={t} at={at('zero')}>
             <BigText text="$0.00" x={VW / 2} y={1500} size={230} fill="#fff" rotate={-4} />
           </Slam>
         }
       >
-        <VendingMachine x={MX} y={FLOOR_Y} t={f + 50} fill={0.7} broken={1} rotate={((f % 4) - 1.5) * 1.5} />
+        <VendingMachine fx={false} x={MX} y={FLOOR_Y} t={f + 50} fill={0.7} broken={1} />
       </VStage>
     ),
   },
@@ -465,7 +458,7 @@ const SHOTS: Shot[] = [
           </Slam>
         }
       >
-        <VendingMachine x={MX + 60} y={FLOOR_Y} t={f} fill={1} />
+        <VendingMachine fx={false} x={MX + 60} y={FLOOR_Y} t={f} fill={1} />
         <Ebo f={f} pose={withFace(G.present, 'open')} />
       </VStage>
     ),
@@ -491,12 +484,10 @@ const SHOTS: Shot[] = [
         >
           {Array.from({length: 10}).map((_, i) => (
             <g key={i} transform={`translate(${520 + (i % 5) * 220} ${i < 5 ? 640 : FLOOR_Y + 260}) scale(0.5)`}>
-              <VendingMachine x={0} y={0} t={f + i * 7} fill={1} glow={t > party ? 0.6 : 0} />
+              <VendingMachine fx={false} x={0} y={0} t={f + i * 7} fill={1} />
             </g>
           ))}
           <Ebo f={f} x={960} pose={t > party ? {...G.celebrate, lift: -Math.abs(Math.sin(f * 0.35)) * 70, eyes: 'happy'} : withFace(G.open, 'wide')} />
-          {t > party && <MoneyRain t={(t - party) * VFPS} count={26} seed="ten" x={300} width={1320} top={100} height={1100} />}
-          {t > party && <Confetti t={(t - party) * VFPS} cx={960} cy={500} count={50} />}
         </VStage>
       );
     },
@@ -567,7 +558,7 @@ const MathShot: React.FC<{t: number; f: number}> = ({t, f}) => {
   return (
     <VStage
       framing={{zoom: 1.3, cx: 1400, cy: 600}}
-      blurBg={<Studio t={f} />}
+      blurBg={<Studio t={0} />}
       overlay={
         <g>
           <Slam t={t} at={keep}>
@@ -609,10 +600,10 @@ const ChecklistShot: React.FC<{t: number; f: number; k: number}> = ({t, f, k}) =
   );
   const restock = k === 1;
   return (
-    <VStage framing={WIDE(1060, 600)} blurBg={<Office t={f} />} overlay={list}>
+    <VStage framing={WIDE(1060, 600)} blurBg={<Office t={0} />} overlay={list}>
       {k === 2 && <Calendar x={720} y={360} day={7} month="WEEK" />}
       {restock && <Crate x={780} y={FLOOR_Y} />}
-      <VendingMachine x={MX} y={FLOOR_Y} t={f} fill={restock ? Math.min(1, 0.4 + ((f % 60) / 60) * 0.6) : 1} display={k === 0 ? 'TAP' : '$2.00'} />
+      <VendingMachine fx={false} x={MX} y={FLOOR_Y} t={f} fill={restock ? Math.min(1, 0.4 + ((f % 60) / 60) * 0.6) : 1} display={k === 0 ? 'TAP' : '$2.00'} />
       {restock &&
         Array.from({length: 4}).map((_, i) => {
           const p = ((f + i * 6) % 24) / 24;
