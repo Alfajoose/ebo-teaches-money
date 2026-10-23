@@ -8,7 +8,8 @@ Built with [Remotion](https://remotion.dev). The characters come from the origin
 
 | # | Topic | Video | Animate file |
 |---|-------|-------|--------------|
-| 01 | How vending machines make money | [`episodes/ep01/ebo-teaches-money-ep01.mp4`](episodes/ep01/ebo-teaches-money-ep01.mp4) | [`episodes/ep01/Ebo_Teaches_Money_Ep01.fla`](episodes/ep01/Ebo_Teaches_Money_Ep01.fla) |
+| 01 | How vending machines make money (56 s) | [`ebo-teaches-money-ep01.mp4`](episodes/ep01/ebo-teaches-money-ep01.mp4) | [`Ebo_Teaches_Money_Ep01.fla`](episodes/ep01/Ebo_Teaches_Money_Ep01.fla) |
+| 01 short | Same episode, tight 36.5 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
 
 To add the voice to the Animate file, follow `episodes/ep01/README.txt` (it takes three steps).
 
@@ -39,6 +40,8 @@ The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`Vendin
 npm install
 npx remotion studio                                   # preview
 npx remotion render EboTeachesMoney-Ep01 out/ep01.mp4 # 1080x1920, 30 fps
+node scripts/cut-audio.mjs                            # short cut: rebuild voice-short.mp3 from EP01_SHORT_EDL
+npx remotion render EboTeachesMoney-Ep01-Short out/ep01-short.mp4
 ```
 
 On Linux without a desktop Chrome, set `REMOTION_BROWSER_EXECUTABLE` to a chrome-headless-shell binary.
