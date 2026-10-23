@@ -493,16 +493,18 @@ const SHOTS: Shot[] = [
     },
   },
   {
-    at: at('Follow'),
+    at: at('Subscribe'),
     render: (t, f) => (
       <VStage
         framing={CLOSE(EBO_X + 10)}
         blurBg={studio(t)}
         overlay={
-          <Slam t={t} at={at('Follow') + 0.15}>
-            <rect x={VW / 2 - 330} y={1330} width={660} height={130} rx={65} fill={C.red} stroke={C.ink} strokeWidth={10} />
-            <text x={VW / 2} y={1418} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={70} fill="#fff" letterSpacing={4}>
-              FOLLOW +
+          <Slam t={t} at={at('Subscribe') + 0.15}>
+            <rect x={VW / 2 - 330} y={1330} width={660} height={130} rx={65} fill="#FF0033" stroke={C.ink} strokeWidth={10} />
+            <rect x={VW / 2 - 270} y={1360} width={96} height={70} rx={20} fill="#fff" />
+            <path d={`M ${VW / 2 - 232} ${1375} L ${VW / 2 - 196} ${1395} L ${VW / 2 - 232} ${1415} Z`} fill="#FF0033" />
+            <text x={VW / 2 + 50} y={1418} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={66} fill="#fff" letterSpacing={3}>
+              SUBSCRIBE
             </text>
             <text x={VW / 2} y={1540} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={40} fill="#fff" stroke={C.ink} strokeWidth={8} paintOrder="stroke" letterSpacing={4}>
               EBO TEACHES MONEY · EP 1

@@ -19,7 +19,7 @@ export const EP01_SHORT_EDL: [number, number][] = [
   [11.52, 19.26], // Lesson 2: location … "three dollars a month."
   [19.28, 23.84], // "Put it where people actually are: offices, gyms, schools."
   [31.92, 40.42], // "Here's the real math …"
-  [54.4, 56.46], // "Follow for more." + end card
+  [54.4, 56.63], // "Subscribe for more." + end card
 ];
 
 // starts round up so a segment never shows the last frame of the previous shot
