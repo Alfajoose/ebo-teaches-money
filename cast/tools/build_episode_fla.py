@@ -5,10 +5,14 @@ usage: python3 -I build_episode_fla.py CAPTURE.json BG_DIR CAST_SRC_DIR OUT.fla 
 Layers on the main timeline (top → bottom):
   Captions     editable text in caption pills (one graphic symbol per caption chunk)
   Graphics     titles / lesson cards / numbers as editable vector symbols + text, keyed
+  Props front  props drawn over the cast (things the characters hold)
   <cast>       one layer per character; each plays its own animated rig symbol
-  Background   sets & props as JPEG frames (held while unchanged)
+  Props        every other prop (vending machines, crates, cans, calendars …) as editable
+               vector symbols in the hand-drawn style, one symbol per look, moved by keys
+  Background   the set only, as JPEG frames (held while unchanged); render BG_DIR with
+               --props='{"layer":"set"}' so props aren't baked in
 
-Each character's animated symbol ("<Name>/<Name> – Ep01") is a copy of the user's own
+Each character's animated symbol ("<Name>/<Name> – <Episode>") is a copy of the user's own
 rig with keyframes on every layer: rotation/position only, eye & mouth frame swaps.
 """
 import sys, os, json, math, re, copy, shutil, zipfile, time, hashlib
@@ -253,31 +257,100 @@ def circle(cx, cy, r):
     return pts
 
 def path_d(d):
-    toks = re.findall(r'[MLlZz]|-?\d*\.?\d+', d)
-    segs, i, cur, cmd = [], 0, (0, 0), None
-    start = (0, 0)
+    """M/L/H/V/Q/C/Z (absolute and relative) → segment list. Cubics become two quads."""
+    toks = re.findall(r'[MLHVQCZmlhvqcz]|-?(?:\d+\.?\d*|\.\d+)(?:e-?\d+)?', d)
+    segs, i, cur, start, cmd = [], 0, (0.0, 0.0), (0.0, 0.0), None
+    nargs = {'M': 2, 'L': 2, 'H': 1, 'V': 1, 'Q': 4, 'C': 6}
     while i < len(toks):
         tk = toks[i]
-        if tk in 'MLlZz':
+        if tk.isalpha():
             cmd = tk
             i += 1
             if tk in 'Zz':
                 segs.append(('L', *start))
                 cur = start
             continue
-        x, y = float(toks[i]), float(toks[i + 1])
-        i += 2
-        if cmd == 'M':
-            cur = start = (x, y)
-            segs.append(('M', x, y))
-            cmd = 'L'
-        elif cmd == 'L':
-            cur = (x, y)
-            segs.append(('L', x, y))
-        elif cmd == 'l':
-            cur = (cur[0] + x, cur[1] + y)
+        n = nargs[cmd.upper()]
+        v = [float(x) for x in toks[i:i + n]]
+        i += n
+        rel = cmd.islower()
+        ox, oy = cur if rel else (0.0, 0.0)
+        C = cmd.upper()
+        if C == 'H':
+            v = [v[0] + ox, cur[1]]
+            C, rel = 'L', False
+        elif C == 'V':
+            v = [cur[0], v[0] + oy]
+            C, rel = 'L', False
+        pts = [(v[k] + ox, v[k + 1] + oy) for k in range(0, len(v), 2)]
+        if C == 'M':
+            cur = start = pts[0]
+            segs.append(('M', *cur))
+            cmd = 'l' if rel else 'L'
+        elif C == 'L':
+            cur = pts[0]
             segs.append(('L', *cur))
+        elif C == 'Q':
+            segs.append(('Q', *pts[0], *pts[1]))
+            cur = pts[1]
+        elif C == 'C':
+            # split at t=0.5, then fit each half with one quad
+            p0, p1, p2, p3 = cur, *pts
+            mid = lambda u, w: ((u[0] + w[0]) / 2, (u[1] + w[1]) / 2)
+            p01, p12, p23 = mid(p0, p1), mid(p1, p2), mid(p2, p3)
+            pa, pb = mid(p01, p12), mid(p12, p23)
+            pm = mid(pa, pb)
+            for q0, q1, q2, q3 in ((p0, p01, pa, pm), (pm, pb, p23, p3)):
+                segs.append(('Q', (3 * (q1[0] + q2[0]) - q0[0] - q3[0]) / 4, (3 * (q1[1] + q2[1]) - q0[1] - q3[1]) / 4, *q3))
+            cur = p3
     return segs
+
+def ellipse(cx, cy, rx, ry):
+    return [(sg[0], *[cx + v * rx if k % 2 == 0 else cy + v * ry for k, v in enumerate(sg[1:])]) for sg in circle(0, 0, 1)]
+
+# ── hand-drawn style for props: the same static waver as the video's hd-rough filter,
+#    baked into the vector outlines (fixed seed, so it never changes between frames) ──
+
+ROUGH_AMP = 2.25    # max sideways shift of a line (= half the filter's wobble of 4.5)
+ROUGH_FREQ = 0.018  # waves per unit along a line (the filter's baseFrequency)
+ROUGH_STEP = 22     # long straight lines are split this often so the waver shows
+
+def _hash01(ix, iy, seed):
+    h = (ix * 374761393 + iy * 668265263 + seed * 2147483647) & 0xFFFFFFFF
+    h = ((h ^ (h >> 13)) * 1274126177) & 0xFFFFFFFF
+    return ((h ^ (h >> 16)) & 0xFFFF) / 0xFFFF
+
+def _noise(x, y, seed):
+    ix, iy = math.floor(x), math.floor(y)
+    fx, fy = x - ix, y - iy
+    sx, sy = fx * fx * (3 - 2 * fx), fy * fy * (3 - 2 * fy)
+    a, b = _hash01(ix, iy, seed), _hash01(ix + 1, iy, seed)
+    c, d = _hash01(ix, iy + 1, seed), _hash01(ix + 1, iy + 1, seed)
+    return (a + (b - a) * sx) + ((c + (d - c) * sx) - (a + (b - a) * sx)) * sy
+
+def _wob(x, y):
+    u, v = x * ROUGH_FREQ, y * ROUGH_FREQ
+    return (x + (_noise(u, v, 11) - 0.5) * 2 * ROUGH_AMP, y + (_noise(u, v, 29) - 0.5) * 2 * ROUGH_AMP)
+
+def roughen(segs):
+    out, cur = [], (0.0, 0.0)
+    for s in segs:
+        if s[0] == 'M':
+            cur = (s[1], s[2])
+            out.append(('M', *_wob(*cur)))
+        elif s[0] == 'L':
+            (x0, y0), (x1, y1) = cur, (s[1], s[2])
+            n = max(1, math.ceil(math.hypot(x1 - x0, y1 - y0) / ROUGH_STEP))
+            for k in range(n):
+                a, b = k / n, (k + 1) / n
+                cx, cy = _wob(x0 + (x1 - x0) * (a + b) / 2, y0 + (y1 - y0) * (a + b) / 2)
+                ex, ey = _wob(x0 + (x1 - x0) * b, y0 + (y1 - y0) * b)
+                out.append(('Q', cx, cy, ex, ey) if n > 1 else ('L', ex, ey))
+            cur = (x1, y1)
+        else:
+            out.append(('Q', *_wob(s[1], s[2]), *_wob(s[3], s[4])))
+            cur = (s[3], s[4])
+    return out
 
 def signed_area(segs):
     pts = [(s[-2], s[-1]) for s in segs]
@@ -307,7 +380,9 @@ def shape_el(segs, m, fill, stroke, weight, closed=True, alpha=1.0):
         strokes = ET.SubElement(sh, N('strokes'))
         ss = ET.SubElement(strokes, N('StrokeStyle'), {'index': '1'})
         so = ET.SubElement(ss, N('SolidStroke'), {'scaleMode': 'normal', 'weight': fnum(weight), 'joints': 'round', 'caps': 'round'})
-        ET.SubElement(ET.SubElement(so, N('fill')), N('SolidColor'), {'color': stroke})
+        sc = ET.SubElement(ET.SubElement(so, N('fill')), N('SolidColor'), {'color': stroke})
+        if alpha < 1:
+            sc.set('alpha', fnum(alpha))
         attrs['strokeStyle'] = '1'
     if not attrs:
         return None
@@ -316,7 +391,7 @@ def shape_el(segs, m, fill, stroke, weight, closed=True, alpha=1.0):
     ET.SubElement(edges, N('Edge'), attrs)
     return sh
 
-def text_el(node, m):
+def text_el(node, m, alpha=1.0):
     txt = ''.join(node.itertext())
     size = float(node.get('font-size', '40'))
     weight = int(node.get('font-weight', '400'))
@@ -341,6 +416,8 @@ def text_el(node, m):
         'face': face,
         'fillColor': color(node.get('fill')) or '#000000',
     })
+    if alpha < 1:
+        ta.set('alpha', fnum(alpha))
     stroke = color(node.get('stroke'))
     sw = float(node.get('stroke-width', '0') or 0)
     if stroke and sw > 0:
@@ -348,37 +425,60 @@ def text_el(node, m):
         ET.SubElement(filters, N('GlowFilter'), {'blurX': fnum(sw * 0.9), 'blurY': fnum(sw * 0.9), 'color': stroke, 'strength': '20', 'quality': '3'})
     return st
 
-def svg_to_elements(svg):
+INHERITED = ('fill', 'stroke', 'stroke-width', 'font-size', 'font-weight', 'text-anchor')
+
+def svg_to_elements(svg, rough=False):
+    """SVG markup → XFL shapes/text. Fill, stroke and font attributes inherit from groups as
+    in SVG, and opacity multiplies down. rough=True bakes in the hand-drawn waver (props)."""
     root = ET.fromstring(svg.replace('&nbsp;', ' '))
     out = []
 
-    def walk(node, m):
+    def add(segs, mm, st, closed=True):
+        if rough:
+            segs = roughen(segs)
+        fill = color(st.get('fill', '#000000')) if closed else None
+        el = shape_el(segs, mm, fill, color(st.get('stroke')), float(st.get('stroke-width', 1) or 0), closed, st['opacity'])
+        if el is not None:
+            out.append(el)
+
+    def walk(node, m, st):
         tag = node.tag.split('}')[-1]
+        st = dict(st)
+        for k in INHERITED:
+            if node.get(k) is not None:
+                st[k] = node.get(k)
+        st['opacity'] = st['opacity'] * float(node.get('opacity', 1))
+        if st['opacity'] <= 0.004:
+            return
         mm = mmul(m, parse_transform(node.get('transform'))) if tag != 'text' else m
+        f = lambda k, d=0: float(node.get(k, d) or 0)
         if tag == 'g':
             for ch in node:
-                walk(ch, mm)
+                walk(ch, mm, st)
         elif tag == 'rect':
-            segs = rrect(float(node.get('x', 0)), float(node.get('y', 0)), float(node.get('width')), float(node.get('height')), float(node.get('rx', 0) or 0))
-            el = shape_el(segs, mm, color(node.get('fill')), color(node.get('stroke')), float(node.get('stroke-width', 0) or 0))
-            if el is not None:
-                out.append(el)
+            add(rrect(f('x'), f('y'), f('width'), f('height'), f('rx') or f('ry')), mm, st)
         elif tag == 'circle':
-            segs = circle(float(node.get('cx', 0)), float(node.get('cy', 0)), float(node.get('r')))
-            el = shape_el(segs, mm, color(node.get('fill')), color(node.get('stroke')), float(node.get('stroke-width', 0) or 0))
-            if el is not None:
-                out.append(el)
+            add(circle(f('cx'), f('cy'), f('r')), mm, st)
+        elif tag == 'ellipse':
+            add(ellipse(f('cx'), f('cy'), f('rx'), f('ry')), mm, st)
+        elif tag in ('polygon', 'polyline'):
+            v = [float(x) for x in re.split(r'[\s,]+', node.get('points', '').strip()) if x]
+            segs = [('M' if k == 0 else 'L', v[k], v[k + 1]) for k in range(0, len(v) - 1, 2)]
+            if segs and tag == 'polygon':
+                segs.append(('L', v[0], v[1]))
+            add(segs, mm, st, closed=tag == 'polygon')
+        elif tag == 'line':
+            add([('M', f('x1'), f('y1')), ('L', f('x2'), f('y2'))], mm, st, closed=False)
         elif tag == 'path':
-            segs = path_d(node.get('d', ''))
-            fill = color(node.get('fill'))
-            closed = fill is not None
-            el = shape_el(segs, mm, fill, color(node.get('stroke')), float(node.get('stroke-width', 0) or 0), closed)
-            if el is not None:
-                out.append(el)
+            add(path_d(node.get('d', '')), mm, st, closed=color(st.get('fill', '#000000')) is not None)
         elif tag == 'text':
-            out.append(text_el(node, m))
+            t = copy.copy(node)
+            for k in INHERITED:
+                if k in st and t.get(k) is None:
+                    t.set(k, st[k])
+            out.append(text_el(t, m, st['opacity']))
 
-    walk(root, [1, 0, 0, 1, 0, 0])
+    walk(root, [1, 0, 0, 1, 0, 0], {'opacity': 1.0})
     return out
 
 def graphic_symbol(lib, name, elements):
@@ -411,7 +511,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
         if not any(recs):
             continue
         rename, rig_el = import_rig(lib, Path(cast_src) / src_folder, rig_sym, disp)
-        anim_name = f'{disp}/{disp} – Ep01'
+        anim_name = f"{disp}/{disp} – {cap.get('episode', 'Ep01')}"
         build_anim_symbol(lib, rig_el, rename[rig_sym], anim_name, recs, total)
         char_layers[who] = (disp, anim_name, recs)
 
@@ -424,6 +524,16 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
                 name = f'Graphics/g{len(gsyms) + 1:02d} ' + re.sub(r'[^A-Za-z0-9 $+≈.-]', '', ' '.join(re.findall(r'>([^<]+)<', g['svg']))[:24]).strip()
                 graphic_symbol(lib, name, svg_to_elements(g['svg']))
                 gsyms[g['key']] = name
+
+    # ── props (vector symbols, hand-drawn) ──
+    lib.folder('Props')
+    psyms, pcount = {}, {}
+    for fr in frames:
+        for pr in fr.get('props', []):
+            if pr['key'] not in psyms:
+                pcount[pr['name']] = pcount.get(pr['name'], 0) + 1
+                psyms[pr['key']] = f"Props/{pr['name']} {pcount[pr['name']]:02d}"
+                graphic_symbol(lib, psyms[pr['key']], svg_to_elements(pr['svg'], rough=True))
 
     # ── captions ──
     lib.folder('Captions')
@@ -509,6 +619,11 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
     # graphics
     gstates = [tuple((g['key'], rkey(g['matrix'])) for g in fr['graphics']) for fr in frames]
     add_layer('Graphics', keyed(gstates, lambda f, st: [inst(gsyms[k], list(m)) for k, m in st]), '#FF4FFF')
+    # props held / drawn in front of the cast
+    def prop_states(front):
+        return [tuple((p['key'], rkey(p['matrix'])) for p in fr.get('props', []) if p['front'] == front) for fr in frames]
+    if any(prop_states(True)):
+        add_layer('Props front', keyed(prop_states(True), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
     # characters
     for who in LAYER_ORDER:
         if who not in char_layers:
@@ -522,7 +637,10 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
                 keys.append((f, [inst(anim, list(st), first=f, loop='loop')] if st else []))
                 last = st
         add_layer(disp, keys, '#4FFFFF')
-    # background
+    # props behind the cast
+    if any(prop_states(False)):
+        add_layer('Props', keyed(prop_states(False), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
+    # background (set only)
     bkeys = [(f, [ET.Element(N('DOMBitmapInstance'), {'libraryItemName': f'Background/bg{i + 1:04d}.jpg'})]) for i, (f, _) in enumerate(bg_keys)]
     add_layer('Background', bkeys, '#9933CC')
 
@@ -573,7 +691,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
                 z.write(p, rel, compress_type=zipfile.ZIP_STORED if p.suffix.lower() in ('.dat', '.jpg', '.jpeg') else zipfile.ZIP_DEFLATED)
 
     print(f'characters: {", ".join(v[0] for v in char_layers.values())}')
-    print(f'graphics: {len(gsyms)}  captions: {len(csyms)}  background frames: {len(bg_keys)}')
+    print(f'graphics: {len(gsyms)}  props: {len(psyms)}  captions: {len(csyms)}  background frames: {len(bg_keys)}')
     print(f'wrote {out_fla} ({os.path.getsize(out_fla) / 1e6:.1f} MB)')
 
 if __name__ == '__main__':

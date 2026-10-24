@@ -119,7 +119,7 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   const mode = useLayerMode();
   const cap = useCapture();
   const cam = useContext(CameraContext);
-  if (mode === 'bg') return null;
+  if (mode !== 'full') return null;
   const P = prepare(who);
   const {cfg, rig, byName, byRig, rest} = P;
 
@@ -170,6 +170,12 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   const hand = ap(world('hand_down_2'), P.handLocal);
   const layers = rig.layers.filter((l) => !cfg.hide.includes(l.name));
 
+  const outer = mmul(
+    cam,
+    mmul(Tm(x, y), mmul(Sm(facing * s, s), mmul(Rm(pose.tilt), mmul(Tm(0, pose.lift / cfg.scale), Tm(-ox, -oy))))),
+  ) as M;
+  const handM = mmul(outer, mmul(Tm(hand[0], hand[1]), Sm(1 / cfg.scale, 1 / cfg.scale)));
+
   if (cap) {
     const locals: Record<string, M> = {};
     const frames: Record<string, number> = {};
@@ -178,10 +184,6 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
       locals[l.name] = localMatrix(l.m as M, l.tp, rot[l.name] ?? 0, d[0], d[1]);
       frames[l.name] = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, l.first)));
     }
-    const outer = mmul(
-      cam,
-      mmul(Tm(x, y), mmul(Sm(facing * s, s), mmul(Rm(pose.tilt), mmul(Tm(0, pose.lift / cfg.scale), Tm(-ox, -oy))))),
-    ) as M;
     cap.chars.push({who, outer, locals, frames});
   }
 
@@ -194,7 +196,10 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
           return <g key={l.name} transform={`matrix(${world(l.name).join(',')})`} dangerouslySetInnerHTML={{__html: l.frames[f]}} />;
         })}
         {children && (
-          <g transform={`translate(${hand[0]} ${hand[1]}) scale(${1 / cfg.scale})`}>{children}</g>
+          // held props: tell the Animate export where the hand is on screen
+          <CameraContext.Provider value={handM}>
+            <g transform={`translate(${hand[0]} ${hand[1]}) scale(${1 / cfg.scale})`}>{children}</g>
+          </CameraContext.Provider>
         )}
       </g>
     </g>

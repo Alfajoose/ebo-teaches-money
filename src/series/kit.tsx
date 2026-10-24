@@ -77,7 +77,7 @@ export const VStage: React.FC<{
         )}
         <g transform={cam}>{children}</g>
         <rect width={VW} height={VH} fill="url(#vvig)" />
-        {mode === 'bg' ? null : overlay}
+        {mode === 'full' ? overlay : null}
       </svg>
     </AbsoluteFill>
     </CameraContext.Provider>
@@ -149,7 +149,7 @@ export const TopCaption: React.FC<{chunks: Chunk[]; tSec: number}> = ({chunks, t
   const cap = useCapture();
   const mode = useLayerMode();
   const c = chunks.find((k, i) => tSec >= k.s - 0.03 && tSec < (chunks[i + 1]?.s ?? k.e + 0.6) - 0.03);
-  if (!c || tSec > c.e + 0.6 || mode === 'bg') return null;
+  if (!c || tSec > c.e + 0.6 || mode !== 'full') return null;
   if (cap) cap.caption = c.text.replace(/\.\.\.$/, '…');
   return (
     <AbsoluteFill style={{alignItems: 'center', paddingTop: 150}}>

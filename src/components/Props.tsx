@@ -1,5 +1,5 @@
 import React from 'react';
-import {Rough} from '../handDrawn';
+import {Prop} from '../prop';
 import {random} from 'remotion';
 import {C, FONT} from '../theme';
 import {useNoScale} from '../noScale';
@@ -444,16 +444,16 @@ export const Exclaim: React.FC<{x: number; y: number; scale: number; text?: stri
   );
 };
 
-/** Crate, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+/** Crate — a prop: hand-drawn in the video, its own vector symbol in the Animate export (see prop.tsx). */
 export const Crate: typeof CrateDrawing = (props) => (
-  <Rough>
+  <Prop name="Crate">
     <CrateDrawing {...props} />
-  </Rough>
+  </Prop>
 );
 
-/** Calendar, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+/** Calendar — a prop: hand-drawn in the video, its own vector symbol in the Animate export (see prop.tsx). */
 export const Calendar: typeof CalendarDrawing = (props) => (
-  <Rough>
+  <Prop name="Calendar">
     <CalendarDrawing {...props} />
-  </Rough>
+  </Prop>
 );

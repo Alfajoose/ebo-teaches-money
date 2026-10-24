@@ -30,7 +30,7 @@ import {
   LessonCard,
 } from './kit';
 import {C, FONT, lin} from '../theme';
-import {Slam, Still, LayerModeContext} from './exportCtx';
+import {Slam, Still, LayerMode, LayerModeContext, Place, mmul, T, S} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
 import wordsJson from './data/ep01-words.json';
 import envJson from './data/ep01-env.json';
@@ -484,9 +484,9 @@ const SHOTS: Shot[] = [
           }
         >
           {Array.from({length: 10}).map((_, i) => (
-            <g key={i} transform={`translate(${520 + (i % 5) * 220} ${i < 5 ? 640 : FLOOR_Y + 260}) scale(0.5)`}>
+            <Place key={i} m={mmul(T(520 + (i % 5) * 220, i < 5 ? 640 : FLOOR_Y + 260), S(0.5, 0.5))}>
               <VendingMachine fx={false} x={0} y={0} t={f + i * 7} fill={1} />
-            </g>
+            </Place>
           ))}
           <Ebo f={f} x={960} pose={t > party ? {...G.celebrate, lift: -Math.abs(Math.sin(f * 0.35)) * 70, eyes: 'happy'} : withFace(G.open, 'wide')} />
         </VStage>
@@ -654,8 +654,8 @@ export const Ep01Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
   );
 };
 
-/** layer='bg' renders only sets/props (for the Animate background image layer). */
-export const EboEp01: React.FC<{layer?: 'full' | 'bg'; handDrawn?: boolean}> = ({layer = 'full', handDrawn = true}) => {
+/** layer='set' renders only the sets (for the Animate Background layer); see exportCtx.tsx. */
+export const EboEp01: React.FC<{layer?: LayerMode; handDrawn?: boolean}> = ({layer = 'full', handDrawn = true}) => {
   const f = useCurrentFrame();
   return (
     <LayerModeContext.Provider value={layer}>

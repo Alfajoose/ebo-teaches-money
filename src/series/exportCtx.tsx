@@ -5,8 +5,12 @@ import {Easing, interpolate} from 'remotion';
 /**
  * Export support for turning an episode into an Adobe Animate .fla.
  *
- * - `LayerModeContext`: 'full' (normal video) or 'bg' (only sets/props — no characters,
- *   graphics or captions), used to render the background image layer.
+ * - `LayerModeContext`: what a render draws.
+ *     'full' — the normal video.
+ *     'set'  — only the set (walls, furniture, plants): no props, characters, graphics or
+ *              captions. Rendered to the Animate "Background" image layer.
+ *     'bg'   — set + props baked together (how Episode 1's first export was made).
+ *   Props are captured separately as vector symbols for the Animate "Props" layers.
  * - `CaptureContext`: when present, characters, graphics and captions report what they
  *   draw on the current frame, so scripts/export-fla can rebuild them as editable
  *   Animate layers (rig keyframes, vector graphics, text).
@@ -30,19 +34,48 @@ export const R = (deg: number, cx = 0, cy = 0): M6 => {
 
 export type CharRecord = {who: string; outer: M6; locals: Record<string, M6>; frames: Record<string, number>};
 export type GraphicRecord = {key: string; matrix: M6; alpha: number; svg: string};
-export type Capture = {chars: CharRecord[]; graphics: GraphicRecord[]; caption: string | null};
+/** A prop on this frame: `svg` is its drawing in its own coordinates, `matrix` places it on screen. */
+export type PropRecord = {name: string; key: string; matrix: M6; svg: string; front: boolean};
+export type Capture = {chars: CharRecord[]; graphics: GraphicRecord[]; props: PropRecord[]; caption: string | null};
+export type LayerMode = 'full' | 'set' | 'bg';
 
 export const CaptureContext = createContext<Capture | null>(null);
 export const CameraContext = createContext<M6>(IDENT);
-export const LayerModeContext = createContext<'full' | 'bg'>('full');
+export const LayerModeContext = createContext<LayerMode>('full');
 
 export const useCapture = () => useContext(CaptureContext);
 export const useLayerMode = () => useContext(LayerModeContext);
 
-const hash = (s: string) => {
+export const hash = (s: string) => {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
   return (h >>> 0).toString(36);
+};
+
+/** Parse an SVG transform list (translate / rotate / scale / matrix) into a matrix. */
+export const parseTransform = (str: string): M6 => {
+  let m = IDENT;
+  for (const [, fn, args] of str.matchAll(/(\w+)\(([^)]*)\)/g)) {
+    const v = args.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+    if (fn === 'translate') m = mmul(m, T(v[0], v[1] ?? 0));
+    else if (fn === 'scale') m = mmul(m, S(v[0], v[1] ?? v[0]));
+    else if (fn === 'rotate') m = mmul(m, R(v[0], v[1] ?? 0, v[2] ?? 0));
+    else if (fn === 'matrix') m = mmul(m, v as M6);
+  }
+  return m;
+};
+
+/**
+ * A transformed group inside a shot. Use this instead of a bare `<g transform>` around
+ * props, so the Animate export knows where they sit on screen.
+ */
+export const Place: React.FC<{m: M6; children: React.ReactNode}> = ({m, children}) => {
+  const cam = useContext(CameraContext);
+  return (
+    <CameraContext.Provider value={mmul(cam, m)}>
+      <g transform={`matrix(${m.join(',')})`}>{children}</g>
+    </CameraContext.Provider>
+  );
 };
 
 const VW_HALF = 540;
@@ -57,7 +90,7 @@ export const Slam: React.FC<{t: number; at: number; dist?: number; twist?: numbe
 }) => {
   const cap = useCapture();
   const mode = useLayerMode();
-  if (mode === 'bg' || t < at) return null;
+  if (mode !== 'full' || t < at) return null;
   const u = interpolate((t - at) * 30, [0, 5], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.back(2.2))});
   const matrix = mmul(T(0, (1 - u) * dist), R((1 - u) * twist, VW_HALF, 0));
   if (cap) {
@@ -71,7 +104,7 @@ export const Slam: React.FC<{t: number; at: number; dist?: number; twist?: numbe
 export const Still: React.FC<{children: React.ReactNode}> = ({children}) => {
   const cap = useCapture();
   const mode = useLayerMode();
-  if (mode === 'bg') return null;
+  if (mode !== 'full') return null;
   if (cap) {
     const svg = renderToStaticMarkup(<g>{children}</g>);
     cap.graphics.push({key: `still:${hash(svg)}`, matrix: IDENT, alpha: 1, svg});

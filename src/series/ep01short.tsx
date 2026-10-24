@@ -1,7 +1,7 @@
 import React from 'react';
 import {Html5Audio, staticFile, useCurrentFrame} from 'remotion';
 import {Ep01Frame} from './ep01';
-import {LayerModeContext} from './exportCtx';
+import {LayerMode, LayerModeContext} from './exportCtx';
 import {VFPS} from './kit';
 
 /**
@@ -36,7 +36,7 @@ export const shortToSource = (f: number) => {
   return lastEnd - 1;
 };
 
-export const EboEp01Short: React.FC<{layer?: 'full' | 'bg'}> = ({layer = 'full'}) => {
+export const EboEp01Short: React.FC<{layer?: LayerMode}> = ({layer = 'full'}) => {
   const f = useCurrentFrame();
   return (
     <LayerModeContext.Provider value={layer}>

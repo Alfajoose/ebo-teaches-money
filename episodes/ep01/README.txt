@@ -5,11 +5,15 @@ Stage: 1080 x 1920, 30 fps, 1699 frames (56.6 s)
 LAYERS (top to bottom)
   Captions    - editable text in caption pills (Library > Captions)
   Graphics    - titles, lesson cards, price tags, numbers: editable text + vector shapes (Library > Graphics)
+  Props front - props drawn over the cast: things the characters hold (coins, cans, bills)
   Ebo, Christy, Mica, Ama, Obuor
               - each plays its animated rig symbol, e.g. Library > Ebo > "Ebo – Ep01".
                 Double-click it to edit poses: every body-part layer has keyframes
                 (rotation/position only) and eye/mouth swaps (Properties > Looping > First frame).
-  Background  - the sets and props as JPEG frames (Library > Background)
+  Props       - vending machines, crates, cans, calendars as editable vector symbols in the
+                hand-drawn style (Library > Props). One symbol per look; moves are keyframes
+                (position/rotation only). Edit a symbol once and every shot that uses it updates.
+  Background  - the sets only (walls, furniture, plants) as JPEG frames (Library > Background)
 
 ADD THE VOICE (1 minute)
   1. File > Import > Import to Library... > choose Ebo_Ep01_voice.mp3
@@ -19,6 +23,9 @@ ADD THE VOICE (1 minute)
 
 NOTES
   - Text uses Arial Black / Arial Bold; outlines are Glow filters on the text.
-  - Small props held in hands (coins, cans, the payment card) are not in this file.
+  - Props in the video have a light crayon grain; in Animate they keep the wavy hand-drawn
+    outlines but use flat fills.
+  - Props front sits above every character, so a held prop is never hidden behind a
+    character standing next to the one holding it.
   - Built by script and checked by re-rendering it outside Animate; please open it
     in Animate and report anything that looks off.

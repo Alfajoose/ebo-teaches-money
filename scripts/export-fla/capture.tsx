@@ -10,7 +10,7 @@ import {Capture, CaptureContext} from '../../src/series/exportCtx';
 const out = process.argv[2] || 'out/fla-export/capture.json';
 const frames: (Capture & {f: number; shot: number})[] = [];
 for (let f = 0; f < EP01_DURATION; f++) {
-  const cap: Capture = {chars: [], graphics: [], caption: null};
+  const cap: Capture = {chars: [], graphics: [], props: [], caption: null};
   renderToStaticMarkup(
     <CaptureContext.Provider value={cap}>
       <Ep01Frame f={f} />
@@ -19,5 +19,5 @@ for (let f = 0; f < EP01_DURATION; f++) {
   frames.push({f, shot: shotIndexAt(f), ...cap});
 }
 fs.mkdirSync(out.replace(/\/[^/]+$/, ''), {recursive: true});
-fs.writeFileSync(out, JSON.stringify({fps: 30, width: 1080, height: 1920, duration: EP01_DURATION, shotTimes: EP01_SHOT_TIMES, frames}));
+fs.writeFileSync(out, JSON.stringify({episode: 'Ep01', fps: 30, width: 1080, height: 1920, duration: EP01_DURATION, shotTimes: EP01_SHOT_TIMES, frames}));
 console.log(`captured ${frames.length} frames → ${out}`);

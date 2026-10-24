@@ -33,6 +33,18 @@ The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`Vendin
 - **Translation and rotation only. Nothing animates scale.** Framing changes only on hard cuts.
 - Talk-to-camera with hard cuts between wide, medium and close shots, and a black caption pill at the top.
 - Only characters and props animate. No decorative effects (webs, tumbleweeds, money rain, smoke, shakes, animated backgrounds).
+- Backgrounds and props are kept separate (see below).
+
+## Backgrounds vs props
+
+- **Sets** (`src/series/sets.tsx`) are the background: walls, furniture, plants, signs. They never contain props.
+- **Props** (`src/components/`) are anything that's handled, moved or counted. Each prop component wraps its drawing in `<Prop name="…">` (`src/prop.tsx`). That one wrapper gives the prop:
+  - the hand-drawn look in the video;
+  - its removal from `layer: 'set'` renders;
+  - its capture as a vector symbol for the Animate export.
+- The drawing's outer `<g transform>` is the prop's placement, so a prop that only moves or turns stays one symbol.
+- To move or scale a group of props inside a shot, wrap them in `<Place m={…}>` (`src/series/exportCtx.tsx`) instead of a bare `<g transform>`, so the export knows where they are. Props held by a character are placed automatically.
+- A new prop needs a `XDrawing` component plus `export const X = (props) => <Prop name="X"><XDrawing {...props} /></Prop>`.
 
 ## Render
 
@@ -50,10 +62,21 @@ On Linux without a desktop Chrome, set `REMOTION_BROWSER_EXECUTABLE` to a chrome
 
 ```bash
 node scripts/export-fla/run-capture.mjs out/fla-export/capture.json
-npx remotion render EboTeachesMoney-Ep01 out/fla-export/bg --sequence --image-format=jpeg --props='{"layer":"bg"}'
+npx remotion render EboTeachesMoney-Ep01 out/fla-export/set --sequence --image-format=jpeg --props='{"layer":"set"}'
 # extract each cast .fla in cast/masters/ to <CAST_SRC>/<name>/ with cast/tools/fla_extract.py, then:
-python3 -I cast/tools/build_episode_fla.py out/fla-export/capture.json out/fla-export/bg <CAST_SRC> out/Ep01.fla out/fla-work
+python3 -I cast/tools/build_episode_fla.py out/fla-export/capture.json out/fla-export/set <CAST_SRC> out/Ep01.fla out/fla-work
 ```
+
+The .fla's main timeline, top to bottom:
+
+| Layer | Contents |
+|-------|----------|
+| Captions | Caption text |
+| Graphics | Titles and lesson cards |
+| Props front | Props the characters hold |
+| One layer per character | That character's animated rig |
+| Props | All other props |
+| Background | The set, as images |
 
 ## Updating a character
 

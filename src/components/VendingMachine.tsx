@@ -1,5 +1,5 @@
 import React from 'react';
-import {Rough} from '../handDrawn';
+import {Prop} from '../prop';
 import {C, FONT} from '../theme';
 import {Can} from './Money';
 import {useNoScale} from '../noScale';
@@ -202,9 +202,9 @@ const Web: React.FC = () => (
   </g>
 );
 
-/** VendingMachine, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+/** VendingMachine — a prop: hand-drawn in the video, its own vector symbol in the Animate export (see prop.tsx). */
 export const VendingMachine: typeof VendingMachineDrawing = (props) => (
-  <Rough>
+  <Prop name="VendingMachine">
     <VendingMachineDrawing {...props} />
-  </Rough>
+  </Prop>
 );

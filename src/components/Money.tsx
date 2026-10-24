@@ -1,5 +1,5 @@
 import React from 'react';
-import {Rough} from '../handDrawn';
+import {Prop} from '../prop';
 import {random} from 'remotion';
 import {C, FONT} from '../theme';
 import {useNoScale} from '../noScale';
@@ -107,23 +107,23 @@ export const CoinBurst: React.FC<{t: number; x: number; y: number; count?: numbe
   );
 };
 
-/** DollarBill, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+/** DollarBill — a prop: hand-drawn in the video, its own vector symbol in the Animate export (see prop.tsx). */
 export const DollarBill: typeof DollarBillDrawing = (props) => (
-  <Rough>
+  <Prop name="DollarBill">
     <DollarBillDrawing {...props} />
-  </Rough>
+  </Prop>
 );
 
-/** Coin, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+/** Coin — a prop: hand-drawn in the video, its own vector symbol in the Animate export (see prop.tsx). */
 export const Coin: typeof CoinDrawing = (props) => (
-  <Rough>
+  <Prop name="Coin">
     <CoinDrawing {...props} />
-  </Rough>
+  </Prop>
 );
 
-/** Can, drawn in the hand-drawn style when it's switched on (see handDrawn.tsx). */
+/** Can — a prop: hand-drawn in the video, its own vector symbol in the Animate export (see prop.tsx). */
 export const Can: typeof CanDrawing = (props) => (
-  <Rough>
+  <Prop name="Can">
     <CanDrawing {...props} />
-  </Rough>
+  </Prop>
 );
