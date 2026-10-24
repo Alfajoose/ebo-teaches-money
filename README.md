@@ -78,6 +78,10 @@ The .fla's main timeline, top to bottom:
 | Props | All other props |
 | Background | The set, as images |
 
+## Walk and run cycles
+
+The cast's own walk and run cycles are in `cast/cycles/` (see `cast/CAST.md`). Play one with `<RigCharacter who="christy" cycle="walk" … />` and move the character with `x`. Preview them all with the `CycleTest` composition (`cast/sheets/cycles-preview.mp4`).
+
 ## Updating a character
 
 1. Edit the character in Animate (`cast/masters/*.fla`).

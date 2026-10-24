@@ -2,6 +2,7 @@ import React from 'react';
 import {C} from '../theme';
 import type {Pose, Eyes, Mouth} from '../components/Character';
 import {CAST, CastId, CastConfig, RigData} from './castConfig';
+import {CycleName, cycleFrame, getCycle} from './cycles';
 import measureJson from './data/measure.json';
 import {CameraContext, mmul, R as Rm, S as Sm, T as Tm, useCapture, useLayerMode} from '../series/exportCtx';
 import {useContext} from 'react';
@@ -113,9 +114,11 @@ type Props = {
   mouthFrame?: number; // direct mouth swap (lip sync) — overrides pose.mouth
   eyeFrame?: number | number[]; // direct eye swap — overrides pose.eyes
   noBlink?: boolean;
+  cycle?: CycleName; // play a walk/run cycle (body only); pose still drives face, tilt and lift
+  cycleOffset?: number; // shift the cycle in video frames (so two walkers aren't in step)
 };
 
-export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, mouthFrame, eyeFrame: eyeOverride, noBlink}) => {
+export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
   const mode = useLayerMode();
   const cap = useCapture();
   const cam = useContext(CameraContext);
@@ -147,13 +150,22 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   for (const e of cfg.eyeLayers) dxy[e] = look;
   if (byName.mouth) dxy.mouth = [look[0] * 0.5, look[1] * 0.3];
 
+  // ── a cycle replaces the body layers' rest matrices frame by frame ──
+  const cyc = cycle ? getCycle(who, cycle) : null;
+  const cf = cyc ? cycleFrame(cyc, t + cycleOffset) : 0;
+  const baseM = (name: string, m: number[]): M => {
+    const k = cyc?.layers[name];
+    return (k ? k[cf] : m) as M;
+  };
+  const rotOf = (name: string) => (cyc?.layers[name] ? 0 : rot[name] ?? 0);
+
   // ── compose world matrices along the parent chain ──
   const memo: Record<string, M> = {};
   const world = (name: string): M => {
     if (memo[name]) return memo[name];
     const l = byName[name];
     const d = dxy[name] ?? [0, 0];
-    const local = localMatrix(l.m as M, l.tp, rot[name] ?? 0, d[0], d[1]);
+    const local = localMatrix(baseM(name, l.m), l.tp, rotOf(name), d[0], d[1]);
     const w = l.parent != null && byRig[l.parent] ? mul(world(byRig[l.parent].name), local) : local;
     memo[name] = w;
     return w;
@@ -181,7 +193,7 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
     const frames: Record<string, number> = {};
     for (const l of rig.layers) {
       const d = dxy[l.name] ?? [0, 0];
-      locals[l.name] = localMatrix(l.m as M, l.tp, rot[l.name] ?? 0, d[0], d[1]);
+      locals[l.name] = localMatrix(baseM(l.name, l.m), l.tp, rotOf(l.name), d[0], d[1]);
       frames[l.name] = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, l.first)));
     }
     cap.chars.push({who, outer, locals, frames});
