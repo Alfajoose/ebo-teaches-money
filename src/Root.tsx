@@ -8,6 +8,7 @@ import {CycleTest} from './cast/CycleTest';
 import {CastVideo} from './castep/CastVideo';
 import {EboEp01, EP01_DURATION} from './series/ep01';
 import {EboEp01Short, EP01_SHORT_DURATION} from './series/ep01short';
+import {EboEp02, EP02_DURATION} from './series/ep02';
 import {VW, VH, VFPS} from './series/kit';
 import {FPS, HEIGHT, TOTAL_FRAMES, WIDTH} from './timing';
 import type {NarrationTiming} from './sync';
@@ -66,6 +67,7 @@ export const RemotionRoot: React.FC = () => (
     defaultProps={{rows: [0, 1, 2, 3, 4]}}
   />
   <Composition id="EboTeachesMoney-Ep01" component={EboEp01} durationInFrames={EP01_DURATION} fps={VFPS} width={VW} height={VH} defaultProps={{layer: 'full' as const}} />
+  <Composition id="EboTeachesMoney-Ep02" component={EboEp02} durationInFrames={EP02_DURATION} fps={VFPS} width={VW} height={VH} defaultProps={{layer: 'full' as const}} />
   <Composition id="EboTeachesMoney-Ep01-Short" component={EboEp01Short} durationInFrames={EP01_SHORT_DURATION} fps={VFPS} width={VW} height={VH} defaultProps={{layer: 'full' as const}} />
   <Composition id="CycleTest" component={CycleTest} durationInFrames={60} fps={VFPS} width={WIDTH} height={HEIGHT} defaultProps={{}} />
   <Composition id="FaceTest" component={FaceTest} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />

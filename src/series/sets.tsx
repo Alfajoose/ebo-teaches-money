@@ -92,3 +92,99 @@ export const School: React.FC = () => (
     </text>
   </g>
 );
+
+// ───────────────────────── Episode 2 (flipping) ─────────────────────────
+
+const Lawn: React.FC = () => (
+  <g>
+    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill="#7DBE6A" />
+    <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke={C.ink} strokeWidth={8} />
+    {Array.from({length: 30}).map((_, i) => (
+      <path key={i} d={`M ${-900 + i * 140} ${FLOOR_Y + 60 + (i % 3) * 70} l 10 -24 l 10 24`} stroke="#5E9F4E" strokeWidth={5} fill="none" />
+    ))}
+  </g>
+);
+
+const HouseFront: React.FC<{color?: string}> = ({color = '#E9D7B0'}) => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill="#A9D6EE" />
+    <rect x={-400} y={120} width={2800} height={780} fill={color} stroke={C.ink} strokeWidth={10} />
+    {Array.from({length: 12}).map((_, i) => (
+      <line key={i} x1={-400} x2={2400} y1={180 + i * 60} y2={180 + i * 60} stroke="#CDB98F" strokeWidth={4} />
+    ))}
+    <path d="M -480 140 L 1000 -260 L 2480 140 Z" fill="#8C4A3A" stroke={C.ink} strokeWidth={10} strokeLinejoin="round" />
+    {[0, 1700].map((x) => (
+      <g key={x}>
+        <rect x={x} y={300} width={300} height={260} rx={6} fill="#CFE7F3" stroke={C.ink} strokeWidth={8} />
+        <line x1={x + 150} x2={x + 150} y1={300} y2={560} stroke={C.ink} strokeWidth={6} />
+      </g>
+    ))}
+    <rect x={820} y={420} width={220} height={480} rx={6} fill="#5E7FA6" stroke={C.ink} strokeWidth={8} />
+    <circle cx={1005} cy={680} r={10} fill={C.gold} stroke={C.ink} strokeWidth={4} />
+  </g>
+);
+
+/** Folding table — set furniture: the items for sale on it are props. */
+export const SaleTable: React.FC<{x: number; w?: number}> = ({x, w = 560}) => (
+  <g transform={`translate(${x} ${FLOOR_Y})`}>
+    <path d={`M ${-w / 2 + 30} 0 L ${w / 2 - 80} -200 M ${w / 2 - 30} 0 L ${-w / 2 + 80} -200`} stroke="#8A8F98" strokeWidth={12} />
+    <rect x={-w / 2} y={-226} width={w} height={30} rx={6} fill="#F3EEE4" stroke={C.ink} strokeWidth={8} />
+  </g>
+);
+
+/** Front lawn yard sale. */
+export const YardSale: React.FC = () => (
+  <g>
+    <HouseFront />
+    <Lawn />
+    <g transform="translate(1650 520) rotate(4)">
+      <rect x={-20} y={0} width={16} height={380} fill="#8B6A48" stroke={C.ink} strokeWidth={5} />
+      <rect x={-190} y={-150} width={340} height={160} rx={8} fill="#FFF3C4" stroke={C.ink} strokeWidth={8} />
+      <text x={-20} y={-80} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={54} fill={C.red}>
+        YARD
+      </text>
+      <text x={-20} y={-22} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={54} fill={C.red}>
+        SALE!
+      </text>
+    </g>
+  </g>
+);
+
+/** Thrift store aisle: racks and shelves. */
+export const ThriftStore: React.FC = () => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill="#E6C9A8" />
+    <text x={960} y={160} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={80} fill="#B5543C" letterSpacing={12}>
+      THRIFT
+    </text>
+    {[150, 1500].map((x) => (
+      <g key={x}>
+        <rect x={x} y={260} width={420} height={640} fill="#B98E62" stroke={C.ink} strokeWidth={8} />
+        {[420, 580, 740].map((y) => (
+          <rect key={y} x={x} y={y} width={420} height={18} fill="#8B6A48" stroke={C.ink} strokeWidth={5} />
+        ))}
+      </g>
+    ))}
+    <line x1={650} x2={1400} y1={360} y2={360} stroke="#6F6A66" strokeWidth={12} />
+    {Array.from({length: 7}).map((_, i) => (
+      <path key={i} d={`M ${700 + i * 100} 360 L ${670 + i * 100} 420 L ${660 + i * 100} 620 L ${750 + i * 100} 620 L ${740 + i * 100} 420 Z`} fill={['#E05A4A', '#4D8FD6', '#F3C53F', '#56B870', '#8F6BD1', '#F4A3B4', '#45B69C'][i]} stroke={C.ink} strokeWidth={6} strokeLinejoin="round" />
+    ))}
+    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill="#C7B39A" />
+    <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke={C.ink} strokeWidth={8} />
+  </g>
+);
+
+/** Moving day: a house with a FREE sign on the curb. */
+export const MovingDay: React.FC = () => (
+  <g>
+    <HouseFront color="#D9E4C8" />
+    <Lawn />
+    <g transform="translate(300 640) rotate(-5)">
+      <rect x={-8} y={0} width={14} height={260} fill="#8B6A48" stroke={C.ink} strokeWidth={5} />
+      <rect x={-130} y={-110} width={260} height={120} rx={8} fill={C.white} stroke={C.ink} strokeWidth={8} />
+      <text x={0} y={-30} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={60} fill={C.moneyDark}>
+        FREE
+      </text>
+    </g>
+  </g>
+);

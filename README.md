@@ -9,9 +9,10 @@ Built with [Remotion](https://remotion.dev). The characters come from the origin
 | # | Topic | Video | Animate file |
 |---|-------|-------|--------------|
 | 01 | How vending machines make money (56 s) | [`ebo-teaches-money-ep01.mp4`](episodes/ep01/ebo-teaches-money-ep01.mp4) | [`Ebo_Teaches_Money_Ep01.fla`](episodes/ep01/Ebo_Teaches_Money_Ep01.fla) |
+| 02 | Flipping: buy low, clean it up, list it well (51 s) | [`ebo-teaches-money-ep02.mp4`](episodes/ep02/ebo-teaches-money-ep02.mp4) | [`Ebo_Teaches_Money_Ep02.fla`](episodes/ep02/Ebo_Teaches_Money_Ep02.fla) |
 | 01 short | Same episode, tight 36.5 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
 
-To add the voice to the Animate file, follow `episodes/ep01/README.txt` (it takes three steps).
+To add the voice to an Animate file, follow the episode's `README.txt` (it takes three steps).
 
 ## Repository layout
 
@@ -61,7 +62,7 @@ On Linux without a desktop Chrome, set `REMOTION_BROWSER_EXECUTABLE` to a chrome
 ## Rebuild the Animate .fla
 
 ```bash
-node scripts/export-fla/run-capture.mjs out/fla-export/capture.json
+node scripts/export-fla/run-capture.mjs out/fla-export/capture.json ep01   # or ep02
 npx remotion render EboTeachesMoney-Ep01 out/fla-export/set --sequence --image-format=jpeg --props='{"layer":"set"}'
 # extract each cast .fla in cast/masters/ to <CAST_SRC>/<name>/ with cast/tools/fla_extract.py, then:
 python3 -I cast/tools/build_episode_fla.py out/fla-export/capture.json out/fla-export/set <CAST_SRC> out/Ep01.fla out/fla-work

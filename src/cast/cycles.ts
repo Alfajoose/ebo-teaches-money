@@ -27,5 +27,13 @@ export const getCycle = (who: CastId, name: CycleName): Cycle => {
   return c;
 };
 
+/**
+ * Ground speed of each cycle, in world px per second at character scale 1, so feet don't
+ * slide when a shot moves the character: x = x0 + cycleSpeed(who, name) * scale * seconds.
+ * Estimated from each cycle's stride (cast/tools: stride length x 2 per loop).
+ */
+const SPEED: Record<string, number> = {'ebo-run': 760, 'christy-walk': 360, 'christy-fastWalk': 580, 'obuor-fastWalk': 440, 'mica-fastWalk': 540};
+export const cycleSpeed = (who: CastId, name: CycleName) => SPEED[`${who}-${name}`] ?? 0;
+
 /** Cycle frame for a video frame `t` at `videoFps` — the cycle keeps its own 24 fps timing. */
 export const cycleFrame = (c: Cycle, t: number, videoFps = 30) => Math.floor((t * c.fps) / videoFps) % c.frames;
