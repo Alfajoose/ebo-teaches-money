@@ -13,7 +13,9 @@ LAYERS (top to bottom)
   Props       - vending machines, crates, cans, calendars as editable vector symbols in the
                 hand-drawn style (Library > Props). One symbol per look; moves are keyframes
                 (position/rotation only). Edit a symbol once and every shot that uses it updates.
-  Background  - the sets only (walls, furniture, plants) as JPEG frames (Library > Background)
+  Background  - the sets only (walls, furniture, plants) as editable vector
+                symbols, one per set and camera framing (Library > Background). Each one is
+                also in backgrounds/ as an .svg file you can open in Illustrator or import.
 
 ADD THE VOICE (1 minute)
   1. File > Import > Import to Library... > choose Ebo_Ep01_voice.mp3
@@ -23,6 +25,7 @@ ADD THE VOICE (1 minute)
 
 NOTES
   - Text uses Arial Black / Arial Bold; outlines are Glow filters on the text.
+  - In the video the sets are slightly blurred for depth; in Animate they are sharp.
   - Props in the video have a light crayon grain; in Animate they keep the wavy hand-drawn
     outlines but use flat fills.
   - Props front sits above every character, so a held prop is never hidden behind a

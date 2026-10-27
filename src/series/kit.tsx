@@ -2,8 +2,10 @@ import React from 'react';
 import {AbsoluteFill, Easing, interpolate, random} from 'remotion';
 import {C, FONT} from '../theme';
 import {mixPose, Pose} from '../components/Character';
-import {CameraContext, mmul, T, S, Slam, useCapture, useLayerMode} from './exportCtx';
-import {HandDrawnDefs} from '../handDrawn';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {CameraContext, LayerModeContext, hash, mmul, T, S, Slam, useCapture, useLayerMode} from './exportCtx';
+import {HandDrawnContext, HandDrawnDefs} from '../handDrawn';
+import {NoScaleContext, useNoScale} from '../noScale';
 
 /**
  * "Ebo Teaches Money" — vertical shorts kit.
@@ -55,31 +57,47 @@ export const VStage: React.FC<{
   const cam = `translate(${VW / 2 + shakeX} ${VH / 2 + shakeY}) scale(${zoom}) translate(${-cx} ${-cy})`;
   const camM = mmul(T(VW / 2 + shakeX, VH / 2 + shakeY), mmul(S(zoom, zoom), T(-cx, -cy)));
   const mode = useLayerMode();
+  const cap = useCapture();
+  const noScale = useNoScale();
+  const scene = (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${VW} ${VH}`} width={VW} height={VH} style={{position: 'absolute', inset: 0}}>
+      <defs>
+        <HandDrawnDefs />
+        <filter id="bgblur" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation={2.2 / Math.max(1, zoom / 2)} />
+        </filter>
+        <radialGradient id="vvig" cx="50%" cy="45%" r="75%">
+          <stop offset="55%" stopColor="#000" stopOpacity={0} />
+          <stop offset="100%" stopColor="#000" stopOpacity={0.35} />
+        </radialGradient>
+      </defs>
+      <rect width={VW} height={VH} fill={bg} />
+      {screenBg}
+      {blurBg && (
+        <g transform={cam} filter="url(#bgblur)">
+          {blurBg}
+        </g>
+      )}
+      <g transform={cam}>{children}</g>
+      <rect width={VW} height={VH} fill="url(#vvig)" />
+      {mode === 'full' ? overlay : null}
+    </svg>
+  );
+  if (cap && mode === 'full') {
+    // the background for the Animate export: this frame drawn as 'set' only (no props,
+    // characters or graphics), as SVG — it becomes a vector symbol on the Background layer
+    const svg = renderToStaticMarkup(
+      <LayerModeContext.Provider value="set">
+        <NoScaleContext.Provider value={noScale}>
+          <HandDrawnContext.Provider value={false}>{scene}</HandDrawnContext.Provider>
+        </NoScaleContext.Provider>
+      </LayerModeContext.Provider>,
+    );
+    cap.background = {key: hash(svg), svg};
+  }
   return (
     <CameraContext.Provider value={camM}>
-    <AbsoluteFill style={{backgroundColor: bg}}>
-      <svg viewBox={`0 0 ${VW} ${VH}`} width={VW} height={VH} style={{position: 'absolute', inset: 0}}>
-        <defs>
-          <HandDrawnDefs />
-          <filter id="bgblur" x="-10%" y="-10%" width="120%" height="120%">
-            <feGaussianBlur stdDeviation={2.2 / Math.max(1, zoom / 2)} />
-          </filter>
-          <radialGradient id="vvig" cx="50%" cy="45%" r="75%">
-            <stop offset="55%" stopColor="#000" stopOpacity={0} />
-            <stop offset="100%" stopColor="#000" stopOpacity={0.35} />
-          </radialGradient>
-        </defs>
-        {screenBg}
-        {blurBg && (
-          <g transform={cam} filter="url(#bgblur)">
-            {blurBg}
-          </g>
-        )}
-        <g transform={cam}>{children}</g>
-        <rect width={VW} height={VH} fill="url(#vvig)" />
-        {mode === 'full' ? overlay : null}
-      </svg>
-    </AbsoluteFill>
+      <AbsoluteFill style={{backgroundColor: bg}}>{scene}</AbsoluteFill>
     </CameraContext.Provider>
   );
 };

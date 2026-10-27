@@ -63,9 +63,8 @@ On Linux without a desktop Chrome, set `REMOTION_BROWSER_EXECUTABLE` to a chrome
 
 ```bash
 node scripts/export-fla/run-capture.mjs out/fla-export/capture.json ep01   # or ep02
-npx remotion render EboTeachesMoney-Ep01 out/fla-export/set --sequence --image-format=jpeg --props='{"layer":"set"}'
 # extract each cast .fla in cast/masters/ to <CAST_SRC>/<name>/ with cast/tools/fla_extract.py, then:
-python3 -I cast/tools/build_episode_fla.py out/fla-export/capture.json out/fla-export/set <CAST_SRC> out/Ep01.fla out/fla-work
+python3 -I cast/tools/build_episode_fla.py out/fla-export/capture.json - <CAST_SRC> out/Ep01.fla out/fla-work episodes/ep01/backgrounds
 ```
 
 The .fla's main timeline, top to bottom:
@@ -77,7 +76,7 @@ The .fla's main timeline, top to bottom:
 | Props front | Props the characters hold |
 | One layer per character | That character's animated rig |
 | Props | All other props |
-| Background | The set, as images |
+| Background | The set, as vector symbols (one per set and framing); each is also saved as an `.svg` file in the episode's `backgrounds/` folder |
 
 ## Walk and run cycles
 

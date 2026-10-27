@@ -1,6 +1,9 @@
 """Build an Adobe Animate .fla for an Ebo Teaches Money episode.
 
-usage: python3 -I build_episode_fla.py CAPTURE.json BG_DIR CAST_SRC_DIR OUT.fla WORK_DIR
+usage: python3 -I build_episode_fla.py CAPTURE.json BG_DIR CAST_SRC_DIR OUT.fla WORK_DIR [SVG_DIR]
+
+BG_DIR is only used for captures made before backgrounds were captured as vectors; pass -
+otherwise. SVG_DIR, if given, also receives every background as a standalone .svg file.
 
 Layers on the main timeline (top → bottom):
   Captions     editable text in caption pills (one graphic symbol per caption chunk)
@@ -9,8 +12,9 @@ Layers on the main timeline (top → bottom):
   <cast>       one layer per character; each plays its own animated rig symbol
   Props        every other prop (vending machines, crates, cans, calendars …) as editable
                vector symbols in the hand-drawn style, one symbol per look, moved by keys
-  Background   the set only, as JPEG frames (held while unchanged); render BG_DIR with
-               --props='{"layer":"set"}' so props aren't baked in
+  Background   the set only, as editable vector symbols (one per set/framing, held
+               while unchanged). Older captures fall back to JPEG frames from BG_DIR,
+               rendered with --props='{"layer":"set"}' so props aren't baked in
 
 Each character's animated symbol ("<Name>/<Name> – <Episode>") is a copy of the user's own
 rig with keyframes on every layer: rotation/position only, eye & mouth frame swaps.
@@ -372,9 +376,15 @@ def shape_el(segs, m, fill, stroke, weight, closed=True, alpha=1.0):
     if fill and closed:
         fills = ET.SubElement(sh, N('fills'))
         fs = ET.SubElement(fills, N('FillStyle'), {'index': '1'})
-        sc = ET.SubElement(fs, N('SolidColor'), {'color': fill})
-        if alpha < 1:
-            sc.set('alpha', fnum(alpha))
+        if isinstance(fill, tuple):  # ('radial', matrix, [(ratio, color, alpha), ...])
+            rg = ET.SubElement(fs, N('RadialGradient'))
+            rg.append(_matrix_node(fill[1]))
+            for ratio, col, a in fill[2]:
+                ET.SubElement(rg, N('GradientEntry'), {'color': col, 'alpha': fnum(a * alpha), 'ratio': fnum(ratio)})
+        else:
+            sc = ET.SubElement(fs, N('SolidColor'), {'color': fill})
+            if alpha < 1:
+                sc.set('alpha', fnum(alpha))
         attrs['fillStyle1' if signed_area(segs) > 0 else 'fillStyle0'] = '1'
     if stroke and weight > 0:
         strokes = ET.SubElement(sh, N('strokes'))
@@ -397,7 +407,8 @@ def text_el(node, m, alpha=1.0):
     weight = int(node.get('font-weight', '400'))
     heavy = weight >= 900
     face = FONT_HEAVY if heavy else FONT_BOLD
-    est = len(txt) * size * (0.70 if heavy else 0.60) + size * 0.4
+    spacing = float(node.get('letter-spacing', '0') or 0)
+    est = len(txt) * (size * (0.70 if heavy else 0.60) + spacing) + size * 0.4
     anchor = node.get('text-anchor', 'start')
     x, y = float(node.get('x', '0')), float(node.get('y', '0'))
     left = x - est / 2 if anchor == 'middle' else (x - est if anchor == 'end' else x)
@@ -416,6 +427,8 @@ def text_el(node, m, alpha=1.0):
         'face': face,
         'fillColor': color(node.get('fill')) or '#000000',
     })
+    if spacing:
+        ta.set('letterSpacing', fnum(spacing))
     if alpha < 1:
         ta.set('alpha', fnum(alpha))
     stroke = color(node.get('stroke'))
@@ -425,18 +438,37 @@ def text_el(node, m, alpha=1.0):
         ET.SubElement(filters, N('GlowFilter'), {'blurX': fnum(sw * 0.9), 'blurY': fnum(sw * 0.9), 'color': stroke, 'strength': '20', 'quality': '3'})
     return st
 
-INHERITED = ('fill', 'stroke', 'stroke-width', 'font-size', 'font-weight', 'text-anchor')
+INHERITED = ('fill', 'stroke', 'stroke-width', 'font-size', 'font-weight', 'text-anchor', 'letter-spacing')
 
 def svg_to_elements(svg, rough=False):
     """SVG markup → XFL shapes/text. Fill, stroke and font attributes inherit from groups as
     in SVG, and opacity multiplies down. rough=True bakes in the hand-drawn waver (props)."""
     root = ET.fromstring(svg.replace('&nbsp;', ' '))
     out = []
+    grads = {}
+    for g in root.iter():
+        if g.tag.split('}')[-1] == 'radialGradient' and g.get('id'):
+            stops = [(float(st.get('offset', '0').rstrip('%')) / (100 if '%' in st.get('offset', '') else 1),
+                      color(st.get('stop-color', '#000000')), float(st.get('stop-opacity', '1'))) for st in g if st.tag.split('}')[-1] == 'stop']
+            pct = lambda k, d: float(g.get(k, d).rstrip('%')) / 100
+            grads[g.get('id')] = (pct('cx', '50%'), pct('cy', '50%'), pct('r', '50%'), stops)
 
-    def add(segs, mm, st, closed=True):
+    def fill_of(st, bbox):
+        v = st.get('fill', '#000000')
+        ref = re.match(r'url\(#([^)]+)\)', v or '')
+        if not ref:
+            return color(v)
+        if ref.group(1) not in grads or bbox is None:
+            return None
+        # objectBoundingBox radial gradient → Animate gradient (its unit square is 1638.4 px wide)
+        gx, gy, gr, stops = grads[ref.group(1)]
+        x, y, w, h = bbox
+        return ('radial', [gr * w / 819.2, 0, 0, gr * h / 819.2, x + gx * w, y + gy * h], stops)
+
+    def add(segs, mm, st, closed=True, bbox=None):
         if rough:
             segs = roughen(segs)
-        fill = color(st.get('fill', '#000000')) if closed else None
+        fill = fill_of(st, bbox) if closed else None
         el = shape_el(segs, mm, fill, color(st.get('stroke')), float(st.get('stroke-width', 1) or 0), closed, st['opacity'])
         if el is not None:
             out.append(el)
@@ -448,15 +480,15 @@ def svg_to_elements(svg, rough=False):
             if node.get(k) is not None:
                 st[k] = node.get(k)
         st['opacity'] = st['opacity'] * float(node.get('opacity', 1))
-        if st['opacity'] <= 0.004:
+        if st['opacity'] <= 0.004 or tag in ('defs', 'filter', 'style', 'clipPath', 'mask'):
             return
         mm = mmul(m, parse_transform(node.get('transform'))) if tag != 'text' else m
         f = lambda k, d=0: float(node.get(k, d) or 0)
-        if tag == 'g':
+        if tag in ('g', 'svg'):
             for ch in node:
                 walk(ch, mm, st)
         elif tag == 'rect':
-            add(rrect(f('x'), f('y'), f('width'), f('height'), f('rx') or f('ry')), mm, st)
+            add(rrect(f('x'), f('y'), f('width'), f('height'), f('rx') or f('ry')), mm, st, bbox=(f('x'), f('y'), f('width'), f('height')))
         elif tag == 'circle':
             add(circle(f('cx'), f('cy'), f('r')), mm, st)
         elif tag == 'ellipse':
@@ -493,7 +525,7 @@ def graphic_symbol(lib, name, elements):
 
 # ───────────────────────── main ─────────────────────────
 
-def main(capture_path, bg_dir, cast_src, out_fla, work):
+def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None):
     cap = json.load(open(capture_path))
     total, W, H, fps = cap['duration'], cap['width'], cap['height'], cap['fps']
     frames = cap['frames']
@@ -550,32 +582,48 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
             csyms[c] = f'Captions/c{len(csyms) + 1:02d} ' + re.sub(r'[^A-Za-z0-9 ]', '', c)[:20].strip()
             graphic_symbol(lib, csyms[c], [pill_el, text_el(tnode, [1, 0, 0, 1, 0, 0])])
 
-    # ── background bitmaps (held while unchanged) ──
-    from PIL import Image, ImageChops
+    # ── background: vector symbols of each frame's set (or JPEG frames for old captures) ──
     lib.folder('Background')
-    bg_files = sorted(Path(bg_dir).glob('*.jpeg'))
-    bg_keys, ref = [], None
-    for f, p in enumerate(bg_files):
-        small = Image.open(p).convert('L').resize((270, 480))
-        changed = ref is None or ImageChops.difference(small, ref).point(lambda v: 255 if v > 28 else 0).histogram()[255] > 120
-        if changed:
-            bg_keys.append((f, p))
-            ref = small
     media_els = []
-    for i, (f, p) in enumerate(bg_keys):
-        name = f'Background/bg{i + 1:04d}.jpg'
-        dst = work / 'LIBRARY' / name
-        dst.parent.mkdir(parents=True, exist_ok=True)
-        im = Image.open(p).convert('RGB')
-        im.save(dst, 'JPEG', quality=74, optimize=True, progressive=False)
-        data = dst.read_bytes()
-        w, h = im.size
-        dat = f'M {i + 1} {int(time.time())}.dat'
-        (work / 'bin' / dat).write_bytes(data + (0).to_bytes(4, 'little') + (w * 20).to_bytes(4, 'little') + (0).to_bytes(4, 'little') + (h * 20).to_bytes(4, 'little'))
-        media_els.append(ET.Element(N('DOMBitmapItem'), {
-            'name': name, 'itemID': new_id(), 'sourceLastImported': str(int(time.time())), 'externalFileSize': str(len(data)),
-            'allowSmoothing': 'true', 'quality': '80', 'href': name, 'bitmapDataHRef': dat,
-            'frameRight': str(w * 20), 'frameBottom': str(h * 20), 'isJPEG': 'true'}))
+    bsyms, bstates = {}, []
+    if all(fr.get('background') for fr in frames):
+        if svg_dir:
+            Path(svg_dir).mkdir(parents=True, exist_ok=True)
+        for fr in frames:
+            bgr = fr['background']
+            if bgr['key'] not in bsyms:
+                n = len(bsyms) + 1
+                bsyms[bgr['key']] = f'Background/bg{n:02d} shot {fr["shot"] + 1:02d}'
+                graphic_symbol(lib, bsyms[bgr['key']], svg_to_elements(bgr['svg']))
+                if svg_dir:
+                    (Path(svg_dir) / f'bg{n:02d}_shot{fr["shot"] + 1:02d}.svg').write_text(bgr['svg'])
+            bstates.append(bgr['key'])
+        bg_count = len(bsyms)
+    else:
+        from PIL import Image, ImageChops
+        bg_files = sorted(Path(bg_dir).glob('*.jpeg'))
+        bg_keys, ref = [], None
+        for f, p in enumerate(bg_files):
+            small = Image.open(p).convert('L').resize((270, 480))
+            changed = ref is None or ImageChops.difference(small, ref).point(lambda v: 255 if v > 28 else 0).histogram()[255] > 120
+            if changed:
+                bg_keys.append((f, p))
+                ref = small
+        for i, (f, p) in enumerate(bg_keys):
+            name = f'Background/bg{i + 1:04d}.jpg'
+            dst = work / 'LIBRARY' / name
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            im = Image.open(p).convert('RGB')
+            im.save(dst, 'JPEG', quality=74, optimize=True, progressive=False)
+            data = dst.read_bytes()
+            w, h = im.size
+            dat = f'M {i + 1} {int(time.time())}.dat'
+            (work / 'bin' / dat).write_bytes(data + (0).to_bytes(4, 'little') + (w * 20).to_bytes(4, 'little') + (0).to_bytes(4, 'little') + (h * 20).to_bytes(4, 'little'))
+            media_els.append(ET.Element(N('DOMBitmapItem'), {
+                'name': name, 'itemID': new_id(), 'sourceLastImported': str(int(time.time())), 'externalFileSize': str(len(data)),
+                'allowSmoothing': 'true', 'quality': '80', 'href': name, 'bitmapDataHRef': dat,
+                'frameRight': str(w * 20), 'frameBottom': str(h * 20), 'isJPEG': 'true'}))
+        bg_count = len(bg_keys)
 
     # ── main timeline ──
     tl = ET.Element(N('DOMTimeline'), {'name': 'Scene 1'})
@@ -641,8 +689,11 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
     if any(prop_states(False)):
         add_layer('Props', keyed(prop_states(False), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
     # background (set only)
-    bkeys = [(f, [ET.Element(N('DOMBitmapInstance'), {'libraryItemName': f'Background/bg{i + 1:04d}.jpg'})]) for i, (f, _) in enumerate(bg_keys)]
-    add_layer('Background', bkeys, '#9933CC')
+    if bsyms:
+        add_layer('Background', keyed(bstates, lambda f, k: [inst(bsyms[k], [1, 0, 0, 1, 0, 0])]), '#9933CC')
+    else:
+        bkeys = [(f, [ET.Element(N('DOMBitmapInstance'), {'libraryItemName': f'Background/bg{i + 1:04d}.jpg'})]) for i, (f, _) in enumerate(bg_keys)]
+        add_layer('Background', bkeys, '#9933CC')
 
     # ── DOMDocument ──
     tmpl_doc = ET.parse(Path(cast_src) / 'Ebo' / 'DOMDocument.xml').getroot()
@@ -691,8 +742,8 @@ def main(capture_path, bg_dir, cast_src, out_fla, work):
                 z.write(p, rel, compress_type=zipfile.ZIP_STORED if p.suffix.lower() in ('.dat', '.jpg', '.jpeg') else zipfile.ZIP_DEFLATED)
 
     print(f'characters: {", ".join(v[0] for v in char_layers.values())}')
-    print(f'graphics: {len(gsyms)}  props: {len(psyms)}  captions: {len(csyms)}  background frames: {len(bg_keys)}')
+    print(f'graphics: {len(gsyms)}  props: {len(psyms)}  captions: {len(csyms)}  backgrounds: {bg_count}{" (vector)" if bsyms else " (JPEG)"}')
     print(f'wrote {out_fla} ({os.path.getsize(out_fla) / 1e6:.1f} MB)')
 
 if __name__ == '__main__':
-    main(*sys.argv[1:6])
+    main(*sys.argv[1:7])

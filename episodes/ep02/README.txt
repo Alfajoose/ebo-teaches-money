@@ -14,7 +14,9 @@ LAYERS (top to bottom)
   Props       - lamp, price tags, sneakers, radio, boxes on tables and the lawn: editable
                 vector symbols in the hand-drawn style (Library > Props)
   Background  - the sets only (studio, yard sale, thrift store, moving day, the folding
-                table) as JPEG frames (Library > Background)
+                table) as editable vector symbols, one per set and camera framing
+                (Library > Background). Each one is also in backgrounds/ as an .svg file
+                you can open in Illustrator or import.
 
 ADD THE VOICE (1 minute)
   1. File > Import > Import to Library... > choose Ebo_Ep02_voice.mp3
@@ -24,6 +26,7 @@ ADD THE VOICE (1 minute)
 
 NOTES
   - Text uses Arial Black / Arial Bold; outlines are Glow filters on the text.
+  - In the video the sets are slightly blurred for depth; in Animate they are sharp.
   - Props in the video have a light crayon grain; in Animate they keep the wavy hand-drawn
     outlines but use flat fills.
   - Built by script and checked by re-rendering it outside Animate; please open it

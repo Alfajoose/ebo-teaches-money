@@ -129,7 +129,17 @@ def shape_svg(sh):
             stroke_segs.setdefault(st, []).extend(segs)
     out = []
     for k, segs in fill_segs.items():
-        if k in fills:
+        fs = sh.find(f'{NS}fills/{NS}FillStyle[@index="{k}"]')
+        rg = fs.find(f'{NS}RadialGradient') if fs is not None else None
+        if rg is not None:
+            # Animate's gradient square is 1638.4 px wide, centred on the gradient matrix
+            gid = f'rg{id(rg)}'
+            stops = ''.join(f'<stop offset="{e.get("ratio", "0")}" stop-color="{e.get("color", "#000000")}" stop-opacity="{e.get("alpha", "1")}"/>'
+                            for e in rg.findall(f'{NS}GradientEntry'))
+            out.append(f'<defs><radialGradient id="{gid}" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="819.2" '
+                       f'gradientTransform="{mstr(matrix_of(rg))}">{stops}</radialGradient></defs>'
+                       f'<path d="{loops_to_d(segs)}" fill="url(#{gid})" fill-rule="evenodd"/>')
+        elif k in fills:
             col, al = fills[k]
             out.append(f'<path d="{loops_to_d(segs)}" fill="{col}" fill-opacity="{al}" fill-rule="evenodd"/>')
     for k, segs in stroke_segs.items():
@@ -268,7 +278,7 @@ class Doc:
                     stroke = f' stroke="{glow.get("color")}" stroke-width="{float(glow.get("blurX")) * 1.1}" paint-order="stroke"' if glow is not None else ''
                     weight = 900 if 'Black' in ta.get('face', '') else 700
                     ch = ch.replace('&', '&amp;').replace('<', '&lt;')
-                    out.append(f'<text transform="{mstr(m)}" x="{x}" y="{size * 0.98}" font-size="{size}" font-family="Arial, sans-serif" font-weight="{weight}" fill="{ta.get("fillColor", "#000")}" text-anchor="{anchor}"{stroke}>{ch}</text>')
+                    out.append(f'<text transform="{mstr(m)}" x="{x}" y="{size * 0.98}" font-size="{size}" font-family="Arial, sans-serif" font-weight="{weight}" fill="{ta.get("fillColor", "#000")}" fill-opacity="{ta.get("alpha", "1")}" letter-spacing="{ta.get("letterSpacing", "0")}" text-anchor="{anchor}"{stroke}>{ch}</text>')
             elif tag == 'DOMGroup':
                 for m in el.findall(f'{NS}members/*'):
                     if m.tag == NS + 'DOMShape':
