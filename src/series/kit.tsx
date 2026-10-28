@@ -36,6 +36,27 @@ export const makeAt = (words: Word[]) => (phrase: string, n = 1): number => {
   throw new Error(`phrase not in voiceover: "${phrase}" (#${n})`);
 };
 
+/**
+ * An episode edited down to `keep` segments (seconds of the original voiceover), e.g. with
+ * the spoken lesson numbers cut out (scripts/make-edit.mjs). Output frame → source frame,
+ * with the same rounding as the cut audio: segment starts round up, ends to nearest.
+ */
+export const editTimeline = (keep: [number, number][]) => {
+  const segs = keep.map(([a, b]) => [Math.ceil(a * VFPS - 1e-6), Math.round(b * VFPS)] as const);
+  const duration = segs.reduce((n, [a, b]) => n + (b - a), 0);
+  const toSource = (f: number) => {
+    let rest = f;
+    for (const [a, b] of segs) {
+      if (rest < b - a) return a + rest;
+      rest -= b - a;
+    }
+    return segs[segs.length - 1][1] - 1;
+  };
+  /** Words that are still heard (for captions). */
+  const heard = (words: Word[]) => words.filter((w) => segs.some(([a, b]) => w.s * VFPS >= a && w.e * VFPS <= b + 1));
+  return {duration, toSource, heard};
+};
+
 // ───────────────────────── stage + camera (cuts only) ─────────────────────────
 
 export type Framing = {zoom: number; cx: number; cy: number};
@@ -229,20 +250,13 @@ export const slam = (tSec: number, at: number, dist = -260, twist = -14) => {
 
 // ───────────────────────── lesson card ─────────────────────────
 
-export const LessonCard: React.FC<{tSec: number; at: number; n: number; title: string; y?: number}> = ({tSec, at, n, title, y = 400}) => {
+/** A lesson's title slamming in (no lesson numbers — Ebo doesn't call them out). */
+export const LessonCard: React.FC<{tSec: number; at: number; title: string; y?: number}> = ({tSec, at, title, y = 400}) => {
   if (tSec < at) return null;
   return (
-    <g>
-      <Slam t={tSec} at={at}>
-        <rect x={VW / 2 - 190} y={y - 70} width={380} height={96} rx={48} fill={C.yellow} stroke={C.ink} strokeWidth={10} />
-        <text x={VW / 2} y={y - 4} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={58} fill={C.ink} letterSpacing={4}>
-          {`LESSON ${n}`}
-        </text>
-      </Slam>
-      <Slam t={tSec} at={at + 0.15} dist={-300} twist={10}>
-        <BigText text={title} x={VW / 2} y={y + 140} size={title.length > 12 ? 92 : 120} rotate={-3} />
-      </Slam>
-    </g>
+    <Slam t={tSec} at={at} dist={-300} twist={10}>
+      <BigText text={title} x={VW / 2} y={y + 60} size={title.length > 12 ? 100 : 130} rotate={-3} />
+    </Slam>
   );
 };
 

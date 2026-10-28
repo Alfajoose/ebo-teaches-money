@@ -1,16 +1,17 @@
 // Records, frame by frame, what every character, prop, graphic and caption does in an
-// episode, for building the Animate .fla. Bundled with esbuild and run in Node:
+// episode (as edited: lesson numbers cut out), for building the Animate .fla.
+// Bundled with esbuild and run in Node:
 //   node scripts/export-fla/run-capture.mjs out/fla-export/capture.json [ep01|ep02]
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import fs from 'fs';
-import {Ep01Frame, EP01_DURATION, EP01_SHOT_TIMES, shotIndexAt as shot01} from '../../src/series/ep01';
-import {Ep02Frame, EP02_DURATION, EP02_SHOT_TIMES, shotIndexAt as shot02} from '../../src/series/ep02';
+import {Ep01Frame, EP01_DURATION, EP01_SHOT_TIMES, ep01ToSource, shotIndexAt as shot01} from '../../src/series/ep01';
+import {Ep02Frame, EP02_DURATION, EP02_SHOT_TIMES, ep02ToSource, shotIndexAt as shot02} from '../../src/series/ep02';
 import {Capture, CaptureContext} from '../../src/series/exportCtx';
 
 const EPISODES = {
-  ep01: {name: 'Ep01', Frame: Ep01Frame, duration: EP01_DURATION, shotTimes: EP01_SHOT_TIMES, shotIndexAt: shot01},
-  ep02: {name: 'Ep02', Frame: Ep02Frame, duration: EP02_DURATION, shotTimes: EP02_SHOT_TIMES, shotIndexAt: shot02},
+  ep01: {name: 'Ep01', Frame: Ep01Frame, duration: EP01_DURATION, shotTimes: EP01_SHOT_TIMES, shotIndexAt: shot01, toSource: ep01ToSource},
+  ep02: {name: 'Ep02', Frame: Ep02Frame, duration: EP02_DURATION, shotTimes: EP02_SHOT_TIMES, shotIndexAt: shot02, toSource: ep02ToSource},
 };
 
 const out = process.argv[2] || 'out/fla-export/capture.json';
@@ -21,10 +22,10 @@ for (let f = 0; f < ep.duration; f++) {
   const cap: Capture = {chars: [], graphics: [], props: [], caption: null};
   renderToStaticMarkup(
     <CaptureContext.Provider value={cap}>
-      <ep.Frame f={f} />
+      <ep.Frame f={ep.toSource(f)} />
     </CaptureContext.Provider>,
   );
-  frames.push({f, shot: ep.shotIndexAt(f), ...cap});
+  frames.push({f, shot: ep.shotIndexAt(ep.toSource(f)), ...cap});
 }
 fs.mkdirSync(out.replace(/\/[^/]+$/, ''), {recursive: true});
 fs.writeFileSync(out, JSON.stringify({episode: ep.name, fps: 30, width: 1080, height: 1920, duration: ep.duration, shotTimes: ep.shotTimes, frames}));

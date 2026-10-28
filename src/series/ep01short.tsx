@@ -3,6 +3,7 @@ import {Html5Audio, staticFile, useCurrentFrame} from 'remotion';
 import {Ep01Frame} from './ep01';
 import {LayerMode, LayerModeContext} from './exportCtx';
 import {VFPS} from './kit';
+import shortEditJson from './data/ep01short-edit.json';
 
 /**
  * Episode 1 — short cut (~37 s). Re-edits the full episode by mapping each output
@@ -22,8 +23,9 @@ export const EP01_SHORT_EDL: [number, number][] = [
   [54.4, 56.63], // "Subscribe for more." + end card
 ];
 
-// starts round up so a segment never shows the last frame of the previous shot
-const SEG_FRAMES = EP01_SHORT_EDL.map(([a, b]) => [Math.ceil(a * VFPS - 1e-6), Math.round(b * VFPS)] as const);
+// the EDL minus Ebo's spoken lesson numbers (scripts/make-edit.mjs); starts round up so a
+// segment never shows the last frame of the previous shot
+const SEG_FRAMES = (shortEditJson.keep as [number, number][]).map(([a, b]) => [Math.ceil(a * VFPS - 1e-6), Math.round(b * VFPS)] as const);
 export const EP01_SHORT_DURATION = SEG_FRAMES.reduce((n, [a, b]) => n + (b - a), 0);
 
 export const shortToSource = (f: number) => {

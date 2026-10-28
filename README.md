@@ -8,9 +8,9 @@ Built with [Remotion](https://remotion.dev). The characters come from the origin
 
 | # | Topic | Video | Animate file |
 |---|-------|-------|--------------|
-| 01 | How vending machines make money (56 s) | [`ebo-teaches-money-ep01.mp4`](episodes/ep01/ebo-teaches-money-ep01.mp4) | [`Ebo_Teaches_Money_Ep01.fla`](episodes/ep01/Ebo_Teaches_Money_Ep01.fla) |
-| 02 | Flipping: buy low, clean it up, list it well (51 s) | [`ebo-teaches-money-ep02.mp4`](episodes/ep02/ebo-teaches-money-ep02.mp4) | [`Ebo_Teaches_Money_Ep02.fla`](episodes/ep02/Ebo_Teaches_Money_Ep02.fla) |
-| 01 short | Same episode, tight 36.5 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
+| 01 | How vending machines make money (52 s) | [`ebo-teaches-money-ep01.mp4`](episodes/ep01/ebo-teaches-money-ep01.mp4) | [`Ebo_Teaches_Money_Ep01.fla`](episodes/ep01/Ebo_Teaches_Money_Ep01.fla) |
+| 02 | Flipping: buy low, clean it up, list it well (48 s) | [`ebo-teaches-money-ep02.mp4`](episodes/ep02/ebo-teaches-money-ep02.mp4) | [`Ebo_Teaches_Money_Ep02.fla`](episodes/ep02/Ebo_Teaches_Money_Ep02.fla) |
+| 01 short | Same episode, tight 34.3 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
 
 To add the voice to an Animate file, follow the episode's `README.txt` (it takes three steps).
 
@@ -35,6 +35,7 @@ The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`Vendin
 - Talk-to-camera with hard cuts between wide, medium and close shots, and a black caption pill at the top.
 - Only characters and props animate. No decorative effects (webs, tumbleweeds, money rain, smoke, shakes, animated backgrounds).
 - Backgrounds and props are kept separate (see below).
+- Ebo doesn't call out lesson numbers ("Lesson one: …"). He goes straight to the point, and the on-screen card shows only the title. `scripts/make-edit.mjs` cuts the callouts out of the voiceover, and each episode plays through the kept segments.
 
 ## Backgrounds vs props
 
@@ -53,7 +54,7 @@ The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`Vendin
 npm install
 npx remotion studio                                   # preview
 npx remotion render EboTeachesMoney-Ep01 out/ep01.mp4 # 1080x1920, 30 fps
-node scripts/cut-audio.mjs                            # short cut: rebuild voice-short.mp3 from EP01_SHORT_EDL
+node scripts/make-edit.mjs                            # cut the spoken lesson numbers + the short: voice-edit.mp3, voice-short.mp3
 npx remotion render EboTeachesMoney-Ep01-Short out/ep01-short.mp4
 ```
 

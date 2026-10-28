@@ -28,12 +28,14 @@ import {
   TopCaption,
   BigText,
   LessonCard,
+  editTimeline,
 } from './kit';
 import {C, FONT, lin} from '../theme';
 import {Slam, Still, LayerMode, LayerModeContext, Place, mmul, T, S} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
 import wordsJson from './data/ep01-words.json';
 import envJson from './data/ep01-env.json';
+import editJson from './data/ep01-edit.json';
 
 /**
  * EBO TEACHES MONEY — Episode 1: How Vending Machines Make Money.
@@ -44,8 +46,14 @@ import envJson from './data/ep01-env.json';
 const WORDS = wordsJson as Word[];
 const ENV = (envJson as {env: number[]}).env;
 const at = makeAt(WORDS);
-const CHUNKS = chunkWords(WORDS);
-export const EP01_DURATION = Math.ceil((WORDS[WORDS.length - 1].e + 1.1) * VFPS);
+// Ebo's spoken lesson numbers are cut out (scripts/make-edit.mjs); the episode plays through EDIT
+const EDIT = editTimeline(editJson.keep as [number, number][]);
+const CHUNKS = chunkWords(EDIT.heard(WORDS));
+/** Where the voice picks up after the n-th cut lesson number — each lesson shot starts here. */
+const lessonAt = (n: number) => (editJson.cuts as [number, number][])[n][1];
+export const EP01_DURATION = EDIT.duration;
+/** Output frame → frame of the original voiceover timeline (what Ep01Frame takes). */
+export const ep01ToSource = EDIT.toSource;
 
 const EBO_X = 760;
 const MX = 1060; // vending machine x in most sets
@@ -136,9 +144,9 @@ const SHOTS: Shot[] = [
   },
   // ── LESSON 1: MARGIN ──
   {
-    at: at('Lesson one'),
+    at: lessonAt(0),
     render: (t, f) => (
-      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={at('Lesson one')} n={1} title="MARGIN" y={1560} />}>
+      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={lessonAt(0)} title="MARGIN" y={1560} />}>
         <Ebo f={f} pose={snapPose(t, [[0, withFace(G.raise, 'open')], [at('margin.'), withFace(G.open, 'wide')]])} />
       </VStage>
     ),
@@ -220,9 +228,9 @@ const SHOTS: Shot[] = [
   },
   // ── LESSON 2: LOCATION ──
   {
-    at: at('Lesson two'),
+    at: lessonAt(1),
     render: (t, f) => (
-      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={at('Lesson two')} n={2} title="LOCATION" y={1560} />}>
+      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={lessonAt(1)} title="LOCATION" y={1560} />}>
         <Ebo f={f} pose={snapPose(t, [[0, withFace(G.raise, 'open')], [at('everything.'), withFace(G.open, 'wide')]])} />
       </VStage>
     ),
@@ -312,9 +320,9 @@ const SHOTS: Shot[] = [
   ),
   // ── LESSON 3: REVENUE ≠ PROFIT ──
   {
-    at: at('Lesson three'),
+    at: lessonAt(2),
     render: (t, f) => (
-      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={at('Lesson three')} n={3} title="REVENUE ≠ PROFIT" y={1560} />}>
+      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={lessonAt(2)} title="REVENUE ≠ PROFIT" y={1560} />}>
         <Ebo f={f} pose={snapPose(t, [[0, withFace(G.raise, 'open')], [at("isn't"), withFace(G.shrug, 'half')]])} />
       </VStage>
     ),
@@ -388,9 +396,9 @@ const SHOTS: Shot[] = [
   },
   // ── LESSON 4: KEEP IT RUNNING ──
   {
-    at: at('Lesson four'),
+    at: lessonAt(3),
     render: (t, f) => (
-      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={at('Lesson four')} n={4} title="KEEP IT RUNNING" y={1560} />}>
+      <VStage framing={MEDIUM(EBO_X)} blurBg={studio(t)} overlay={<LessonCard tSec={t} at={lessonAt(3)} title="KEEP IT RUNNING" y={1560} />}>
         <Ebo f={f} pose={snapPose(t, [[0, withFace(G.raise, 'open')], [at('running.'), withFace(G.point, 'open')]])} />
       </VStage>
     ),
@@ -659,8 +667,8 @@ export const EboEp01: React.FC<{layer?: LayerMode; handDrawn?: boolean}> = ({lay
   const f = useCurrentFrame();
   return (
     <LayerModeContext.Provider value={layer}>
-      <Ep01Frame f={f} handDrawn={handDrawn} />
-      {layer === 'full' && <Html5Audio src={staticFile('ebo-ep01/voice.mp3')} />}
+      <Ep01Frame f={EDIT.toSource(f)} handDrawn={handDrawn} />
+      {layer === 'full' && <Html5Audio src={staticFile('ebo-ep01/voice-edit.mp3')} />}
     </LayerModeContext.Provider>
   );
 };

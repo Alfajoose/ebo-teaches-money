@@ -1,6 +1,6 @@
 EBO TEACHES MONEY — Ep 01 (Adobe Animate file)
 
-Stage: 1080 x 1920, 30 fps, 1699 frames (56.6 s)
+Stage: 1080 x 1920, 30 fps, 1560 frames (52.0 s)
 
 LAYERS (top to bottom)
   Captions    - editable text in caption pills (Library > Captions)

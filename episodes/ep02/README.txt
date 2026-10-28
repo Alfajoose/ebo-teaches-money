@@ -1,6 +1,6 @@
 EBO TEACHES MONEY — Ep 02: Flipping (Adobe Animate file)
 
-Stage: 1080 x 1920, 30 fps, 1531 frames (51 s)
+Stage: 1080 x 1920, 30 fps, 1431 frames (47.7 s)
 
 LAYERS (top to bottom)
   Captions    - editable text in caption pills (Library > Captions)
