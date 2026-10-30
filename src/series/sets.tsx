@@ -188,3 +188,97 @@ export const MovingDay: React.FC = () => (
     </g>
   </g>
 );
+
+// ───────────────────────── Episode 3 (How to Stay Poor) ─────────────────────────
+
+const Couch: React.FC<{x: number; color?: string}> = ({x, color = '#C96F5A'}) => (
+  <g transform={`translate(${x} ${FLOOR_Y})`}>
+    <rect x={-330} y={-300} width={660} height={190} rx={40} fill={color} stroke={C.ink} strokeWidth={8} />
+    <rect x={-360} y={-170} width={720} height={130} rx={30} fill={color} stroke={C.ink} strokeWidth={8} />
+    <rect x={-400} y={-230} width={90} height={200} rx={36} fill={color} stroke={C.ink} strokeWidth={8} />
+    <rect x={310} y={-230} width={90} height={200} rx={36} fill={color} stroke={C.ink} strokeWidth={8} />
+    <line x1={0} x2={0} y1={-170} y2={-40} stroke={C.ink} strokeWidth={5} opacity={0.5} />
+    {[-300, 300].map((dx) => (
+      <rect key={dx} x={dx - 14} y={-40} width={28} height={40} fill="#6B4A36" stroke={C.ink} strokeWidth={6} />
+    ))}
+  </g>
+);
+
+/** The TV on its stand, facing the couch (static screen glow is part of the set). */
+const TVSet: React.FC<{x: number; on?: boolean}> = ({x, on = true}) => (
+  <g transform={`translate(${x} ${FLOOR_Y})`}>
+    <rect x={-170} y={-150} width={340} height={150} fill="#8B6A48" stroke={C.ink} strokeWidth={8} />
+    <line x1={0} x2={0} y1={-150} y2={0} stroke={C.ink} strokeWidth={5} />
+    <rect x={-260} y={-470} width={520} height={300} rx={18} fill="#22222A" stroke={C.ink} strokeWidth={10} />
+    <rect x={-236} y={-448} width={472} height={256} rx={8} fill={on ? '#7FB8E0' : '#3A3F4E'} />
+    {on && (
+      <g>
+        <circle cx={-90} cy={-330} r={50} fill="#F3C53F" />
+        <path d="M -236 -230 Q -100 -300 40 -240 Q 160 -190 236 -250 L 236 -192 L -236 -192 Z" fill="#56B870" />
+      </g>
+    )}
+    <rect x={-40} y={-170} width={80} height={20} fill="#22222A" stroke={C.ink} strokeWidth={6} />
+  </g>
+);
+
+/** Living room: couch, TV, rug, window. `wall` changes the paint for different homes. */
+export const LivingRoom: React.FC<{wall?: string; tv?: boolean}> = ({wall = '#E9D3B4', tv = true}) => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill={wall} />
+    <rect x={-1000} y={700} width={4000} height={26} fill="#000" opacity={0.08} />
+    <g>
+      <rect x={1180} y={180} width={360} height={300} rx={8} fill="#A9D6EE" stroke={C.ink} strokeWidth={8} />
+      <line x1={1360} x2={1360} y1={180} y2={480} stroke={C.ink} strokeWidth={6} />
+      <line x1={1180} x2={1540} y1={330} y2={330} stroke={C.ink} strokeWidth={6} />
+    </g>
+    <g transform="translate(300 300) rotate(-3)">
+      <rect x={-80} y={-60} width={160} height={120} fill="#F3E3B6" stroke={C.ink} strokeWidth={7} />
+      <path d="M -60 40 L -20 -10 L 10 20 L 30 0 L 60 40 Z" fill="#7DBE6A" stroke={C.ink} strokeWidth={4} />
+    </g>
+    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill="#B98E62" />
+    <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke={C.ink} strokeWidth={8} />
+    <ellipse cx={760} cy={FLOOR_Y + 70} rx={520} ry={60} fill="#D9805A" stroke={C.ink} strokeWidth={6} />
+    {tv && <TVSet x={60} />}
+    <Couch x={760} />
+    <Plant x={1700} y={FLOOR_Y} t={0} scale={1.2} />
+  </g>
+);
+
+/** Obuor's sneaker room: shelves of sneakers (set dressing) and a release calendar. */
+export const SneakerRoom: React.FC = () => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill="#2F3A56" />
+    {[0, 1, 2, 3].map((row) => (
+      <g key={row}>
+        <rect x={80} y={180 + row * 170} width={1000} height={20} fill="#B98E62" stroke={C.ink} strokeWidth={6} />
+        {Array.from({length: 6}).map((_, i) => (
+          <g key={i} transform={`translate(${170 + i * 160} ${180 + row * 170})`}>
+            <path d="M -60 0 L -60 -42 Q -50 -62 -24 -58 L 10 -38 Q 46 -36 64 -20 L 66 0 Z" fill={[C.red, C.blue, C.yellow, '#56B870', C.purple, C.white][(i + row * 2) % 6]} stroke={C.ink} strokeWidth={5} strokeLinejoin="round" />
+            <rect x={-64} y={-8} width={134} height={10} rx={4} fill={C.white} stroke={C.ink} strokeWidth={4} />
+          </g>
+        ))}
+      </g>
+    ))}
+    <g transform="translate(1500 330)">
+      <rect x={-160} y={-170} width={320} height={340} rx={10} fill={C.white} stroke={C.ink} strokeWidth={8} />
+      <rect x={-160} y={-170} width={320} height={70} rx={10} fill={C.red} stroke={C.ink} strokeWidth={8} />
+      <text x={0} y={-120} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={C.white}>
+        DROPS
+      </text>
+      {Array.from({length: 12}).map((_, i) => (
+        <rect key={i} x={-136 + (i % 4) * 70} y={-80 + Math.floor(i / 4) * 80} width={50} height={56} fill={[2, 5, 9].includes(i) ? C.yellow : '#EFE6D6'} stroke={C.ink} strokeWidth={4} />
+      ))}
+    </g>
+    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill="#3A3F4E" />
+    <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke={C.ink} strokeWidth={8} />
+  </g>
+);
+
+/** A plain table for props to sit on (set furniture). */
+export const Table: React.FC<{x: number; w?: number; color?: string}> = ({x, w = 420, color = '#8B6A48'}) => (
+  <g transform={`translate(${x} ${FLOOR_Y})`}>
+    <rect x={-w / 2} y={-250} width={w} height={34} rx={8} fill={color} stroke={C.ink} strokeWidth={8} />
+    <rect x={-w / 2 + 30} y={-220} width={26} height={220} fill={color} stroke={C.ink} strokeWidth={7} />
+    <rect x={w / 2 - 56} y={-220} width={26} height={220} fill={color} stroke={C.ink} strokeWidth={7} />
+  </g>
+);

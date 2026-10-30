@@ -43,6 +43,9 @@ export type LayerMode = 'full' | 'set' | 'bg';
 
 export const CaptureContext = createContext<Capture | null>(null);
 export const CameraContext = createContext<M6>(IDENT);
+/** Frame size of the episode: 1080×1920 for the vertical Shorts, 1920×1080 for long-form. */
+export const StageSizeContext = createContext<{w: number; h: number}>({w: 1080, h: 1920});
+export const useStageSize = () => useContext(StageSizeContext);
 export const LayerModeContext = createContext<LayerMode>('full');
 
 export const useCapture = () => useContext(CaptureContext);
@@ -80,8 +83,6 @@ export const Place: React.FC<{m: M6; children: React.ReactNode}> = ({m, children
   );
 };
 
-const VW_HALF = 540;
-
 /** Graphic that slams in from above with a twist (translation + rotation only). */
 export const Slam: React.FC<{t: number; at: number; dist?: number; twist?: number; children: React.ReactNode}> = ({
   t,
@@ -92,9 +93,10 @@ export const Slam: React.FC<{t: number; at: number; dist?: number; twist?: numbe
 }) => {
   const cap = useCapture();
   const mode = useLayerMode();
+  const {w} = useStageSize();
   if (mode !== 'full' || t < at) return null;
   const u = interpolate((t - at) * 30, [0, 5], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.back(2.2))});
-  const matrix = mmul(T(0, (1 - u) * dist), R((1 - u) * twist, VW_HALF, 0));
+  const matrix = mmul(T(0, (1 - u) * dist), R((1 - u) * twist, w / 2, 0));
   if (cap) {
     const svg = renderToStaticMarkup(<g>{children}</g>);
     cap.graphics.push({key: `${at.toFixed(3)}:${hash(svg)}`, matrix, alpha: 1, svg});

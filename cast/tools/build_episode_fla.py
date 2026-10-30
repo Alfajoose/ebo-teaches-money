@@ -575,9 +575,11 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None):
         if c and c not in csyms:
             size = 54
             est = len(c) * size * 0.58 + 20
-            pill = rrect(540 - est / 2 - 26, 150, est + 52, 82, 18)
+            # top of a vertical Short, bottom of a 16:9 long-form video (as in src/series/kit.tsx)
+            top = H - 60 - 82 if W > H else 150
+            pill = rrect(W / 2 - est / 2 - 26, top, est + 52, 82, 18)
             pill_el = shape_el(pill, [1, 0, 0, 1, 0, 0], '#0C0C0E', None, 0, alpha=0.92)
-            tnode = ET.Element('text', {'x': '540', 'y': '209', 'text-anchor': 'middle', 'font-size': str(size), 'font-weight': '800', 'fill': '#FFFFFF'})
+            tnode = ET.Element('text', {'x': str(W / 2), 'y': str(top + 59), 'text-anchor': 'middle', 'font-size': str(size), 'font-weight': '800', 'fill': '#FFFFFF'})
             tnode.text = c
             csyms[c] = f'Captions/c{len(csyms) + 1:02d} ' + re.sub(r'[^A-Za-z0-9 ]', '', c)[:20].strip()
             graphic_symbol(lib, csyms[c], [pill_el, text_el(tnode, [1, 0, 0, 1, 0, 0])])

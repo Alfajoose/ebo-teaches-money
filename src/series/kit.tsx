@@ -3,7 +3,7 @@ import {AbsoluteFill, Easing, interpolate, random} from 'remotion';
 import {C, FONT} from '../theme';
 import {mixPose, Pose} from '../components/Character';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {CameraContext, LayerModeContext, hash, mmul, T, S, Slam, useCapture, useLayerMode} from './exportCtx';
+import {CameraContext, LayerModeContext, hash, mmul, T, S, Slam, useCapture, useLayerMode, useStageSize} from './exportCtx';
 import {HandDrawnContext, HandDrawnDefs} from '../handDrawn';
 import {NoScaleContext, useNoScale} from '../noScale';
 
@@ -63,6 +63,10 @@ export type Framing = {zoom: number; cx: number; cy: number};
 export const WIDE = (cx: number, cy = 660): Framing => ({zoom: 1.6, cx, cy});
 export const MEDIUM = (cx: number, cy = 640): Framing => ({zoom: 2.6, cx, cy});
 export const CLOSE = (cx: number, cy = 600): Framing => ({zoom: 3.7, cx, cy});
+// 16:9 long-form framings (1920×1080 frame): full body, waist-up, head-and-shoulders
+export const HWIDE = (cx: number, cy = 600): Framing => ({zoom: 1.0, cx, cy});
+export const HMEDIUM = (cx: number, cy = 610): Framing => ({zoom: 1.55, cx, cy});
+export const HCLOSE = (cx: number, cy = 520): Framing => ({zoom: 2.4, cx, cy});
 
 export const VStage: React.FC<{
   framing: Framing;
@@ -75,6 +79,7 @@ export const VStage: React.FC<{
   overlay?: React.ReactNode;
 }> = ({framing, shakeX = 0, shakeY = 0, bg = '#3B3550', blurBg, screenBg, children, overlay}) => {
   const {zoom, cx, cy} = framing;
+  const {w: VW, h: VH} = useStageSize();
   const cam = `translate(${VW / 2 + shakeX} ${VH / 2 + shakeY}) scale(${zoom}) translate(${-cx} ${-cy})`;
   const camM = mmul(T(VW / 2 + shakeX, VH / 2 + shakeY), mmul(S(zoom, zoom), T(-cx, -cy)));
   const mode = useLayerMode();
@@ -184,14 +189,17 @@ export const chunkWords = (words: Word[], maxWords = 3, maxChars = 16): Chunk[] 
   return out;
 };
 
+/** Caption pill: at the top of vertical Shorts, at the bottom of 16:9 long-form. */
 export const TopCaption: React.FC<{chunks: Chunk[]; tSec: number}> = ({chunks, tSec}) => {
   const cap = useCapture();
   const mode = useLayerMode();
+  const {w, h} = useStageSize();
+  const wide = w > h;
   const c = chunks.find((k, i) => tSec >= k.s - 0.03 && tSec < (chunks[i + 1]?.s ?? k.e + 0.6) - 0.03);
   if (!c || tSec > c.e + 0.6 || mode !== 'full') return null;
   if (cap) cap.caption = c.text.replace(/\.\.\.$/, '…');
   return (
-    <AbsoluteFill style={{alignItems: 'center', paddingTop: 150}}>
+    <AbsoluteFill style={wide ? {alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 60} : {alignItems: 'center', paddingTop: 150}}>
       <div
         style={{
           fontFamily: FONT,
@@ -252,6 +260,7 @@ export const slam = (tSec: number, at: number, dist = -260, twist = -14) => {
 
 /** A lesson's title slamming in (no lesson numbers — Ebo doesn't call them out). */
 export const LessonCard: React.FC<{tSec: number; at: number; title: string; y?: number}> = ({tSec, at, title, y = 400}) => {
+  const {w: VW} = useStageSize();
   if (tSec < at) return null;
   return (
     <Slam t={tSec} at={at} dist={-300} twist={10}>

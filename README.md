@@ -1,6 +1,6 @@
 # Ebo Teaches Money
 
-Vertical animated shorts where **Ebo** teaches ways to make money. The supporting cast (Mica, Obuor, Ama, Christy) act out his examples.
+Animated videos where **Ebo** teaches ways to make money: vertical Shorts, plus 16:9 long-form episodes. The supporting cast (Mica, Obuor, Ama, Christy) act out his examples.
 
 Built with [Remotion](https://remotion.dev). The characters come from the original Adobe Animate (`.fla`) rigs, the voice is generated with ElevenLabs, and each episode can be exported back to an editable `.fla`.
 
@@ -10,6 +10,7 @@ Built with [Remotion](https://remotion.dev). The characters come from the origin
 |---|-------|-------|--------------|
 | 01 | How vending machines make money (52 s) | [`ebo-teaches-money-ep01.mp4`](episodes/ep01/ebo-teaches-money-ep01.mp4) | [`Ebo_Teaches_Money_Ep01.fla`](episodes/ep01/Ebo_Teaches_Money_Ep01.fla) |
 | 02 | Flipping: buy low, clean it up, list it well (48 s) | [`ebo-teaches-money-ep02.mp4`](episodes/ep02/ebo-teaches-money-ep02.mp4) | [`Ebo_Teaches_Money_Ep02.fla`](episodes/ep02/Ebo_Teaches_Money_Ep02.fla) |
+| 03 | How to Stay Poor: six habits that keep you broke, and how to flip each one (2:49, 16:9 long-form) | [`ebo-teaches-money-ep03.mp4`](episodes/ep03/ebo-teaches-money-ep03.mp4) | [`Ebo_Teaches_Money_Ep03.fla`](episodes/ep03/Ebo_Teaches_Money_Ep03.fla) |
 | 01 short | Same episode, tight 34.3 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
 
 To add the voice to an Animate file, follow the episode's `README.txt` (it takes three steps).
@@ -32,7 +33,7 @@ The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`Vendin
 
 - Snappy, pose-to-pose motion: 2–3 frame snaps with overshoot, then dead-still holds.
 - **Translation and rotation only. Nothing animates scale.** Framing changes only on hard cuts.
-- Talk-to-camera with hard cuts between wide, medium and close shots, and a black caption pill at the top.
+- Talk-to-camera with hard cuts between wide, medium and close shots. Shorts are 1080×1920 with the caption pill at the top. Long-form episodes are 1920×1080 with the caption at the bottom, use the `HWIDE`/`HMEDIUM`/`HCLOSE` framings, and open each section on a chapter card.
 - Only characters and props animate. No decorative effects (webs, tumbleweeds, money rain, smoke, shakes, animated backgrounds).
 - Backgrounds and props are kept separate (see below).
 - Ebo doesn't call out lesson numbers ("Lesson one: …"). He goes straight to the point, and the on-screen card shows only the title. `scripts/make-edit.mjs` cuts the callouts out of the voiceover, and each episode plays through the kept segments.
