@@ -11,6 +11,7 @@ Built with [Remotion](https://remotion.dev). The characters come from the origin
 | 01 | How vending machines make money (52 s) | [`ebo-teaches-money-ep01.mp4`](episodes/ep01/ebo-teaches-money-ep01.mp4) | [`Ebo_Teaches_Money_Ep01.fla`](episodes/ep01/Ebo_Teaches_Money_Ep01.fla) |
 | 02 | Flipping: buy low, clean it up, list it well (48 s) | [`ebo-teaches-money-ep02.mp4`](episodes/ep02/ebo-teaches-money-ep02.mp4) | [`Ebo_Teaches_Money_Ep02.fla`](episodes/ep02/Ebo_Teaches_Money_Ep02.fla) |
 | 03 | How to Stay Poor: six habits that keep you broke, and how to flip each one (2:49, 16:9 long-form) | [`ebo-teaches-money-ep03.mp4`](episodes/ep03/ebo-teaches-money-ep03.mp4) | [`Ebo_Teaches_Money_Ep03.fla`](episodes/ep03/Ebo_Teaches_Money_Ep03.fla) |
+| 04 | The Ultimate Guide to Staying Broke: Ebo alone, six bad habits, one twist ending (4:34, 16:9 long-form) | [`ebo-teaches-money-ep04.mp4`](episodes/ep04/ebo-teaches-money-ep04.mp4) | [`Ebo_Teaches_Money_Ep04.fla`](episodes/ep04/Ebo_Teaches_Money_Ep04.fla) |
 | 01 short | Same episode, tight 34.3 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
 
 To add the voice to an Animate file, follow the episode's `README.txt` (it takes three steps).
