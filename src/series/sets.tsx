@@ -282,3 +282,65 @@ export const Table: React.FC<{x: number; w?: number; color?: string}> = ({x, w =
     <rect x={w / 2 - 56} y={-220} width={26} height={220} fill={color} stroke={C.ink} strokeWidth={7} />
   </g>
 );
+
+// ───────────────────────── Episode 4 (Staying Broke) ─────────────────────────
+
+const PlainFloor: React.FC<{color: string}> = ({color}) => (
+  <g>
+    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill={color} />
+    <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke={C.ink} strokeWidth={8} />
+  </g>
+);
+
+/** Ebo's kitchen: a breakfast table and a small TV on the counter (furniture is set). */
+export const Kitchen: React.FC = () => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill="#F2E3B8" />
+    {Array.from({length: 26}).map((_, i) => (
+      <line key={i} x1={-1000 + i * 160} x2={-1000 + i * 160} y1={420} y2={600} stroke="#E3CF96" strokeWidth={4} />
+    ))}
+    <rect x={-1000} y={600} width={4000} height={300} fill="#D9B97A" stroke={C.ink} strokeWidth={6} />
+    <rect x={1250} y={520} width={420} height={80} fill="#8B6A48" stroke={C.ink} strokeWidth={7} />
+    <rect x={1300} y={300} width={300} height={220} rx={14} fill="#22222A" stroke={C.ink} strokeWidth={8} />
+    <rect x={1318} y={318} width={264} height={184} rx={6} fill="#7FB8E0" />
+    <path d="M 1318 460 Q 1400 410 1480 450 Q 1540 470 1582 440 L 1582 502 L 1318 502 Z" fill="#56B870" />
+    <rect x={200} y={150} width={300} height={260} rx={8} fill="#A9D6EE" stroke={C.ink} strokeWidth={8} />
+    <line x1={350} x2={350} y1={150} y2={410} stroke={C.ink} strokeWidth={6} />
+    <PlainFloor color="#C8B79A" />
+    <g transform={`translate(760 ${FLOOR_Y})`}>
+      <rect x={-260} y={-250} width={520} height={34} rx={8} fill="#B98458" stroke={C.ink} strokeWidth={8} />
+      <rect x={-230} y={-220} width={26} height={220} fill="#B98458" stroke={C.ink} strokeWidth={7} />
+      <rect x={204} y={-220} width={26} height={220} fill="#B98458" stroke={C.ink} strokeWidth={7} />
+    </g>
+  </g>
+);
+
+/** A work desk by a wall (the sticky-note wall and the laptop are props). */
+export const WorkRoom: React.FC<{night?: boolean}> = ({night = false}) => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill={night ? '#3A3550' : '#DCE6EE'} />
+    <rect x={1400} y={160} width={320} height={280} rx={8} fill={night ? '#1E2240' : '#A9D6EE'} stroke={C.ink} strokeWidth={8} />
+    {night && <circle cx={1640} cy={230} r={28} fill="#F3E6CF" />}
+    <PlainFloor color={night ? '#2C2840' : '#B9C3CC'} />
+    <g transform={`translate(900 ${FLOOR_Y})`}>
+      <rect x={-300} y={-260} width={600} height={34} rx={8} fill="#8B6A48" stroke={C.ink} strokeWidth={8} />
+      <rect x={-270} y={-230} width={26} height={230} fill="#8B6A48" stroke={C.ink} strokeWidth={7} />
+      <rect x={244} y={-230} width={26} height={230} fill="#8B6A48" stroke={C.ink} strokeWidth={7} />
+    </g>
+  </g>
+);
+
+/** Inside the front door (for the millionaire who never knocks). */
+export const FrontDoor: React.FC = () => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill="#E9D3B4" />
+    <rect x={1100} y={240} width={300} height={660} rx={8} fill="#8B5A3C" stroke={C.ink} strokeWidth={10} />
+    {[[1140, 290], [1270, 290], [1140, 560], [1270, 560]].map(([x, y], i) => (
+      <rect key={i} x={x} y={y} width={90} height={220} rx={6} fill="#7A4A2E" stroke={C.ink} strokeWidth={5} />
+    ))}
+    <circle cx={1360} cy={600} r={16} fill={C.gold} stroke={C.ink} strokeWidth={5} />
+    <rect x={1210} y={420} width={80} height={14} rx={5} fill={C.gold} stroke={C.ink} strokeWidth={4} />
+    <PlainFloor color="#B98E62" />
+    <rect x={1060} y={FLOOR_Y + 10} width={380} height={40} rx={8} fill="#C96F5A" stroke={C.ink} strokeWidth={6} />
+  </g>
+);

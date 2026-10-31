@@ -19,7 +19,7 @@ const W = 1920;
 const H = 1080;
 
 /** The framing that shows both the start and end of a move (with a little margin). */
-const panelFraming = (s: PlanShot): Framing => {
+export const panelFraming = (s: PlanShot): Framing => {
   if (!s.to) return s.from;
   const rect = (f: Framing) => [f.cx - W / 2 / f.zoom, f.cy - H / 2 / f.zoom, f.cx + W / 2 / f.zoom, f.cy + H / 2 / f.zoom];
   const a = rect(s.from);
@@ -41,7 +41,8 @@ const boxIn = (p: Framing, f: Framing) => {
   return {x: cx - w / 2, y: cy - h / 2, w, h, cx, cy};
 };
 
-const Panel: React.FC<{s: PlanShot; n: number}> = ({s, n}) => {
+/** One storyboard panel (shared by every episode's board). */
+export const Panel: React.FC<{s: PlanShot; n: number; setNode: React.ReactNode}> = ({s, n, setNode}) => {
   const p = panelFraming(s);
   const from = boxIn(p, s.from);
   const to = s.to ? boxIn(p, s.to) : null;
@@ -50,7 +51,7 @@ const Panel: React.FC<{s: PlanShot; n: number}> = ({s, n}) => {
     <VStage
       framing={p}
       bg="#241B2F"
-      blurBg={planSet(s.set)}
+      blurBg={setNode}
       overlay={
         <g fontFamily={FONT} fontWeight={900}>
           {to && (
@@ -86,7 +87,7 @@ const Panel: React.FC<{s: PlanShot; n: number}> = ({s, n}) => {
     >
       {s.props}
       {s.cast.map((c, i) => (
-        <RigCharacter key={i} who={c.who} x={c.x} y={c.seat ? SEAT_Y : FLOOR_Y} facing={c.facing ?? 1} pose={c.pose} t={0} cycle={c.cycle} noBlink>
+        <RigCharacter key={i} who={c.who} x={c.x} y={c.y ?? (c.seat ? SEAT_Y : FLOOR_Y)} facing={c.facing ?? 1} pose={c.pose} t={0} cycle={c.cycle} noBlink>
           {c.hold}
         </RigCharacter>
       ))}
@@ -104,7 +105,7 @@ export const Ep03Storyboard: React.FC = () => {
       <NoScaleContext.Provider value>
         <HandDrawnContext.Provider value>
           <AbsoluteFill style={{background: '#000'}}>
-            <Panel s={s} n={n + 1} />
+            <Panel s={s} n={n + 1} setNode={planSet(s.set)} />
           </AbsoluteFill>
         </HandDrawnContext.Provider>
       </NoScaleContext.Provider>

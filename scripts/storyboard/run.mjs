@@ -1,5 +1,8 @@
-// Bundles and runs export-plan.tsx (the plan imports JSX and JSON).
+// Bundles and runs an episode's plan exporter (the plans import JSX and JSON).
+//   node scripts/storyboard/run.mjs [ep03|ep04]
 import {build} from 'esbuild';
 import {execFileSync} from 'child_process';
-await build({entryPoints: ['scripts/storyboard/export-plan.tsx'], bundle: true, platform: 'node', format: 'cjs', jsx: 'automatic', outfile: 'out/storyboard/export-plan.cjs', loader: {'.json': 'json'}, logLevel: 'warning'});
-execFileSync('node', ['out/storyboard/export-plan.cjs'], {stdio: 'inherit'});
+const ep = process.argv[2] || 'ep03';
+const entry = ep === 'ep03' ? 'scripts/storyboard/export-plan.tsx' : `scripts/storyboard/export-plan${ep.slice(-1)}.tsx`;
+await build({entryPoints: [entry], bundle: true, platform: 'node', format: 'cjs', jsx: 'automatic', outfile: `out/storyboard/export-${ep}.cjs`, loader: {'.json': 'json'}, logLevel: 'warning'});
+execFileSync('node', [`out/storyboard/export-${ep}.cjs`], {stdio: 'inherit'});

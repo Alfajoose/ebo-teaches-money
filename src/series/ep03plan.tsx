@@ -26,9 +26,9 @@ const at = makeAt(wordsJson as Word[]);
 export type SetKey = 'chapter' | 'green' | 'studio' | 'living' | 'livingOff' | 'christyRoom' | 'micaRoom' | 'pinkRoom' | 'magicRoom' | 'bedroom' | 'office' | 'sneakers';
 export type Move = 'static' | 'push-in' | 'pull-out' | 'pan' | 'whip-pan' | 'snap-zoom' | 'follow' | 'drift';
 
-export type Placed = {who: CastId | 'ebo'; x: number; seat?: boolean; pose: Pose; facing?: 1 | -1; hold?: React.ReactNode; cycle?: CycleName};
+export type Placed = {who: CastId | 'ebo'; x: number; y?: number; seat?: boolean; pose: Pose; facing?: 1 | -1; hold?: React.ReactNode; cycle?: CycleName};
 
-export type PlanShot = {
+export type PlanShot<K extends string = SetKey> = {
   /** where the shot starts: a phrase in the voiceover (and which occurrence) */
   cue: [string, number?];
   line: string;
@@ -36,7 +36,7 @@ export type PlanShot = {
   move: Move;
   from: Framing;
   to?: Framing;
-  set: SetKey;
+  set: K;
   cast: Placed[];
   props?: React.ReactNode;
   text?: string;
@@ -44,16 +44,16 @@ export type PlanShot = {
   out?: string;
 };
 
-const Z = (zoom: number, cx: number, cy: number): Framing => ({zoom, cx, cy});
+export const Z = (zoom: number, cx: number, cy: number): Framing => ({zoom, cx, cy});
 // shot sizes at 1920×1080 (world coords: floor y = 900; standing heads ≈ 480, seated ≈ 440)
-const EWS = (cx: number, cy = 560) => Z(0.85, cx, cy);
-const WS = (cx: number, cy = 600) => Z(1.0, cx, cy);
-const MS = (cx: number, cy = 600) => Z(1.55, cx, cy);
-const CU = (cx: number, cy = 480) => Z(2.6, cx, cy);
-const ECU = (cx: number, cy = 500) => Z(4.2, cx, cy);
+export const EWS = (cx: number, cy = 560) => Z(0.85, cx, cy);
+export const WS = (cx: number, cy = 600) => Z(1.0, cx, cy);
+export const MS = (cx: number, cy = 600) => Z(1.55, cx, cy);
+export const CU = (cx: number, cy = 480) => Z(2.6, cx, cy);
+export const ECU = (cx: number, cy = 500) => Z(4.2, cx, cy);
 
 const SEAT_Y = FLOOR_Y - 110;
-const P: Record<string, Pose> = {
+export const P: Record<string, Pose> = {
   idle: {...POSES.standing, armL: [10, 6], armR: [12, 8]},
   point: {...POSES.standing, armR: [95, -8], armL: [12, 6], brows: 'up'},
   present: {...POSES.standing, armR: [70, -35], armL: [18, 10], brows: 'up'},
@@ -68,7 +68,7 @@ const P: Record<string, Pose> = {
   sleep: {...POSES.sleeping},
   pointing: {...POSES.pointing},
 };
-const pose = (p: string, eyes: Pose['eyes'], extra: Partial<Pose> = {}): Pose => ({...P[p], eyes, ...extra});
+export const pose = (p: string, eyes: Pose['eyes'], extra: Partial<Pose> = {}): Pose => ({...P[p], eyes, ...extra});
 
 const E = 760; // Ebo's mark
 
@@ -197,7 +197,7 @@ export const planSet = (key: SetKey): React.ReactNode => {
   }
 };
 
-const PlainRoom: React.FC<{wall: string; floor: string}> = ({wall, floor}) => (
+export const PlainRoom: React.FC<{wall: string; floor: string}> = ({wall, floor}) => (
   <g>
     <rect x={-1000} y={-900} width={4000} height={1800} fill={wall} />
     <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill={floor} />
