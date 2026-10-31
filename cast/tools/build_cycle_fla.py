@@ -33,8 +33,12 @@ def main(cast_src, who, out_fla, work, *cycle_paths):
         n = cyc['frames']
         recs = []
         for f in range(n):
-            locals_ = {l['name']: (cyc['layers'][l['name']][f] if l['name'] in cyc['layers'] else l['m']) for l in rig['layers']}
-            recs.append({'locals': locals_, 'frames': {l['name']: l['first'] for l in rig['layers']}})
+            # cycles play in the rig's first view (Ebo: ¾); layers that view doesn't show stay empty
+            v0 = {l['name']: (l.get('views') or [{'show': True}])[0] for l in rig['layers']}
+            shown = [l for l in rig['layers'] if v0[l['name']]['show']]
+            locals_ = {l['name']: (cyc['layers'][l['name']][f] if l['name'] in cyc['layers'] else v0[l['name']].get('m', l['m'])) for l in shown}
+            recs.append({'locals': locals_, 'frames': {l['name']: v0[l['name']].get('first', l['first']) for l in shown},
+                         'hidden': [l['name'] for l in rig['layers'] if not v0[l['name']]['show']]})
         name = f'{disp}/{disp} {LABEL.get(kind, kind)}'
         build_anim_symbol(lib, rig_el, rename[rig_sym], name, recs, n)
         anims.append((name, n))

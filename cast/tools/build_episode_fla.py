@@ -137,7 +137,10 @@ def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total):
     for layer in tl.findall(f'{N("layers")}/{N("DOMLayer")}'):
         lname = layer.get('name')
         frames_el = layer.find(N('frames'))
-        tmpl = frames_el.find(N('DOMFrame'))
+        # template: the first keyframe that holds the layer's instance(s) (a layer can be empty in
+        # some views of a rig, like Ebo's in-front arm in his ¾ view)
+        tmpl = next((fr for fr in frames_el.findall(N('DOMFrame')) if fr.find(f'{N("elements")}/{N("DOMSymbolInstance")}') is not None),
+                    frames_el.find(N('DOMFrame')))
         n_inst = len(tmpl.findall(f'{N("elements")}/{N("DOMSymbolInstance")}'))
         keys = []  # (frame, state)
         last = None
@@ -146,6 +149,9 @@ def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total):
             r = recs[f]
             if r is None:
                 st = hold
+            elif lname in r.get('hidden', ()):
+                st = 'hidden'
+                hold = st
             else:
                 st = []
                 for k in range(n_inst):
@@ -177,6 +183,12 @@ def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total):
             else:
                 fr.attrib.pop('duration', None)
             fr.set('keyMode', '9728')
+            if st == 'hidden':
+                els = fr.find(N('elements'))
+                for e in list(els):
+                    els.remove(e)
+                frames_el.append(fr)
+                continue
             for k, inst in enumerate(fr.findall(f'{N("elements")}/{N("DOMSymbolInstance")}')):
                 if st[k] is None:
                     continue

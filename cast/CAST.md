@@ -36,24 +36,28 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 
 ## EBO (main character)
 
-- **File:** `masters/Ebo.fla`. **Symbol:** `Ebo`. **Stage:** 1280×720 at 24 fps.
-- **Design:** dark teal T-shirt, grey shorts, big ears, black dot eyes and no eye whites (the redesign). Cheek mole.
-- **Voice:** the file includes an ElevenLabs voice track ("Dan – calm & friendly"), 55.7 s long. The main timeline runs 1,340 frames to match it. The `Ebo` symbol itself isn't animated yet.
-- **Eye layers** (`pupil_1`, `pupil_2` → symbol `pupil 1`, 7 frames):
-  - 0 neutral (tall oval)
-  - 1 unimpressed (flat top)
-  - 2 closed / blink
-  - 3 same as 1
-  - 4 wide (surprised)
-  - 5 sad/angry (slanted top)
-  - 6 squint
-- **Default look:** left eye 1 and right eye 0, a skeptical expression.
-- **Mouth** (`mouth`, 4 frames):
-  - 0 closed / rest
-  - 1 open wide (A/I)
-  - 2 open mid (E)
-  - 3 tall O (O/U)
-- **Other swaps:** the upper arms and thighs have 2 frames each (outline variants).
+- **File:** `masters/Ebo.fla` (new master, Oct 2026; the earlier one is in git history). **Symbol:** `Ebo`. **Stage:** 1280×720 at 24 fps.
+- **Design:** dark teal T-shirt, grey shorts, big ears, cheek mole, and big white eyes with separate pupils.
+- **Four views.** The `Ebo` symbol has 4 keyframes, and each is a view (`pose.view`):
+
+  | view | what | notes |
+  |---|---|---|
+  | 0 | ¾ (default) | right arm drawn behind the head |
+  | 1 | straight to camera | both arms in front; host shots |
+  | 2 | front, hands in, legs apart | shy / nervous |
+  | 3 | back | back of the head, no face; walking off, sulking |
+
+  ![views](sheets/ebo-master-views.png)
+- **In-front arm.** The layers `hand_top_2_front` / `hand_down_2_front` sit above the head. `pose.armFront: true` draws the right arm there in any view, which makes hand-to-face poses possible (the `hands` group). The arms are short, so the hand reaches the mouth, chin or cheek, but not the eyes.
+- **Eyes** (`eye_1`, `eye_2` → `eye 1`, 14 frames) with **pupils** on top (`pupil_1`, `pupil_2` → `pupil 1`, 8 frames). Pupils move with `lookX` / `lookY`.
+  - Eye shapes: 0 tall oval · 1 / 3 wide oval · 2 closed line · 4 small oval · 5 lid line (glare) · 6 tilted · 7 flat half-lid · 8 `><` squeeze · 9 lower lid (happy) · 10 upper lid (droopy) · 11 both lids (squint) · 12 closed lid · 13 empty (back view)
+  - Pupils: 0 tall oval · 1 / 2 round · 3 flat-top (for upper lids) · 4 flat-bottom (for lower lids) · 5 / 6 side · 7 none
+  - How the show's eye names map to [eye, pupil]: open = the view's own · wide 0,0 · happy 9,4 · half 7,3 · sad 10,3 · squint 11,2 · angry 5,1 · suspicious 11,5 · tired 10,3 · squeeze 8,7 · closed / blink 12,7. See `sheets/ebo-eyes.png`.
+- **Mouth** (`mouth`, 15 frames): 0 squiggle · 1 open smile · 2 teeth grin · 3 talk with teeth · 4 laugh · 5 small o · 6 smile line · 7 small grit · 8 open · 9 gritted · 10 talk wide · 11 shout · 12 small o (low) · 13 frown · 14 smirk. See `sheets/ebo-mouths.png`.
+  - Lip sync: rest 6 · wide 3/1 · mid 10/8 · round 5 (alternating every 4 frames so speech doesn't look stiff).
+- **New eye names** angry, suspicious, tired and squeeze, and **new mouth names** teeth, laugh and grimace, work on everyone: rigs without those drawings fall back to the nearest ones they have.
+- **Cycles** play in view 0.
+- **Voice:** the file has no voice track (the old master had the Dan test read).
 
 ## MICA
 
@@ -117,7 +121,7 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 
 ## Pose library (`src/cast/poses.ts`)
 
-There are 48 named poses in six groups, tuned for this rig (big head, short limbs). All of them use rotation and translation only. Use them as `{...POSE.explain, eyes: 'happy'}`. Faces can be overridden per shot.
+There are 70 named poses in nine groups, tuned for this rig (big head, short limbs). All of them use rotation and translation only. Use them as `{...POSE.explain, eyes: 'happy'}`. Faces can be overridden per shot.
 
 ![pose library](sheets/pose-library.png)
 
@@ -125,18 +129,22 @@ There are 48 named poses in six groups, tuned for this rig (big head, short limb
 |---|---|
 | Standing | stand, relaxed, handsBehind, handsOnHips, armsCrossed, lean |
 | Talking & gestures | explain, explainBoth, point, pointUp, pointAtYou, ideaFinger, stopHand, shrug, presentTaDa, wave |
-| Emotions | happy, cheer, jumpForJoy, shocked, scared, sad, devastated, angry, smug, bored, confused, ugh, thinking, sleepy |
+| Emotions | happy, cheer, jumpForJoy, shocked, scared, sad, devastated, angry, smug, bored, confused, ugh, suspicious, laughing, thinking, sleepy |
 | Sitting | sit, sitSlouch, sitForward, sitPhone, sitEat, sitRemote (place on the seat top) |
 | Lying | lieBack, lieAsleep, lieStarfish, lieDreaming (place `LIE_Y` above the floor or mattress) |
 | Actions | holdOut, showToCamera, carry, typing, checkPhone, sneak, kneel, kickback |
+| Hand to face (Ebo) | handOverMouth, thinkChin, hmm, facepalm, oops, cheekWorry, panic |
+| Front & shy (Ebo) | hostFront, hostExplain, hostOpen, hostPoint, hostShrug, hostCheer, shy, nervous |
+| Back view (Ebo) | backStand, backSulk, backHips, backDespair, backShrug |
 
-How the rig moves (`sheets/poses-calibration.png`):
-- **Arms:** 0 means hanging, 90 straight out, about 135 up and out. Past about 140, the hand hides behind the head.
+How the rig moves (`sheets/poses-calibration.png`, `sheets/ebo-views.png`):
+- **Arms:** 0 means hanging, 90 straight out, about 135 up and out. Past about 140, the hand hides behind the head (unless the arm is in front).
 - **Elbows:** a positive angle bends the forearm up and in, toward the chest. A negative angle bends it down and out.
-- **The head is drawn over the arms,** so a hand can't touch the face. Poses like facepalm or scratching the head don't work on this rig.
+- **Hand to face (Ebo only):** with `armFront: true`, armR [180, 0] covers the mouth, [175, 40] is a hand on the chin, and [170, 80] is the chin from the side. In view 1, [170, 60] puts a hand on the cheek; on both arms it's the hands-on-cheeks panic. On other characters the head is still drawn over the arms, so these poses show the arm behind the head.
+- **Views (Ebo only):** `view: 1 | 2 | 3`. Other rigs ignore it.
 - **Expression comes mostly from the body:** `lift` (sink or jump), `tilt` (lean) and `headTilt` do most of the work, plus the eye and mouth swaps.
 
-Each group has its own sheet composition, `PoseSheet-<group>`, which renders it for any character.
+Each group has its own sheet composition, `PoseSheet-<group>`, which renders it for any character. `Ebo-Views`, `Ebo-Eyes` and `Ebo-Mouths` are the review sheets for Ebo's new master.
 
 ## Walk and run cycles (`cycles/`)
 
@@ -144,7 +152,7 @@ These are your own cycles, copied onto the current characters. Only the body mot
 
 | Character | Cycles | Animate file |
 |---|---|---|
-| Ebo | run (8 frames), fast walk (5, Obuor's, retargeted) | `cycles/Ebo_cycles.fla` |
+| Ebo | run (8 frames), fast walk (5, Obuor's, retargeted), both re-fitted to the new master | `cycles/Ebo_cycles.fla` |
 | Christy | walk (8), fast walk (5) | `cycles/Christy_cycles.fla` |
 | Obuor | fast walk (5) | `cycles/Obuor_cycles.fla` |
 | Mica | fast walk (5), from `konka_drip_fast_walk.fla` | `cycles/Mica_cycles.fla` |

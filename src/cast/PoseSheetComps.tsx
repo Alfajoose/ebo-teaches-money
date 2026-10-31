@@ -59,7 +59,7 @@ export const PoseSheetCal: React.FC = () => (
   />
 );
 
-const TITLES: Record<string, string> = {stand: 'Standing', talk: 'Talking & gestures', emotion: 'Emotions', sit: 'Sitting', lie: 'Lying', action: 'Actions'};
+const TITLES: Record<string, string> = {stand: 'Standing', talk: 'Talking & gestures', emotion: 'Emotions', sit: 'Sitting', lie: 'Lying', action: 'Actions', hands: 'Hand to face (Ebo)', front: 'Front & shy views (Ebo)', back: 'Back view (Ebo)'};
 /** One group of the pose library on one character. */
 export const PoseSheetGroup: React.FC<{group: keyof typeof POSE_GROUPS; who?: CastId}> = ({group, who = 'ebo'}) => {
   const poses = Object.entries(POSE_GROUPS[group]) as [string, Pose][];

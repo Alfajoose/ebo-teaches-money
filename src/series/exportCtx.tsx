@@ -32,7 +32,7 @@ export const R = (deg: number, cx = 0, cy = 0): M6 => {
   return mmul(T(cx, cy), mmul([c, s, -s, c, 0, 0], T(-cx, -cy)));
 };
 
-export type CharRecord = {who: string; outer: M6; locals: Record<string, M6>; frames: Record<string, number>};
+export type CharRecord = {who: string; outer: M6; locals: Record<string, M6>; frames: Record<string, number>; hidden?: string[]};
 export type GraphicRecord = {key: string; matrix: M6; alpha: number; svg: string};
 /** A prop on this frame: `svg` is its drawing in its own coordinates, `matrix` places it on screen. */
 export type PropRecord = {name: string; key: string; matrix: M6; svg: string; front: boolean};

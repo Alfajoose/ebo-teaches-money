@@ -10,10 +10,16 @@ import christy from './data/christy.json';
  * Frame numbers are the 0-based "First frame" of each swap symbol — see cast/CAST.md.
  */
 
+export type RigView = {show: boolean; m?: number[]; first?: number};
 export type RigData = {
   symbol: string;
-  layers: {name: string; rig: string | null; parent: string | null; m: number[]; tp: number[]; first: number; frames: string[]}[];
+  views?: number; // several drawn views (keyframes of the rig symbol), see export_rig.py
+  layers: {name: string; rig: string | null; parent: string | null; m: number[]; tp: number[]; first: number; frames: string[]; views?: RigView[]}[];
 };
+
+/** Expressions a rig doesn't draw fall back to the nearest one it does. */
+export const EYES_FALLBACK: Partial<Record<Eyes, Eyes>> = {angry: 'squint', suspicious: 'half', tired: 'half', squeeze: 'closed'};
+export const MOUTH_FALLBACK: Partial<Record<Mouth, Mouth>> = {teeth: 'grin', laugh: 'grin', grimace: 'wobbly'};
 
 export type CastId = 'ebo' | 'mica' | 'obuor' | 'ama' | 'christy';
 
@@ -22,8 +28,12 @@ export type CastConfig = {
   rig: RigData;
   scale: number; // rig units → show pixels (static, never animated)
   eyeLayers: string[];
-  eyes: Record<Eyes, number | number[]>; // one frame for all eye layers, or one per layer
-  mouth: Record<Mouth, number | number[]>; // arrays alternate every 4 frames (wobble, snore)
+  eyes: Partial<Record<Eyes, number | number[]>>; // one frame for all eye layers, or one per layer
+  /** Rigs with separate pupils: per expression [eye frame, pupil frame]; null = the view's own. */
+  pupils?: {layers: string[]; eyes: Partial<Record<Eyes, [number | null, number | null]>>};
+  mouth: Partial<Record<Mouth, number | number[]>>; // arrays alternate every 4 frames (wobble, snore)
+  /** Lip-sync levels from kit.lipFrame (0 rest, 1 wide, 2 mid, 3 round) → mouth frames. */
+  lip?: (number | number[])[];
   hide: string[];
   outfit?: Record<string, number>;
   blinkOffset: number;
@@ -40,7 +50,28 @@ const MOUTH_B: CastConfig['mouth'] = {smile: 0, grin: 3, o: 2, scream: 3, frown:
 const S = 0.68; // one shared factor keeps the cast's relative heights as drawn
 
 export const CAST: Record<CastId, CastConfig> = {
-  ebo: {name: 'Ebo', rig: ebo as RigData, scale: S, eyeLayers: ['pupil_1', 'pupil_2'], eyes: EYES_7, mouth: MOUTH_A, hide: [], blinkOffset: 0},
+  // Ebo (new master, Oct 2026): 4 views, an in-front right arm, eye_1/eye_2 (14 shapes) with
+  // separate pupils (8: 3 = flat-top, 4 = flat-bottom, 7 = none) and 15 mouths. See cast/CAST.md.
+  ebo: {
+    name: 'Ebo',
+    rig: ebo as RigData,
+    scale: S,
+    eyeLayers: ['eye_1', 'eye_2'],
+    eyes: {},
+    pupils: {
+      layers: ['pupil_1', 'pupil_2'],
+      eyes: {
+        open: [null, null], dollar: [null, null], wide: [0, 0], closed: [12, 7], happy: [9, 4], half: [7, 3],
+        sad: [10, 3], squint: [11, 2], angry: [5, 1], suspicious: [11, 5], tired: [10, 3], squeeze: [8, 7],
+      },
+    },
+    // 0 squiggle · 1 open smile · 2 teeth grin · 3 talk teeth · 4 laugh · 5 o · 6 smile line · 7 small grit
+    // 8 open · 9 gritted · 10 talk wide · 11 shout · 12 small o · 13 frown · 14 smirk
+    mouth: {smile: 6, grin: 1, o: 5, scream: 11, frown: 13, flat: 0, wobbly: [7, 9], smirk: 14, snore: [12, 5], teeth: 2, laugh: 4, grimace: 9},
+    lip: [6, [3, 1], [10, 8], 5],
+    hide: [],
+    blinkOffset: 0,
+  },
   mica: {name: 'Mica', rig: mica as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_B, hide: [], blinkOffset: 23},
   obuor: {name: 'Obuor', rig: obuor as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_B, hide: [], blinkOffset: 41},
   ama: {name: 'Ama', rig: ama as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_A, hide: [], blinkOffset: 57},

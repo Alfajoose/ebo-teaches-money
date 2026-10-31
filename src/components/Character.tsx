@@ -7,8 +7,11 @@ import {C} from '../theme';
  * Everything is driven by a `Pose`, so scenes can blend presets or tweak joints.
  */
 
-export type Eyes = 'open' | 'closed' | 'wide' | 'happy' | 'half' | 'sad' | 'dollar' | 'squint';
-export type Mouth = 'smile' | 'grin' | 'o' | 'scream' | 'frown' | 'flat' | 'wobbly' | 'smirk' | 'snore';
+export type Eyes = 'open' | 'closed' | 'wide' | 'happy' | 'half' | 'sad' | 'dollar' | 'squint'
+  // richer sets (Ebo's new face); other rigs fall back to the nearest of the above
+  | 'angry' | 'suspicious' | 'tired' | 'squeeze';
+export type Mouth = 'smile' | 'grin' | 'o' | 'scream' | 'frown' | 'flat' | 'wobbly' | 'smirk' | 'snore'
+  | 'teeth' | 'laugh' | 'grimace';
 export type Brows = 'neutral' | 'up' | 'angry' | 'sad' | 'flat';
 
 export type Pose = {
@@ -29,6 +32,10 @@ export type Pose = {
   lookY: number;
   blush: number;
   sweat: number;
+  /** Rigs with several drawn views (Ebo: 0 = ¾, 1 = front, 2 = front hands-in, 3 = back). */
+  view?: number;
+  /** Draw the right arm in front of the head (hand-to-face poses). Default: the view's own layering. */
+  armFront?: boolean;
 };
 
 const base: Pose = {

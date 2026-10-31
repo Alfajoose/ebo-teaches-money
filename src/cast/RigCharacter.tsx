@@ -1,7 +1,7 @@
 import React from 'react';
 import {C} from '../theme';
 import type {Pose, Eyes, Mouth} from '../components/Character';
-import {CAST, CastId, CastConfig, RigData} from './castConfig';
+import {CAST, CastId, CastConfig, RigData, EYES_FALLBACK, MOUTH_FALLBACK} from './castConfig';
 import {CycleName, cycleFrame, getCycle} from './cycles';
 import measureJson from './data/measure.json';
 import {CameraContext, mmul, R as Rm, S as Sm, T as Tm, useCapture, useLayerMode} from '../series/exportCtx';
@@ -51,27 +51,45 @@ const LIMBS = {
   legR: ['leg_top_2', 'leg_down_2'],
 } as const;
 
+/** The right arm of rigs that also have an in-front copy (Ebo): back pair and front pair. */
+const ARM_R_BACK = ['hand_top_2', 'hand_down_2'] as const;
+const ARM_R_FRONT = ['hand_top_2_front', 'hand_down_2_front'] as const;
+
+type Layer = RigData['layers'][number];
+type Eff = {m: number[]; first: number; show: boolean};
+
 type Prepared = {
   cfg: CastConfig;
   rig: RigData;
-  byName: Record<string, RigData['layers'][number]>;
-  byRig: Record<string, RigData['layers'][number]>;
+  view: number;
+  byName: Record<string, Layer>;
+  byRig: Record<string, Layer>;
+  eff: Record<string, Eff>; // each layer in this view
   rest: Record<string, number>;
   origin: [number, number];
-  handLocal: [number, number];
+  handLocal: Record<string, [number, number]>; // per forearm layer: the hand tip in its own space
 };
-const cache: Partial<Record<CastId, Prepared>> = {};
+const cache: Record<string, Prepared> = {};
 
-const prepare = (id: CastId): Prepared => {
-  const hit = cache[id];
+const prepare = (id: CastId, view: number): Prepared => {
+  const key = `${id}@${view}`;
+  const hit = cache[key];
   if (hit) return hit;
   const cfg = CAST[id];
   const rig = cfg.rig;
-  const meas = MEASURE[id];
+  const meas = MEASURE[view ? key : id];
+  if (!meas) throw new Error(`no measurement for ${key}: run scripts/measure-rigs.mjs`);
   const byName = Object.fromEntries(rig.layers.map((l) => [l.name, l]));
   const byRig = Object.fromEntries(rig.layers.filter((l) => l.rig != null).map((l) => [l.rig as string, l]));
+  const eff: Record<string, Eff> = {};
+  for (const l of rig.layers) {
+    const v = l.views?.[view];
+    eff[l.name] = v ? {m: v.m ?? l.m, first: v.first ?? l.first, show: v.show} : {m: l.m, first: l.first, show: true};
+  }
   const rest: Record<string, number> = {};
-  for (const [upper, lower] of Object.values(LIMBS)) {
+  const pairs = [...Object.values(LIMBS), ARM_R_FRONT];
+  for (const [upper, lower] of pairs) {
+    if (!meas.layers[upper] || !meas.layers[lower]) continue;
     const pu = meas.layers[upper].pivot;
     const pl = meas.layers[lower].pivot;
     const cl = meas.layers[lower].center ?? pl;
@@ -81,22 +99,18 @@ const prepare = (id: CastId): Prepared => {
   // rest-pose world matrix of the right forearm → find the hand tip in its local space
   const world0 = (name: string): M => {
     const l = byName[name];
-    return l.parent != null && byRig[l.parent] ? mul(world0(byRig[l.parent].name), l.m as M) : (l.m as M);
+    return l.parent != null && byRig[l.parent] ? mul(world0(byRig[l.parent].name), eff[name].m as M) : (eff[name].m as M);
   };
-  const fp = meas.layers.hand_down_2.pivot;
-  const fc = meas.layers.hand_down_2.center ?? fp;
-  const tip = [fp[0] + (fc[0] - fp[0]) * 1.7, fp[1] + (fc[1] - fp[1]) * 1.7];
-  const handLocal = ap(inv(world0('hand_down_2')), tip);
-  const p: Prepared = {
-    cfg,
-    rig,
-    byName,
-    byRig,
-    rest,
-    origin: [meas.layers.waist.pivot[0], meas.bounds[3]],
-    handLocal,
-  };
-  cache[id] = p;
+  const handLocal: Record<string, [number, number]> = {};
+  for (const fore of [ARM_R_BACK[1], ARM_R_FRONT[1]]) {
+    const ml = meas.layers[fore];
+    if (!ml || !byName[fore]) continue;
+    const fp = ml.pivot;
+    const fc = ml.center ?? fp;
+    handLocal[fore] = ap(inv(world0(fore)), [fp[0] + (fc[0] - fp[0]) * 1.7, fp[1] + (fc[1] - fp[1]) * 1.7]);
+  }
+  const p: Prepared = {cfg, rig, view, byName, byRig, eff, rest, origin: [meas.layers.waist.pivot[0], meas.bounds[3]], handLocal};
+  cache[key] = p;
   return p;
 };
 
@@ -123,41 +137,67 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   const cap = useCapture();
   const cam = useContext(CameraContext);
   if (mode !== 'full') return null;
-  const P = prepare(who);
+  // a walk / run cycle is drawn in the rig's first view
+  const cyc = cycle ? getCycle(who, cycle) : null;
+  const nViews = CAST[who].rig.views ?? 1;
+  const view = cyc ? 0 : Math.max(0, Math.min(nViews - 1, Math.round(pose.view ?? 0)));
+  const P = prepare(who, view);
   const {cfg, rig, byName, byRig, rest} = P;
+
+  // ── which right arm draws: the back pair (behind the head) or the in-front pair ──
+  const eff: Record<string, Eff> = {...P.eff};
+  const alias: Record<string, string> = {}; // drawn layer → the layer whose placement / rest it borrows
+  let armR: readonly [string, string] = LIMBS.armR;
+  if (byName[ARM_R_FRONT[0]]) {
+    const backShown = eff[ARM_R_BACK[0]].show;
+    const src = backShown ? ARM_R_BACK : ARM_R_FRONT;
+    const dst = pose.armFront ?? !backShown ? ARM_R_FRONT : ARM_R_BACK;
+    armR = dst;
+    if (src !== dst) {
+      for (let k = 0; k < 2; k++) {
+        eff[dst[k]] = {...eff[src[k]], show: true};
+        eff[src[k]] = {...eff[src[k]], show: false};
+        alias[dst[k]] = src[k];
+      }
+    }
+  }
+  const base = (name: string) => alias[name] ?? name;
 
   // ── layer rotations from limb angles ──
   const rot: Record<string, number> = {};
   const dxy: Record<string, [number, number]> = {};
   rot.head = pose.headTilt;
   const setLimb = (upper: string, lower: string, upperAbs: number, lowerAbs: number) => {
-    const ru = upperAbs - rest[upper];
+    const ru = upperAbs - rest[base(upper)];
     rot[upper] = ru;
-    rot[lower] = lowerAbs - rest[lower] - ru;
+    rot[lower] = lowerAbs - rest[base(lower)] - ru;
   };
   setLimb(LIMBS.armL[0], LIMBS.armL[1], pose.armL[0], pose.armL[0] + pose.armL[1]);
-  setLimb(LIMBS.armR[0], LIMBS.armR[1], -pose.armR[0], -(pose.armR[0] + pose.armR[1]));
+  setLimb(armR[0], armR[1], -pose.armR[0], -(pose.armR[0] + pose.armR[1]));
   setLimb(LIMBS.legL[0], LIMBS.legL[1], -pose.legL[0], -(pose.legL[0] - pose.legL[1]));
   setLimb(LIMBS.legR[0], LIMBS.legR[1], -pose.legR[0], -(pose.legR[0] - pose.legR[1]));
 
   // ── face ──
   const blink = !noBlink && (t + 17 + cfg.blinkOffset) % 97 < 4;
   let eyes: Eyes = pose.eyes;
-  if (blink && (eyes === 'open' || eyes === 'half' || eyes === 'sad' || eyes === 'dollar')) eyes = 'closed';
-  const eyeFrame = eyeOverride !== undefined && !blink ? eyeOverride : cfg.eyes[eyes];
-  const mouthF = mouthFrame ?? pickFrame(cfg.mouth[pose.mouth as Mouth], t);
+  if (blink && ['open', 'half', 'sad', 'dollar', 'tired', 'suspicious', 'angry'].includes(eyes)) eyes = 'closed';
+  const eyeOf = (e: Eyes) => cfg.eyes[e] ?? cfg.eyes[EYES_FALLBACK[e] ?? 'open'] ?? 0;
+  const eyeFrame = eyeOverride !== undefined && !blink ? eyeOverride : eyeOf(eyes);
+  const pup = cfg.pupils ? cfg.pupils.eyes[eyes] ?? cfg.pupils.eyes[EYES_FALLBACK[eyes] ?? 'open'] ?? [null, null] : null;
+  const mouthOf = (m: Mouth) => cfg.mouth[m] ?? cfg.mouth[MOUTH_FALLBACK[m] ?? 'smile'] ?? 0;
+  const mouthF =
+    mouthFrame !== undefined ? (cfg.lip ? pickFrame(cfg.lip[mouthFrame] ?? cfg.lip[0], t) : mouthFrame) : pickFrame(mouthOf(pose.mouth as Mouth), t);
   const look: [number, number] = [pose.lookX * 0.6, pose.lookY * 0.5];
-  for (const e of cfg.eyeLayers) dxy[e] = look;
+  for (const e of cfg.pupils?.layers ?? cfg.eyeLayers) dxy[e] = look;
   if (byName.mouth) dxy.mouth = [look[0] * 0.5, look[1] * 0.3];
 
   // ── a cycle replaces the body layers' rest matrices frame by frame ──
-  const cyc = cycle ? getCycle(who, cycle) : null;
   const cf = cyc ? cycleFrame(cyc, t + cycleOffset) : 0;
-  const baseM = (name: string, m: number[]): M => {
-    const k = cyc?.layers[name];
-    return (k ? k[cf] : m) as M;
+  const baseM = (name: string): M => {
+    const k = cyc?.layers[base(name)];
+    return (k ? k[cf] : eff[name].m) as M;
   };
-  const rotOf = (name: string) => (cyc?.layers[name] ? 0 : rot[name] ?? 0);
+  const rotOf = (name: string) => (cyc?.layers[base(name)] ? 0 : rot[name] ?? 0);
 
   // ── compose world matrices along the parent chain ──
   const memo: Record<string, M> = {};
@@ -165,22 +205,26 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
     if (memo[name]) return memo[name];
     const l = byName[name];
     const d = dxy[name] ?? [0, 0];
-    const local = localMatrix(baseM(name, l.m), l.tp, rotOf(name), d[0], d[1]);
+    const local = localMatrix(baseM(name), l.tp, rotOf(name), d[0], d[1]);
     const w = l.parent != null && byRig[l.parent] ? mul(world(byRig[l.parent].name), local) : local;
     memo[name] = w;
     return w;
   };
 
   const frameFor = (name: string, first: number) => {
-    if (cfg.eyeLayers.includes(name)) return Array.isArray(eyeFrame) ? eyeFrame[cfg.eyeLayers.indexOf(name)] : eyeFrame;
+    if (pup) {
+      const ei = cfg.eyeLayers.indexOf(name);
+      if (ei >= 0) return eyeOverride !== undefined && !blink ? (Array.isArray(eyeOverride) ? eyeOverride[ei] : eyeOverride) : pup[0] ?? first;
+      if (cfg.pupils!.layers.includes(name)) return pup[1] ?? first;
+    } else if (cfg.eyeLayers.includes(name)) return Array.isArray(eyeFrame) ? eyeFrame[cfg.eyeLayers.indexOf(name)] : eyeFrame;
     if (name === 'mouth') return mouthF;
     return cfg.outfit?.[name] ?? first;
   };
 
   const s = scale * cfg.scale;
   const [ox, oy] = P.origin;
-  const hand = ap(world('hand_down_2'), P.handLocal);
-  const layers = rig.layers.filter((l) => !cfg.hide.includes(l.name));
+  const hand = ap(world(armR[1]), P.handLocal[base(armR[1])]);
+  const layers = rig.layers.filter((l) => !cfg.hide.includes(l.name) && eff[l.name].show);
 
   const outer = mmul(
     cam,
@@ -191,12 +235,17 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   if (cap) {
     const locals: Record<string, M> = {};
     const frames: Record<string, number> = {};
+    const hidden: string[] = [];
     for (const l of rig.layers) {
+      if (!eff[l.name].show) {
+        hidden.push(l.name);
+        continue;
+      }
       const d = dxy[l.name] ?? [0, 0];
-      locals[l.name] = localMatrix(baseM(l.name, l.m), l.tp, rotOf(l.name), d[0], d[1]);
-      frames[l.name] = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, l.first)));
+      locals[l.name] = localMatrix(baseM(l.name), l.tp, rotOf(l.name), d[0], d[1]);
+      frames[l.name] = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
     }
-    cap.chars.push({who, outer, locals, frames});
+    cap.chars.push({who, outer, locals, frames, hidden});
   }
 
   return (
@@ -204,7 +253,7 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
       <ellipse cx={0} cy={6 / s} rx={110} ry={20} fill={C.ink} opacity={0.12} />
       <g transform={`rotate(${pose.tilt} 0 0) translate(0 ${pose.lift / cfg.scale}) translate(${-ox} ${-oy})`}>
         {layers.map((l) => {
-          const f = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, l.first)));
+          const f = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
           return <g key={l.name} transform={`matrix(${world(l.name).join(',')})`} dangerouslySetInnerHTML={{__html: l.frames[f]}} />;
         })}
         {children && (

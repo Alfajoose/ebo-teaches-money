@@ -16,12 +16,19 @@ const ap = (m, p) => [m[0] * p[0] + m[2] * p[1] + m[4], m[1] * p[0] + m[3] * p[1
 const browser = await chromium.launch({executablePath: process.env.CHROME_BIN});
 const page = await browser.newPage({viewport: {width: 4000, height: 4000}});
 const out = {};
-for (const n of names) {
-  const rig = JSON.parse(fs.readFileSync(path.join(dir, n + '.json'), 'utf8'));
+const measure = async (key, rig, view) => {
+  // the layers as drawn in this view (rigs with several views: Ebo's ¾ / front / front hands-in / back)
+  const eff = Object.fromEntries(
+    rig.layers.map((l) => {
+      const v = l.views?.[view];
+      return [l.name, v ? {m: v.m ?? l.m, first: v.first ?? l.first, show: v.show} : {m: l.m, first: l.first, show: true}];
+    }),
+  );
+  const shown = rig.layers.filter((l) => eff[l.name].show);
   const byRig = Object.fromEntries(rig.layers.filter((l) => l.rig != null).map((l) => [l.rig, l]));
-  const world = (l) => (l.parent != null && byRig[l.parent] ? mul(world(byRig[l.parent]), l.m) : l.m);
-  const body = rig.layers
-    .map((l) => `<g id="L_${l.name}" transform="matrix(${world(l).join(',')})">${l.frames[l.first] || ''}</g>`)
+  const world = (l) => (l.parent != null && byRig[l.parent] ? mul(world(byRig[l.parent]), eff[l.name].m) : eff[l.name].m);
+  const body = shown
+    .map((l) => `<g id="L_${l.name}" transform="matrix(${world(l).join(',')})">${l.frames[eff[l.name].first] || ''}</g>`)
     .join('');
   await page.setContent(`<svg xmlns="http://www.w3.org/2000/svg" width="4000" height="4000" viewBox="-2000 -2000 4000 4000">${body}</svg>`);
   const rects = await page.evaluate(() => {
@@ -35,13 +42,18 @@ for (const n of names) {
     return r;
   });
   const layers = {};
-  for (const l of rig.layers) {
+  for (const l of shown) {
     const w = world(l);
     const b = rects[l.name];
     layers[l.name] = {pivot: ap(w, l.tp), center: b ? [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2] : null, box: b};
   }
-  out[n] = {bounds: rects.__all, layers};
-  console.log(n, rects.__all.map((v) => Math.round(v)).join(' '));
+  out[key] = {bounds: rects.__all, layers};
+  console.log(key, rects.__all.map((v) => Math.round(v)).join(' '));
+};
+for (const n of names) {
+  const rig = JSON.parse(fs.readFileSync(path.join(dir, n + '.json'), 'utf8'));
+  await measure(n, rig, 0);
+  for (let v = 1; v < (rig.views ?? 1); v++) await measure(`${n}@${v}`, rig, v);
 }
 await browser.close();
 fs.writeFileSync(path.join(dir, 'measure.json'), JSON.stringify(out, null, 1));
