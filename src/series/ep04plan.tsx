@@ -5,14 +5,15 @@ import {Diploma, Sticky, StickyWall, BigPhone, Cereal, Chips, BlanketFort, Suitc
 import {FLOOR_Y, Bedroom, Office} from '../backgrounds/Backgrounds';
 import {Studio, LivingRoom, Kitchen, WorkRoom, FrontDoor} from './sets';
 import {PlanShot, Z, EWS, WS, MS, CU, ECU, P, pose as basePose, PlainRoom} from './ep03plan';
+import {Word} from './kit';
+import wordsJson from './data/ep04-words.json';
 
 /**
  * EPISODE 4 — "The Ultimate Guide to Staying Broke" — SHOT PLAN (pre-production).
  * Ebo alone: host Ebo talks to camera in the studio; "demo" Ebo acts out every habit in the
  * other sets, which sets up the ending (he's been doing all of it). One entry per shot; each
  * shot's `line` is the next stretch of the script, in order, so the plan covers every word.
- * Until the voice exists, timing is estimated from the script (scripted pace, see below);
- * once it does, each shot snaps to the first word of its line.
+ * Each shot starts on the first word of its line in the recorded voice (see ep04Times).
  */
 
 export type Ep04Set = 'chapter' | 'green' | 'studio' | 'living' | 'livingNight' | 'kitchen' | 'work' | 'workNight' | 'bedroom' | 'door' | 'office';
@@ -201,18 +202,22 @@ export const ep04Set = (key: Ep04Set): React.ReactNode => {
 };
 
 /**
- * Estimated timing until the voice exists: Ebo's pace on Ep 3 was 2.7 words/s, plus a
- * pause at each sentence end and a 1 s beat before every chapter card.
+ * Shot timing from the recorded voice (data/ep04-words.json): each shot starts on the first
+ * word of its line. The lines are matched in order, letter by letter, so punctuation and
+ * spoken numbers ("2017" is said "twenty seventeen") don't matter.
  */
-export const EP04_PACE = 2.7;
+const norm = (t: string) => t.toLowerCase().replace(/2017/g, 'twenty seventeen').replace(/[^a-z]/g, '');
 export const ep04Times = () => {
-  let t = 0.2;
-  return EP04_PLAN.map((s) => {
-    if (s.text?.startsWith('HOW TO STAY BROKE')) t += 1.0;
-    const start = t;
-    const words = s.line.split(/\s+/).filter(Boolean).length;
-    const stops = (s.line.match(/[.?!…]/g) ?? []).length;
-    t += words / EP04_PACE + stops * 0.25;
-    return {start, length: t - start};
+  const words = wordsJson as Word[];
+  const owner: number[] = []; // letter → word index
+  words.forEach((w, i) => norm(w.w).split('').forEach(() => owner.push(i)));
+  let pos = 0;
+  const starts = EP04_PLAN.map((sh) => {
+    const start = words[owner[pos]].s;
+    pos += norm(sh.line).length;
+    return start;
   });
+  const end = words[words.length - 1].e + 1.1;
+  return starts.map((st, i) => ({start: st, length: (i + 1 < starts.length ? starts[i + 1] : end) - st}));
 };
+export const EP04_DURATION_S = (wordsJson as Word[])[(wordsJson as Word[]).length - 1].e + 1.1;
