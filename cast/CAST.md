@@ -15,6 +15,7 @@
 6. **No lesson numbers.** Ebo never says "Lesson one: …". He goes straight to each point, and the card on screen shows just its title.
 7. **Few infographics.** Show a point by having the cast act it out. Keep on-screen text to titles, chapter cards and the odd speech bubble, not stat cards, charts or check lists.
 8. **Only characters and props move.** No decorative effects: no cobwebs, spiders, tumbleweeds, money rain, confetti, coin bursts, glow rays, smoke or sparks, impact bursts, camera shake, or animated backgrounds. Backgrounds and plants stay still. Text graphics are fine.
+9. **Organic, not busy** (reference: an animated YouTube storytime the user loves). Most of the video is the character acting on a **plain soft backdrop**: one flat colour or a gentle gradient, no room, furniture or floor line. The camera punches in and out on that backdrop (wide → close-up on the face for the reaction) and the **acting carries it**: held poses with expression and mouth changes, the odd small hop. Keep **one recurring gag prop at most** per episode; show other props only when the joke needs them. Cut to a real location only for a quick acted-out bit, then come back. Text is rare and casual (a handwritten-style word or a short list that builds up), never a stat card or chart.
 
 ## Shared rig (all five characters)
 
