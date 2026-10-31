@@ -12,24 +12,18 @@ export const EboViewsSheet: React.FC = () => (
     cols={9}
     title="Ebo · views and the in-front arm"
     poses={[
-      P('view 0 (¾)', {view: 0}),
-      P('view 1 (front)', {view: 1}),
-      P('view 2 (hands in)', {view: 2}),
-      P('view 3 (back)', {view: 3}),
-      P('v1 arms out', {view: 1, armL: [80, -20], armR: [80, -20]}),
-      P('v3 back wave', {view: 3, armR: [130, 30]}),
-      P('F 180,+0', {armFront: true, armR: [180, 0]}),
-      P('F 175,+40', {armFront: true, armR: [175, 40]}),
-      P('F 170,+80', {armFront: true, armR: [170, 80]}),
-      P('F 160,+100', {armFront: true, armR: [160, 100]}),
-      P('F 190,+60', {armFront: true, armR: [190, 60]}),
-      P('F 200,+90', {armFront: true, armR: [200, 90]}),
-      P('L 180,+40', {armL: [180, 40]}),
-      P('L 165,+80', {armL: [165, 80]}),
-      P('v1 F 170,+60', {view: 1, armR: [170, 60]}),
-      P('v1 F 160,+110', {view: 1, armR: [160, 110]}),
-      P('v1 L 170,+60', {view: 1, armL: [170, 60]}),
-      P('v1 both 170,+60', {view: 1, armL: [170, 60], armR: [170, 60]}),
+      P('L 140,-10', {armL: [140, -10]}),
+      P('L 120,-40', {armL: [120, -40]}),
+      P('L 100,-60', {armL: [100, -60]}),
+      P('L 100,+60', {armL: [100, 60]}),
+      P('L 110,-90', {armL: [110, -90]}),
+      P('L 90,-100', {armL: [90, -100]}),
+      P('L 80,-120', {armL: [80, -120]}),
+      P('L 125,-70', {armL: [125, -70]}),
+      P('L 160,-30', {armL: [160, -30]}),
+      P('both 90,-100', {armL: [90, -100], armR: [138, -12]}),
+      P('both 80,-120', {armL: [80, -120], armR: [138, -12]}),
+      P('v1 L 100,-60', {view: 1, armL: [100, -60], armR: [100, -60]}),
     ]}
   />
 );

@@ -33,8 +33,8 @@ export const EP04_DURATION = Math.ceil((TIMES[TIMES.length - 1].start + TIMES[TI
 export const EP04_SHOT_TIMES = TIMES.map((x) => x.start);
 
 const CREAM = '#F3E6CF';
-/** Sets where Ebo is the host talking to camera (lip-synced); elsewhere he's acting the habit. */
-const HOST_SETS: Ep04Set[] = ['studio', 'chapter', 'green'];
+/** Ebo talks to camera (lip-synced) on the chapter cards and in shots marked `talk`; elsewhere he's acting the habit. */
+const HOST_SETS: Ep04Set[] = ['chapter', 'green'];
 
 /** The camera for a shot, from its planned start/end framing and move. */
 const shotCamera = (t: number, start: number, length: number, s: (typeof EP04_PLAN)[number]): Framing => {
@@ -161,7 +161,7 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
   const s = EP04_PLAN[i];
   const {start, length} = TIMES[i];
   const local = t - start;
-  const host = HOST_SETS.includes(s.set);
+  const host = s.talk || HOST_SETS.includes(s.set);
   return (
     <StageSizeContext.Provider value={{w: EP04_W, h: EP04_H}}>
       <NoScaleContext.Provider value>
@@ -190,6 +190,7 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
                   </RigCharacter>
                 );
               })}
+              {live(s.fore, f, local)}
             </VStage>
             <TopCaption chunks={CHUNKS} tSec={t} />
           </AbsoluteFill>

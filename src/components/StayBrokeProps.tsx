@@ -198,6 +198,18 @@ const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P>
   return Wrapped;
 };
 
+/** The back of the living-room couch, seen from behind (the reverse angle onto the TV). It sits in
+ * front of Ebo, so only his head and shoulders show over it. Origin at its bottom-centre. */
+const CouchBackDrawing: React.FC<{x?: number; y?: number; color?: string}> = ({x = 0, y = 0, color = '#C96F5A'}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-430} y={-240} width={860} height={240} rx={56} fill={color} {...S} strokeWidth={9} />
+    <rect x={-480} y={-180} width={100} height={180} rx={40} fill={color} {...S} strokeWidth={9} />
+    <rect x={380} y={-180} width={100} height={180} rx={40} fill={color} {...S} strokeWidth={9} />
+    <line x1={-340} x2={340} y1={-180} y2={-180} stroke={C.ink} strokeWidth={5} opacity={0.35} />
+  </g>
+);
+
+export const CouchBack = prop('CouchBack', CouchBackDrawing);
 export const Diploma = prop('Diploma', DiplomaDrawing);
 export const Sticky = prop('Sticky', StickyDrawing);
 export const StickyWall = prop('StickyWall', StickyWallDrawing);

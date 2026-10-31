@@ -34,6 +34,9 @@ export type CastConfig = {
   mouth: Partial<Record<Mouth, number | number[]>>; // arrays alternate every 4 frames (wobble, snore)
   /** Lip-sync levels from kit.lipFrame (0 rest, 1 wide, 2 mid, 3 round) → mouth frames. */
   lip?: (number | number[])[];
+  /** Highest the left (near) shoulder goes: Ebo's new master draws that arm over his head, so
+   * raised past this it would cover his face. Not applied in a back view. */
+  armLMax?: number;
   hide: string[];
   outfit?: Record<string, number>;
   blinkOffset: number;
@@ -69,6 +72,7 @@ export const CAST: Record<CastId, CastConfig> = {
     // 8 open · 9 gritted · 10 talk wide · 11 shout · 12 small o · 13 frown · 14 smirk
     mouth: {smile: 6, grin: 1, o: 5, scream: 11, frown: 13, flat: 0, wobbly: [7, 9], smirk: 14, snore: [12, 5], teeth: 2, laugh: 4, grimace: 9},
     lip: [6, [3, 1], [10, 8], 5],
+    armLMax: 120,
     hide: [],
     blinkOffset: 0,
   },

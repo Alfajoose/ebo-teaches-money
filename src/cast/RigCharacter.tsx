@@ -172,7 +172,8 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
     rot[upper] = ru;
     rot[lower] = lowerAbs - rest[base(lower)] - ru;
   };
-  setLimb(LIMBS.armL[0], LIMBS.armL[1], pose.armL[0], pose.armL[0] + pose.armL[1]);
+  const armLUp = cfg.armLMax !== undefined && view !== 3 ? Math.min(pose.armL[0], cfg.armLMax) : pose.armL[0];
+  setLimb(LIMBS.armL[0], LIMBS.armL[1], armLUp, armLUp + pose.armL[1]);
   setLimb(armR[0], armR[1], -pose.armR[0], -(pose.armR[0] + pose.armR[1]));
   setLimb(LIMBS.legL[0], LIMBS.legL[1], -pose.legL[0], -(pose.legL[0] - pose.legL[1]));
   setLimb(LIMBS.legR[0], LIMBS.legR[1], -pose.legR[0], -(pose.legR[0] - pose.legR[1]));

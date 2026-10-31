@@ -91,6 +91,7 @@ export const Panel: React.FC<{s: PlanShot; n: number; setNode: React.ReactNode}>
           {c.hold}
         </RigCharacter>
       ))}
+      {(s as {fore?: React.ReactNode}).fore}
     </VStage>
   );
 };

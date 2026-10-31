@@ -205,7 +205,7 @@ const Couch: React.FC<{x: number; color?: string}> = ({x, color = '#C96F5A'}) =>
 );
 
 /** The TV on its stand, facing the couch (static screen glow is part of the set). */
-const TVSet: React.FC<{x: number; on?: boolean}> = ({x, on = true}) => (
+export const TVSet: React.FC<{x: number; on?: boolean}> = ({x, on = true}) => (
   <g transform={`translate(${x} ${FLOOR_Y})`}>
     <rect x={-170} y={-150} width={340} height={150} fill="#8B6A48" stroke={C.ink} strokeWidth={8} />
     <line x1={0} x2={0} y1={-150} y2={0} stroke={C.ink} strokeWidth={5} />
@@ -289,6 +289,23 @@ const PlainFloor: React.FC<{color: string}> = ({color}) => (
   <g>
     <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill={color} />
     <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke={C.ink} strokeWidth={8} />
+  </g>
+);
+
+/** The living room's reverse angle: the TV wall the couch faces (the couch back is a
+ * foreground prop, CouchBack). In the front-on couch shots the TV is where the camera is. */
+export const LivingRoomTV: React.FC<{wall?: string; on?: boolean}> = ({wall = '#E9D3B4', on = true}) => (
+  <g>
+    <rect x={-1000} y={-900} width={4000} height={1800} fill={wall} />
+    <rect x={-1000} y={700} width={4000} height={26} fill="#000" opacity={0.08} />
+    <g transform="translate(420 280) rotate(2)">
+      <rect x={-90} y={-70} width={180} height={140} fill="#F3E3B6" stroke={C.ink} strokeWidth={7} />
+      <circle cx={0} cy={-6} r={34} fill="#F3C53F" stroke={C.ink} strokeWidth={4} />
+    </g>
+    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill="#B98E62" />
+    <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke={C.ink} strokeWidth={8} />
+    <TVSet x={1060} on={on} />
+    <Plant x={1560} y={FLOOR_Y} t={0} scale={1.2} />
   </g>
 );
 
