@@ -1,6 +1,11 @@
 """Copy a walk / run cycle onto a master character, motion only.
 
-usage: python3 -I export_cycle.py CYCLE_XFL CYCLE_SYMBOL MASTER_XFL MASTER_SYMBOL OUT.json
+usage: python3 -I export_cycle.py CYCLE_XFL CYCLE_SYMBOL MASTER_XFL MASTER_SYMBOL OUT.json [REST_XFL REST_SYMBOL]
+
+With REST_XFL / REST_SYMBOL (the cycle's own character, standing), the cycle is retargeted
+onto a different character: each body part gets the cycle's movement away from that
+character's standing pose, added to the master's own standing pose (e.g. Obuor's walk on
+Ebo, without Obuor's proportions).
 
 The cycle files hold older versions of the characters (older faces, Mica's earlier
 "Konka" head). Only the body motion is taken: for each body layer and frame, the cycle's rotation and
@@ -52,9 +57,10 @@ def with_rotation(shape, angle):
     c, s = math.cos(angle), math.sin(angle)
     return (c * k[0] - s * k[1], s * k[0] + c * k[1], c * k[2] - s * k[3], s * k[2] + c * k[3])
 
-def main(cyc_dir, cyc_sym, mst_dir, mst_sym, out):
+def main(cyc_dir, cyc_sym, mst_dir, mst_sym, out, rest_dir=None, rest_sym=None):
     cyc, n = layer_frames(Doc(cyc_dir), cyc_sym)
     mst, _ = layer_frames(Doc(mst_dir), mst_sym)
+    rest = layer_frames(Doc(rest_dir), rest_sym)[0] if rest_dir else None
     # a closing frame that repeats frame 0 is only there to close the loop in Animate
     if n > 1 and all(max(abs(u - v) for u, v in zip(cyc[k][-1][0], cyc[k][0][0])) < 0.01 for k in BODY):
         n -= 1
@@ -62,9 +68,11 @@ def main(cyc_dir, cyc_sym, mst_dir, mst_sym, out):
     for name in BODY:
         m0, tp_m, par_m, sym_m = mst[name][0]
         pivot = lambda m, tp: (m[0] * tp[0] + m[2] * tp[1] + m[4], m[1] * tp[0] + m[3] * tp[1] + m[5])
-        c0, tp_c0 = cyc[name][0][0], cyc[name][0][1]
-        same_part = cyc[name][0][3] == sym_m
-        if not same_part:
+        # what the motion is measured from: the cycle's own character standing (retarget),
+        # or else the cycle's first frame
+        c0, tp_c0 = (rest[name][0][0], rest[name][0][1]) if rest else (cyc[name][0][0], cyc[name][0][1])
+        same_part = cyc[name][0][3] == sym_m and not rest
+        if not same_part and not rest:
             print(f'  {name}: drawing differs from the master ({cyc[name][0][3]} vs {sym_m}), copying relative motion')
         seq = []
         for f in range(n):
@@ -83,8 +91,8 @@ def main(cyc_dir, cyc_sym, mst_dir, mst_sym, out):
             ty = py - (b * tp_m[0] + d * tp_m[1])
             seq.append([round(v, 5) for v in (a, b, c, d, tx, ty)])
         layers[name] = seq
-    json.dump(dict(source=os.path.basename(cyc_dir.rstrip('/')), symbol=cyc_sym, fps=24, frames=n, layers=layers), open(out, 'w'))
+    json.dump(dict(source=os.path.basename(cyc_dir.rstrip('/')), symbol=cyc_sym, retargeted_from=rest_sym, fps=24, frames=n, layers=layers), open(out, 'w'))
     print(f'{out}: {n} frames at 24 fps, {len(layers)} body layers')
 
 if __name__ == '__main__':
-    main(*sys.argv[1:6])
+    main(*sys.argv[1:8])

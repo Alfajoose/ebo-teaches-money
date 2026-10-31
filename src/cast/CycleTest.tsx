@@ -9,6 +9,7 @@ import {C, FONT} from '../theme';
 /** Dev sheet: every walk / run cycle on its character, looping in place over a ground line. */
 export const CYCLE_ROWS: [CastId, CycleName, string][] = [
   ['ebo', 'run', 'Ebo — run'],
+  ['ebo', 'fastWalk', 'Ebo — fast walk'],
   ['christy', 'walk', 'Christy — walk'],
   ['christy', 'fastWalk', 'Christy — fast walk'],
   ['obuor', 'fastWalk', 'Obuor — fast walk'],
@@ -26,10 +27,10 @@ export const CycleTest: React.FC<{frame?: number; travel?: boolean}> = ({frame, 
           : <line x1={0} x2={1920} y1={800} y2={800} stroke={C.ink} strokeWidth={3} opacity={0.3} />}
         {CYCLE_ROWS.map(([who, cycle, label], i) => (
           <g key={label}>
-            <text x={travel ? 120 : 220 + i * 370} y={travel ? 150 + i * 200 : 900} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={C.ink}>
+            <text x={travel ? 120 : 170 + i * 316} y={travel ? 150 + i * 200 : 900} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={C.ink}>
               {label}
             </text>
-            <RigCharacter who={who} x={travel ? -200 + ((cycleSpeed(who, cycle) * 0.3 * t) / 30) % 2300 : 220 + i * 370} y={travel ? 180 + i * 200 : 800} scale={travel ? 0.3 : 0.9} pose={{...POSES.standing, eyes: 'open', mouth: 'smile'}} t={t} cycle={cycle} noBlink />
+            <RigCharacter who={who} x={travel ? -200 + ((cycleSpeed(who, cycle) * 0.3 * t) / 30) % 2300 : 170 + i * 316} y={travel ? 180 + i * 200 : 800} scale={travel ? 0.3 : 0.78} pose={{...POSES.standing, eyes: 'open', mouth: 'smile'}} t={t} cycle={cycle} noBlink />
           </g>
         ))}
       </svg>

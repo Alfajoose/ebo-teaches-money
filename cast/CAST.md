@@ -121,7 +121,7 @@ These are your own cycles, copied onto the current characters. Only the body mot
 
 | Character | Cycles | Animate file |
 |---|---|---|
-| Ebo | run (8 frames) | `cycles/Ebo_cycles.fla` |
+| Ebo | run (8 frames), fast walk (5, Obuor's, retargeted) | `cycles/Ebo_cycles.fla` |
 | Christy | walk (8), fast walk (5) | `cycles/Christy_cycles.fla` |
 | Obuor | fast walk (5) | `cycles/Obuor_cycles.fla` |
 | Mica | fast walk (5), from `konka_drip_fast_walk.fla` | `cycles/Mica_cycles.fla` |
@@ -129,6 +129,7 @@ These are your own cycles, copied onto the current characters. Only the body mot
 - All cycles are held keys at 24 fps and loop in place. A shot moves the character across the set with translation only.
 - In each file, the cycles are the symbols `<Name>/<Name> walk` (or `fast walk`, `run`), next to an untouched copy of the master rig.
 - In the show code, use `<RigCharacter cycle="walk" … />`. The pose still drives the face, tilt and lift.
+- Ebo's fast walk is Obuor's, retargeted with `export_cycle.py … REST_XFL REST_SYMBOL`. Each part gets Obuor's movement away from Obuor's standing pose, added to Ebo's own standing pose, so Ebo keeps his proportions.
 - Ama has no cycle yet.
 - To add a cycle, run `tools/export_cycle.py` (copies the motion onto a master) and `tools/build_cycle_fla.py` (builds the Animate file).
 - If a part was redrawn since the cycle was made, like Mica's head versus the old Konka head, it gets the cycle's movement relative to the cycle's first frame instead of the old position.

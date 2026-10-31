@@ -1,5 +1,6 @@
 import type {CastId} from './castConfig';
 import eboRun from './data/cycles/ebo-run.json';
+import eboFastWalk from './data/cycles/ebo-fastwalk.json';
 import christyWalk from './data/cycles/christy-walk.json';
 import christyFastWalk from './data/cycles/christy-fastwalk.json';
 import obuorFastWalk from './data/cycles/obuor-fastwalk.json';
@@ -15,7 +16,7 @@ export type Cycle = {source: string; fps: number; frames: number; layers: Record
 export type CycleName = 'walk' | 'fastWalk' | 'run';
 
 export const CYCLES: Partial<Record<CastId, Partial<Record<CycleName, Cycle>>>> = {
-  ebo: {run: eboRun as Cycle},
+  ebo: {run: eboRun as Cycle, fastWalk: eboFastWalk as Cycle}, // fast walk: Obuor's, retargeted
   christy: {walk: christyWalk as Cycle, fastWalk: christyFastWalk as Cycle},
   obuor: {fastWalk: obuorFastWalk as Cycle},
   mica: {fastWalk: micaFastWalk as Cycle},
@@ -32,7 +33,7 @@ export const getCycle = (who: CastId, name: CycleName): Cycle => {
  * slide when a shot moves the character: x = x0 + cycleSpeed(who, name) * scale * seconds.
  * Estimated from each cycle's stride (cast/tools: stride length x 2 per loop).
  */
-const SPEED: Record<string, number> = {'ebo-run': 760, 'christy-walk': 360, 'christy-fastWalk': 580, 'obuor-fastWalk': 440, 'mica-fastWalk': 540};
+const SPEED: Record<string, number> = {'ebo-run': 760, 'ebo-fastWalk': 434, 'christy-walk': 360, 'christy-fastWalk': 580, 'obuor-fastWalk': 440, 'mica-fastWalk': 540};
 export const cycleSpeed = (who: CastId, name: CycleName) => SPEED[`${who}-${name}`] ?? 0;
 
 /** Cycle frame for a video frame `t` at `videoFps` — the cycle keeps its own 24 fps timing. */
