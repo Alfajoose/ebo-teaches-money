@@ -115,6 +115,29 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 
 ---
 
+## Pose library (`src/cast/poses.ts`)
+
+There are 48 named poses in six groups, tuned for this rig (big head, short limbs). All of them use rotation and translation only. Use them as `{...POSE.explain, eyes: 'happy'}`. Faces can be overridden per shot.
+
+![pose library](sheets/pose-library.png)
+
+| Group | Poses |
+|---|---|
+| Standing | stand, relaxed, handsBehind, handsOnHips, armsCrossed, lean |
+| Talking & gestures | explain, explainBoth, point, pointUp, pointAtYou, ideaFinger, stopHand, shrug, presentTaDa, wave |
+| Emotions | happy, cheer, jumpForJoy, shocked, scared, sad, devastated, angry, smug, bored, confused, ugh, thinking, sleepy |
+| Sitting | sit, sitSlouch, sitForward, sitPhone, sitEat, sitRemote (place on the seat top) |
+| Lying | lieBack, lieAsleep, lieStarfish, lieDreaming (place `LIE_Y` above the floor or mattress) |
+| Actions | holdOut, showToCamera, carry, typing, checkPhone, sneak, kneel, kickback |
+
+How the rig moves (`sheets/poses-calibration.png`):
+- **Arms:** 0 means hanging, 90 straight out, about 135 up and out. Past about 140, the hand hides behind the head.
+- **Elbows:** a positive angle bends the forearm up and in, toward the chest. A negative angle bends it down and out.
+- **The head is drawn over the arms,** so a hand can't touch the face. Poses like facepalm or scratching the head don't work on this rig.
+- **Expression comes mostly from the body:** `lift` (sink or jump), `tilt` (lean) and `headTilt` do most of the work, plus the eye and mouth swaps.
+
+Each group has its own sheet composition, `PoseSheet-<group>`, which renders it for any character.
+
 ## Walk and run cycles (`cycles/`)
 
 These are your own cycles, copied onto the current characters. Only the body motion is copied: limb, torso and head rotation and position, frame by frame. Faces, outfits and drawings stay each character's own. Your original files are in `cycles/source/`.

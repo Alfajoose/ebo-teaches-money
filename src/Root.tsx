@@ -5,6 +5,7 @@ import {VendingVideo, VideoProps} from './Video';
 import {CastTest} from './cast/CastTest';
 import {FaceTest} from './cast/FaceTest';
 import {CycleTest} from './cast/CycleTest';
+import {PoseSheetOld, PoseSheetCal, PoseSheetGroup} from './cast/PoseSheetComps';
 import {CastVideo} from './castep/CastVideo';
 import {EboEp01, EP01_DURATION} from './series/ep01';
 import {EboEp01Short, EP01_SHORT_DURATION} from './series/ep01short';
@@ -77,6 +78,11 @@ export const RemotionRoot: React.FC = () => (
   <Composition id="Ep04-Storyboard" component={Ep04Storyboard} durationInFrames={EP04_BOARD_PANELS} fps={1} width={1920} height={1080} />
   <Composition id="Ep03-Storyboard" component={Ep03Storyboard} durationInFrames={EP03_BOARD_PANELS} fps={1} width={1920} height={1080} />
   <Composition id="EboTeachesMoney-Ep01-Short" component={EboEp01Short} durationInFrames={EP01_SHORT_DURATION} fps={VFPS} width={VW} height={VH} defaultProps={{layer: 'full' as const}} />
+  {(['stand', 'talk', 'emotion', 'sit', 'lie', 'action'] as const).map((g) => (
+    <Composition key={g} id={`PoseSheet-${g}`} component={PoseSheetGroup} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{group: g, who: 'ebo' as const}} />
+  ))}
+  <Composition id="PoseSheet-Cal" component={PoseSheetCal} durationInFrames={1} fps={30} width={1920} height={1080} />
+  <Composition id="PoseSheet-Old" component={PoseSheetOld} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{}} />
   <Composition id="CycleTest" component={CycleTest} durationInFrames={60} fps={VFPS} width={WIDTH} height={HEIGHT} defaultProps={{}} />
   <Composition id="FaceTest" component={FaceTest} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
   <Composition
