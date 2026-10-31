@@ -29,6 +29,14 @@ renders/              earlier versions (the Benny pilot, the horizontal cast ver
 
 The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`VendingMachineMoneyCast`) are still in `src/` as their own compositions.
 
+## Making an episode
+
+1. **Script.** Approved before any voice is generated.
+2. **Voice.** ElevenLabs (Ebo's Dan voice), then word timings.
+3. **Shot list and storyboard.** Approved before any animation. Copy `episodes/_template/shotlist.md`, plan every shot (size, angle, camera move, who's in frame, action, set, props, transition), and review a rough storyboard frame per shot.
+4. **Animate** to the approved board.
+5. **Render** the video and **export** the Animate `.fla`.
+
 ## House style
 
 - Snappy, pose-to-pose motion: 2–3 frame snaps with overshoot, then dead-still holds.
