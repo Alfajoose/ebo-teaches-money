@@ -32,7 +32,6 @@ const TIMES = ep04Times();
 export const EP04_DURATION = Math.ceil((TIMES[TIMES.length - 1].start + TIMES[TIMES.length - 1].length) * VFPS);
 export const EP04_SHOT_TIMES = TIMES.map((x) => x.start);
 
-const CREAM = '#F3E6CF';
 /** Ebo talks to camera (lip-synced) on the chapter cards and in shots marked `talk`; elsewhere he's acting the habit. */
 const HOST_SETS: Ep04Set[] = ['chapter', 'green'];
 
@@ -94,7 +93,7 @@ const Overlay: React.FC<{text?: string; t: number; start: number}> = ({text, t, 
         </Slam>
         <Slam t={t} at={start} dist={-300} twist={-8}>
           {lines.map((l, i) => (
-            <text key={l} x={142} y={440 + i * 140} fontFamily={FONT} fontWeight={900} fontSize={lines.length > 1 ? 136 : 150} fill={CREAM} letterSpacing={2}>
+            <text key={l} x={142} y={440 + i * 140} fontFamily={FONT} fontWeight={900} fontSize={lines.length > 1 ? 136 : 150} fill={C.ink} letterSpacing={2}>
               {l}
             </text>
           ))}
@@ -107,7 +106,7 @@ const Overlay: React.FC<{text?: string; t: number; start: number}> = ({text, t, 
     return (
       <g>
         <Slam t={t} at={start + 0.15} dist={-200}>
-          <text x={150} y={360} fontFamily={FONT} fontWeight={900} fontSize={64} fill={CREAM} letterSpacing={6}>
+          <text x={150} y={360} fontFamily={FONT} fontWeight={900} fontSize={64} fill={C.ink} letterSpacing={6}>
             THE ULTIMATE GUIDE TO
           </text>
         </Slam>
@@ -138,7 +137,7 @@ const Overlay: React.FC<{text?: string; t: number; start: number}> = ({text, t, 
         <text x={600} y={460} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={76} fill="#fff" letterSpacing={3}>
           SUBSCRIBE
         </text>
-        <text x={150} y={620} fontFamily={FONT} fontWeight={900} fontSize={44} fill={CREAM} letterSpacing={6}>
+        <text x={150} y={620} fontFamily={FONT} fontWeight={900} fontSize={44} fill={C.ink} letterSpacing={6}>
           EBO TEACHES MONEY · EP 4
         </text>
       </Slam>
@@ -167,7 +166,7 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
       <NoScaleContext.Provider value>
         <HandDrawnContext.Provider value={handDrawn}>
           <AbsoluteFill style={{background: '#000'}}>
-            <VStage framing={shotCamera(t, start, length, s)} bg="#241B2F" blurBg={ep04Set(s.set)} overlay={<Overlay text={s.text} t={t} start={start} />}>
+            <VStage framing={shotCamera(t, start, length, s)} bg="#D2C4EE" blurBg={ep04Set(s.set)} overlay={<Overlay text={s.text} t={t} start={start} />}>
               {live(s.props, f, local)}
               {s.cast.map((c, k) => {
                 const walking = c.cycle !== undefined;

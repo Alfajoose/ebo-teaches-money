@@ -8,7 +8,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Cold open at his front door: Ebo throws his arms up, beaming, straight to camera.",
-  "set": "door",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -21,7 +21,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Points straight at us. Slight push.",
-  "set": "door",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -34,7 +34,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Easy shrug.",
-  "set": "door",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -47,7 +47,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Insert: the framed degree on his hallway wall gets a red NOT NEEDED stamp (stamp snaps on).",
-  "set": "door",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -60,7 +60,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Ebo holds up a completely blank CV.",
-  "set": "door",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -111,8 +111,8 @@
   "size": "CU",
   "move": "snap-zoom",
   "inFrame": "Ebo",
-  "action": "Ebo proudly opens a giant bag of chips for breakfast. Snap-zoom on the grin.",
-  "set": "living",
+  "action": "Backdrop: a proud, slightly unhinged grin. Snap-zoom on it.",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -125,7 +125,7 @@
   "move": "drift",
   "inFrame": "Ebo",
   "action": "Sincere for a beat. Slow sideways drift.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -138,7 +138,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "The grin creeps back. Push in.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -151,7 +151,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom: wide eyes, rubbing hands.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -216,7 +216,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Ebo states the fact like a news anchor.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -229,7 +229,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom: unimpressed.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -267,7 +267,7 @@
   "size": "WS",
   "move": "static",
   "inFrame": "Ebo",
-  "action": "Kitchen: Ebo at the table, cereal.",
+  "action": "Kitchen: Ebo at the breakfast table, eyes already drifting.",
   "set": "kitchen",
   "text": "",
   "out": "cut"
@@ -307,7 +307,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "…his eyes slide sideways.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -372,7 +372,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Finger up, making a point.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -385,7 +385,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Push in on \"entire personality\".",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -411,7 +411,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Eyes still on the screen (on us), a tiny smirk.",
-  "set": "livingNight",
+  "set": "backdrop",
   "text": "",
   "out": "cut to chapter"
  },
@@ -437,7 +437,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Mock horror.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -489,7 +489,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom: full disgust face.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -502,7 +502,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Reasoning with us.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -528,7 +528,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Wagging a finger at us.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -554,7 +554,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Alarmed.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -567,7 +567,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom 1.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -580,7 +580,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom 2 (closer).",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -593,7 +593,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom 3 (closest): a gasp, hand over his mouth.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -696,7 +696,7 @@
   "size": "WS",
   "move": "static",
   "inFrame": "Ebo",
-  "action": "Ebo at the desk, cracking his knuckles.",
+  "action": "Ebo at the empty desk, cracking his knuckles.",
   "set": "work",
   "text": "",
   "out": "cut"
@@ -749,7 +749,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Hand on chin, very pleased with himself.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -879,7 +879,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "He slams the laptop shut. Snap-zoom.",
-  "set": "work",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -905,7 +905,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "…and lowers it slowly. Push in.",
-  "set": "office",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -918,7 +918,7 @@
   "move": "drift",
   "inFrame": "Ebo",
   "action": "Explaining.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -931,7 +931,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Ticks it off on a finger.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -944,7 +944,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Jump cut closer.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -957,7 +957,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Jump cut closer again.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -983,7 +983,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Cheerful shrug.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1060,7 +1060,7 @@
   "size": "EWS → MS",
   "move": "push-in",
   "inFrame": "Ebo",
-  "action": "Ebo lies on the living-room floor, arms out, candles lit, waiting. Very slow push-in.",
+  "action": "Ebo lies on the living-room floor, arms out, waiting. Very slow push-in.",
   "set": "livingNight",
   "text": "",
   "out": "cut"
@@ -1113,7 +1113,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "The real number, deadpan.",
-  "set": "livingNight",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1126,7 +1126,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom: big fake grin.",
-  "set": "livingNight",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1204,7 +1204,7 @@
   "move": "whip-pan",
   "inFrame": "Ebo",
   "action": "Whip into the kitchen, pointing right.",
-  "set": "kitchen",
+  "set": "backdrop",
   "text": "",
   "out": "whip"
  },
@@ -1243,7 +1243,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Slow, intense push-in on narrowed eyes. Long hold.",
-  "set": "kitchen",
+  "set": "backdrop",
   "text": "2017 (flashback date, small)",
   "out": "cut"
  },
@@ -1269,7 +1269,7 @@
   "move": "static",
   "inFrame": "Ebo",
   "action": "Sincere beat.",
-  "set": "kitchen",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1282,7 +1282,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Back to sarcasm. Push in.",
-  "set": "kitchen",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1295,7 +1295,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Leaning in, whispering.",
-  "set": "kitchen",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1308,7 +1308,7 @@
   "move": "snap-zoom",
   "inFrame": "Ebo",
   "action": "Snap-zoom: horror, hands on his cheeks.",
-  "set": "kitchen",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1347,7 +1347,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Sincere and warm. Slow push.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1425,7 +1425,7 @@
   "move": "push-in",
   "inFrame": "Ebo",
   "action": "Nod to camera.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },
@@ -1438,7 +1438,7 @@
   "move": "follow",
   "inFrame": "Ebo",
   "action": "Ebo fast-walks off frame right; the camera follows.",
-  "set": "living",
+  "set": "backdrop",
   "text": "",
   "out": "cut"
  },

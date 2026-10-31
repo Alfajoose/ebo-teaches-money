@@ -292,6 +292,23 @@ const PlainFloor: React.FC<{color: string}> = ({color}) => (
   </g>
 );
 
+/**
+ * Ebo's home base (house rule 9): a plain soft lilac backdrop, lighter in the middle. No room,
+ * no furniture, no floor line: the acting carries the shot. Still, like every set.
+ */
+export const Backdrop: React.FC<{id?: string}> = ({id = 'backdrop'}) => (
+  <g>
+    <defs>
+      <radialGradient id={`${id}-glow`} cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stopColor="#F4F0FC" />
+        <stop offset="0.22" stopColor="#E6DEF7" />
+        <stop offset="0.6" stopColor="#D2C4EE" />
+      </radialGradient>
+    </defs>
+    <rect x={-1040} y={-1400} width={4000} height={4000} fill={`url(#${id}-glow)`} />
+  </g>
+);
+
 /** The living room's reverse angle: the TV wall the couch faces (the couch back is a
  * foreground prop, CouchBack). In the front-on couch shots the TV is where the camera is. */
 export const LivingRoomTV: React.FC<{wall?: string; on?: boolean}> = ({wall = '#E9D3B4', on = true}) => (
