@@ -332,7 +332,7 @@
   "size": "MS",
   "move": "push-in",
   "inFrame": "Ebo",
-  "action": "TV still on (camera side), phone comes out too: double screens.",
+  "action": "TV still on (camera side), phone comes out too: double screens. We see the back of the phone; his eyes are on it.",
   "set": "living",
   "text": "",
   "out": "cut"
@@ -511,10 +511,10 @@
   "start": 92.4,
   "length": 3.44,
   "line": "when you could spend twelve hours watching someone else develop theirs?",
-  "size": "MS → ECU phone",
+  "size": "MS → CU",
   "move": "push-in",
   "inFrame": "Ebo",
-  "action": "Ebo on the couch, watching a painting video on his phone, entranced. Push to the phone.",
+  "action": "Ebo on the couch, entranced by a painting video on his phone (we see its back). Push in on his face.",
   "set": "living",
   "text": "",
   "out": "cut"

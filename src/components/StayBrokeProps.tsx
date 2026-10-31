@@ -63,7 +63,7 @@ const StickyWallDrawing: React.FC<{x?: number; y?: number; n?: number}> = ({x = 
 );
 
 /** A big phone held up to camera. Origin at its centre. Screens: scroll feed, screenshot gallery, job page. */
-const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen?: 'scroll' | 'gallery' | 'job' | 'off'; t?: number}> = ({
+const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen?: 'scroll' | 'gallery' | 'job' | 'off' | 'back'; t?: number}> = ({
   x = 0,
   y = 0,
   rotate = 0,
@@ -72,7 +72,17 @@ const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen
 }) => (
   <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
     <rect x={-70} y={-130} width={140} height={260} rx={22} fill={C.ink} />
-    <rect x={-60} y={-112} width={120} height={224} rx={10} fill={screen === 'off' ? '#4B566E' : '#F6F0E4'} />
+    {screen === 'back' && (
+      // the back of the phone: he's the one looking at the screen
+      <g>
+        <rect x={-58} y={-118} width={116} height={236} rx={16} fill="#3A3F4E" />
+        <rect x={-46} y={-104} width={44} height={56} rx={12} fill={C.ink} />
+        <circle cx={-24} cy={-90} r={10} fill="#5B6478" stroke={C.ink} strokeWidth={3} />
+        <circle cx={-24} cy={-62} r={10} fill="#5B6478" stroke={C.ink} strokeWidth={3} />
+        <circle cx={0} cy={10} r={16} fill="none" stroke="#5B6478" strokeWidth={5} />
+      </g>
+    )}
+    {screen !== 'back' && <rect x={-60} y={-112} width={120} height={224} rx={10} fill={screen === 'off' ? '#4B566E' : '#F6F0E4'} />}
     {screen === 'scroll' &&
       [0, 1, 2].map((i) => (
         <g key={i} transform={`translate(0 ${-72 + i * 74 - (Math.floor(t / 4) % 2) * 20})`}>

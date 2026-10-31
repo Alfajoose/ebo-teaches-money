@@ -144,6 +144,10 @@ How the rig moves (`sheets/poses-calibration.png`, `sheets/ebo-views.png`):
 - **Views (Ebo only):** `view: 1 | 2 | 3`. Other rigs ignore it.
 - **Expression comes mostly from the body:** `lift` (sink or jump), `tilt` (lean) and `headTilt` do most of the work, plus the eye and mouth swaps.
 
+Held props (`hold`):
+- A prop held in the hand never mirrors when the character faces left, so text and screens stay readable.
+- **Screens face whoever is looking at them.** When Ebo is using his phone, we see its back (`<BigPhone screen="back" />`) and his eyes are on it (lookX / lookY toward the hand). The screen faces us only in an insert that frames just the phone, or when he's showing it to us.
+
 Each group has its own sheet composition, `PoseSheet-<group>`, which renders it for any character. `Ebo-Views`, `Ebo-Eyes` and `Ebo-Mouths` are the review sheets for Ebo's new master.
 
 ## Walk and run cycles (`cycles/`)

@@ -231,7 +231,8 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
     cam,
     mmul(Tm(x, y), mmul(Sm(facing * s, s), mmul(Rm(pose.tilt), mmul(Tm(0, pose.lift / cfg.scale), Tm(-ox, -oy))))),
   ) as M;
-  const handM = mmul(outer, mmul(Tm(hand[0], hand[1]), Sm(1 / cfg.scale, 1 / cfg.scale)));
+  // facing left mirrors the body, not what he holds (text and screens stay readable)
+  const handM = mmul(outer, mmul(Tm(hand[0], hand[1]), Sm(facing / cfg.scale, 1 / cfg.scale)));
 
   if (cap) {
     const locals: Record<string, M> = {};
@@ -260,7 +261,7 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
         {children && (
           // held props: tell the Animate export where the hand is on screen
           <CameraContext.Provider value={handM}>
-            <g transform={`translate(${hand[0]} ${hand[1]}) scale(${1 / cfg.scale})`}>{children}</g>
+            <g transform={`translate(${hand[0]} ${hand[1]}) scale(${facing / cfg.scale} ${1 / cfg.scale})`}>{children}</g>
           </CameraContext.Provider>
         )}
       </g>

@@ -31,7 +31,7 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 23 | 0:48.8 | 2.1s | Supposed to be working on something important? | WS | static | Desk, laptop open: a real deadline. Ebo looks determined… | work | – | cut |
 | 24 | 0:50.9 | 1.0s | You guessed it. | CU | static | …his eyes slide sideways. | work | – | cut |
 | 25 | 0:51.9 | 1.2s | Television! | WS | whip-pan | Whip to the living room: Ebo dives onto the couch. | living | – | cut |
-| 26 | 0:53.1 | 3.6s | And if you're feeling particularly ambitious, switch to your phone. | MS | push-in | TV still on (camera side), phone comes out too: double screens. | living | – | cut |
+| 26 | 0:53.1 | 3.6s | And if you're feeling particularly ambitious, switch to your phone. | MS | push-in | TV still on (camera side), phone comes out too: double screens. We see the back of the phone; his eyes are on it. | living | – | cut |
 | 27 | 0:56.6 | 2.4s | Because why waste eight hours watching television | ECU | static | Insert: the TV screen. | livingTV | – | cut |
 | 28 | 0:59.0 | 4.8s | when you can waste twelve hours scrolling through videos of strangers doing absolutely nothing? | ECU | static | Insert: the phone feed scrolling, held frames. | living | – | cut |
 | 29 | 1:03.9 | 4.4s | Remember, the goal isn't to relax. Relaxing is perfectly normal. | MS | static | Finger up, making a point. | living | – | cut |
@@ -45,7 +45,7 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 37 | 1:27.0 | 1.2s | Learning to code? | ECU | static | Insert: lines of code on the laptop. | work | – | cut |
 | 38 | 1:28.2 | 1.8s | Absolutely disgusting. | ECU | snap-zoom | Snap-zoom: full disgust face. | work | – | cut |
 | 39 | 1:29.9 | 2.5s | Why would you spend your free time developing a skill | MS | static | Reasoning with us. | work | – | cut |
-| 40 | 1:32.4 | 3.4s | when you could spend twelve hours watching someone else develop theirs? | MS → ECU phone | push-in | Ebo on the couch, watching a painting video on his phone, entranced. Push to the phone. | living | – | cut |
+| 40 | 1:32.4 | 3.4s | when you could spend twelve hours watching someone else develop theirs? | MS → CU | push-in | Ebo on the couch, entranced by a painting video on his phone (we see its back). Push in on his face. | living | – | cut |
 | 41 | 1:35.8 | 3.2s | And please, don't even think about trying something new. | MS | static | Wagging a finger at us. | work | – | cut |
 | 42 | 1:39.0 | 2.1s | You might discover you're actually good at it. | WS | static | Fantasy: Ebo tries painting… and it's good. He's shocked. | work | – | cut |
 | 43 | 1:41.1 | 1.0s | And then what? | CU | push-in | Alarmed. | work | – | cut |
