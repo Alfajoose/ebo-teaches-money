@@ -12,9 +12,9 @@ import {Popcorn, Remote, Laptop, Easel, Brush, HamsterWheel, CrystalBall, Candle
 import {FLOOR_Y, Bedroom, Office} from '../backgrounds/Backgrounds';
 import {SITTING} from '../castep/shared';
 import {Studio, LivingRoom, SneakerRoom, Table} from './sets';
-import {VFPS, Word, makeAt, VStage, HWIDE, HMEDIUM, HCLOSE, snapPose, stepAt, lipFrame, lipHeadNod, chunkWords, TopCaption, BigText} from './kit';
+import {VFPS, Word, makeAt, VStage, HWIDE, HMEDIUM, HCLOSE, snapPose, stepAt, lipFrame, lipHeadNod, chunkWords, TopCaption} from './kit';
 import {C, FONT} from '../theme';
-import {Slam, Still, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
+import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
 import wordsJson from './data/ep03-words.json';
 import envJson from './data/ep03-env.json';
@@ -23,7 +23,8 @@ import envJson from './data/ep03-env.json';
  * EBO TEACHES MONEY — Episode 3: How to Stay Poor (16:9 long-form, 1920×1080).
  * Ebo sarcastically "teaches" six habits that keep you broke, the cast act each one out,
  * then he flips it into what to do instead. Each habit opens on a chapter card (no
- * numbers). Every beat is timed to the voiceover's word timings (data/ep03-words.json);
+ * numbers). Light on infographics: the cast act the points out; on-screen text is only
+ * the title, the chapter cards, the FLIP IT marker, one speech bubble and the end card. Every beat is timed to the voiceover's word timings (data/ep03-words.json);
  * the voice has a one-second pause before each chapter (data/ep03-pauses.json).
  */
 
@@ -41,7 +42,6 @@ const EBO_X = 760;
 const SEAT_Y = FLOOR_Y - 110; // sitting on the couch
 const CREAM = '#F3E6CF';
 const PLUM = '#241B2F';
-const GREEN = '#7BE07B';
 
 // ───────────────────────── cast ─────────────────────────
 
@@ -108,49 +108,12 @@ const walkTo = (who: CastId, cycle: CycleName, t: number, t0: number, x0: number
   return {x: done ? x1 : x0 + dir * dist, walking: !done, facing: (dir > 0 ? 1 : -1) as 1 | -1};
 };
 
-// ───────────────────────── graphics (screen space, 1920×1080) ─────────────────────────
+// ───────────────────────── graphics (kept to a minimum: titles, FLIP IT, one speech bubble) ─────────────────────────
 
 const textW = (text: string, size: number) => text.length * size * 0.68 + size * 1.0;
 
-/** Rounded label; `mark` adds a green tick or a red cross in front. */
-const Chip: React.FC<{x: number; y: number; text: string; size?: number; fill?: string; color?: string; mark?: 'yes' | 'no'; anchor?: 'start' | 'middle'}> = ({
-  x,
-  y,
-  text,
-  size = 46,
-  fill = C.white,
-  color = C.ink,
-  mark,
-  anchor = 'start',
-}) => {
-  const pad = mark ? size * 1.3 : 0;
-  const w = textW(text, size) + pad;
-  const left = anchor === 'middle' ? x - w / 2 : x;
-  const h = size * 1.7;
-  return (
-    <g>
-      <rect x={left} y={y - h / 2} width={w} height={h} rx={h / 2.6} fill={fill} stroke={C.ink} strokeWidth={7} />
-      {mark === 'yes' && (
-        <g>
-          <circle cx={left + h / 2} cy={y} r={size * 0.5} fill={C.shirt} stroke={C.ink} strokeWidth={5} />
-          <path d={`M ${left + h / 2 - size * 0.24} ${y + 1} l ${size * 0.18} ${size * 0.18} l ${size * 0.32} ${-size * 0.38}`} stroke="#fff" strokeWidth={size * 0.14} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        </g>
-      )}
-      {mark === 'no' && (
-        <g>
-          <circle cx={left + h / 2} cy={y} r={size * 0.5} fill={C.red} stroke={C.ink} strokeWidth={5} />
-          <path d={`M ${left + h / 2 - size * 0.2} ${y - size * 0.2} l ${size * 0.4} ${size * 0.4} m 0 ${-size * 0.4} l ${-size * 0.4} ${size * 0.4}`} stroke="#fff" strokeWidth={size * 0.14} strokeLinecap="round" />
-        </g>
-      )}
-      <text x={left + pad + (w - pad) / 2} y={y + size * 0.36} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={size} fill={color}>
-        {text}
-      </text>
-    </g>
-  );
-};
-
-/** The green "FLIP IT" pill that opens every turnaround. */
-const FlipPill: React.FC<{t: number; at: number; x?: number; y?: number}> = ({t, at: a, x = 1360, y = 200}) => (
+/** The green "FLIP IT" marker that opens every turnaround. */
+const FlipPill: React.FC<{t: number; at: number; x?: number; y?: number}> = ({t, at: a, x = 1600, y = 150}) => (
   <Slam t={t} at={a}>
     <rect x={x - 190} y={y - 60} width={380} height={120} rx={60} fill={C.shirt} stroke={C.ink} strokeWidth={10} />
     <path d={`M ${x - 140} ${y + 18} q 30 -50 70 -10 l 0 -22 l 30 34 l -40 18 l 6 -18 q -30 -26 -50 14 z`} fill="#fff" stroke={C.ink} strokeWidth={4} />
@@ -160,56 +123,26 @@ const FlipPill: React.FC<{t: number; at: number; x?: number; y?: number}> = ({t,
   </Slam>
 );
 
-/** A speech / thought bubble. */
-const Bubble: React.FC<{x: number; y: number; text: string; size?: number; tail?: 'left' | 'right'; fill?: string; color?: string}> = ({
-  x,
-  y,
-  text,
-  size = 54,
-  tail = 'left',
-  fill = C.white,
-  color = C.ink,
-}) => {
+/** A speech bubble (dialogue, not an infographic). */
+const Bubble: React.FC<{x: number; y: number; text: string; size?: number; tail?: 'left' | 'right'}> = ({x, y, text, size = 54, tail = 'left'}) => {
   const w = textW(text, size) + 40;
   const h = size * 2;
   const tx = tail === 'left' ? x + 70 : x + w - 70;
   return (
     <g>
-      <path d={`M ${tx - 30} ${y + h - 4} L ${tx + (tail === 'left' ? -40 : 40)} ${y + h + 60} L ${tx + 30} ${y + h - 4} Z`} fill={fill} stroke={C.ink} strokeWidth={8} strokeLinejoin="round" />
-      <rect x={x} y={y} width={w} height={h} rx={h / 2.4} fill={fill} stroke={C.ink} strokeWidth={8} />
-      <text x={x + w / 2} y={y + h / 2 + size * 0.36} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={size} fill={color}>
+      <path d={`M ${tx - 30} ${y + h - 4} L ${tx + (tail === 'left' ? -40 : 40)} ${y + h + 60} L ${tx + 30} ${y + h - 4} Z`} fill={C.white} stroke={C.ink} strokeWidth={8} strokeLinejoin="round" />
+      <rect x={x} y={y} width={w} height={h} rx={h / 2.4} fill={C.white} stroke={C.ink} strokeWidth={8} />
+      <text x={x + w / 2} y={y + h / 2 + size * 0.36} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={size} fill={C.ink}>
         {text}
       </text>
     </g>
   );
 };
 
-/** A bank-app balance card. */
-const BankCard: React.FC<{x: number; y: number; amount: string; color?: string}> = ({x, y, amount, color = C.red}) => (
-  <g>
-    <rect x={x} y={y} width={440} height={250} rx={34} fill={C.ink} stroke={C.ink} strokeWidth={8} />
-    <rect x={x + 16} y={y + 16} width={408} height={218} rx={22} fill={CREAM} />
-    <text x={x + 44} y={y + 80} fontFamily={FONT} fontWeight={800} fontSize={34} fill={C.gray}>
-      BANK BALANCE
-    </text>
-    <text x={x + 44} y={y + 190} fontFamily={FONT} fontWeight={900} fontSize={100} fill={color}>
-      {amount}
-    </text>
-  </g>
-);
-
 // ───────────────────────── chapter cards ─────────────────────────
 
 /** Chapter card: dark plum room, "HOW TO STAY POOR" label, the habit as a big title, Ebo on the right. */
-const ChapterShot: React.FC<{t: number; f: number; from: number; lines: string[]; pose: Pose; label?: string; labelColor?: string}> = ({
-  t,
-  f,
-  from,
-  lines,
-  pose,
-  label = 'HOW TO STAY POOR',
-  labelColor = C.red,
-}) => (
+const ChapterShot: React.FC<{t: number; f: number; from: number; lines: string[]; pose: Pose}> = ({t, f, from, lines, pose}) => (
   <VStage
     framing={HMEDIUM(EBO_X - 380, 600)}
     bg={PLUM}
@@ -217,8 +150,8 @@ const ChapterShot: React.FC<{t: number; f: number; from: number; lines: string[]
     overlay={
       <g>
         <Slam t={t} at={from - 0.6} dist={-160} twist={-4}>
-          <text x={150} y={300} fontFamily={FONT} fontWeight={900} fontSize={54} fill={labelColor} letterSpacing={8}>
-            {label}
+          <text x={150} y={300} fontFamily={FONT} fontWeight={900} fontSize={54} fill={C.red} letterSpacing={8}>
+            HOW TO STAY POOR
           </text>
         </Slam>
         <Slam t={t} at={from} dist={-300} twist={-8}>
@@ -237,17 +170,17 @@ const ChapterShot: React.FC<{t: number; f: number; from: number; lines: string[]
 );
 
 /** The chapter cards' room: dark plum wall, darker floor (a set: Background layer). */
-const ChapterRoom: React.FC = () => (
+const ChapterRoom: React.FC<{wall?: string; floor?: string}> = ({wall = PLUM, floor = '#1A1322'}) => (
   <g>
-    <rect x={-1000} y={-900} width={4000} height={1800} fill={PLUM} />
-    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill="#1A1322" />
+    <rect x={-1000} y={-900} width={4000} height={1800} fill={wall} />
+    <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill={floor} />
     <line x1={-1000} x2={3000} y1={FLOOR_Y} y2={FLOOR_Y} stroke="#3A2C48" strokeWidth={8} />
   </g>
 );
 
-/** Ebo in the studio on the left of frame, leaving the right for graphics. */
-const EboTalk: React.FC<{t: number; f: number; pose: Pose; overlay?: React.ReactNode; children?: React.ReactNode}> = ({f, pose, overlay, children}) => (
-  <VStage framing={HMEDIUM(EBO_X + 230, 600)} blurBg={<Studio t={0} />} overlay={overlay}>
+/** Ebo talking to camera in the studio. */
+const EboTalk: React.FC<{t: number; f: number; pose: Pose; flip?: number; close?: boolean; children?: React.ReactNode}> = ({t, f, pose, flip, close, children}) => (
+  <VStage framing={close ? HCLOSE(EBO_X + 10, 520) : HMEDIUM(EBO_X + 120, 600)} blurBg={<Studio t={0} />} overlay={flip !== undefined ? <FlipPill t={t} at={flip} /> : undefined}>
     <Ebo f={f} pose={pose}>
       {children}
     </Ebo>
@@ -256,8 +189,8 @@ const EboTalk: React.FC<{t: number; f: number; pose: Pose; overlay?: React.React
 
 type Shot = {at: number; render: (t: number, f: number) => React.ReactNode};
 
-const HABITS = ['TV ALL DAY', 'NO HOBBIES', 'NO PASSION', 'COMFORT ZONE', 'WAIT FOR MAGIC', 'BLAME OTHERS'];
-const RICH = ['TAKE AN HOUR BACK', 'PICK A HOBBY', 'FOLLOW WHAT YOU CARE ABOUT', 'DO HARD THINGS WEEKLY', 'MAKE SMALL BETS', 'OWN WHAT YOU CONTROL'];
+/** A wall calendar whose page turns every `rate` seconds from `from` (time passing). */
+const daysGoBy = (t: number, from: number, rate = 0.12) => Math.floor(Math.max(0, t - from) / rate);
 
 const SHOTS: Shot[] = [
   // ───────────── HOOK ─────────────
@@ -271,7 +204,7 @@ const SHOTS: Shot[] = [
         overlay={
           <g>
             <Slam t={t} at={at('stay')} dist={-200}>
-              <text x={150} y={420} fontFamily={FONT} fontWeight={900} fontSize={150} fill={CREAM}>
+              <text x={150} y={420} fontFamily={FONT} fontWeight={900} fontSize={140} fill={CREAM}>
                 HOW TO STAY
               </text>
             </Slam>
@@ -290,29 +223,15 @@ const SHOTS: Shot[] = [
     ),
   },
   {
+    // the whole cast, ready to demonstrate
     at: at('Just'),
     render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.raise, 'open')], [at('rich'), face(G.shrug, 'half', {mouth: 'smirk'})]])}
-        overlay={
-          <g>
-            {HABITS.map((h, i) =>
-              t >= at('six') + i * 0.12 ? (
-                <Slam key={h} t={t} at={at('six') + i * 0.12} dist={-200} twist={i % 2 ? 8 : -8}>
-                  <Chip x={1000 + (i % 2) * 460} y={250 + Math.floor(i / 2) * 130} text={h} size={36} mark="no" />
-                </Slam>
-              ) : null,
-            )}
-            {t >= at('opposite.') && (
-              <Slam t={t} at={at('opposite.')} dist={-300} twist={-10}>
-                <BigText text="…OR DO THE OPPOSITE" x={1440} y={760} size={78} fill={GREEN} rotate={-4} />
-              </Slam>
-            )}
-          </g>
-        }
-      />
+      <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
+        {(['ama', 'christy', 'mica', 'obuor'] as CastId[]).map((who, i) => (
+          <Cast key={who} who={who} f={f + i * 7} x={1060 + i * 230} facing={-1} pose={snapPose(t, [[0, face(G.idle, 'open', {mouth: 'smile'})], [at('rich') + i * 0.08, face(G.hips, 'squint', {mouth: 'smirk'})]])} />
+        ))}
+        <Ebo f={f} x={560} pose={snapPose(t, [[0, face(G.present, 'happy')], [at('rich'), face(G.shrug, 'half', {mouth: 'smirk'})], [at('opposite.'), face(G.point, 'happy', {mouth: 'grin'})]])} />
+      </VStage>
     ),
   },
 
@@ -324,22 +243,7 @@ const SHOTS: Shot[] = [
   {
     at: at('The average'),
     render: (t, f) => (
-      <VStage
-        framing={HWIDE(880, 600)}
-        blurBg={<LivingRoom />}
-        overlay={
-          <g>
-            <Slam t={t} at={at('three')}>
-              <Chip x={1240} y={220} text="≈ 3 HRS / DAY" size={58} />
-            </Slam>
-            {t >= at('thousand') && (
-              <Slam t={t} at={at('thousand')} dist={-260} twist={8}>
-                <Chip x={1080} y={380} text="1,000+ HRS / YEAR" size={58} fill={C.yellow} />
-              </Slam>
-            )}
-          </g>
-        }
-      >
+      <VStage framing={HWIDE(880, 600)} blurBg={<LivingRoom />}>
         <Cast who="ama" f={f} x={760} y={SEAT_Y} pose={face(G.sit, 'half', {mouth: 'flat', lookX: -14})}>
           <Popcorn y={60} />
         </Cast>
@@ -347,117 +251,41 @@ const SHOTS: Shot[] = [
     ),
   },
   {
+    // the days fly by on the wall calendar while Ama doesn't move
     at: at('A full-time'),
-    render: (t, f) => {
-      const bar = (y: number, w: number, label: string, col: string, a: number) =>
-        t >= a ? (
-          <Slam t={t} at={a} dist={-200} twist={0}>
-            <rect x={160} y={y} width={w} height={130} rx={18} fill={col} stroke={C.ink} strokeWidth={8} />
-            <text x={190} y={y + 86} fontFamily={FONT} fontWeight={900} fontSize={58} fill={C.ink}>
-              {label}
-            </text>
-          </Slam>
-        ) : null;
-      return (
-        <VStage
-          framing={HMEDIUM(EBO_X - 380, 600)}
-          bg={PLUM}
-          blurBg={<ChapterRoom />}
-          overlay={
-            <g>
-              {bar(260, 1200, 'FULL-TIME JOB · 2,000 HRS', '#9FD3FF', at('A full-time'))}
-              {bar(450, 600, 'TV · 1,000 HRS', C.yellow, at('So'))}
-              {t >= at('half') && (
-                <Slam t={t} at={at('half')} dist={-260} twist={-6}>
-                  <BigText text="= HALF A WORK YEAR" x={160} y={760} size={96} fill={C.red} anchor="start" rotate={-2} />
-                </Slam>
-              )}
-            </g>
-          }
-        >
-          <Ebo f={f} pose={snapPose(t, [[0, face(G.present, 'open')], [at('couch.'), face(G.shrug, 'half', {mouth: 'smirk'})]])} />
-        </VStage>
-      );
-    },
+    render: (t, f) => (
+      <VStage framing={HWIDE(880, 600)} blurBg={<LivingRoom />}>
+        <Calendar x={1300} y={300} day={(daysGoBy(t, at('A full-time')) % 30) + 1} month={['JAN', 'MAR', 'JUN', 'SEP', 'DEC'][Math.floor(daysGoBy(t, at('A full-time')) / 30) % 5]} />
+        <Cast who="ama" f={f} x={760} y={SEAT_Y} pose={face(G.sit, t < at('couch.') ? 'half' : 'closed', {mouth: 'flat', lookX: -14})} noBlink>
+          <Remote rotate={-20} />
+        </Cast>
+      </VStage>
+    ),
   },
   {
     at: at('Ama'),
     render: (t, f) => (
-      <VStage
-        framing={HMEDIUM(900, 560)}
-        blurBg={<LivingRoom />}
-        overlay={
-          <g>
-            <Slam t={t} at={at('every')}>
-              <Chip x={1150} y={230} text="EPISODES WATCHED: ALL" size={46} />
-            </Slam>
-            {t >= at('Her bank') && (
-              <Slam t={t} at={at('Her bank')} dist={-300} twist={8}>
-                <BankCard x={1250} y={360} amount={t >= at('nothing') ? '$0.00' : '$ . . .'} />
-              </Slam>
-            )}
-          </g>
-        }
-      >
-        <Cast who="ama" f={f} x={760} y={SEAT_Y} pose={face(G.sit, t >= at('nothing') ? 'sad' : 'half', {mouth: t >= at('nothing') ? 'frown' : 'flat'})}>
-          {t < at('Her bank') ? <Remote rotate={-20} /> : <Popcorn y={60} />}
+      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom />}>
+        <Cast who="ama" f={f} x={760} y={SEAT_Y} pose={t < at('Her bank') ? face(G.sit, 'happy', {mouth: 'grin', lookX: -14}) : face(G.sit, t < at('nothing') ? 'wide' : 'sad', {mouth: t < at('nothing') ? 'o' : 'frown', armR: [80, -40]})}>
+          {t < at('Her bank') ? <Popcorn y={60} /> : <HandPhone screen="off" rotate={-8} />}
         </Cast>
       </VStage>
     ),
   },
   {
     at: at('Flip'),
-    render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('one hour'), face(G.point, 'open')]])}
-        overlay={
-          <g>
-            <FlipPill t={t} at={at('Flip')} />
-            {t >= at('one hour') && (
-              <Slam t={t} at={at('one hour')} dist={-260}>
-                <BigText text="1 HOUR / DAY" x={1360} y={520} size={130} fill={C.yellow} rotate={-3} />
-              </Slam>
-            )}
-          </g>
-        }
-      />
-    ),
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip')} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('one hour'), face(G.point, 'open')]])} />,
   },
   {
+    // TV off, laptop open
     at: at("That's three"),
-    render: (t, f) => {
-      const items: [string, string][] = [
-        ['learn', 'LEARN A SKILL'],
-        ['start a', 'START A SIDE HUSTLE'],
-        ['build', 'BUILD SOMETHING PEOPLE PAY FOR'],
-      ];
-      return (
-        <VStage
-          framing={HWIDE(1000, 600)}
-          blurBg={<LivingRoom tv={false} />}
-          overlay={
-            <g>
-              <Slam t={t} at={at("That's three")}>
-                <BigText text="= 365 HRS / YEAR" x={1360} y={180} size={92} fill={GREEN} rotate={-2} />
-              </Slam>
-              {items.map(([w, label], i) =>
-                t >= at(w) ? (
-                  <Slam key={w} t={t} at={at(w)} dist={-220} twist={i % 2 ? 6 : -6}>
-                    <Chip x={880} y={320 + i * 120} text={label} size={38} mark="yes" />
-                  </Slam>
-                ) : null,
-              )}
-            </g>
-          }
-        >
-          <Table x={520} w={460} />
-          <Laptop x={520} y={FLOOR_Y - 250} screen="code" />
-          <Cast who="ama" f={f} x={260} pose={face(G.hold, 'happy', {armR: [70 + (Math.floor(f / 5) % 2) * 14, -30], mouth: 'smile'})} />
-        </VStage>
-      );
-    },
+    render: (t, f) => (
+      <VStage framing={HWIDE(760, 600)} blurBg={<LivingRoom tv={false} />}>
+        <Table x={520} w={460} />
+        <Laptop x={520} y={FLOOR_Y - 250} screen={t < at('start a') ? 'code' : 'shop'} />
+        <Cast who="ama" f={f} x={260} pose={face(G.hold, 'happy', {armR: [70 + (Math.floor(f / 5) % 2) * 14, -30], mouth: 'smile'})} />
+      </VStage>
+    ),
   },
 
   // ───────────── NO HOBBIES ─────────────
@@ -467,42 +295,18 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Hobbies are'),
-    render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.hips, 'wide', {mouth: 'o'})], [at('good at'), face(G.point, 'squint', {mouth: 'smirk'})]])}
-        overlay={
-          <g>
-            <Slam t={t} at={at('dangerous')}>
-              <path d="M 1360 140 L 1500 380 L 1220 380 Z" fill={C.yellow} stroke={C.ink} strokeWidth={12} strokeLinejoin="round" />
-              <text x={1360} y={350} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={160} fill={C.ink}>
-                !
-              </text>
-            </Slam>
-            {t >= at('good at') && (
-              <Slam t={t} at={at('good at')} dist={-240} twist={6}>
-                <Chip x={1360} y={510} text="SIDE EFFECTS: SKILLS" size={56} fill={C.yellow} anchor="middle" />
-              </Slam>
-            )}
-          </g>
-        }
-      />
-    ),
+    render: (t, f) => <EboTalk t={t} f={f} close pose={snapPose(t, [[0, face(G.hips, 'wide', {mouth: 'o'})], [at('good at'), face(G.point, 'squint', {mouth: 'smirk'})]])} />,
   },
   {
     at: at('Christy draws'),
-    render: (t, f) => {
-      const done = Math.max(0, Math.min(1, (t - at('draws')) / 1.4));
-      return (
-        <VStage framing={HMEDIUM(980, 560)} blurBg={<LivingRoom wall="#CFE3D4" tv={false} />} overlay={<Slam t={t} at={at('evening')}><Chip x={1300} y={200} text="EVERY EVENING" size={52} /></Slam>}>
-          <Easel x={1130} y={FLOOR_Y} done={done} />
-          <Cast who="christy" f={f} x={840} pose={face(G.hold, 'happy', {armR: [96 + (Math.floor(f / 6) % 2) * 16, -30], mouth: 'smile', lookX: 10})}>
-            <Brush rotate={-30} />
-          </Cast>
-        </VStage>
-      );
-    },
+    render: (t, f) => (
+      <VStage framing={HMEDIUM(980, 560)} blurBg={<LivingRoom wall="#CFE3D4" tv={false} />}>
+        <Easel x={1130} y={FLOOR_Y} done={Math.max(0, Math.min(1, (t - at('draws')) / 1.4))} />
+        <Cast who="christy" f={f} x={840} pose={face(G.hold, 'happy', {armR: [96 + (Math.floor(f / 6) % 2) * 16, -30], mouth: 'smile', lookX: 10})}>
+          <Brush rotate={-30} />
+        </Cast>
+      </VStage>
+    ),
   },
   {
     at: at('Two years'),
@@ -510,22 +314,7 @@ const SHOTS: Shot[] = [
       const w = walkTo('obuor', 'fastWalk', t, at('Two years') + 0.3, 1580, 1260);
       const pay = at('fifty');
       return (
-        <VStage
-          framing={HWIDE(1000, 600)}
-          blurBg={<LivingRoom wall="#CFE3D4" tv={false} />}
-          overlay={
-            <g>
-              <Slam t={t} at={at('Two years')}>
-                <Chip x={160} y={160} text="2 YEARS LATER" size={56} fill={C.yellow} />
-              </Slam>
-              {t >= pay && (
-                <Slam t={t} at={pay} dist={-300} twist={8}>
-                  <BigText text="$50 / PORTRAIT" x={1300} y={240} size={110} fill={GREEN} rotate={-3} />
-                </Slam>
-              )}
-            </g>
-          }
-        >
+        <VStage framing={HWIDE(1000, 600)} blurBg={<LivingRoom wall="#CFE3D4" tv={false} />}>
           <Easel x={1000} y={FLOOR_Y} done={1} framed />
           <Cast who="christy" f={f} x={760} pose={t < pay ? face(G.present, 'happy', {mouth: 'grin'}) : face(G.hold, 'dollar', {mouth: 'grin'})}>
             {t >= pay && <DollarBill scale={0.6} />}
@@ -540,15 +329,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Mica'),
     render: (t, f) => (
-      <VStage
-        framing={HMEDIUM(900, 560)}
-        blurBg={<LivingRoom />}
-        overlay={
-          <Slam t={t} at={at('scrolls')}>
-            <BigText text="scrolling… scrolling…" x={1340} y={300} size={80} fill="#B7B0C4" rotate={-3} />
-          </Slam>
-        }
-      >
+      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom />}>
         <Cast who="mica" f={f} x={760} y={SEAT_Y} pose={face(G.sit, 'half', {mouth: 'flat', armR: [60 + (Math.floor(f / 8) % 2) * 6, -50]})}>
           <HandPhone screen="off" rotate={-8} />
         </Cast>
@@ -556,99 +337,34 @@ const SHOTS: Shot[] = [
     ),
   },
   {
+    // same phone: Mica scrolling, Christy selling her art
     at: at('Same phone'),
     render: (t, f) => (
-      <VStage
-        framing={HWIDE(960, 600)}
-        blurBg={<Studio t={0} />}
-        overlay={
-          <g>
-            <Slam t={t} at={at('Same phone')}>
-              <BigText text="SAME PHONE." x={960} y={170} size={100} rotate={-2} />
-            </Slam>
-            {t >= at('Different') && (
-              <Slam t={t} at={at('Different')} dist={-280} twist={8}>
-                <BigText text="DIFFERENT RESULT." x={960} y={300} size={100} fill={C.yellow} rotate={2} />
-                <Chip x={300} y={520} text="$0" size={56} fill="#E6E1EA" anchor="middle" />
-                <Chip x={1640} y={520} text="+$50" size={56} fill={GREEN} anchor="middle" />
-              </Slam>
-            )}
-          </g>
-        }
-      >
-        <Cast who="mica" f={f} x={560} pose={face(G.hold, 'half', {mouth: 'flat'})}>
+      <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
+        <Cast who="mica" f={f} x={620} pose={face(G.hold, 'half', {mouth: 'flat'})}>
           <HandPhone screen="off" />
         </Cast>
-        <Cast who="christy" f={f} x={1360} facing={-1} pose={face(G.hold, 'happy', {mouth: 'grin'})}>
-          <HandPhone screen="listing" />
+        <Cast who="christy" f={f} x={1300} facing={-1} pose={t < at('Different') ? face(G.hold, 'open', {mouth: 'smile'}) : face(G.celebrate, 'dollar', {mouth: 'grin'})}>
+          {t < at('Different') && <HandPhone screen="listing" />}
         </Cast>
       </VStage>
     ),
   },
   {
     at: at('Flip', 2),
-    render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('making'), face(G.open, 'open')], [at('every week'), face(G.point, 'happy')]])}
-        overlay={
-          <g>
-            <FlipPill t={t} at={at('Flip', 2)} />
-            {(
-              [
-                ['making', 'MAKE'],
-                ['fixing', 'FIX'],
-                ['doing', 'DO'],
-              ] as [string, string][]
-            ).map(([w, label], i) =>
-              t >= at(w) ? (
-                <Slam key={w} t={t} at={at(w)} dist={-220} twist={i % 2 ? 8 : -8}>
-                  <Chip x={1110 + i * 270} y={400} text={label} size={60} fill={C.yellow} anchor="middle" />
-                </Slam>
-              ) : null,
-            )}
-            {t >= at('every week') && (
-              <Slam t={t} at={at('every week')} dist={-260}>
-                <BigText text="EVERY WEEK" x={1340} y={620} size={110} fill={GREEN} rotate={-3} />
-              </Slam>
-            )}
-          </g>
-        }
-      />
-    ),
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 2)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('making'), face(G.open, 'open')], [at('every week'), face(G.point, 'happy')]])} />,
   },
   {
+    // skills grow quietly: Mica swaps the phone for a brush, then gets paid
     at: at('Skills'),
     render: (t, f) => {
-      const s0 = at('Skills');
-      const steps = Math.min(5, Math.floor((t - s0) / 0.45) + 1);
+      const pay = at('paying');
       return (
-        <VStage
-          framing={HMEDIUM(EBO_X - 380, 600)}
-          bg={PLUM}
-          blurBg={<ChapterRoom />}
-          overlay={
-            <g>
-              {Array.from({length: steps}).map((_, i) => (
-                <Slam key={i} t={t} at={s0 + i * 0.45} dist={-180} twist={0}>
-                  <rect x={150 + i * 180} y={720 - (i + 1) * 90} width={150} height={(i + 1) * 90} rx={10} fill={i === 4 ? GREEN : '#8F6BD1'} stroke={C.ink} strokeWidth={8} />
-                </Slam>
-              ))}
-              <Still>
-                <text x={150} y={790} fontFamily={FONT} fontWeight={900} fontSize={44} fill={CREAM} letterSpacing={6}>
-                  SKILL, WEEK BY WEEK
-                </text>
-              </Still>
-              {t >= at('paying') && (
-                <Slam t={t} at={at('paying')} dist={-300} twist={-10}>
-                  <BigText text="$$$" x={870} y={250} size={150} fill={GREEN} rotate={-6} />
-                </Slam>
-              )}
-            </g>
-          }
-        >
-          <Ebo f={f} pose={snapPose(t, [[0, face(G.present, 'open')], [at('paying'), face(G.celebrate, 'happy', {mouth: 'grin'})]])} />
+        <VStage framing={HMEDIUM(980, 560)} blurBg={<LivingRoom wall="#E3D9F2" tv={false} />}>
+          <Easel x={1130} y={FLOOR_Y} done={Math.max(0, Math.min(1, (t - at('Skills')) / 1.6))} />
+          <Cast who="mica" f={f} x={840} pose={t < pay ? face(G.hold, 'squint', {armR: [96 + (Math.floor(f / 6) % 2) * 16, -30], mouth: 'flat', lookX: 10}) : face(G.hold, 'dollar', {mouth: 'grin'})}>
+            {t < pay ? <Brush rotate={-30} /> : <DollarBill scale={0.6} />}
+          </Cast>
         </VStage>
       );
     },
@@ -662,24 +378,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Wake'),
     render: (t, f) => (
-      <VStage
-        framing={HMEDIUM(820, 600)}
-        blurBg={<Bedroom />}
-        overlay={
-          <g>
-            {t >= at('minimum') && (
-              <Slam t={t} at={at('minimum')}>
-                <Chip x={1240} y={200} text="DO THE MINIMUM" size={56} fill="#E6E1EA" />
-              </Slam>
-            )}
-            {t >= at('sleep') && (
-              <Slam t={t} at={at('sleep')} dist={-200}>
-                <BigText text="Z z z" x={560} y={240} size={90} fill={CREAM} rotate={-8} />
-              </Slam>
-            )}
-          </g>
-        }
-      >
+      <VStage framing={HMEDIUM(820, 600)} blurBg={<Bedroom />}>
         <Cast
           who="obuor"
           f={f}
@@ -696,63 +395,13 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Never ask what'),
-    render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.shrug, 'half', {mouth: 'smirk'})], [at('because passion'), face(G.raise, 'open')]])}
-        overlay={
-          <g>
-            {(
-              [
-                ['work harder', 'WORK HARDER'],
-                ['notice', 'NOTICE PROBLEMS'],
-                ['keep going', "KEEP GOING WHEN IT'S BORING"],
-              ] as [string, string][]
-            ).map(([w, label], i) =>
-              t >= at(w) ? (
-                <Slam key={w} t={t} at={at(w)} dist={-220} twist={i % 2 ? 6 : -6}>
-                  <Chip x={1000} y={260 + i * 130} text={label} size={40} mark="yes" />
-                </Slam>
-              ) : null,
-            )}
-            {t >= at('because passion') && (
-              <Slam t={t} at={at('because passion')}>
-                <BigText text="PASSION MAKES YOU…" x={1040} y={160} size={56} anchor="start" />
-              </Slam>
-            )}
-          </g>
-        }
-      />
-    ),
+    render: (t, f) => <EboTalk t={t} f={f} pose={snapPose(t, [[0, face(G.shrug, 'half', {mouth: 'smirk'})], [at('because passion'), face(G.raise, 'open')], [at('keep going'), face(G.point, 'happy')]])} />,
   },
   {
     at: at('Obuor loves'),
     render: (t, f) => (
-      <VStage
-        framing={HWIDE(1000, 600)}
-        blurBg={<SneakerRoom />}
-        overlay={
-          <g>
-            {t >= at('release') && (
-              <Slam t={t} at={at('release')}>
-                <Chip x={1180} y={620} text="EVERY DROP DATE" size={46} fill={C.yellow} />
-              </Slam>
-            )}
-            {t >= at("That's not") && t < at('market') && (
-              <Slam t={t} at={at("That's not")}>
-                <BigText text="WASTED TIME?" x={600} y={170} size={96} fill="#B7B0C4" rotate={-3} />
-              </Slam>
-            )}
-            {t >= at('market') && (
-              <Slam t={t} at={at('market')} dist={-300} twist={8}>
-                <BigText text="MARKET RESEARCH" x={600} y={170} size={110} fill={GREEN} rotate={-3} />
-              </Slam>
-            )}
-          </g>
-        }
-      >
-        <Cast who="obuor" f={f} x={700} pose={t < at('market') ? face(G.hold, 'happy', {mouth: 'grin'}) : face(G.celebrate, 'dollar', {mouth: 'grin'})}>
+      <VStage framing={HWIDE(1000, 600)} blurBg={<SneakerRoom />}>
+        <Cast who="obuor" f={f} x={700} pose={t < at('market') ? face(G.hold, 'happy', {mouth: 'grin', lookX: t >= at('release') ? 14 : 0}) : face(G.celebrate, 'dollar', {mouth: 'grin'})}>
           {t < at('market') && <Sneakers x={0} y={40} color={C.red} />}
         </Cast>
       </VStage>
@@ -761,34 +410,11 @@ const SHOTS: Shot[] = [
   {
     at: at('Flip', 3),
     render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.hold, 'happy')], [at('who would'), face(G.point, 'open', {brows: 'up'})]])}
-        overlay={
-          <g>
-            <FlipPill t={t} at={at('Flip', 3)} />
-            {t >= at('write down') && (
-              <Slam t={t} at={at('write down')}>
-                <rect x={1050} y={290} width={620} height={330} rx={16} fill={C.white} stroke={C.ink} strokeWidth={8} />
-                <text x={1080} y={350} fontFamily={FONT} fontWeight={900} fontSize={34} fill={C.ink}>
-                  I COULD TALK ABOUT…
-                </text>
-                {[0, 1, 2].map((i) => (
-                  <line key={i} x1={1090} x2={1620 - i * 80} y1={430 + i * 70} y2={430 + i * 70} stroke="#4D8FD6" strokeWidth={8} strokeLinecap="round" />
-                ))}
-              </Slam>
-            )}
-            {t >= at('who would') && (
-              <Slam t={t} at={at('who would')} dist={-300} twist={-8}>
-                <BigText text="WHO WOULD PAY FOR THIS?" x={1360} y={760} size={74} fill={C.yellow} rotate={-2} />
-              </Slam>
-            )}
-          </g>
-        }
-      >
-        <Notebook rotate={-10} />
-      </EboTalk>
+      <VStage framing={HMEDIUM(900, 600)} blurBg={<SneakerRoom />} overlay={<FlipPill t={t} at={at('Flip', 3)} />}>
+        <Cast who="obuor" f={f} x={760} pose={t < at('who would') ? face(G.hold, 'squint', {mouth: 'flat', armR: [80 + (Math.floor(f / 6) % 2) * 10, -40]}) : face(G.raise, 'wide', {mouth: 'grin'})}>
+          <Notebook rotate={-10} lines={Math.min(3, Math.floor(Math.max(0, t - at('write down')) / 0.6) + 1)} />
+        </Cast>
+      </VStage>
     ),
   },
 
@@ -798,75 +424,28 @@ const SHOTS: Shot[] = [
     render: (t, f) => <ChapterShot t={t} f={f} from={at('Stay in your')} lines={['STAY IN YOUR', 'COMFORT ZONE']} pose={face(G.sit, 'happy', {mouth: 'smile'})} />,
   },
   {
+    // same job, same routine, same excuses: the calendar turns, nothing else does
     at: at('Same job'),
-    render: (t, f) => {
-      const lines: [string, string][] = [
-        ['Same job', 'SAME JOB.'],
-        ['Same routine', 'SAME ROUTINE.'],
-        ['Same excuses', 'SAME EXCUSES.'],
-      ];
-      return (
-        <VStage
-          framing={HWIDE(1400, 600)}
-          blurBg={<Office t={0} />}
-          overlay={
-            <g>
-              {lines.map(([w, label], i) =>
-                t >= at(w) ? (
-                  <Slam key={w} t={t} at={at(w)} dist={-200} twist={i % 2 ? 6 : -6}>
-                    <BigText text={label} x={1260} y={220 + i * 130} size={96} fill={i === 2 ? C.red : '#fff'} rotate={-2} />
-                  </Slam>
-                ) : null,
-              )}
-            </g>
-          }
-        >
-          <Cast who="mica" f={f} x={1260} pose={face(G.slouch, 'half', {mouth: 'flat'})} />
-        </VStage>
-      );
-    },
+    render: (t, f) => (
+      <VStage framing={HWIDE(1400, 600)} blurBg={<Office t={0} />}>
+        <Calendar x={1700} y={320} day={(daysGoBy(t, at('Same job'), 0.2) % 30) + 1} month="SAME" />
+        <Cast who="mica" f={f} x={1260} pose={face(G.slouch, 'half', {mouth: 'flat'})} />
+      </VStage>
+    ),
   },
   {
     at: at('Never ask for'),
-    render: (t, f) => {
-      const items: [string, string][] = [
-        ['Never ask for', 'ASK FOR A RAISE'],
-        ['never apply', 'APPLY ANYWHERE NEW'],
-        ['never try', 'TRY SELLING ANYTHING'],
-      ];
-      return (
-        <VStage
-          framing={HWIDE(1400, 600)}
-          blurBg={<Office t={0} />}
-          overlay={
-            <g>
-              {items.map(([w, label], i) =>
-                t >= at(w) ? (
-                  <Slam key={w} t={t} at={at(w)} dist={-200} twist={i % 2 ? 6 : -6}>
-                    <Chip x={140} y={240 + i * 140} text={label} size={52} mark="no" />
-                  </Slam>
-                ) : null,
-              )}
-            </g>
-          }
-        >
-          <Cast who="mica" f={f} x={1260} pose={face(G.slouch, 'half', {mouth: 'flat', lookX: Math.floor(f / 10) % 2 ? 12 : -12})} />
-        </VStage>
-      );
-    },
+    render: (t, f) => (
+      <VStage framing={HWIDE(1400, 600)} blurBg={<Office t={0} />}>
+        <Calendar x={1700} y={320} day={30} month="SAME" />
+        <Cast who="mica" f={f} x={1260} pose={face(G.slouch, 'half', {mouth: 'flat', lookX: Math.floor(f / 10) % 2 ? 12 : -12})} />
+      </VStage>
+    ),
   },
   {
     at: at('Comfortable feels'),
     render: (t, f) => (
-      <VStage
-        framing={HMEDIUM(900, 560)}
-        blurBg={<LivingRoom />}
-        overlay={
-          <Slam t={t} at={at('safe')}>
-            <Chip x={1180} y={240} text="FEELS SAFE" size={60} mark="yes" />
-          </Slam>
-        }
-      >
+      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom />}>
         <Cast who="obuor" f={f} x={760} y={SEAT_Y} pose={face(G.sit, 'happy', {mouth: 'smile', armR: [30, 20]})} />
       </VStage>
     ),
@@ -876,25 +455,7 @@ const SHOTS: Shot[] = [
     render: (t, f) => {
       const k = Math.floor(f / 3);
       return (
-        <VStage
-          framing={{zoom: 1.3, cx: 900, cy: 620}}
-          bg={PLUM}
-          blurBg={<ChapterRoom />}
-          overlay={
-            <g>
-              {t >= at('runs') && (
-                <Slam t={t} at={at('runs')}>
-                  <Chip x={160} y={200} text="RUNS ALL DAY" size={60} fill={C.yellow} />
-                </Slam>
-              )}
-              {t >= at('nowhere') && (
-                <Slam t={t} at={at('nowhere')} dist={-300} twist={-8}>
-                  <BigText text="…GOES NOWHERE" x={1420} y={260} size={110} fill={C.red} rotate={-3} />
-                </Slam>
-              )}
-            </g>
-          }
-        >
+        <VStage framing={{zoom: 1.3, cx: 900, cy: 620}} bg={PLUM} blurBg={<ChapterRoom />}>
           {/* the wheel turns in 10° steps; with 12 spokes there are only three distinct looks */}
           <HamsterWheel x={900} y={FLOOR_Y} spin={(k % 3) * 10} step={k} />
         </VStage>
@@ -903,24 +464,7 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Flip', 4),
-    render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('uncomfortable'), face(G.point, 'open')]])}
-        overlay={
-          <g>
-            <FlipPill t={t} at={at('Flip', 4)} />
-            {t >= at('uncomfortable') && (
-              <Slam t={t} at={at('uncomfortable')} dist={-280}>
-                <BigText text="1 UNCOMFORTABLE" x={1360} y={460} size={104} fill={C.yellow} rotate={-3} />
-                <BigText text="THING A WEEK" x={1360} y={590} size={104} fill={C.yellow} rotate={-3} />
-              </Slam>
-            )}
-          </g>
-        }
-      />
-    ),
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 4)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('uncomfortable'), face(G.point, 'open')]])} />,
   },
   {
     at: at('Send'),
@@ -931,17 +475,12 @@ const SHOTS: Shot[] = [
           framing={HWIDE(900, 600)}
           blurBg={<Office t={0} />}
           overlay={
-            <g>
-              <Slam t={t} at={at('Send')}>
-                <Chip x={160} y={160} text="SEND THE EMAIL" size={60} mark="yes" />
-              </Slam>
-              {p > 0 && p < 1 && (
-                <g transform={`translate(${880 + p * 900} ${520 - p * 360}) rotate(${-20 - p * 10})`}>
-                  <rect x={-70} y={-46} width={140} height={92} rx={8} fill={C.white} stroke={C.ink} strokeWidth={7} />
-                  <path d="M -70 -46 L 0 10 L 70 -46" fill="none" stroke={C.ink} strokeWidth={6} />
-                </g>
-              )}
-            </g>
+            p > 0 && p < 1 ? (
+              <g transform={`translate(${880 + p * 900} ${520 - p * 360}) rotate(${-20 - p * 10})`}>
+                <rect x={-70} y={-46} width={140} height={92} rx={8} fill={C.white} stroke={C.ink} strokeWidth={7} />
+                <path d="M -70 -46 L 0 10 L 70 -46" fill="none" stroke={C.ink} strokeWidth={6} />
+              </g>
+            ) : undefined
           }
         >
           <Table x={900} w={460} />
@@ -958,14 +497,9 @@ const SHOTS: Shot[] = [
         framing={HWIDE(1300, 600)}
         blurBg={<Office t={0} />}
         overlay={
-          <g>
-            <Slam t={t} at={at('Ask for the raise')}>
-              <Chip x={160} y={160} text="ASK FOR THE RAISE" size={60} mark="yes" />
-            </Slam>
-            <Slam t={t} at={at('raise.')}>
-              <Bubble x={820} y={250} text="Can we talk about a raise?" size={44} tail="left" />
-            </Slam>
-          </g>
+          <Slam t={t} at={at('Ask for the raise')}>
+            <Bubble x={820} y={250} text="Can we talk about a raise?" size={44} tail="left" />
+          </Slam>
         }
       >
         <Cast who="mica" f={f} x={1060} pose={face(G.present, 'open', {mouth: 'o'})} />
@@ -976,21 +510,8 @@ const SHOTS: Shot[] = [
   {
     at: at('Post'),
     render: (t, f) => (
-      <VStage
-        framing={HMEDIUM(900, 560)}
-        blurBg={<LivingRoom wall="#F2D7D9" tv={false} />}
-        overlay={
-          <g>
-            <Slam t={t} at={at('Post')}>
-              <Chip x={160} y={160} text="POST THE FIRST VIDEO" size={60} mark="yes" />
-            </Slam>
-            <Slam t={t} at={at('video.')}>
-              <Chip x={1180} y={380} text="UPLOADED" size={56} fill={GREEN} mark="yes" />
-            </Slam>
-          </g>
-        }
-      >
-        <Cast who="ama" f={f} x={820} pose={face(G.hold, 'happy', {mouth: 'grin', armR: [96, -40]})}>
+      <VStage framing={HMEDIUM(900, 560)} blurBg={<LivingRoom wall="#F2D7D9" tv={false} />}>
+        <Cast who="ama" f={f} x={820} pose={t < at('video.') ? face(G.hold, 'squint', {mouth: 'flat', armR: [96, -40]}) : face(G.hold, 'happy', {mouth: 'grin', armR: [96, -40]})}>
           <HandPhone screen="camera" />
         </Cast>
       </VStage>
@@ -1005,27 +526,7 @@ const SHOTS: Shot[] = [
   {
     at: at('The lottery'),
     render: (t, f) => (
-      <VStage
-        framing={HWIDE(1000, 600)}
-        blurBg={<LivingRoom wall="#4A3B5E" tv={false} />}
-        overlay={
-          <g>
-            <Slam t={t} at={at('The lottery')}>
-              <Bubble x={1140} y={110} text="THE LOTTERY" size={48} tail="left" />
-            </Slam>
-            {t >= at('rich uncle') && (
-              <Slam t={t} at={at('rich uncle')}>
-                <Bubble x={1220} y={290} text="A RICH UNCLE" size={48} tail="left" />
-              </Slam>
-            )}
-            {t >= at('viral') && (
-              <Slam t={t} at={at('viral')}>
-                <Bubble x={1120} y={470} text="GOING VIRAL BY ITSELF" size={48} tail="left" />
-              </Slam>
-            )}
-          </g>
-        }
-      >
+      <VStage framing={HWIDE(1000, 600)} blurBg={<LivingRoom wall="#4A3B5E" tv={false} />}>
         <Table x={1040} w={520} color="#5B4636" />
         <CrystalBall x={1040} y={FLOOR_Y - 250} />
         <Candle x={880} y={FLOOR_Y - 250} />
@@ -1037,102 +538,39 @@ const SHOTS: Shot[] = [
     ),
   },
   {
+    // the ticket loses
     at: at('The odds'),
     render: (t, f) => (
-      <VStage
-        framing={HMEDIUM(EBO_X - 380, 600)}
-        bg={PLUM}
-        blurBg={<ChapterRoom />}
-        overlay={
-          <g>
-            <Still>
-              <text x={150} y={250} fontFamily={FONT} fontWeight={900} fontSize={48} fill={CREAM} letterSpacing={6}>
-                ODDS OF A BIG JACKPOT
-              </text>
-            </Still>
-            {t >= at('one in') && (
-              <Slam t={t} at={at('one in')} dist={-300} twist={-6}>
-                <text x={150} y={420} fontFamily={FONT} fontWeight={900} fontSize={118} fill={C.yellow}>
-                  1 in 300,000,000
-                </text>
-              </Slam>
-            )}
-            {t >= at('struck') && (
-              <Slam t={t} at={at('struck')} dist={-300} twist={10}>
-                <path d="M 260 520 L 180 700 L 250 700 L 200 860 L 360 650 L 280 650 L 340 520 Z" fill={C.yellow} stroke={C.ink} strokeWidth={8} strokeLinejoin="round" />
-                <text x={400} y={720} fontFamily={FONT} fontWeight={900} fontSize={64} fill={CREAM}>
-                  LIGHTNING IS MORE LIKELY
-                </text>
-              </Slam>
-            )}
-          </g>
-        }
-      >
-        <Ebo f={f} pose={snapPose(t, [[0, face(G.present, 'open')], [at('struck'), face(G.shrug, 'wide', {mouth: 'o'})]])} />
+      <VStage framing={HMEDIUM(900, 600)} blurBg={<LivingRoom wall="#4A3B5E" tv={false} />}>
+        <Table x={1040} w={520} color="#5B4636" />
+        <CrystalBall x={1040} y={FLOOR_Y - 250} />
+        <Cast who="ama" f={f} x={760} pose={t < at('You are') ? face(G.hold, 'wide', {mouth: 'o', armR: [100, -40]}) : face(G.slouch, 'sad', {mouth: 'frown'})}>
+          {t < at('You are') && <Ticket rotate={-10} />}
+        </Cast>
       </VStage>
     ),
   },
   {
     at: at('Flip', 5),
-    render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('luck'), face(G.point, 'open')]])}
-        overlay={
-          <g>
-            <FlipPill t={t} at={at('Flip', 5)} />
-            {t >= at('luck') && (
-              <Slam t={t} at={at('luck')} dist={-280}>
-                <BigText text="MAKE YOUR" x={1360} y={460} size={110} fill={C.yellow} rotate={-3} />
-                <BigText text="OWN LUCK" x={1360} y={590} size={110} fill={C.yellow} rotate={-3} />
-              </Slam>
-            )}
-          </g>
-        }
-      />
-    ),
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 5)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('luck'), face(G.point, 'open')]])} />,
   },
   {
+    // small bets, done often: the cast each try something; some pay off
     at: at('Small bets'),
     render: (t, f) => {
-      const tries = ['PITCH', 'POST', 'APPLY', 'SELL', 'ASK', 'BUILD'];
-      const s0 = at('Small bets');
       const win = at('win');
       return (
-        <VStage
-          framing={HWIDE(1000, 600)}
-          blurBg={<Studio t={0} />}
-          overlay={
-            <g>
-              <Slam t={t} at={s0}>
-                <BigText text="SMALL BETS, DONE OFTEN" x={1240} y={170} size={78} rotate={-2} />
-              </Slam>
-              {tries.map((label, i) =>
-                t >= s0 + 0.4 + i * 0.35 ? (
-                  <Slam key={label} t={t} at={s0 + 0.4 + i * 0.35} dist={-200} twist={i % 2 ? 10 : -10}>
-                    <g transform={`translate(${900 + (i % 3) * 300} ${330 + Math.floor(i / 3) * 190}) rotate(${(i % 2 ? 1 : -1) * 4})`}>
-                      <rect x={-130} y={-62} width={260} height={124} rx={10} fill="#FFE680" stroke={C.ink} strokeWidth={7} />
-                      <line x1={70} x2={70} y1={-62} y2={62} stroke={C.ink} strokeWidth={4} strokeDasharray="8 8" />
-                      <text x={-30} y={16} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={42} fill={C.ink}>
-                        {label}
-                      </text>
-                      {t >= win && i % 2 === 0 && (
-                        <g transform="rotate(-12)">
-                          <rect x={-110} y={-30} width={170} height={60} rx={8} fill="none" stroke={C.moneyDark} strokeWidth={7} />
-                          <text x={-25} y={14} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={40} fill={C.moneyDark}>
-                            PAID
-                          </text>
-                        </g>
-                      )}
-                    </g>
-                  </Slam>
-                ) : null,
-              )}
-            </g>
-          }
-        >
-          <Ebo f={f} x={420} pose={snapPose(t, [[0, face(G.present, 'open')], [win, face(G.celebrate, 'dollar', {mouth: 'grin'})]])} />
+        <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
+          <Cast who="christy" f={f} x={460} pose={t < win ? face(G.hold, 'squint', {mouth: 'flat'}) : face(G.celebrate, 'dollar', {mouth: 'grin'})}>
+            {t < win ? <HandPhone screen="listing" /> : <DollarBill scale={0.6} />}
+          </Cast>
+          <Cast who="obuor" f={f + 9} x={760} pose={face(G.hold, 'happy', {mouth: 'smile'})}>
+            <Sneakers x={0} y={40} color={C.blue} />
+          </Cast>
+          <Cast who="mica" f={f + 4} x={1060} pose={t < win ? face(G.hold, 'squint', {mouth: 'flat'}) : face(G.celebrate, 'dollar', {mouth: 'grin'})}>
+            {t < win ? <Notebook rotate={-10} /> : <DollarBill scale={0.6} />}
+          </Cast>
+          <Ebo f={f} x={1420} facing={-1} pose={snapPose(t, [[0, face(G.present, 'open')], [win, face(G.celebrate, 'happy', {mouth: 'grin'})]])} />
         </VStage>
       );
     },
@@ -1144,32 +582,13 @@ const SHOTS: Shot[] = [
     render: (t, f) => <ChapterShot t={t} f={f} from={at('Blame everyone else')} lines={['BLAME', 'EVERYONE ELSE']} pose={face(POSES.pointing, 'squint', {mouth: 'frown', brows: 'angry'})} />,
   },
   {
+    // Mica points somewhere new on every excuse
     at: at('The economy'),
     render: (t, f) => {
-      const blames: [string, string, number, number][] = [
-        ['The economy', 'THE ECONOMY', 160, 200],
-        ['Your boss', 'MY BOSS', 1340, 200],
-        ['Your parents', 'MY PARENTS', 160, 420],
-        ['The weather', 'THE WEATHER', 1340, 420],
-      ];
-      const k = blames.filter(([w]) => t >= at(w)).length;
+      const k = ['The economy', 'Your boss', 'Your parents', 'The weather'].filter((w) => t >= at(w)).length;
       return (
-        <VStage
-          framing={HWIDE(960, 600)}
-          blurBg={<LivingRoom wall="#F2D7D9" />}
-          overlay={
-            <g>
-              {blames.map(([w, label, x, y], i) =>
-                t >= at(w) ? (
-                  <Slam key={w} t={t} at={at(w)} dist={-200} twist={i % 2 ? 8 : -8}>
-                    <Chip x={x} y={y} text={label} size={56} fill={C.yellow} />
-                  </Slam>
-                ) : null,
-              )}
-            </g>
-          }
-        >
-          <Cast who="mica" f={f} x={960} facing={k % 2 ? -1 : 1} pose={face(POSES.pointing, 'squint', {mouth: 'scream', brows: 'angry'})} />
+        <VStage framing={HWIDE(960, 600)} blurBg={<LivingRoom wall="#F2D7D9" />}>
+          <Cast who="mica" f={f} x={960} facing={k % 2 ? -1 : 1} pose={face(POSES.pointing, 'squint', {mouth: 'scream', brows: 'angry', tilt: k % 2 ? 4 : -4})} />
         </VStage>
       );
     },
@@ -1177,30 +596,8 @@ const SHOTS: Shot[] = [
   {
     at: at('Blaming'),
     render: (t, f) => (
-      <VStage
-        framing={HMEDIUM(900, 560)}
-        blurBg={<LivingRoom wall="#F2D7D9" />}
-        overlay={
-          <g>
-            {t >= at('your job') && (
-              <Slam t={t} at={at('your job')}>
-                <Chip x={1150} y={220} text="NOT MY JOB" size={60} mark="yes" />
-              </Slam>
-            )}
-            {t >= at('It also') && (
-              <Slam t={t} at={at('It also')} dist={-300} twist={8}>
-                <BankCard x={1250} y={360} amount="$0.00" />
-              </Slam>
-            )}
-            {t >= at('nothing changes') && (
-              <Slam t={t} at={at('nothing changes')} dist={-260}>
-                <BigText text="NOTHING CHANGES" x={1470} y={720} size={78} fill={C.red} rotate={-3} />
-              </Slam>
-            )}
-          </g>
-        }
-      >
-        <Calendar x={420} y={330} day={1 + (Math.floor((t - at('It also')) * 8) % 30 + 30) % 30} month="SAME" />
+      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom wall="#F2D7D9" />}>
+        <Calendar x={420} y={330} day={t < at('It also') ? 1 : (daysGoBy(t, at('It also'), 0.12) % 30) + 1} month="SAME" />
         <Cast who="mica" f={f} x={760} y={SEAT_Y} pose={face(G.sit, t < at('It also') ? 'happy' : 'half', {mouth: t < at('It also') ? 'grin' : 'flat', armR: [30, 20]})} />
       </VStage>
     ),
@@ -1208,132 +605,50 @@ const SHOTS: Shot[] = [
   {
     at: at('Flip', 6),
     render: (t, f) => (
-      <EboTalk
-        t={t}
-        f={f}
-        pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('What part'), face(G.point, 'open', {brows: 'up'})], [at('Start there'), face(G.hips, 'happy', {mouth: 'grin'})]])}
-        overlay={
-          <g>
-            <FlipPill t={t} at={at('Flip', 6)} />
-            {t >= at('ask one question') && (
-              <Slam t={t} at={at('ask one question')}>
-                <BigText text="ASK ONE QUESTION:" x={1060} y={390} size={60} anchor="start" />
-              </Slam>
-            )}
-            {t >= at('What part') && (
-              <Slam t={t} at={at('What part')} dist={-280} twist={-6}>
-                <BigText text="WHAT CAN I CONTROL?" x={1380} y={520} size={92} fill={C.yellow} rotate={-3} />
-              </Slam>
-            )}
-            {t >= at('Start there') && (
-              <Slam t={t} at={at('Start there')} dist={-260}>
-                <BigText text="START THERE." x={1380} y={680} size={100} fill={GREEN} rotate={2} />
-              </Slam>
-            )}
-          </g>
-        }
-      />
+      <EboTalk t={t} f={f} flip={at('Flip', 6)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('What part'), face(G.point, 'open', {brows: 'up'})], [at('Start there'), face(G.hips, 'happy', {mouth: 'grin'})]])} />
     ),
   },
 
   // ───────────── WRAP-UP ─────────────
   {
+    // the recipe to stay poor: each habit, one quick cut of its character
     at: at("So here's"),
     render: (t, f) => {
-      const keys: [string, number][] = [
-        ['TV all day', 2],
-        ['No hobbies', 2],
-        ['No passion', 2],
-        ['Stay comfortable', 1],
-        ['Wait for magic', 2],
-        ['Blame everyone', 2],
+      const beats: [number, React.ReactNode][] = [
+        [at("So here's"), <Ebo key="e" f={f} x={960} pose={face(G.hips, 'half', {mouth: 'smirk'})} />],
+        [at('TV all day', 2), <Cast key="a" who="ama" f={f} x={960} y={SEAT_Y} pose={face(G.sit, 'half', {mouth: 'flat'})}><Popcorn y={60} /></Cast>],
+        [at('No hobbies', 2), <Cast key="m" who="mica" f={f} x={960} y={SEAT_Y} pose={face(G.sit, 'half', {mouth: 'flat'})}><HandPhone screen="off" rotate={-8} /></Cast>],
+        [at('No passion', 2), <Cast key="o" who="obuor" f={f} x={960} pose={{...POSES.sleeping}} noBlink />],
+        [at('Stay comfortable'), <Cast key="o2" who="obuor" f={f} x={960} y={SEAT_Y} pose={face(G.sit, 'happy', {mouth: 'smile'})} />],
+        [at('Wait for magic', 2), <Cast key="a2" who="ama" f={f} x={960} pose={face(G.hold, 'closed', {mouth: 'smile', armR: [110, -30]})} noBlink><Ticket rotate={-10} /></Cast>],
+        [at('Blame everyone', 2), <Cast key="m2" who="mica" f={f} x={960} pose={face(POSES.pointing, 'squint', {mouth: 'scream', brows: 'angry'})} />],
       ];
+      const cur = beats.filter(([a]) => t >= a).pop()!;
       return (
-        <VStage
-          framing={HMEDIUM(EBO_X - 380, 600)}
-          bg={PLUM}
-          blurBg={<ChapterRoom />}
-          overlay={
-            <g>
-              <Slam t={t} at={at("So here's")}>
-                <text x={150} y={170} fontFamily={FONT} fontWeight={900} fontSize={64} fill={C.red} letterSpacing={6}>
-                  THE RECIPE TO STAY POOR
-                </text>
-              </Slam>
-              {keys.map(([w, n], i) =>
-                t >= at(w, n) ? (
-                  <Slam key={w} t={t} at={at(w, n)} dist={-200} twist={i % 2 ? 6 : -6}>
-                    <Chip x={150} y={270 + i * 100} text={HABITS[i]} size={40} mark="no" />
-                  </Slam>
-                ) : null,
-              )}
-            </g>
-          }
-        >
-          <Ebo f={f} pose={face(G.hips, 'half', {mouth: 'smirk'})} />
+        <VStage framing={HMEDIUM(960, 600)} blurBg={<LivingRoom />}>
+          {cur[1]}
         </VStage>
       );
     },
   },
   {
     at: at("And here's"),
-    render: (t, f) => {
-      const s0 = at('opposite', 2);
-      return (
-        <VStage
-          framing={HMEDIUM(EBO_X - 380, 600)}
-          bg="#1E3A2E"
-          blurBg={
-            <g>
-              <rect x={-1000} y={-900} width={4000} height={1800} fill="#1E3A2E" />
-              <rect x={-1000} y={FLOOR_Y} width={4000} height={1400} fill="#16291F" />
-            </g>
-          }
-          overlay={
-            <g>
-              <Slam t={t} at={at("And here's")}>
-                <text x={150} y={170} fontFamily={FONT} fontWeight={900} fontSize={64} fill={GREEN} letterSpacing={6}>
-                  THE RECIPE TO GET RICH
-                </text>
-              </Slam>
-              {RICH.map((r, i) =>
-                t >= s0 + i * 0.18 ? (
-                  <Slam key={r} t={t} at={s0 + i * 0.18} dist={-200} twist={i % 2 ? 6 : -6}>
-                    <Chip x={150} y={260 + i * 92} text={r} size={34} mark="yes" />
-                  </Slam>
-                ) : null,
-              )}
-              {t >= at('one small habit') && (
-                <Slam t={t} at={at('one small habit')} dist={-260}>
-                  <BigText text="ONE SMALL HABIT AT A TIME" x={150} y={860} size={62} fill={C.yellow} anchor="start" rotate={-2} />
-                </Slam>
-              )}
-            </g>
-          }
-        >
-          <Ebo f={f} pose={snapPose(t, [[0, face(G.raise, 'happy')], [s0, face(G.open, 'happy', {mouth: 'grin'})]])} />
-        </VStage>
-      );
-    },
+    render: (t, f) => (
+      <VStage framing={HWIDE(960, 600)} blurBg={<ChapterRoom wall="#1E3A2E" floor="#16291F" />}>
+        {(['ama', 'christy', 'mica', 'obuor'] as CastId[]).map((who, i) => (
+          <Cast key={who} who={who} f={f + i * 5} x={[300, 600, 1320, 1620][i]} facing={i < 2 ? 1 : -1} pose={snapPose(t, [[0, face(G.idle, 'open', {mouth: 'smile'})], [at('opposite', 2) + i * 0.1, face(G.celebrate, 'happy', {mouth: 'grin'})]])} />
+        ))}
+        <Ebo f={f} x={960} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('opposite', 2), face(G.open, 'happy', {mouth: 'grin'})]])} />
+      </VStage>
+    ),
   },
   {
     at: at('Start today'),
-    render: (t, f) => {
-      const x = 0 + (t - at('Start today')) * cycleSpeed('ebo', 'run');
-      return (
-        <VStage
-          framing={HWIDE(960, 600)}
-          blurBg={<Studio t={0} />}
-          overlay={
-            <Slam t={t} at={at('Start today') + 0.1}>
-              <BigText text="START TODAY" x={960} y={220} size={160} fill={C.yellow} rotate={-3} />
-            </Slam>
-          }
-        >
-          <Ebo f={f} x={x} cycle="run" pose={face(G.idle, 'happy')} />
-        </VStage>
-      );
-    },
+    render: (t, f) => (
+      <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
+        <Ebo f={f} x={(t - at('Start today')) * cycleSpeed('ebo', 'run')} cycle="run" pose={face(G.idle, 'happy')} />
+      </VStage>
+    ),
   },
   {
     at: at('Subscribe'),

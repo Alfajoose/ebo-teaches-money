@@ -5,11 +5,13 @@ Stage: 1920 x 1080 (16:9 long-form), 30 fps, 5058 frames (2 min 48.6 s)
 Ebo sarcastically "teaches" six habits that keep you broke: watch TV all day, no hobbies,
 no passion, stay in your comfort zone, wait for magic, blame everyone else. The cast act
 each one out, then Ebo flips it into what to do instead. Each habit opens on a chapter card.
+On-screen text is kept to a minimum.
 
 LAYERS (top to bottom)
   Captions    - editable text in caption pills at the bottom of the frame (Library > Captions)
-  Graphics    - chapter titles, stats, check lists, bubbles, bank cards: editable text +
-                vector shapes (Library > Graphics)
+  Graphics    - kept light: the title, chapter cards, the FLIP IT marker, one speech
+                bubble and the end card, as editable text + vector shapes (Library > Graphics).
+                The points themselves are acted out by the cast, not shown as infographics.
   Props front - props the characters hold: popcorn, remote, phone, brush, notebook,
                 lottery ticket, cash, sneakers
   Ebo, Christy, Mica, Ama, Obuor
