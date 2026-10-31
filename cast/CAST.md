@@ -16,6 +16,12 @@
 7. **Few infographics.** Show a point by having the cast act it out. Keep on-screen text to titles, chapter cards and the odd speech bubble, not stat cards, charts or check lists.
 8. **Only characters and props move.** No decorative effects: no cobwebs, spiders, tumbleweeds, money rain, confetti, coin bursts, glow rays, smoke or sparks, impact bursts, camera shake, or animated backgrounds. Backgrounds and plants stay still. Text graphics are fine.
 9. **Organic, not busy** (reference: an animated YouTube storytime the user loves). Most of the video is the character acting on a **plain soft backdrop**: one flat colour or a gentle gradient, no room, furniture or floor line. The camera punches in and out on that backdrop (wide → close-up on the face for the reaction) and the **acting carries it**: held poses with expression and mouth changes, the odd small hop. Keep **one recurring gag prop at most** per episode; show other props only when the joke needs them. Cut to a real location only for a quick acted-out bit, then come back. Text is rare and casual (a handwritten-style word or a short list that builds up), never a stat card or chart.
+10. **How characters handle props** (from the same reference):
+   - **Props live in the world, and the character goes to them.** The laptop sits on the desk; he sits down at it, types, then slams it shut or shoves it away. Act on the prop (type, slam, push, toss, drop) rather than holding it up to the camera.
+   - **The screen faces whoever is using it.** From the side or behind we see the back or edge of the laptop or phone; we only see the screen in an insert.
+   - **An insert is its own drawing, not a zoom.** Draw the object big and filling the frame, slightly tilted, often with a big hand in it (a finger tapping or scrolling the phone). Then cut back to the wide shot.
+   - **The hand is on the prop.** Fingers overlap the object (the hand draws over it), and the object turns with the hand instead of floating upright beside it.
+   - **Held props are rare and brief.** A prop is picked up for the beat that needs it, then put down or thrown.
 
 ## Shared rig (all five characters)
 
