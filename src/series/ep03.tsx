@@ -12,7 +12,7 @@ import {Popcorn, Remote, Laptop, Easel, Brush, HamsterWheel, CrystalBall, Candle
 import {FLOOR_Y, Bedroom, Office} from '../backgrounds/Backgrounds';
 import {SITTING} from '../castep/shared';
 import {Studio, LivingRoom, SneakerRoom, Table} from './sets';
-import {VFPS, Word, makeAt, VStage, HWIDE, HMEDIUM, HCLOSE, snapPose, stepAt, lipFrame, lipHeadNod, chunkWords, TopCaption} from './kit';
+import {VFPS, Word, makeAt, VStage, HWIDE, HMEDIUM, HCLOSE, Framing, CamMove, camera, snapPose, stepAt, lipFrame, lipHeadNod, chunkWords, TopCaption} from './kit';
 import {C, FONT} from '../theme';
 import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
@@ -39,6 +39,10 @@ const CHUNKS = chunkWords(WORDS, 6, 34);
 export const EP03_DURATION = Math.ceil((WORDS[WORDS.length - 1].e + 1.1) * VFPS);
 
 const EBO_X = 760;
+// camera helpers (world coords; heads sit around y ≈ 390 standing, ≈ 440 on the couch)
+const Z = (zoom: number, cx: number, cy: number): Framing => ({zoom, cx, cy});
+const CU = (cx: number, cy: number): Framing => Z(2.6, cx, cy); // close-up
+const ECU = (cx: number, cy: number): Framing => Z(4.2, cx, cy); // extreme close-up
 const SEAT_Y = FLOOR_Y - 110; // sitting on the couch
 const CREAM = '#F3E6CF';
 const PLUM = '#241B2F';
@@ -144,7 +148,7 @@ const Bubble: React.FC<{x: number; y: number; text: string; size?: number; tail?
 /** Chapter card: dark plum room, "HOW TO STAY POOR" label, the habit as a big title, Ebo on the right. */
 const ChapterShot: React.FC<{t: number; f: number; from: number; lines: string[]; pose: Pose}> = ({t, f, from, lines, pose}) => (
   <VStage
-    framing={HMEDIUM(EBO_X - 380, 600)}
+    framing={camera(t, HMEDIUM(EBO_X - 380, 600), [[from - 0.8, Z(1.85, EBO_X - 320, 580), 2.2, 'linear']])}
     bg={PLUM}
     blurBg={<ChapterRoom />}
     overlay={
@@ -179,8 +183,8 @@ const ChapterRoom: React.FC<{wall?: string; floor?: string}> = ({wall = PLUM, fl
 );
 
 /** Ebo talking to camera in the studio. */
-const EboTalk: React.FC<{t: number; f: number; pose: Pose; flip?: number; close?: boolean; children?: React.ReactNode}> = ({t, f, pose, flip, close, children}) => (
-  <VStage framing={close ? HCLOSE(EBO_X + 10, 520) : HMEDIUM(EBO_X + 120, 600)} blurBg={<Studio t={0} />} overlay={flip !== undefined ? <FlipPill t={t} at={flip} /> : undefined}>
+const EboTalk: React.FC<{t: number; f: number; pose: Pose; flip?: number; framing?: Framing; children?: React.ReactNode}> = ({t, f, pose, flip, framing, children}) => (
+  <VStage framing={framing ?? HMEDIUM(EBO_X + 120, 600)} blurBg={<Studio t={0} />} overlay={flip !== undefined ? <FlipPill t={t} at={flip} /> : undefined}>
     <Ebo f={f} pose={pose}>
       {children}
     </Ebo>
@@ -188,6 +192,13 @@ const EboTalk: React.FC<{t: number; f: number; pose: Pose; flip?: number; close?
 );
 
 type Shot = {at: number; render: (t: number, f: number) => React.ReactNode};
+
+/** Ebo's talking shots: start waist-up, push in to a close-up on the key word. */
+const pushOnEbo = (t: number, key: number, back?: number) => {
+  const moves: CamMove[] = [[key, CU(EBO_X + 60, 470), 0.5]];
+  if (back !== undefined) moves.push([back, HMEDIUM(EBO_X + 120, 600), 0.5]);
+  return camera(t, HMEDIUM(EBO_X + 120, 600), moves);
+};
 
 /** A wall calendar whose page turns every `rate` seconds from `from` (time passing). */
 const daysGoBy = (t: number, from: number, rate = 0.12) => Math.floor(Math.max(0, t - from) / rate);
@@ -198,7 +209,7 @@ const SHOTS: Shot[] = [
     at: 0,
     render: (t, f) => (
       <VStage
-        framing={HMEDIUM(EBO_X - 380, 600)}
+        framing={camera(t, HMEDIUM(EBO_X - 380, 600), [[0, Z(1.9, EBO_X - 300, 570), 3.6, 'linear']])}
         bg={PLUM}
         blurBg={<ChapterRoom />}
         overlay={
@@ -226,7 +237,14 @@ const SHOTS: Shot[] = [
     // the whole cast, ready to demonstrate
     at: at('Just'),
     render: (t, f) => (
-      <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
+      <VStage
+        framing={camera(t, CU(560, 470), [
+          [at('six'), HWIDE(960, 600), 0.7],
+          [at('rich'), Z(1.9, 1400, 520), 0.3, 'whip'],
+          [at('opposite.'), HMEDIUM(640, 600), 0.3, 'whip'],
+        ])}
+        blurBg={<Studio t={0} />}
+      >
         {(['ama', 'christy', 'mica', 'obuor'] as CastId[]).map((who, i) => (
           <Cast key={who} who={who} f={f + i * 7} x={1060 + i * 230} facing={-1} pose={snapPose(t, [[0, face(G.idle, 'open', {mouth: 'smile'})], [at('rich') + i * 0.08, face(G.hips, 'squint', {mouth: 'smirk'})]])} />
         ))}
@@ -243,7 +261,7 @@ const SHOTS: Shot[] = [
   {
     at: at('The average'),
     render: (t, f) => (
-      <VStage framing={HWIDE(880, 600)} blurBg={<LivingRoom />}>
+      <VStage framing={camera(t, Z(0.85, 820, 560), [[at('The average') + 0.4, HMEDIUM(700, 560), 4.5, 'linear']])} blurBg={<LivingRoom />}>
         <Cast who="ama" f={f} x={760} y={SEAT_Y} pose={face(G.sit, 'half', {mouth: 'flat', lookX: -14})}>
           <Popcorn y={60} />
         </Cast>
@@ -254,7 +272,7 @@ const SHOTS: Shot[] = [
     // the days fly by on the wall calendar while Ama doesn't move
     at: at('A full-time'),
     render: (t, f) => (
-      <VStage framing={HWIDE(880, 600)} blurBg={<LivingRoom />}>
+      <VStage framing={camera(t, Z(3.4, 1300, 300), [[at('So'), HWIDE(880, 600), 1.0], [at('couch.'), Z(3.0, 760, 450), 0.35, 'whip']])} blurBg={<LivingRoom />}>
         <Calendar x={1300} y={300} day={(daysGoBy(t, at('A full-time')) % 30) + 1} month={['JAN', 'MAR', 'JUN', 'SEP', 'DEC'][Math.floor(daysGoBy(t, at('A full-time')) / 30) % 5]} />
         <Cast who="ama" f={f} x={760} y={SEAT_Y} pose={face(G.sit, t < at('couch.') ? 'half' : 'closed', {mouth: 'flat', lookX: -14})} noBlink>
           <Remote rotate={-20} />
@@ -265,7 +283,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Ama'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom />}>
+      <VStage framing={camera(t, HMEDIUM(840, 560), [[at('nothing'), ECU(760, 440), 0.3, 'whip']])} blurBg={<LivingRoom />}>
         <Cast who="ama" f={f} x={760} y={SEAT_Y} pose={t < at('Her bank') ? face(G.sit, 'happy', {mouth: 'grin', lookX: -14}) : face(G.sit, t < at('nothing') ? 'wide' : 'sad', {mouth: t < at('nothing') ? 'o' : 'frown', armR: [80, -40]})}>
           {t < at('Her bank') ? <Popcorn y={60} /> : <HandPhone screen="off" rotate={-8} />}
         </Cast>
@@ -274,13 +292,13 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Flip'),
-    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip')} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('one hour'), face(G.point, 'open')]])} />,
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip')} framing={pushOnEbo(t, at('one hour'))} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('one hour'), face(G.point, 'open')]])} />,
   },
   {
     // TV off, laptop open
     at: at("That's three"),
     render: (t, f) => (
-      <VStage framing={HWIDE(760, 600)} blurBg={<LivingRoom tv={false} />}>
+      <VStage framing={camera(t, Z(1.6, 140, 520), [[at("That's three") + 0.2, HWIDE(760, 600), 1.4]])} blurBg={<LivingRoom tv={false} />}>
         <Table x={520} w={460} />
         <Laptop x={520} y={FLOOR_Y - 250} screen={t < at('start a') ? 'code' : 'shop'} />
         <Cast who="ama" f={f} x={260} pose={face(G.hold, 'happy', {armR: [70 + (Math.floor(f / 5) % 2) * 14, -30], mouth: 'smile'})} />
@@ -295,12 +313,12 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Hobbies are'),
-    render: (t, f) => <EboTalk t={t} f={f} close pose={snapPose(t, [[0, face(G.hips, 'wide', {mouth: 'o'})], [at('good at'), face(G.point, 'squint', {mouth: 'smirk'})]])} />,
+    render: (t, f) => <EboTalk t={t} f={f} framing={camera(t, HCLOSE(EBO_X + 10, 520), [[at('good at'), ECU(EBO_X, 510), 0.3, 'whip']])} pose={snapPose(t, [[0, face(G.hips, 'wide', {mouth: 'o'})], [at('good at'), face(G.point, 'squint', {mouth: 'smirk'})]])} />,
   },
   {
     at: at('Christy draws'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(980, 560)} blurBg={<LivingRoom wall="#CFE3D4" tv={false} />}>
+      <VStage framing={camera(t, Z(3.0, 1130, 610), [[at('every', 2) - 0.2, HMEDIUM(980, 560), 1.0]])} blurBg={<LivingRoom wall="#CFE3D4" tv={false} />}>
         <Easel x={1130} y={FLOOR_Y} done={Math.max(0, Math.min(1, (t - at('draws')) / 1.4))} />
         <Cast who="christy" f={f} x={840} pose={face(G.hold, 'happy', {armR: [96 + (Math.floor(f / 6) % 2) * 16, -30], mouth: 'smile', lookX: 10})}>
           <Brush rotate={-30} />
@@ -314,7 +332,7 @@ const SHOTS: Shot[] = [
       const w = walkTo('obuor', 'fastWalk', t, at('Two years') + 0.3, 1580, 1260);
       const pay = at('fifty');
       return (
-        <VStage framing={HWIDE(1000, 600)} blurBg={<LivingRoom wall="#CFE3D4" tv={false} />}>
+        <VStage framing={t < pay ? Z(1.25, (760 + w.x) / 2 + 60, 580) : camera(t, Z(1.25, (760 + w.x) / 2 + 60, 580), [[pay, Z(2.0, 900, 480), 0.4]])} blurBg={<LivingRoom wall="#CFE3D4" tv={false} />}>
           <Easel x={1000} y={FLOOR_Y} done={1} framed />
           <Cast who="christy" f={f} x={760} pose={t < pay ? face(G.present, 'happy', {mouth: 'grin'}) : face(G.hold, 'dollar', {mouth: 'grin'})}>
             {t >= pay && <DollarBill scale={0.6} />}
@@ -329,7 +347,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Mica'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom />}>
+      <VStage framing={camera(t, HMEDIUM(840, 560), [[at('Mica'), ECU(760, 440), 2.2, 'linear']])} blurBg={<LivingRoom />}>
         <Cast who="mica" f={f} x={760} y={SEAT_Y} pose={face(G.sit, 'half', {mouth: 'flat', armR: [60 + (Math.floor(f / 8) % 2) * 6, -50]})}>
           <HandPhone screen="off" rotate={-8} />
         </Cast>
@@ -340,7 +358,7 @@ const SHOTS: Shot[] = [
     // same phone: Mica scrolling, Christy selling her art
     at: at('Same phone'),
     render: (t, f) => (
-      <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
+      <VStage framing={camera(t, Z(2.2, 620, 480), [[at('Different'), Z(2.2, 1300, 480), 0.3, 'whip']])} blurBg={<Studio t={0} />}>
         <Cast who="mica" f={f} x={620} pose={face(G.hold, 'half', {mouth: 'flat'})}>
           <HandPhone screen="off" />
         </Cast>
@@ -352,7 +370,7 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Flip', 2),
-    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 2)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('making'), face(G.open, 'open')], [at('every week'), face(G.point, 'happy')]])} />,
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 2)} framing={pushOnEbo(t, at('making'), at('every week'))} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('making'), face(G.open, 'open')], [at('every week'), face(G.point, 'happy')]])} />,
   },
   {
     // skills grow quietly: Mica swaps the phone for a brush, then gets paid
@@ -360,7 +378,7 @@ const SHOTS: Shot[] = [
     render: (t, f) => {
       const pay = at('paying');
       return (
-        <VStage framing={HMEDIUM(980, 560)} blurBg={<LivingRoom wall="#E3D9F2" tv={false} />}>
+        <VStage framing={camera(t, Z(3.0, 1130, 610), [[pay - 0.3, HMEDIUM(980, 560), 0.6]])} blurBg={<LivingRoom wall="#E3D9F2" tv={false} />}>
           <Easel x={1130} y={FLOOR_Y} done={Math.max(0, Math.min(1, (t - at('Skills')) / 1.6))} />
           <Cast who="mica" f={f} x={840} pose={t < pay ? face(G.hold, 'squint', {armR: [96 + (Math.floor(f / 6) % 2) * 16, -30], mouth: 'flat', lookX: 10}) : face(G.hold, 'dollar', {mouth: 'grin'})}>
             {t < pay ? <Brush rotate={-30} /> : <DollarBill scale={0.6} />}
@@ -378,7 +396,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Wake'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(820, 600)} blurBg={<Bedroom />}>
+      <VStage framing={camera(t, HMEDIUM(820, 600), [[at('sleep'), Z(2.6, 600, 470), 0.5]])} blurBg={<Bedroom />}>
         <Cast
           who="obuor"
           f={f}
@@ -395,12 +413,20 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Never ask what'),
-    render: (t, f) => <EboTalk t={t} f={f} pose={snapPose(t, [[0, face(G.shrug, 'half', {mouth: 'smirk'})], [at('because passion'), face(G.raise, 'open')], [at('keep going'), face(G.point, 'happy')]])} />,
+    render: (t, f) => <EboTalk t={t} f={f} framing={camera(t, HMEDIUM(EBO_X + 260, 600), [[at('Never ask what'), HMEDIUM(EBO_X + 60, 600), 4.4, 'linear'], [at('keep going'), CU(EBO_X + 40, 470), 0.5]])} pose={snapPose(t, [[0, face(G.shrug, 'half', {mouth: 'smirk'})], [at('because passion'), face(G.raise, 'open')], [at('keep going'), face(G.point, 'happy')]])} />,
   },
   {
     at: at('Obuor loves'),
     render: (t, f) => (
-      <VStage framing={HWIDE(1000, 600)} blurBg={<SneakerRoom />}>
+      <VStage
+        framing={camera(t, Z(1.7, 300, 420), [
+          [at('Obuor loves'), Z(1.7, 760, 520), 1.2],
+          [at('release'), Z(2.6, 1500, 330), 0.3, 'whip'],
+          [at("That's not"), Z(2.4, 700, 460), 0.3, 'whip'],
+          [at('market'), HWIDE(1000, 600), 0.5],
+        ])}
+        blurBg={<SneakerRoom />}
+      >
         <Cast who="obuor" f={f} x={700} pose={t < at('market') ? face(G.hold, 'happy', {mouth: 'grin', lookX: t >= at('release') ? 14 : 0}) : face(G.celebrate, 'dollar', {mouth: 'grin'})}>
           {t < at('market') && <Sneakers x={0} y={40} color={C.red} />}
         </Cast>
@@ -410,7 +436,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Flip', 3),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(900, 600)} blurBg={<SneakerRoom />} overlay={<FlipPill t={t} at={at('Flip', 3)} />}>
+      <VStage framing={camera(t, Z(3.0, 860, 560), [[at('who would') - 0.1, Z(2.4, 760, 430), 0.5]])} blurBg={<SneakerRoom />} overlay={<FlipPill t={t} at={at('Flip', 3)} />}>
         <Cast who="obuor" f={f} x={760} pose={t < at('who would') ? face(G.hold, 'squint', {mouth: 'flat', armR: [80 + (Math.floor(f / 6) % 2) * 10, -40]}) : face(G.raise, 'wide', {mouth: 'grin'})}>
           <Notebook rotate={-10} lines={Math.min(3, Math.floor(Math.max(0, t - at('write down')) / 0.6) + 1)} />
         </Cast>
@@ -427,7 +453,7 @@ const SHOTS: Shot[] = [
     // same job, same routine, same excuses: the calendar turns, nothing else does
     at: at('Same job'),
     render: (t, f) => (
-      <VStage framing={HWIDE(1400, 600)} blurBg={<Office t={0} />}>
+      <VStage framing={camera(t, HWIDE(1400, 600), [[at('Same routine'), Z(1.6, 1360, 540), 0.2, 'whip'], [at('Same excuses'), Z(2.6, 1260, 450), 0.2, 'whip']])} blurBg={<Office t={0} />}>
         <Calendar x={1700} y={320} day={(daysGoBy(t, at('Same job'), 0.2) % 30) + 1} month="SAME" />
         <Cast who="mica" f={f} x={1260} pose={face(G.slouch, 'half', {mouth: 'flat'})} />
       </VStage>
@@ -436,7 +462,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Never ask for'),
     render: (t, f) => (
-      <VStage framing={HWIDE(1400, 600)} blurBg={<Office t={0} />}>
+      <VStage framing={camera(t, Z(2.6, 1260, 450), [[at('Never ask for'), HWIDE(1400, 600), 4.0, 'linear']])} blurBg={<Office t={0} />}>
         <Calendar x={1700} y={320} day={30} month="SAME" />
         <Cast who="mica" f={f} x={1260} pose={face(G.slouch, 'half', {mouth: 'flat', lookX: Math.floor(f / 10) % 2 ? 12 : -12})} />
       </VStage>
@@ -445,7 +471,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Comfortable feels'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom />}>
+      <VStage framing={camera(t, HMEDIUM(840, 560), [[at('Comfortable feels'), Z(2.8, 760, 450), 1.5, 'linear']])} blurBg={<LivingRoom />}>
         <Cast who="obuor" f={f} x={760} y={SEAT_Y} pose={face(G.sit, 'happy', {mouth: 'smile', armR: [30, 20]})} />
       </VStage>
     ),
@@ -455,7 +481,7 @@ const SHOTS: Shot[] = [
     render: (t, f) => {
       const k = Math.floor(f / 3);
       return (
-        <VStage framing={{zoom: 1.3, cx: 900, cy: 620}} bg={PLUM} blurBg={<ChapterRoom />}>
+        <VStage framing={camera(t, Z(4.0, 920, 650), [[at('runs'), Z(1.3, 900, 620), 1.4]])} bg={PLUM} blurBg={<ChapterRoom />}>
           {/* the wheel turns in 10° steps; with 12 spokes there are only three distinct looks */}
           <HamsterWheel x={900} y={FLOOR_Y} spin={(k % 3) * 10} step={k} />
         </VStage>
@@ -464,7 +490,7 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Flip', 4),
-    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 4)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('uncomfortable'), face(G.point, 'open')]])} />,
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 4)} framing={pushOnEbo(t, at('uncomfortable'))} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('uncomfortable'), face(G.point, 'open')]])} />,
   },
   {
     at: at('Send'),
@@ -472,7 +498,7 @@ const SHOTS: Shot[] = [
       const p = Math.min(1, Math.max(0, (t - at('email') - 0.1) / 0.4));
       return (
         <VStage
-          framing={HWIDE(900, 600)}
+          framing={camera(t, Z(1.9, 760, 560), [[at('email'), Z(1.2, 1150, 560), 0.6]])}
           blurBg={<Office t={0} />}
           overlay={
             p > 0 && p < 1 ? (
@@ -494,7 +520,7 @@ const SHOTS: Shot[] = [
     at: at('Ask for the raise'),
     render: (t, f) => (
       <VStage
-        framing={HWIDE(1300, 600)}
+        framing={camera(t, HWIDE(1300, 600), [[at('Ask for the raise'), Z(1.6, 1310, 520), 1.0, 'linear']])}
         blurBg={<Office t={0} />}
         overlay={
           <Slam t={t} at={at('Ask for the raise')}>
@@ -510,7 +536,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Post'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(900, 560)} blurBg={<LivingRoom wall="#F2D7D9" tv={false} />}>
+      <VStage framing={camera(t, HMEDIUM(900, 560), [[at('video.'), Z(2.8, 870, 500), 0.35]])} blurBg={<LivingRoom wall="#F2D7D9" tv={false} />}>
         <Cast who="ama" f={f} x={820} pose={t < at('video.') ? face(G.hold, 'squint', {mouth: 'flat', armR: [96, -40]}) : face(G.hold, 'happy', {mouth: 'grin', armR: [96, -40]})}>
           <HandPhone screen="camera" />
         </Cast>
@@ -526,7 +552,7 @@ const SHOTS: Shot[] = [
   {
     at: at('The lottery'),
     render: (t, f) => (
-      <VStage framing={HWIDE(1000, 600)} blurBg={<LivingRoom wall="#4A3B5E" tv={false} />}>
+      <VStage framing={camera(t, Z(3.6, 1040, 540), [[at('rich uncle'), Z(1.4, 900, 580), 0.6], [at('viral'), Z(2.8, 690, 420), 0.5]])} blurBg={<LivingRoom wall="#4A3B5E" tv={false} />}>
         <Table x={1040} w={520} color="#5B4636" />
         <CrystalBall x={1040} y={FLOOR_Y - 250} />
         <Candle x={880} y={FLOOR_Y - 250} />
@@ -541,7 +567,7 @@ const SHOTS: Shot[] = [
     // the ticket loses
     at: at('The odds'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(900, 600)} blurBg={<LivingRoom wall="#4A3B5E" tv={false} />}>
+      <VStage framing={camera(t, HMEDIUM(900, 600), [[at('The odds'), Z(2.8, 780, 440), 5.5, 'linear']])} blurBg={<LivingRoom wall="#4A3B5E" tv={false} />}>
         <Table x={1040} w={520} color="#5B4636" />
         <CrystalBall x={1040} y={FLOOR_Y - 250} />
         <Cast who="ama" f={f} x={760} pose={t < at('You are') ? face(G.hold, 'wide', {mouth: 'o', armR: [100, -40]}) : face(G.slouch, 'sad', {mouth: 'frown'})}>
@@ -552,7 +578,7 @@ const SHOTS: Shot[] = [
   },
   {
     at: at('Flip', 5),
-    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 5)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('luck'), face(G.point, 'open')]])} />,
+    render: (t, f) => <EboTalk t={t} f={f} flip={at('Flip', 5)} framing={pushOnEbo(t, at('luck'))} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('luck'), face(G.point, 'open')]])} />,
   },
   {
     // small bets, done often: the cast each try something; some pay off
@@ -560,7 +586,7 @@ const SHOTS: Shot[] = [
     render: (t, f) => {
       const win = at('win');
       return (
-        <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
+        <VStage framing={camera(t, Z(1.9, 460, 520), [[at('Small bets'), Z(1.9, 1200, 520), win - at('Small bets') - 0.1, 'linear'], [win, HWIDE(960, 600), 0.5]])} blurBg={<Studio t={0} />}>
           <Cast who="christy" f={f} x={460} pose={t < win ? face(G.hold, 'squint', {mouth: 'flat'}) : face(G.celebrate, 'dollar', {mouth: 'grin'})}>
             {t < win ? <HandPhone screen="listing" /> : <DollarBill scale={0.6} />}
           </Cast>
@@ -587,7 +613,7 @@ const SHOTS: Shot[] = [
     render: (t, f) => {
       const k = ['The economy', 'Your boss', 'Your parents', 'The weather'].filter((w) => t >= at(w)).length;
       return (
-        <VStage framing={HWIDE(960, 600)} blurBg={<LivingRoom wall="#F2D7D9" />}>
+        <VStage framing={camera(t, Z(1.8, 1160, 520), (['Your boss', 'Your parents', 'The weather'] as const).map((w, i): [number, Framing, number, 'whip'] => [at(w), Z(1.8, i % 2 ? 1160 : 760, 520), 0.25, 'whip']))} blurBg={<LivingRoom wall="#F2D7D9" />}>
           <Cast who="mica" f={f} x={960} facing={k % 2 ? -1 : 1} pose={face(POSES.pointing, 'squint', {mouth: 'scream', brows: 'angry', tilt: k % 2 ? 4 : -4})} />
         </VStage>
       );
@@ -596,7 +622,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Blaming'),
     render: (t, f) => (
-      <VStage framing={HMEDIUM(840, 560)} blurBg={<LivingRoom wall="#F2D7D9" />}>
+      <VStage framing={camera(t, HMEDIUM(840, 560), [[at('It also'), Z(3.0, 420, 330), 0.3, 'whip'], [at('nothing changes'), ECU(760, 440), 0.3, 'whip']])} blurBg={<LivingRoom wall="#F2D7D9" />}>
         <Calendar x={420} y={330} day={t < at('It also') ? 1 : (daysGoBy(t, at('It also'), 0.12) % 30) + 1} month="SAME" />
         <Cast who="mica" f={f} x={760} y={SEAT_Y} pose={face(G.sit, t < at('It also') ? 'happy' : 'half', {mouth: t < at('It also') ? 'grin' : 'flat', armR: [30, 20]})} />
       </VStage>
@@ -605,7 +631,7 @@ const SHOTS: Shot[] = [
   {
     at: at('Flip', 6),
     render: (t, f) => (
-      <EboTalk t={t} f={f} flip={at('Flip', 6)} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('What part'), face(G.point, 'open', {brows: 'up'})], [at('Start there'), face(G.hips, 'happy', {mouth: 'grin'})]])} />
+      <EboTalk t={t} f={f} flip={at('Flip', 6)} framing={pushOnEbo(t, at('What part'), at('Start there'))} pose={snapPose(t, [[0, face(G.raise, 'happy')], [at('What part'), face(G.point, 'open', {brows: 'up'})], [at('Start there'), face(G.hips, 'happy', {mouth: 'grin'})]])} />
     ),
   },
 
@@ -623,9 +649,10 @@ const SHOTS: Shot[] = [
         [at('Wait for magic', 2), <Cast key="a2" who="ama" f={f} x={960} pose={face(G.hold, 'closed', {mouth: 'smile', armR: [110, -30]})} noBlink><Ticket rotate={-10} /></Cast>],
         [at('Blame everyone', 2), <Cast key="m2" who="mica" f={f} x={960} pose={face(POSES.pointing, 'squint', {mouth: 'scream', brows: 'angry'})} />],
       ];
-      const cur = beats.filter(([a]) => t >= a).pop()!;
+      const i = beats.filter(([a]) => t >= a).length - 1;
+      const cur = beats[i];
       return (
-        <VStage framing={HMEDIUM(960, 600)} blurBg={<LivingRoom />}>
+        <VStage framing={i % 2 ? Z(2.4, 960, 440) : HMEDIUM(960, 600)} blurBg={<LivingRoom />}>
           {cur[1]}
         </VStage>
       );
@@ -634,7 +661,7 @@ const SHOTS: Shot[] = [
   {
     at: at("And here's"),
     render: (t, f) => (
-      <VStage framing={HWIDE(960, 600)} blurBg={<ChapterRoom wall="#1E3A2E" floor="#16291F" />}>
+      <VStage framing={camera(t, Z(2.8, 960, 430), [[at('opposite', 2) - 0.2, Z(0.95, 960, 600), 1.0]])} blurBg={<ChapterRoom wall="#1E3A2E" floor="#16291F" />}>
         {(['ama', 'christy', 'mica', 'obuor'] as CastId[]).map((who, i) => (
           <Cast key={who} who={who} f={f + i * 5} x={[300, 600, 1320, 1620][i]} facing={i < 2 ? 1 : -1} pose={snapPose(t, [[0, face(G.idle, 'open', {mouth: 'smile'})], [at('opposite', 2) + i * 0.1, face(G.celebrate, 'happy', {mouth: 'grin'})]])} />
         ))}
@@ -645,8 +672,8 @@ const SHOTS: Shot[] = [
   {
     at: at('Start today'),
     render: (t, f) => (
-      <VStage framing={HWIDE(960, 600)} blurBg={<Studio t={0} />}>
-        <Ebo f={f} x={(t - at('Start today')) * cycleSpeed('ebo', 'run')} cycle="run" pose={face(G.idle, 'happy')} />
+      <VStage framing={Z(1.6, 260 + (t - at('Start today')) * cycleSpeed('ebo', 'run'), 560)} blurBg={<Studio t={0} />}>
+        <Ebo f={f} x={100 + (t - at('Start today')) * cycleSpeed('ebo', 'run')} cycle="run" pose={face(G.idle, 'happy')} />
       </VStage>
     ),
   },
@@ -654,7 +681,7 @@ const SHOTS: Shot[] = [
     at: at('Subscribe'),
     render: (t, f) => (
       <VStage
-        framing={HMEDIUM(EBO_X - 380, 600)}
+        framing={camera(t, HMEDIUM(EBO_X - 380, 600), [[at('Subscribe'), Z(1.8, EBO_X - 320, 580), 1.6, 'linear']])}
         bg={PLUM}
         blurBg={<ChapterRoom />}
         overlay={

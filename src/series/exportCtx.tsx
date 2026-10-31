@@ -36,8 +36,12 @@ export type CharRecord = {who: string; outer: M6; locals: Record<string, M6>; fr
 export type GraphicRecord = {key: string; matrix: M6; alpha: number; svg: string};
 /** A prop on this frame: `svg` is its drawing in its own coordinates, `matrix` places it on screen. */
 export type PropRecord = {name: string; key: string; matrix: M6; svg: string; front: boolean};
-/** The frame's set as SVG (screen space): what the Background layer shows. */
-export type BackgroundRecord = {key: string; svg: string};
+/**
+ * What the Background layer shows on this frame: the screen-space backdrop, the set drawn in
+ * world space with the camera matrix that frames it, and the vignette on top.
+ */
+type SvgPart = {key: string; svg: string};
+export type BackgroundRecord = {back: SvgPart; world: SvgPart; cam: M6; front: SvgPart};
 export type Capture = {chars: CharRecord[]; graphics: GraphicRecord[]; props: PropRecord[]; caption: string | null; background?: BackgroundRecord};
 export type LayerMode = 'full' | 'set' | 'bg';
 

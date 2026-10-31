@@ -12,8 +12,9 @@ Layers on the main timeline (top → bottom):
   <cast>       one layer per character; each plays its own animated rig symbol
   Props        every other prop (vending machines, crates, cans, calendars …) as editable
                vector symbols in the hand-drawn style, one symbol per look, moved by keys
-  Background   the set only, as editable vector symbols (one per set/framing, held
-               while unchanged). Older captures fall back to JPEG frames from BG_DIR,
+  Background   the set only, as editable vector symbols: a screen backdrop, the set in
+               world space placed by the camera (camera moves are keyframes on it) and
+               the vignette. Older captures: one symbol per set/framing. Older captures fall back to JPEG frames from BG_DIR,
                rendered with --props='{"layer":"set"}' so props aren't baked in
 
 Each character's animated symbol ("<Name>/<Name> – <Episode>") is a copy of the user's own
@@ -588,7 +589,33 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None):
     lib.folder('Background')
     media_els = []
     bsyms, bstates = {}, []
-    if all(fr.get('background') for fr in frames):
+    if all(fr.get('background', {}).get('world') for fr in frames):
+        # camera-aware: backdrop + the set in world space (keyed by the camera matrix) + vignette
+        if svg_dir:
+            Path(svg_dir).mkdir(parents=True, exist_ok=True)
+        part_syms = {}
+
+        def part_symbol(kind, part, shot):
+            if part['key'] not in part_syms:
+                n = sum(1 for k in part_syms.values() if k.split('/')[-1].startswith(kind)) + 1
+                name = f'Background/{kind} {n:02d}' + (f' shot {shot + 1:02d}' if kind == 'set' else '')
+                graphic_symbol(lib, name, svg_to_elements(part['svg']))
+                part_syms[part['key']] = name
+                if svg_dir and kind == 'set':
+                    # the whole set in world coordinates (not just what one camera framing shows)
+                    world = part['svg'].replace('<svg xmlns="http://www.w3.org/2000/svg">', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-300 -150 2600 1500" width="2600" height="1500">', 1)
+                    (Path(svg_dir) / f'set{n:02d}_shot{shot + 1:02d}.svg').write_text(world)
+            return part_syms[part['key']]
+
+        for fr in frames:
+            bgr = fr['background']
+            back = part_symbol('backdrop', bgr['back'], fr['shot'])
+            world = part_symbol('set', bgr['world'], fr['shot'])
+            front = part_symbol('vignette', bgr['front'], fr['shot'])
+            bstates.append((back, world, rkey(bgr['cam']), front))
+        bsyms = {'camera': True}
+        bg_count = sum(1 for k in part_syms.values() if '/set ' in k)
+    elif all(fr.get('background') for fr in frames):
         if svg_dir:
             Path(svg_dir).mkdir(parents=True, exist_ok=True)
         for fr in frames:
@@ -691,7 +718,9 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None):
     if any(prop_states(False)):
         add_layer('Props', keyed(prop_states(False), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
     # background (set only)
-    if bsyms:
+    if bsyms.get('camera'):
+        add_layer('Background', keyed(bstates, lambda f, st: [inst(st[0], [1, 0, 0, 1, 0, 0]), inst(st[1], list(st[2])), inst(st[3], [1, 0, 0, 1, 0, 0])]), '#9933CC')
+    elif bsyms:
         add_layer('Background', keyed(bstates, lambda f, k: [inst(bsyms[k], [1, 0, 0, 1, 0, 0])]), '#9933CC')
     else:
         bkeys = [(f, [ET.Element(N('DOMBitmapInstance'), {'libraryItemName': f'Background/bg{i + 1:04d}.jpg'})]) for i, (f, _) in enumerate(bg_keys)]

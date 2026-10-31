@@ -20,9 +20,11 @@ LAYERS (top to bottom)
   Props       - easel and portrait, laptop, hamster wheel, crystal ball, candles, calendar:
                 editable vector symbols in the hand-drawn style (Library > Props)
   Background  - the sets only (studio, living room, bedroom, office, sneaker room, the
-                dark chapter-card room) as editable vector symbols, one per set and camera
-                framing (Library > Background). Each one is also in backgrounds/ as an
-                .svg file you can open in Illustrator or import.
+                dark chapter-card room) as editable vector symbols (Library > Background):
+                each set is drawn once in full, and the camera is its instance's position
+                and size, so pans, push-ins and whip-pans are keyframes you can retime.
+                Each set is also in backgrounds/ as an .svg file you can open in
+                Illustrator or import.
 
 ADD THE VOICE (1 minute)
   1. File > Import > Import to Library... > choose Ebo_Ep03_voice.mp3

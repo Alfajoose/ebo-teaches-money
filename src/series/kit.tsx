@@ -63,6 +63,23 @@ export type Framing = {zoom: number; cx: number; cy: number};
 export const WIDE = (cx: number, cy = 660): Framing => ({zoom: 1.6, cx, cy});
 export const MEDIUM = (cx: number, cy = 640): Framing => ({zoom: 2.6, cx, cy});
 export const CLOSE = (cx: number, cy = 600): Framing => ({zoom: 3.7, cx, cy});
+/**
+ * A camera move inside a shot: at `at` seconds, travel to `to` over `dur` seconds.
+ * 'ease' for pans, tracks and slow push-ins; 'whip' for fast whip-pans; 'linear' for drifts.
+ * Only the camera zooms — characters and props never scale.
+ */
+export type CamMove = [at: number, to: Framing, dur?: number, style?: 'ease' | 'whip' | 'linear'];
+export const camera = (t: number, start: Framing, moves: CamMove[] = []): Framing => {
+  let cur = start;
+  for (const [a, to, dur = 0.8, style = 'ease'] of moves) {
+    if (t < a) break;
+    const u = dur <= 0 ? 1 : Math.min(1, (t - a) / dur);
+    const e = style === 'linear' ? u : style === 'whip' ? Easing.inOut(Easing.exp)(u) : Easing.inOut(Easing.cubic)(u);
+    cur = {zoom: cur.zoom * Math.pow(to.zoom / cur.zoom, e), cx: cur.cx + (to.cx - cur.cx) * e, cy: cur.cy + (to.cy - cur.cy) * e};
+  }
+  return cur;
+};
+
 // 16:9 long-form framings (1920×1080 frame): full body, waist-up, head-and-shoulders
 export const HWIDE = (cx: number, cy = 600): Framing => ({zoom: 1.0, cx, cy});
 export const HMEDIUM = (cx: number, cy = 610): Framing => ({zoom: 1.55, cx, cy});
@@ -110,16 +127,39 @@ export const VStage: React.FC<{
     </svg>
   );
   if (cap && mode === 'full') {
-    // the background for the Animate export: this frame drawn as 'set' only (no props,
-    // characters or graphics), as SVG — it becomes a vector symbol on the Background layer
-    const svg = renderToStaticMarkup(
-      <LayerModeContext.Provider value="set">
-        <NoScaleContext.Provider value={noScale}>
-          <HandDrawnContext.Provider value={false}>{scene}</HandDrawnContext.Provider>
-        </NoScaleContext.Provider>
-      </LayerModeContext.Provider>,
-    );
-    cap.background = {key: hash(svg), svg};
+    // The background for the Animate export, drawn as 'set' only (no props, characters or
+    // graphics), in three parts: the screen-space backdrop, the set in world space (placed by
+    // the camera matrix, so a camera move is just keyframes on one symbol) and the vignette.
+    const asSet = (node: React.ReactNode, defs?: React.ReactNode) =>
+      renderToStaticMarkup(
+        <LayerModeContext.Provider value="set">
+          <NoScaleContext.Provider value={noScale}>
+            <HandDrawnContext.Provider value={false}>
+              <svg xmlns="http://www.w3.org/2000/svg">
+                {defs}
+                {node}
+              </svg>
+            </HandDrawnContext.Provider>
+          </NoScaleContext.Provider>
+        </LayerModeContext.Provider>,
+      );
+    const part = (svg: string) => ({key: hash(svg), svg});
+    cap.background = {
+      back: part(asSet(<g><rect width={VW} height={VH} fill={bg} />{screenBg}</g>)),
+      world: part(asSet(<g>{blurBg}{children}</g>)),
+      cam: camM,
+      front: part(
+        asSet(
+          <rect width={VW} height={VH} fill="url(#vvig)" />,
+          <defs>
+            <radialGradient id="vvig" cx="50%" cy="45%" r="75%">
+              <stop offset="55%" stopColor="#000" stopOpacity={0} />
+              <stop offset="100%" stopColor="#000" stopOpacity={0.35} />
+            </radialGradient>
+          </defs>,
+        ),
+      ),
+    };
   }
   return (
     <CameraContext.Provider value={camM}>

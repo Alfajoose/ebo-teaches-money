@@ -32,7 +32,7 @@ The Benny pilot (`VendingMachineMoney`) and the horizontal cast version (`Vendin
 ## House style
 
 - Snappy, pose-to-pose motion: 2–3 frame snaps with overshoot, then dead-still holds.
-- **Translation and rotation only. Nothing animates scale.** Framing changes only on hard cuts.
+- **Characters and props use translation and rotation only, and never scale.** The camera can pan, track, whip-pan and zoom (`camera()` in `src/series/kit.tsx`). Each scene gets a planned mix of wides, close-ups, extreme close-ups and reaction shots.
 - Talk-to-camera with hard cuts between wide, medium and close shots. Shorts are 1080×1920 with the caption pill at the top. Long-form episodes are 1920×1080 with the caption at the bottom, use the `HWIDE`/`HMEDIUM`/`HCLOSE` framings, and open each section on a chapter card.
 - Only characters and props animate. No decorative effects (webs, tumbleweeds, money rain, smoke, shakes, animated backgrounds).
 - Backgrounds and props are kept separate (see below).
@@ -78,7 +78,7 @@ The .fla's main timeline, top to bottom:
 | Props front | Props the characters hold |
 | One layer per character | That character's animated rig |
 | Props | All other props |
-| Background | The set, as vector symbols (one per set and framing); each is also saved as an `.svg` file in the episode's `backgrounds/` folder |
+| Background | The set, as vector symbols. In long-form episodes each set is drawn once and the camera moves are keyframes on it. Each set is also saved as an `.svg` file in the episode's `backgrounds/` folder |
 
 ## Walk and run cycles
 

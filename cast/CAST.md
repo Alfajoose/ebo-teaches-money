@@ -7,7 +7,8 @@
 ## Animation house rules
 
 1. **Snappy, pose-to-pose motion.** Each move is a 2–3 frame snap with a small overshoot, a 1–2 frame settle, then a dead-still hold. Use anticipation before big moves.
-2. **Translation and rotation only. Never animate scale** (no squash and stretch, no scale tweens). Any "squash" feeling comes from position dips and rotation.
+2. **Translation and rotation only. Never animate scale** (no squash and stretch, no scale tweens). Any "squash" feeling comes from position dips and rotation. The one exception is the **camera**: it can pan, track, whip-pan and zoom (push-in or pull-out). Characters and props still never scale; only the frame does.
+   **Plan the camera per scene:** an establishing wide, then close-ups and extreme close-ups on faces and props, two-shots, reaction cut-ins. Use slow push-ins for emphasis, pull-outs to reveal, whip-pans between characters, snap-zooms for jokes, and tracking shots that follow a walk or run. Use `camera()` in `src/series/kit.tsx`.
 3. **Expressions and mouths are frame swaps** on the eye and mouth symbols, timed to land on the snap frames.
 4. **Props are drawn in a hand-drawn style:** slightly wavering lines and a light crayon grain (`src/handDrawn.tsx`). The waver never changes between frames, so nothing shimmers. See `sheets/hand-drawn-props-before-after.png`.
 5. **Backgrounds and props are kept separate.** The set (walls, furniture, plants, signs) is the background; anything that's handled, moved or counted is a prop (`src/prop.tsx`). In the Animate file the set goes on the **Background** layer and props get their own **Props** / **Props front** layers, all as editable vector symbols (the sets are also saved as `.svg` files). A set never draws a prop.
