@@ -2,11 +2,11 @@ EBO TEACHES MONEY — Ep 04: The Ultimate Guide to Staying Broke (Adobe Animate 
 
 Stage: 1920 x 1080 (16:9 long-form), 30 fps, 8232 frames (4:34)
 
-Ebo alone, in his own life: when he talks to us he stands where the habit happens (his
-front door, living room, work room, kitchen), facing the lens; the rest of the time he acts
-it out (the couch, the kitchen, his desk, bed), which sets up the ending. In the living room
-the TV is on the camera side, so front-on couch shots are the TV's point of view; the
-reverse angle over the couch back shows the TV. Animated straight from
+Ebo alone, organic not busy: when he talks to us, and for his close-up reactions, he's on a
+plain soft lilac backdrop and the acting and the camera's punch-ins carry it. Real places (the
+couch, the kitchen, his desk, bed, the front door) are only for the quick acted-out bits, with
+as few props as the jokes need; the phone is the running gag. In the living room the TV is on
+the camera side; the reverse angle over the couch back shows the TV. Animated straight from
 the approved storyboard (storyboard/, shotlist.md): 114 shots, each starting on the first
 word of its line.
 
@@ -14,16 +14,16 @@ LAYERS (top to bottom)
   Captions    - editable text in caption pills at the bottom of the frame (Library > Captions)
   Graphics    - the title card, chapter cards, the "2017" stamp and the end card
                 (Library > Graphics)
-  Props front - things Ebo holds (remote, phone, popcorn, chips, letters, CV) and the couch
+  Props front - things Ebo holds (phone, remote, chips, letters, CV) and the couch
                 back in the reverse angle
   Ebo         - his animated rig symbol (Library > Ebo > "Ebo – Ep04"). Built on the new Ebo master:
                 his views (3/4, front, back) and in-front arm are keyed per frame, so the
                 arm layers he isn't using in a view are empty keyframes. Walking uses his
                 fast walk (Obuor's, retargeted).
-  Props       - diploma, sticky notes, Monday pad, laptop, easel, notebook, cereal, blanket
-                fort, suitcase, candle: editable vector symbols (Library > Props)
-  Background  - the sets only (front door, living room day/night, living room reverse angle (TV on/off), kitchen, work room day/night,
-                bedroom, office, the dark title room) as editable vector symbols:
+  Props       - diploma, sticky notes, Monday pad, laptop, easel, notebook, blanket fort,
+                suitcase: editable vector symbols (Library > Props)
+  Background  - the sets only (the plain backdrop, front door, living room day/night, living room reverse angle (TV on/off), kitchen, work room day/night,
+                bedroom, office) as editable vector symbols:
                 each set is drawn once in full and the camera is its instance's position and
                 size, so pans, push-ins and whip-pans are keyframes you can retime. Each set
                 is also in backgrounds/ as an .svg file.
