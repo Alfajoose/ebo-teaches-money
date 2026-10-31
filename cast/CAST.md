@@ -53,8 +53,9 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
   - Eye shapes: 0 tall oval · 1 / 3 wide oval · 2 closed line · 4 small oval · 5 lid line (glare) · 6 tilted · 7 flat half-lid · 8 `><` squeeze · 9 lower lid (happy) · 10 upper lid (droopy) · 11 both lids (squint) · 12 closed lid · 13 empty (back view)
   - Pupils: 0 tall oval · 1 / 2 round · 3 flat-top (for upper lids) · 4 flat-bottom (for lower lids) · 5 / 6 side · 7 none
   - How the show's eye names map to [eye, pupil]: open = the view's own · wide 0,0 · happy 9,4 · half 7,3 · sad 10,3 · squint 11,2 · angry 5,1 · suspicious 11,5 · tired 10,3 · squeeze 8,7 · closed / blink 12,7. See `sheets/ebo-eyes.png`.
-- **Mouth** (`mouth`, 15 frames): 0 squiggle · 1 open smile · 2 teeth grin · 3 talk with teeth · 4 laugh · 5 small o · 6 smile line · 7 small grit · 8 open · 9 gritted · 10 talk wide · 11 shout · 12 small o (low) · 13 frown · 14 smirk. See `sheets/ebo-mouths.png`.
-  - Lip sync: rest 6 · wide 3/1 · mid 10/8 · round 5 (alternating every 4 frames so speech doesn't look stiff).
+- **Mouth** (`mouth`, 15 frames): 0 squiggle · 1 open smile · 2 teeth grin · 3 talk with teeth · 4 laugh · 5 small o · 6 smile line · 7 small grit · 8 open frown · 9 gritted · 10 open, downturned · 11 big open, downturned · 12 small o (low) · 13 frown · 14 grimace. See `sheets/ebo-mouths.png`.
+  - The mouths come in two moods. Happy / normal: 1, 2, 3, 4, 5, 6, 12. Sad / upset: 7, 8, 9, 10, 11, 13, 14. Neutral: 0. Never mix them in one expression.
+  - Lip sync follows the shot's expression (the pose's mouth): happy talks with rest 6 · wide 3/1 · mid 1/3 · round 5; upset (frown, wobbly, grimace, scream, o) with rest 13 · wide 11/10 · mid 8/10 · round 12; flat with rest 0 · wide 3/1 · mid 3/12 · round 12. Shapes alternate every 4 frames so speech doesn't look stiff.
 - **New eye names** angry, suspicious, tired and squeeze, and **new mouth names** teeth, laugh and grimace, work on everyone: rigs without those drawings fall back to the nearest ones they have.
 - **Cycles** play in view 0.
 - **Voice:** the file has no voice track (the old master had the Dan test read).

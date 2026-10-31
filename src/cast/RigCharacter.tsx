@@ -1,7 +1,7 @@
 import React from 'react';
 import {C} from '../theme';
 import type {Pose, Eyes, Mouth} from '../components/Character';
-import {CAST, CastId, CastConfig, RigData, EYES_FALLBACK, MOUTH_FALLBACK} from './castConfig';
+import {CAST, CastId, CastConfig, RigData, EYES_FALLBACK, MOUTH_FALLBACK, LIP_MOOD} from './castConfig';
 import {CycleName, cycleFrame, getCycle} from './cycles';
 import measureJson from './data/measure.json';
 import {CameraContext, mmul, R as Rm, S as Sm, T as Tm, useCapture, useLayerMode} from '../series/exportCtx';
@@ -185,9 +185,12 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   const eyeOf = (e: Eyes) => cfg.eyes[e] ?? cfg.eyes[EYES_FALLBACK[e] ?? 'open'] ?? 0;
   const eyeFrame = eyeOverride !== undefined && !blink ? eyeOverride : eyeOf(eyes);
   const pup = cfg.pupils ? cfg.pupils.eyes[eyes] ?? cfg.pupils.eyes[EYES_FALLBACK[eyes] ?? 'open'] ?? [null, null] : null;
+  // talking: the lip-sync set that matches the expression (happy shapes on a happy face, upset on an upset one)
+  const mood = LIP_MOOD[pose.mouth as Mouth] ?? 'happy';
+  const lipSet = cfg.lip ? (mood === 'neutral' ? cfg.lip.neutral ?? cfg.lip.happy : cfg.lip[mood]) : undefined;
   const mouthOf = (m: Mouth) => cfg.mouth[m] ?? cfg.mouth[MOUTH_FALLBACK[m] ?? 'smile'] ?? 0;
   const mouthF =
-    mouthFrame !== undefined ? (cfg.lip ? pickFrame(cfg.lip[mouthFrame] ?? cfg.lip[0], t) : mouthFrame) : pickFrame(mouthOf(pose.mouth as Mouth), t);
+    mouthFrame !== undefined ? (lipSet ? pickFrame(lipSet[mouthFrame] ?? lipSet[0], t) : mouthFrame) : pickFrame(mouthOf(pose.mouth as Mouth), t);
   const look: [number, number] = [pose.lookX * 0.6, pose.lookY * 0.5];
   for (const e of cfg.pupils?.layers ?? cfg.eyeLayers) dxy[e] = look;
   if (byName.mouth) dxy.mouth = [look[0] * 0.5, look[1] * 0.3];

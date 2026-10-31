@@ -19,6 +19,8 @@ export type RigData = {
 
 /** Expressions a rig doesn't draw fall back to the nearest one it does. */
 export const EYES_FALLBACK: Partial<Record<Eyes, Eyes>> = {angry: 'squint', suspicious: 'half', tired: 'half', squeeze: 'closed'};
+/** Which lip-sync set a pose's mouth talks with. */
+export const LIP_MOOD: Partial<Record<Mouth, 'happy' | 'sad' | 'neutral'>> = {frown: 'sad', wobbly: 'sad', grimace: 'sad', scream: 'sad', o: 'sad', flat: 'neutral'};
 export const MOUTH_FALLBACK: Partial<Record<Mouth, Mouth>> = {teeth: 'grin', laugh: 'grin', grimace: 'wobbly'};
 
 export type CastId = 'ebo' | 'mica' | 'obuor' | 'ama' | 'christy';
@@ -32,8 +34,10 @@ export type CastConfig = {
   /** Rigs with separate pupils: per expression [eye frame, pupil frame]; null = the view's own. */
   pupils?: {layers: string[]; eyes: Partial<Record<Eyes, [number | null, number | null]>>};
   mouth: Partial<Record<Mouth, number | number[]>>; // arrays alternate every 4 frames (wobble, snore)
-  /** Lip-sync levels from kit.lipFrame (0 rest, 1 wide, 2 mid, 3 round) → mouth frames. */
-  lip?: (number | number[])[];
+  /** Lip-sync levels from kit.lipFrame (0 rest, 1 wide, 2 mid, 3 round) → mouth frames, per mood,
+   * so a happy face only talks with happy shapes and an upset one with upset shapes. The mood
+   * comes from the pose's mouth (see LIP_MOOD); `neutral` falls back to `happy`. */
+  lip?: {happy: (number | number[])[]; sad: (number | number[])[]; neutral?: (number | number[])[]};
   /** Highest the left (near) shoulder goes: Ebo's new master draws that arm over his head, so
    * raised past this it would cover his face. Not applied in a back view. */
   armLMax?: number;
@@ -68,10 +72,15 @@ export const CAST: Record<CastId, CastConfig> = {
         sad: [10, 3], squint: [11, 2], angry: [5, 1], suspicious: [11, 5], tired: [10, 3], squeeze: [8, 7],
       },
     },
-    // 0 squiggle · 1 open smile · 2 teeth grin · 3 talk teeth · 4 laugh · 5 o · 6 smile line · 7 small grit
-    // 8 open · 9 gritted · 10 talk wide · 11 shout · 12 small o · 13 frown · 14 smirk
-    mouth: {smile: 6, grin: 1, o: 5, scream: 11, frown: 13, flat: 0, wobbly: [7, 9], smirk: 14, snore: [12, 5], teeth: 2, laugh: 4, grimace: 9},
-    lip: [6, [3, 1], [10, 8], 5],
+    // happy / normal: 1 open smile · 2 teeth grin · 3 talk with teeth · 4 laugh · 5 small o · 6 smile line · 12 small o
+    // sad / upset:   7 small grit · 8 open frown · 9 gritted · 10 open, downturned · 11 big open, downturned
+    //                13 frown · 14 grimace          neutral: 0 squiggle
+    mouth: {smile: 6, grin: 1, o: 5, scream: 11, frown: 13, flat: 0, wobbly: [7, 9], smirk: 2, snore: [12, 5], teeth: 2, laugh: 4, grimace: 9},
+    lip: {
+      happy: [6, [3, 1], [1, 3], 5],
+      neutral: [0, [3, 1], [3, 12], 12],
+      sad: [13, [11, 10], [8, 10], 12],
+    },
     armLMax: 120,
     hide: [],
     blinkOffset: 0,
