@@ -36,11 +36,10 @@ LAYERS in every scene (top to bottom)
                 size, so pans, push-ins and whip-pans are keyframes you can retime. Each set
                 is also in backgrounds/ as an .svg file.
 
-ADD THE VOICE
-  The voice is cut per scene in voice_by_scene/ (01 Introduction.mp3 … 08 The Ending.mp3). In each
-  scene: File > Import > Import to Library... > that scene's clip, then a "Voice" layer with the
-  sound on frame 1, Sync: Stream. Each clip starts exactly on its scene's frame 1.
-  (The full track is Ebo_Ep04_voice.mp3.)
+VOICE (already in the file)
+  Every scene has a "Voice" layer on top that plays that scene's part of the voice from frame 1,
+  Sync: Stream, so scrubbing and playback stay in sync with the animation. The clips are in the
+  Library under Voice/. The same clips are in voice_by_scene/, and the full track is Ebo_Ep04_voice.mp3.
 
 NOTES
   - Text uses Arial Black / Arial Bold; outlines are Glow filters on the text.

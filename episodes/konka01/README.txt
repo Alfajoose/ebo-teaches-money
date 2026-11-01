@@ -30,8 +30,7 @@ LAYERS in every scene (top to bottom)
                 checklist: editable vector symbols (Library > Props)
   Background  - the backdrop (day / night) as vector symbols, also in backgrounds/
 
-ADD THE VOICE
-  The voice is cut per scene in voice_by_scene/ (01 Hook.mp3 … 07 Ending.mp3). In each scene:
-  File > Import > Import to Library... > that scene's clip, then a "Voice" layer with the sound
-  on frame 1, Sync: Stream. Each clip starts exactly on its scene's frame 1.
-  (The full track is Konka_Short01_voice.mp3 if you'd rather work in one long timeline.)
+VOICE (already in the file)
+  Every scene has a "Voice" layer on top that plays that scene's part of the voice from frame 1,
+  Sync: Stream, so scrubbing and playback stay in sync with the animation. The clips are in the
+  Library under Voice/. The same clips are in voice_by_scene/, and the full track is Konka_Short01_voice.mp3.
