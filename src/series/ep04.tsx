@@ -12,6 +12,7 @@ import {C, FONT} from '../theme';
 import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
 import {SEAT_Y} from './ep03plan';
+import {gentle} from '../cast/poses';
 import {EP04_PLAN, ep04Set, ep04Times, Ep04Set} from './ep04plan';
 import {EP04_ACTS} from './ep04acts';
 import wordsJson from './data/ep04-words.json';
@@ -37,6 +38,7 @@ export const EP04_SHOT_TIMES = TIMES.map((x) => x.start);
 /** Ebo talks to camera (lip-synced) on the chapter cards and in shots marked `talk`; elsewhere he's acting the habit. */
 const HOST_SETS: Ep04Set[] = ['chapter', 'green'];
 
+const STILL_CAMERA = true;
 /** The camera for a shot, from its planned start/end framing and move. */
 const shotCamera = (t: number, start: number, length: number, s: (typeof EP04_PLAN)[number]): Framing => {
   const f = planCamera(t, start, length, s);
@@ -45,6 +47,9 @@ const shotCamera = (t: number, start: number, length: number, s: (typeof EP04_PL
 };
 const planCamera = (t: number, start: number, length: number, s: (typeof EP04_PLAN)[number]): Framing => {
   if (!s.to) return s.from;
+  // the camera holds still (house rule 11: camera animation was too much): each shot is one
+  // framing — a reveal, zoom, whip or pan holds on where it was going; anything else on where it starts
+  if (STILL_CAMERA) return ['pull-out', 'snap-zoom', 'whip-pan', 'pan'].includes(s.move) ? s.to : s.from;
   const moves: CamMove[] = [];
   switch (s.move) {
     case 'whip-pan':
@@ -189,7 +194,7 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
                 const cx = a?.x ?? c.x;
                 const x = walking ? cx + local * cycleSpeed('ebo', c.cycle!) * (c.facing ?? 1) : cx;
                 const p0 = a?.pose ?? (c.then && local >= c.then.at ? c.then.pose : c.pose); // a pose change on a beat (slam, shove)
-                const pose: Pose = host ? {...p0, headTilt: p0.headTilt + lipHeadNod(ENV, f)} : p0;
+                const pose: Pose = gentle(host ? {...p0, headTilt: p0.headTilt + lipHeadNod(ENV, f)} : p0); // gentle elbows (house rule 13)
                 return (
                   <RigCharacter
                     key={k}

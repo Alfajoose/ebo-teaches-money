@@ -35,7 +35,7 @@ const chapter = (title: string, line: string, p: Pose, extra: Partial<PlanShot<E
   line,
   size: 'MS',
   move: 'push-in',
-  from: MS(E - 380),
+  from: MS(E - 300), // the camera holds still (house rule 11): wide enough for the title and Ebo
   to: Z(1.85, E - 230, 580),
   set: 'chapter',
   cast: ebo(E + 130, p), // clear of the title
@@ -137,7 +137,7 @@ export const EP04_PLAN: S[] = [
   host('work', {line: 'And then what?', size: 'CU', move: 'push-in', from: Z(2.2, E + 40, 500), to: CU(E + 40, 480), cast: ebo(E, pose('shrug', 'wide', {mouth: 'o'})), action: 'alarmed.', out: 'cut'}),
   host('work', {line: 'You might improve.', size: 'ECU', move: 'snap-zoom', from: CU(E + 40, 480), to: Z(3.0, E + 40, 480), cast: ebo(E, pose('hips', 'wide', {mouth: 'o'})), action: 'Snap-zoom 1.', out: 'cut'}),
   host('work', {line: 'You might meet interesting people.', size: 'ECU', move: 'snap-zoom', from: Z(3.0, E + 40, 480), to: Z(3.6, E + 30, 490), cast: ebo(E, pose('hips', 'wide', {mouth: 'scream'})), action: 'Snap-zoom 2 (closer).', out: 'cut'}),
-  host('work', {line: 'You might even find an opportunity.', size: 'ECU', move: 'snap-zoom', from: Z(3.6, E + 30, 490), to: ECU(E, 500), cast: ebo(E, POSE.handOverMouth), action: 'Snap-zoom 3 (closest): a gasp, hand over his mouth.', out: 'cut'}),
+  host('work', {line: 'You might even find an opportunity.', size: 'ECU', move: 'snap-zoom', from: Z(3.6, E + 30, 490), to: ECU(E, 500), cast: ebo(E, {...POSE.shocked, eyes: 'wide', mouth: 'o'}), action: 'Snap-zoom 3 (closest): a gasp, arms flung up.', out: 'cut'}),
   shot({line: 'Terrifying.', size: 'EWS', move: 'static', from: EWS(E - 200), set: 'chapter', cast: ebo(E, pose('slouch', 'wide', {mouth: 'o'})), action: 'Smash cut wide: Ebo alone in the dark, tiny and scared.', out: 'cut'}),
   shot({line: 'Better to stay exactly where you are.', size: 'WS', move: 'static', from: EWS(820), set: 'living', cast: ebo(E, pose('sit', 'happy', {mouth: 'smile'}), {seat: SEAT}), action: 'Back on the couch, relieved.', out: 'cut to chapter'}),
 
@@ -151,7 +151,7 @@ export const EP04_PLAN: S[] = [
   shot({line: "Tell yourself you'll do it next Monday.", size: 'ECU', move: 'static', from: Z(3.4, 900, 520), set: 'work', cast: [], props: <MondayPad x={900} y={520} week={1} />, action: 'Insert: he writes MONDAY on the desk calendar.', out: 'cut'}),
   shot({line: 'And when Monday comes…', size: 'ECU', move: 'static', from: Z(3.4, 900, 520), set: 'work', cast: [], props: <MondayPad x={900} y={520} week={2} />, action: 'Same insert: the page flips. It\'s Monday.', out: 'cut'}),
   shot({line: 'well, obviously, you meant next Monday.', size: 'MS', move: 'static', from: MS(900), set: 'work', cast: ebo(620, pose('shrug', 'half', {mouth: 'smirk'})), props: <MondayPad x={900} y={FLOOR_Y - 340} week={3} />, action: 'Ebo shrugs and flips the page again.', out: 'cut'}),
-  host('work', {line: 'This is called strategic procrastination. Very advanced stuff.', size: 'MS → CU', move: 'push-in', from: MS(E + 120), to: CU(E + 40, 480), cast: ebo(E, {...POSE.thinkChin, view: 0, mouth: 'smirk'}), action: 'Hand on chin, very pleased with himself.', out: 'cut'}),
+  host('work', {line: 'This is called strategic procrastination. Very advanced stuff.', size: 'MS → CU', move: 'push-in', from: MS(E + 120), to: CU(E + 40, 480), cast: ebo(E, {...POSE.pointUp, eyes: 'happy', mouth: 'smirk'}), action: 'Finger up, very pleased with himself.', out: 'cut'}),
   shot({line: "Eventually, you'll become so good at planning things that you'll never actually have to do anything.", size: 'WS → EWS', move: 'pull-out', from: Z(2.0, 900, 480), to: WS(900), set: 'workNight', cast: ebo(620, pose('hips', 'happy', {mouth: 'grin'})), props: <StickyWall x={900} y={420} n={17} />, action: 'Night: a wall FULL of sticky notes. Pull out to reveal it all.', out: 'cut'}),
   shot({line: "You'll have seventeen unfinished ideas,", size: 'ECU', move: 'pan', from: Z(3.0, 600, 320), to: Z(3.0, 1200, 460), set: 'workNight', cast: [], props: <StickyWall x={900} y={420} n={17} />, action: 'Pan across the seventeen notes.', out: 'cut'}),
   shot({line: 'forty motivational screenshots,', size: 'INSERT', move: 'static', from: Z(1, 960, 540), set: 'workNight', cast: [], props: <PhoneInsert x={960} y={540} screen="gallery" />, action: 'Insert: the big-hand phone, a grid of quote screenshots.', out: 'cut'}),
@@ -194,17 +194,17 @@ export const EP04_PLAN: S[] = [
   shot({line: 'Your parents.', size: 'MS', move: 'whip-pan', from: MS(1300, 560), to: MS(600, 560), set: 'living', cast: ebo(800, pose('pointing', 'squint', {mouth: 'scream', brows: 'angry'}), {facing: -1}), action: 'Whip into the living room, pointing left.', out: 'whip'}),
   host('kitchen', {line: 'Your friends.', size: 'MS', move: 'whip-pan', from: MS(E - 200), to: MS(E + 260), cast: ebo(E, pose('pointing', 'squint', {mouth: 'scream', brows: 'angry'})), action: 'Whip into the kitchen, pointing right.', out: 'whip'}),
   shot({line: 'The government.', size: 'MS', move: 'whip-pan', from: MS(1300), to: MS(900, 420), set: 'kitchen', cast: ebo(E, pose('raise', 'squint', {mouth: 'scream', brows: 'angry', lookY: -16})), action: 'Kitchen, pointing at the ceiling.', out: 'whip'}),
-  shot({line: 'The weather.', size: 'MS', move: 'whip-pan', from: MS(900), to: MS(1560, 300), set: 'work', cast: ebo(1100, pose('pointing', 'squint', {mouth: 'scream', brows: 'angry'})), action: 'At the window, pointing at the rain.', out: 'cut'}),
-  host('kitchen', {line: 'That guy who looked at you funny in 2017.', size: 'ECU', move: 'push-in', from: CU(E + 40, 480), to: ECU(E, 500), cast: ebo(E, {...POSE.hmm, view: 0}), text: '2017 (flashback date, small)', action: 'Slow, intense push-in on narrowed eyes. Long hold.', out: 'cut'}),
+  shot({line: 'The weather.', size: 'WS', move: 'static', from: Z(1.25, 1300, 470), set: 'work', cast: ebo(1100, pose('pointing', 'squint', {mouth: 'scream', brows: 'angry'})), action: 'At the window, pointing at the rain.', out: 'cut'}),
+  host('kitchen', {line: 'That guy who looked at you funny in 2017.', size: 'ECU', move: 'push-in', from: CU(E + 40, 480), to: ECU(E, 500), cast: ebo(E, {...POSE.stand, eyes: 'suspicious', mouth: 'flat', brows: 'angry', lookX: 10}), text: '2017 (flashback date, small)', action: 'Slow, intense push-in on narrowed eyes. Long hold.', out: 'cut'}),
   shot({line: 'Everybody!', size: 'EWS', move: 'static', from: EWS(E - 200), set: 'chapter', cast: ebo(E, pose('celebrate', 'squint', {mouth: 'scream', brows: 'angry'})), action: 'Smash cut wide: Ebo pointing everywhere at once in the dark room.', out: 'cut'}),
   host('kitchen', {line: 'Now, some problems really are outside your control.', size: 'MS', move: 'static', from: MS(E + 120), cast: ebo(E, pose('open', 'open', {mouth: 'flat'})), action: 'Sincere beat.', out: 'cut'}),
   host('kitchen', {line: "But that's no reason to examine the things you actually can change.", size: 'MS → CU', move: 'push-in', from: MS(E + 120), to: CU(E + 40, 480), cast: ebo(E, pose('hips', 'squint', {mouth: 'smirk'})), action: 'Back to sarcasm. Push in.', out: 'cut'}),
   host('kitchen', {line: 'Because the moment you take responsibility for one small decision…', size: 'CU', move: 'push-in', from: CU(E + 40, 480), to: Z(3.2, E + 30, 490), cast: ebo(E, pose('point', 'wide', {mouth: 'o'})), action: 'Leaning in, whispering.', out: 'cut'}),
-  host('kitchen', {line: 'you might have to do something about it.', size: 'ECU', move: 'snap-zoom', from: Z(3.2, E + 30, 490), to: ECU(E, 500), cast: ebo(E, POSE.panic), action: 'Snap-zoom: horror, hands on his cheeks.', out: 'cut'}),
+  host('kitchen', {line: 'you might have to do something about it.', size: 'ECU', move: 'snap-zoom', from: Z(3.2, E + 30, 490), to: ECU(E, 500), cast: ebo(E, {...POSE.shocked, view: 1, eyes: 'wide', mouth: 'scream'}), action: 'Snap-zoom: horror, arms flung up.', out: 'cut'}),
   shot({line: "And we certainly can't have that.", size: 'WS', move: 'static', from: EWS(820), set: 'living', cast: ebo(E, pose('sit', 'happy', {mouth: 'smile'}), {seat: SEAT}), action: 'Back on the couch, all better.', out: 'cut'}),
 
   // ═════ SCENE 8 — THE ENDING ═════
-  shot({line: 'So there you have it. Six simple habits that can help keep you stuck.', size: 'MS', move: 'push-in', from: MS(E - 380), to: Z(1.85, E - 230, 580), set: 'chapter', cast: ebo(E, pose('present', 'open')), action: 'Dark room: wrapping up.', out: 'cut'}),
+  shot({line: 'So there you have it. Six simple habits that can help keep you stuck.', size: 'MS', move: 'push-in', from: MS(E - 300), to: Z(1.85, E - 230, 580), set: 'chapter', cast: ebo(E, pose('present', 'open')), action: 'Dark room: wrapping up.', out: 'cut'}),
   host('living', {line: "Of course, avoiding them won't magically make you rich. But changing even one might help you move forward.", size: 'MS → CU', move: 'push-in', from: MS(E + 120), to: CU(E + 40, 480), cast: ebo(E, pose('open', 'open', {mouth: 'smile'})), action: 'sincere and warm. Slow push.', out: 'cut'}),
   shot({line: 'Turn off the TV for one hour.', size: 'MS (reverse)', move: 'static', from: MS(900, 600), set: 'livingTVOff', cast: [fromBehind(pose('sit', 'happy', {mouth: 'smile'}))], fore: couchBack, action: 'Recap montage (each habit reversed). Reverse angle: the TV is off, Ebo still facing it.', out: 'cut'}),
   shot({line: 'Pick one hobby.', size: 'MS', move: 'static', from: MS(900), set: 'work', cast: ebo(760, pose('hold', 'happy', {mouth: 'smile', armR: [104, -30]})), props: <Easel x={1000} y={FLOOR_Y} done={0.5} />, action: 'Ebo painting.', out: 'cut'}),
@@ -215,7 +215,7 @@ export const EP04_PLAN: S[] = [
   host('living', {line: "Now, if you'll excuse me…", size: 'MS', move: 'follow', from: MS(E + 120), to: MS(E + 700), cast: ebo(E, pose('idle', 'happy'), {cycle: 'fastWalk'}), action: 'Ebo fast-walks off frame right; the camera follows.', out: 'cut'}),
   shot({line: "I've got seventeen episodes of a show to finish.", size: 'EWS (reverse)', move: 'push-in', from: EWS(900), to: MS(960, 560), set: 'livingTV', cast: [fromBehind(pose('sit', 'happy', {mouth: 'grin'}))], fore: couchBack, action: 'The reveal, reverse angle: right back on the couch, TV on. Push in over his shoulder.', out: 'cut'}),
   shot({line: 'For research purposes, obviously.', size: 'CU', move: 'snap-zoom', from: CU(760, 440), to: ECU(760, 440), set: 'living', cast: ebo(E, pose('sit', 'half', {mouth: 'smirk'}), {seat: SEAT}), action: 'The TV\'s point of view: smirk. Snap-zoom.', out: 'cut'}),
-  shot({line: 'Subscribe for more.', size: 'MS', move: 'push-in', from: MS(E - 380), to: Z(1.8, E - 230, 580), set: 'chapter', cast: ebo(E, pose('point', 'happy', {mouth: 'grin'})), text: 'SUBSCRIBE button · EBO TEACHES MONEY · EP 4', action: 'End card.', out: 'end'}),
+  shot({line: 'Subscribe for more.', size: 'MS', move: 'push-in', from: MS(E - 300), to: Z(1.8, E - 230, 580), set: 'chapter', cast: ebo(E, pose('point', 'happy', {mouth: 'grin'})), text: 'SUBSCRIBE button · EBO TEACHES MONEY · EP 4', action: 'End card.', out: 'end'}),
 ];
 
 /** The episode's sections (one Animate scene each): the intro, a section per chapter card, and the ending. */

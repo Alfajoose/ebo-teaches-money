@@ -23,7 +23,7 @@
    - **The hand is on the prop.** Fingers overlap the object (the hand draws over it), and the object turns with the hand instead of floating upright beside it.
    - **Held props are rare and brief.** A prop is picked up for the beat that needs it, then put down or thrown.
    - **Props feel tangible.** Give the character something to handle in most acted shots (toss a ball, curl a dumbbell, hammer, bite, chalk a line, tick a box), and let props react physically: things that are dropped fall with gravity and bounce once, things that are hit jolt, things that are swatted fly off. Only translation and rotation (house rule 2).
-11. **The camera holds still unless the script calls for a move.** Cut between framings rather than pushing in or zooming on every line. Keep a move only when it is the joke or the reveal (e.g. the pull-out that shows the phones all around him). A planned snap-zoom becomes a straight cut to its close framing. This overrides the camera planning in rule 2.
+11. **The camera holds still.** Camera animation was too much: every shot is one framing and the cut does the work (wide, then a cut to the close-up). A planned reveal, zoom, whip or pan becomes a straight cut to where it was going. This overrides the camera planning in rule 2.
 12. **Ebo stands.** No sitting on the floor, squatting or kneeling poses: he reads, works and eats standing up, and anything he works on goes on a stand (a crate, a desk) at hand height. The exceptions are a real seat (a couch or chair in the set) and lying down when the joke needs it.
 13. **Arms stay straight or gently bent.** The rigs have only an upper arm and a forearm, with no hand, palm or fingers, so a deep elbow bend (hands on hips, folded arms, a tight curl, robot arms) reads as a broken limb. Keep the elbow within about ±40° and act with the shoulder: reach, raise, point, swing. In code, pass Ebo's poses through `gentle()` (see `src/series/konka01.tsx`).
 
@@ -49,6 +49,18 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 
 - **File:** `masters/Ebo.fla` (new master, Oct 2026; the earlier one is in git history). **Symbol:** `Ebo`. **Stage:** 1280×720 at 24 fps.
 - **Design:** dark teal T-shirt, grey shorts, big ears, cheek mole, and big white eyes with separate pupils.
+- **Hand props are part of the rig.** The graphic symbol `Ebo_HandProps` holds one prop per frame, and each frame is labelled with the prop's name. Frame 0 is an empty hand. The frames are:
+  - **Everyday:** `phone_back`, `phone_scroll`, `phone_gallery`, `remote`, `chips`, `cereal`, `slice`, `slice_bitten`, `notebook_0` to `notebook_4`, `letter_rejected`, `letter_cv`, `sticky_goal`, `sticky_appidea`.
+  - **Tools:** `hammer`, `dumbbell`, `brush`, `marker`, `chalk`.
+
+  It sits on three layers at the top of the rig, each parented to a forearm: `prop_R` (the right arm behind the head), `prop_R_front` (the right arm in front) and `prop_L` (the left arm). In Animate, set the instance to Looping: Single frame, First = the prop's frame. The prop then rides the forearm when you re-pose the arm. The forearms are parent layers for this, with no other change.
+
+  In code, a held prop is still written as Ebo's child, e.g. `<Remote rotate={-20} />`, or as `holdL` for the left hand. `RigCharacter` draws it through the rig layer when the prop is in `src/cast/handProps.tsx`.
+
+  To add a prop, append it there, then rebuild the master:
+  1. `node scripts/hand-props/run.mjs out/hand-props/hand-props.json`
+  2. `python3 -I tools/add_hand_props.py <original master> out/hand-props/hand-props.json masters/Ebo.fla <work dir>`
+  3. `tools/export_rig.py <work dir> Ebo src/cast/data/ebo.json`
 - **Four views.** The `Ebo` symbol has 4 keyframes, and each is a view (`pose.view`):
 
   | view | what | notes |

@@ -6,6 +6,7 @@ import {CycleName, cycleFrame, getCycle} from './cycles';
 import measureJson from './data/measure.json';
 import {CameraContext, mmul, R as Rm, S as Sm, T as Tm, useCapture, useLayerMode} from '../series/exportCtx';
 import {useContext} from 'react';
+import {handPropOf, PROP_LAYERS, PropLayer} from './handProps';
 
 /**
  * Renders one of the user's Adobe Animate characters (exported rig) in a pose.
@@ -102,7 +103,7 @@ const prepare = (id: CastId, view: number): Prepared => {
     return l.parent != null && byRig[l.parent] ? mul(world0(byRig[l.parent].name), eff[name].m as M) : (eff[name].m as M);
   };
   const handLocal: Record<string, [number, number]> = {};
-  for (const fore of [ARM_R_BACK[1], ARM_R_FRONT[1]]) {
+  for (const fore of [ARM_R_BACK[1], ARM_R_FRONT[1], LIMBS.armL[1]]) {
     const ml = meas.layers[fore];
     if (!ml || !byName[fore]) continue;
     const fp = ml.pivot;
@@ -112,6 +113,27 @@ const prepare = (id: CastId, view: number): Prepared => {
   const p: Prepared = {cfg, rig, view, byName, byRig, eff, rest, origin: [meas.layers.waist.pivot[0], meas.bounds[3]], handLocal};
   cache[key] = p;
   return p;
+};
+
+/**
+ * For building the rig's hand-prop layers (cast/tools/add_hand_props.py): per view, each forearm's
+ * hand tip in the forearm's own space and the forearm's rest angle in rig space (degrees).
+ */
+export const handAnchors = (who: CastId) => {
+  const n = CAST[who].rig.views ?? 1;
+  return Array.from({length: n}, (_, v) => {
+    const P = prepare(who, v);
+    const world0 = (name: string): M => {
+      const l = P.byName[name];
+      return l.parent != null && P.byRig[l.parent] ? mul(world0(P.byRig[l.parent].name), P.eff[name].m as M) : (P.eff[name].m as M);
+    };
+    return Object.fromEntries(
+      Object.entries(P.handLocal).map(([fore, hand]) => {
+        const w = world0(fore);
+        return [fore, {hand, angle: deg(Math.atan2(w[1], w[0])), shown: P.eff[fore].show}];
+      }),
+    );
+  });
 };
 
 const pickFrame = (v: number | number[], t: number) => (Array.isArray(v) ? v[Math.floor(t / 4) % v.length] : v);
@@ -125,6 +147,7 @@ type Props = {
   pose: Pose;
   t?: number;
   children?: React.ReactNode; // held in the raised (right) hand
+  holdL?: React.ReactNode; // held in the left hand
   mouthFrame?: number; // direct mouth swap (lip sync) — overrides pose.mouth
   eyeFrame?: number | number[]; // direct eye swap — overrides pose.eyes
   noBlink?: boolean;
@@ -132,7 +155,7 @@ type Props = {
   cycleOffset?: number; // shift the cycle in video frames (so two walkers aren't in step)
 };
 
-export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
+export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, holdL, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
   const mode = useLayerMode();
   const cap = useCapture();
   const cam = useContext(CameraContext);
@@ -228,7 +251,6 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   const s = scale * cfg.scale;
   const [ox, oy] = P.origin;
   const hand = ap(world(armR[1]), P.handLocal[base(armR[1])]);
-  const layers = rig.layers.filter((l) => !cfg.hide.includes(l.name) && eff[l.name].show);
 
   const outer = mmul(
     cam,
@@ -240,6 +262,31 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   // facing left mirrors the body, not what he holds (text and screens stay readable)
   const handM = mmul(outer, mmul(Tm(hand[0], hand[1]), mmul(Rm(holdRot), Sm(facing / cfg.scale, 1 / cfg.scale))));
 
+  // ── hand props that live in the rig (handProps.tsx): drawn as the prop layer on the forearm ──
+  // The prop sits at the hand tip turned by holdRot (as a held child would), offset by its own
+  // x / y / rotate in the hand; its local matrix is relative to the forearm, so in Animate it rides the arm.
+  const active: Partial<Record<PropLayer, {frame: number; world: M}>> = {};
+  const place = (layer: PropLayer, node: React.ReactNode, fore: string, rotHand: number) => {
+    const hp = cyc ? null : handPropOf(node);
+    if (!hp || !byName[layer] || !P.handLocal[base(fore)]) return false;
+    const tip = ap(world(fore), P.handLocal[base(fore)]);
+    const k = 1 / cfg.scale;
+    active[layer] = {frame: hp.frame, world: mul(Tm(tip[0], tip[1]) as M, mul(Rm(rotHand) as M, mul(Tm(hp.x * k, hp.y * k) as M, Rm(hp.rotate) as M)))};
+    return true;
+  };
+  const rLayer: PropLayer = armR[1] === ARM_R_FRONT[1] ? 'prop_R_front' : 'prop_R';
+  const rigHeldR = place(rLayer, children, armR[1], holdRot);
+  const holdRotL = cyc ? 0 : -0.6 * (40 - (pose.armL[0] + pose.armL[1]));
+  const rigHeldL = place('prop_L', holdL, LIMBS.armL[1], holdRotL);
+  for (const name of Object.keys(PROP_LAYERS) as PropLayer[]) {
+    if (!byName[name]) continue;
+    eff[name] = {...eff[name], show: !!active[name]};
+    if (active[name]) memo[name] = active[name]!.world;
+  }
+  const propFrame = (name: string) => active[name as PropLayer]?.frame;
+
+  const layers = rig.layers.filter((l) => !cfg.hide.includes(l.name) && eff[l.name].show);
+
   if (cap) {
     const locals: Record<string, M> = {};
     const frames: Record<string, number> = {};
@@ -250,6 +297,13 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
         continue;
       }
       const d = dxy[l.name] ?? [0, 0];
+      const pf = propFrame(l.name);
+      if (pf !== undefined) {
+        // relative to the forearm it's parented to
+        locals[l.name] = mul(inv(world(byRig[l.parent as string].name)), memo[l.name]);
+        frames[l.name] = pf;
+        continue;
+      }
       locals[l.name] = localMatrix(baseM(l.name), l.tp, rotOf(l.name), d[0], d[1]);
       frames[l.name] = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
     }
@@ -261,14 +315,17 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
       <ellipse cx={0} cy={6 / s} rx={110} ry={20} fill={C.ink} opacity={0.12} />
       <g transform={`rotate(${pose.tilt} 0 0) translate(0 ${pose.lift / cfg.scale}) translate(${-ox} ${-oy})`}>
         {layers.map((l) => {
-          const f = Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
+          const f = propFrame(l.name) ?? Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
           return <g key={l.name} transform={`matrix(${world(l.name).join(',')})`} dangerouslySetInnerHTML={{__html: l.frames[f]}} />;
         })}
-        {children && (
+        {children && !rigHeldR && (
           // held props: tell the Animate export where the hand is on screen
           <CameraContext.Provider value={handM}>
             <g transform={`translate(${hand[0]} ${hand[1]}) rotate(${holdRot}) scale(${facing / cfg.scale} ${1 / cfg.scale})`}>{children}</g>
           </CameraContext.Provider>
+        )}
+        {holdL && !rigHeldL && (
+          <g transform={`translate(${ap(world(LIMBS.armL[1]), P.handLocal[LIMBS.armL[1]] ?? [0, 0]).join(' ')}) rotate(${holdRotL}) scale(${facing / cfg.scale} ${1 / cfg.scale})`}>{holdL}</g>
         )}
       </g>
     </g>

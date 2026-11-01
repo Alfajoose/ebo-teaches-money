@@ -135,3 +135,14 @@ export type PoseKey = {[G in keyof Groups]: keyof Groups[G]}[keyof Groups];
 
 /** Every pose by name, e.g. POSE.explain, POSE.sitPhone, POSE.lieAsleep. */
 export const POSE = Object.assign({}, ...Object.values(POSE_GROUPS)) as Record<PoseKey, Pose>;
+
+/**
+ * The rigs have only an upper arm and a forearm (no hand, palm or fingers), so a deep elbow bend
+ * reads as a broken limb (house rule 13). Every pose goes through this before it's drawn: the
+ * elbow stays within ±ELBOW_MAX, straight or gently bent; the shoulder does the acting.
+ */
+export const ELBOW_MAX = 40;
+export const gentle = (p: Pose): Pose => {
+  const c = (a: [number, number]): [number, number] => [a[0], Math.max(-ELBOW_MAX, Math.min(ELBOW_MAX, a[1]))];
+  return {...p, armL: c(p.armL), armR: c(p.armR)};
+};

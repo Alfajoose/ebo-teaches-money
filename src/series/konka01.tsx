@@ -3,7 +3,7 @@ import {AbsoluteFill, Html5Audio, staticFile, useCurrentFrame} from 'remotion';
 import {NoScaleContext} from '../noScale';
 import {PoseCharacter} from '../cast/PoseCharacter';
 import {RigCharacter} from '../cast/RigCharacter';
-import {POSE, LIE_Y} from '../cast/poses';
+import {POSE, LIE_Y, gentle} from '../cast/poses';
 import {Pose} from '../components/Character';
 import {SKIN} from '../components/grip';
 import {POSES} from '../components/Character';
@@ -85,16 +85,6 @@ const TYPE: Partial<Pose> = {armR: [70, -60], armL: [55, -70], lookX: 10, lookY:
  * Ebo's pose for each of Konka's (by his pose number in each shot), from Ebo's pose library;
  * `then` changes follow the same beats as Konka's.
  */
-/**
- * Ebo's arm is an upper arm and a forearm with no hand or fingers, so a deep elbow bend reads as a
- * broken limb (the user's note). Every pose in this Short goes through this: elbows stay within
- * ±ELBOW_MAX (straight or gently bent).
- */
-const ELBOW_MAX = 40;
-const gentle = (p: Pose): Pose => {
-  const c = (a: [number, number]): [number, number] => [a[0], Math.max(-ELBOW_MAX, Math.min(ELBOW_MAX, a[1]))];
-  return {...p, armL: c(p.armL), armR: c(p.armR)};
-};
 const EBO: Record<number, Pose> = {
   37: {...POSE.pointAtYou, view: 1},
   20: {...POSE.shocked, lookX: 14},
@@ -273,7 +263,7 @@ const IDEAS = [
   "Impulses don't decide", 'Control your attention…', '…or something else will.',
 ];
 /** Lines whose camera move the script calls for (the move is the joke). */
-const CAMERA_CALLED = ["You can't complain about being distracted"];
+const CAMERA_CALLED: string[] = []; // none: the user found even the one reveal too much
 K01_PLAN.forEach((sh, i) => {
   sh.idea = IDEAS[i];
   if (sh.card) {
@@ -288,10 +278,11 @@ K01_PLAN.forEach((sh, i) => {
     sh.to = sh.move === 'push-in' ? Z(2.2, X, 900) : undefined;
     sh.size = 'BUST';
   }
-  // the camera holds still unless the script calls for a move (the user's note): only the
-  // pull-out that reveals the phones all around him stays. A snap-zoom keeps its punch framing.
+  // the camera holds still (the user's note: camera animation is too much) — every shot is one
+  // framing, and the cut does the work.
   if (sh.move !== 'static' && !CAMERA_CALLED.some((c) => sh.line.startsWith(c))) {
-    if (sh.move === 'snap-zoom' && sh.to) sh.from = sh.to;
+    // a reveal or a zoom holds on its end framing (the phones all around him, the close-up)
+    if ((sh.move === 'snap-zoom' || sh.move === 'pull-out') && sh.to) sh.from = sh.to;
     sh.to = undefined;
     sh.move = 'static';
   }

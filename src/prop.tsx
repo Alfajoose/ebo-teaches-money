@@ -16,7 +16,7 @@ import {CameraContext, hash, IDENT, mmul, parseTransform, useCapture, useLayerMo
  * instance's matrix, so a prop that only moves or turns stays one symbol.
  * A prop inside another prop (cans in the machine) is part of its parent's drawing.
  */
-const InPropContext = createContext(false);
+export const InPropContext = createContext(false);
 
 export const Prop: React.FC<{name: string; children: React.ReactElement}> = ({name, children}) => {
   const inProp = useContext(InPropContext);
