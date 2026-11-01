@@ -38,8 +38,10 @@ CAST = {  # capture id -> (source folder, rig symbol, display name)
     'obuor': ('obuor', 'Obuor', 'Obuor'),
     'ama': ('Ama_pretty', 'Ama port', 'Ama'),
     'christy': ('christy', 'Christy', 'Christy'),
+    'konka': ('konka', 'Symbol 2', 'Konka'),  # pose library: one drawn pose per frame
 }
-LAYER_ORDER = ['ebo', 'christy', 'mica', 'ama', 'obuor']  # top → bottom
+POSE_LIBRARY = {'konka'}
+LAYER_ORDER = ['konka', 'ebo', 'christy', 'mica', 'ama', 'obuor']  # top → bottom
 FONT_HEAVY = 'Arial-Black'
 FONT_BOLD = 'Arial-BoldMT'
 
@@ -199,6 +201,63 @@ def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total):
                 inst.insert(0, _matrix_node(m))
                 inst.set('firstFrame', str(ff))
                 inst.set('loop', 'single frame')
+            frames_el.append(fr)
+    lib.write_symbol(el, anim_name, '1')
+    return el
+
+def build_poselib_symbol(lib, rig_el, anim_name, recs, total):
+    """A pose-library character (Konka): his own symbol, re-keyed so each frame shows the pose the
+    shot asks for (copied from his pose library frame), with the mouth / eye swaps from the capture
+    (lip sync, blinks) and layers hidden where the capture hides them (pupils during a blink)."""
+    el = copy.deepcopy(rig_el)
+    tl = el.find(f'{N("timeline")}/{N("DOMTimeline")}')
+    tl.set('name', anim_name.split('/')[-1])
+    for layer in tl.findall(f'{N("layers")}/{N("DOMLayer")}'):
+        lname = layer.get('name')
+        frames_el = layer.find(N('frames'))
+        src_frames = list(frames_el.findall(N('DOMFrame')))
+        def src_at(p):
+            for fr in src_frames:
+                i = int(fr.get('index'))
+                if i <= p < i + int(fr.get('duration', '1')):
+                    return fr
+            return src_frames[-1]
+        keys, last, hold = [], None, None
+        for f in range(total):
+            r = recs[f]
+            if r is None:
+                st = hold
+            else:
+                st = (r.get('pose', 0), r['frames'].get(lname), lname in r.get('hidden', ()))
+                hold = st
+            if st is not None and st != last:
+                keys.append((f, st))
+                last = st
+        for fr in src_frames:
+            frames_el.remove(fr)
+        if not keys:
+            keys = [(0, (0, None, False))]
+        for i, (f, (pose, swap, hidden)) in enumerate(keys):
+            end = keys[i + 1][0] if i + 1 < len(keys) else total
+            fr = copy.deepcopy(src_at(pose))
+            for a in ('tweenType', 'motionTweenSnap', 'acceleration', 'name', 'labelType'):
+                fr.attrib.pop(a, None)
+            fr.set('index', str(f))
+            fr.set('keyMode', '9728')
+            if end - f > 1:
+                fr.set('duration', str(end - f))
+            else:
+                fr.attrib.pop('duration', None)
+            els = fr.find(N('elements'))
+            if els is not None:
+                if hidden:
+                    for e in list(els):
+                        els.remove(e)
+                elif swap is not None:
+                    inst = els.find(N('DOMSymbolInstance'))
+                    if inst is not None:
+                        inst.set('firstFrame', str(swap))
+                        inst.set('loop', 'single frame')
             frames_el.append(fr)
     lib.write_symbol(el, anim_name, '1')
     return el
@@ -557,7 +616,10 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None):
             continue
         rename, rig_el = import_rig(lib, Path(cast_src) / src_folder, rig_sym, disp)
         anim_name = f"{disp}/{disp} – {cap.get('episode', 'Ep01')}"
-        build_anim_symbol(lib, rig_el, rename[rig_sym], anim_name, recs, total)
+        if who in POSE_LIBRARY:
+            build_poselib_symbol(lib, rig_el, anim_name, recs, total)
+        else:
+            build_anim_symbol(lib, rig_el, rename[rig_sym], anim_name, recs, total)
         char_layers[who] = (disp, anim_name, recs)
 
     # ── graphics ──

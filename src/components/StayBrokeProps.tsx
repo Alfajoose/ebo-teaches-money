@@ -64,7 +64,7 @@ const StickyWallDrawing: React.FC<{x?: number; y?: number; n?: number}> = ({x = 
 );
 
 /** A big phone held up to camera. Origin at its centre. Screens: scroll feed, screenshot gallery, job page. */
-const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen?: 'scroll' | 'gallery' | 'job' | 'off' | 'back'; t?: number; grip?: boolean}> = ({
+const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen?: 'scroll' | 'gallery' | 'job' | 'off' | 'back' | 'profile' | 'unfollow'; t?: number; grip?: boolean}> = ({
   x = 0,
   y = 0,
   rotate = 0,
@@ -111,6 +111,20 @@ const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen
         </text>
       </g>
     )}
+    {(screen === 'profile' || screen === 'unfollow') && (
+      // an account page: a plain avatar circle and grey tiles (no photos), and the follow button
+      <g>
+        <circle cx={0} cy={-76} r={24} fill="#C9B6E8" />
+        <rect x={-40} y={-44} width={80} height={9} rx={4} fill="#B5A88C" />
+        {Array.from({length: 9}).map((_, i) => (
+          <rect key={i} x={-54 + (i % 3) * 37} y={-26 + Math.floor(i / 3) * 37} width={33} height={33} fill={screen === 'profile' ? '#D8CCEF' : '#E9E4F2'} />
+        ))}
+        <rect x={-50} y={86} width={100} height={24} rx={12} fill={screen === 'profile' ? '#E5484D' : '#3B82F6'} />
+        <text x={0} y={104} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={screen === 'profile' ? 14 : 16} fill="#fff">
+          {screen === 'profile' ? 'FOLLOWING' : 'FOLLOW'}
+        </text>
+      </g>
+    )}
     {grip && (screen === 'back' ? <Fingers x={-70} y={10} side={-1} /> : <Thumb x={-78} y={60} angle={-35} />)}
   </g>
 );
@@ -120,21 +134,21 @@ const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen
  * phone up, tilted, filling the frame; the thumb taps / scrolls (moves only). Origin at the
  * middle of the phone; drawn to fill a 1920×1080 frame at zoom 1.
  */
-const PhoneInsertDrawing: React.FC<{x?: number; y?: number; screen?: 'scroll' | 'gallery' | 'job'; t?: number}> = ({x = 0, y = 0, screen = 'scroll', t = 0}) => {
+const PhoneInsertDrawing: React.FC<{x?: number; y?: number; screen?: 'scroll' | 'gallery' | 'job' | 'profile' | 'unfollow'; t?: number; skin?: string}> = ({x = 0, y = 0, screen = 'scroll', t = 0, skin = SKIN}) => {
   const tap = Math.floor(t / 6) % 2; // the thumb taps on twos-ish, held
   return (
     <g transform={`translate(${x} ${y}) rotate(-8)`}>
       {/* palm and wrist behind the phone */}
-      <path d="M 120 520 Q 330 470 360 300 L 380 120 Q 380 60 330 60 L 250 80 L 250 700 L 60 700 Z" fill={SKIN} {...S} strokeWidth={10} />
+      <path d="M 120 520 Q 330 470 360 300 L 380 120 Q 380 60 330 60 L 250 80 L 250 700 L 60 700 Z" fill={skin} {...S} strokeWidth={10} />
       <g transform="scale(3.4)">
         <BigPhoneDrawing screen={screen} t={t} />
       </g>
       {/* fingers round the left edge, thumb over the right edge */}
       {[-150, -40, 70].map((yy) => (
-        <rect key={yy} x={-282} y={yy} width={70} height={84} rx={36} fill={SKIN} {...S} strokeWidth={9} />
+        <rect key={yy} x={-282} y={yy} width={70} height={84} rx={36} fill={skin} {...S} strokeWidth={9} />
       ))}
       <g transform={`translate(${tap ? 0 : 14} ${tap ? 0 : 26})`}>
-        <path d="M 330 340 Q 300 250 200 180 Q 160 155 140 190 Q 130 220 170 250 Q 240 300 250 380 Z" fill={SKIN} {...S} strokeWidth={9} />
+        <path d="M 330 340 Q 300 250 200 180 Q 160 155 140 190 Q 130 220 170 250 Q 240 300 250 380 Z" fill={skin} {...S} strokeWidth={9} />
       </g>
     </g>
   );

@@ -296,13 +296,13 @@ const PlainFloor: React.FC<{color: string}> = ({color}) => (
  * Ebo's home base (house rule 9): a plain soft lilac backdrop, lighter in the middle. No room,
  * no furniture, no floor line: the acting carries the shot. Still, like every set.
  */
-export const Backdrop: React.FC<{id?: string}> = ({id = 'backdrop'}) => (
+export const Backdrop: React.FC<{id?: string; night?: boolean}> = ({id = 'backdrop', night = false}) => (
   <g>
     <defs>
       <radialGradient id={`${id}-glow`} cx="0.5" cy="0.5" r="0.5">
-        <stop offset="0" stopColor="#F4F0FC" />
-        <stop offset="0.22" stopColor="#E6DEF7" />
-        <stop offset="0.6" stopColor="#D2C4EE" />
+        <stop offset="0" stopColor={night ? '#5A5180' : '#F4F0FC'} />
+        <stop offset="0.22" stopColor={night ? '#463E68' : '#E6DEF7'} />
+        <stop offset="0.6" stopColor={night ? '#2E2848' : '#D2C4EE'} />
       </radialGradient>
     </defs>
     <rect x={-1040} y={-1400} width={4000} height={4000} fill={`url(#${id}-glow)`} />

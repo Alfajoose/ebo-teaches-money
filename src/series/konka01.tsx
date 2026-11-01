@@ -1,0 +1,222 @@
+import React from 'react';
+import {AbsoluteFill, Html5Audio, staticFile, useCurrentFrame} from 'remotion';
+import {NoScaleContext} from '../noScale';
+import {PoseCharacter} from '../cast/PoseCharacter';
+import {RigCharacter} from '../cast/RigCharacter';
+import {POSES} from '../components/Character';
+import {cycleSpeed} from '../cast/cycles';
+import {Backdrop} from './sets';
+import {BigPhone, PhoneInsert} from '../components/StayBrokeProps';
+import {Laptop} from '../components/StayPoorProps';
+import {Dumbbell, Birdhouse, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, KONKA_SKIN} from '../components/KonkaProps';
+import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption} from './kit';
+import {C, FONT} from '../theme';
+import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
+import {HandDrawnContext} from '../handDrawn';
+import wordsJson from './data/konka01-words.json';
+import envJson from './data/konka01-env.json';
+
+/**
+ * KONKA SHORT 01 — "Can't control your lust?" (YouTube Short, 1080×1920).
+ * Animated from the approved storyboard (episodes/konka01/storyboard.png): 32 shots, each
+ * starting on the first word of its line in the recorded voice (Jimmy, ElevenLabs).
+ * Konka is a pose-library character: every pose is one of his 87 drawn poses (frames of his
+ * symbol), and he snaps between them. House style: plain lilac backdrop, acting first, props
+ * only for the jokes, phone inserts as big-hand drawings.
+ */
+
+export const K01_W = 1080;
+export const K01_H = 1920;
+const WORDS = wordsJson as Word[];
+const ENV = (envJson as {env: number[]}).env;
+const CHUNKS = chunkWords(WORDS, 4, 22);
+
+// world: feet on y = FLOOR; Konka is ~860 px tall
+const FLOOR = 1500;
+const X = 540;
+const Z = (zoom: number, cx: number, cy: number): Framing => ({zoom, cx, cy});
+const FULL = (cx = X) => Z(1, cx, 1000);
+const MS = (cx = X) => Z(1.45, cx, 1020);
+const CU = (cx = X) => Z(2.3, cx, 860);
+const ECU = (cx = X) => Z(3.3, cx, 840);
+const WIDE = (cx = X) => Z(0.8, cx, 980);
+
+type Move = 'static' | 'push-in' | 'pull-out' | 'snap-zoom' | 'pan';
+type Konka = {pose: number; x?: number; facing?: 1 | -1; then?: {at: number; pose: number}[]; look?: [number, number]; dy?: (local: number) => number};
+type Shot = {
+  line: string;
+  section: string;
+  size: string;
+  move: Move;
+  from: Framing;
+  to?: Framing;
+  konka?: Konka;
+  talk?: boolean; // Konka says the line to camera (lip sync)
+  night?: boolean;
+  card?: [number, string, string]; // chapter card: step, title lines
+  props?: (local: number, f: number) => React.ReactNode;
+  front?: (local: number, f: number) => React.ReactNode; // drawn over Konka (inserts)
+  christy?: {x0: number; dir: 1 | -1}; // walking past
+  text?: (local: number) => React.ReactNode;
+  action: string;
+};
+
+const step = (local: number, at: number[]) => at.filter((a) => local >= a).length;
+
+export const K01_PLAN: Shot[] = [
+  // ═════ THE HOOK ═════
+  {section: 'THE HOOK', line: "So... you can't control your lust?", size: 'MS', move: 'push-in', from: MS(), to: CU(), konka: {pose: 37}, talk: true, action: 'Konka alone on the backdrop, finger up, squinting at us. Slow push-in.'},
+  {section: 'THE HOOK', line: 'One attractive person walks past, and suddenly your brain forgets every important thing you were supposed to do today.', size: 'WIDE', move: 'static', from: WIDE(560), konka: {pose: 20, x: 330, then: [{at: 2.2, pose: 49}, {at: 3.6, pose: 36}]}, christy: {x0: 2500, dir: -1},
+    props: (l) => <Todo x={330 + (l < 3.6 ? 120 : 160)} y={l < 3.6 ? 1180 : Math.min(FLOOR - 10, 1180 + (l - 3.6) * 900)} rotate={l < 3.6 ? -8 : 50} />,
+    action: 'Christy walks past (just walking). Konka\'s head snaps to follow her; he drifts after her and his to-do list drops to the floor.'},
+  {section: 'THE HOOK', line: 'Congratulations. Your hormones have officially taken over management.', size: 'CU', move: 'snap-zoom', from: MS(), to: CU(), konka: {pose: 36}, action: 'Snap-zoom on his face: dazed, dopey grin. Nobody home.'},
+  // ═════ STEP 1 ═════
+  {section: 'STEP 1 — FIND YOUR PURPOSE', line: 'First, get yourself a purpose.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.15, X, 1040), konka: {pose: 85, x: 620}, talk: true, card: [1, 'FIND YOUR', 'PURPOSE'], action: 'Chapter card: title slams in above, Konka thinking below.'},
+  {section: 'STEP 1 — FIND YOUR PURPOSE', line: 'Seriously.', size: 'ECU', move: 'static', from: ECU(), konka: {pose: 64}, talk: true, action: 'Hard cut to a deadpan stare into the lens. Hold.'},
+  {section: 'STEP 1 — FIND YOUR PURPOSE', line: 'Find something you actually want to achieve.', size: 'MS', move: 'static', from: MS(), konka: {pose: 2}, talk: true, action: 'Finger up, eyes up: the idea lands. Determined.'},
+  {section: 'STEP 1 — FIND YOUR PURPOSE', line: 'Because when your entire day consists of doing absolutely nothing, your brain has plenty of time to entertain some very questionable ideas.', size: 'FULL → MS', move: 'push-in', from: FULL(), to: MS(), konka: {pose: 32, then: [{at: 5.2, pose: 30}]}, action: 'Slumped on the floor doing nothing; push in as his eyes slide sideways and a sly smirk creeps in.'},
+  // ═════ STEP 2 ═════
+  {section: 'STEP 2 — WORK ON YOURSELF', line: 'Second, work on yourself.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.15, X, 1040), konka: {pose: 84, x: 620}, talk: true, card: [2, 'WORK ON', 'YOURSELF'], action: 'Chapter card. Konka arms crossed, pleased with himself.'},
+  {section: 'STEP 2 — WORK ON YOURSELF', line: 'Hit the gym.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 11, dy: (l) => (Math.floor(l * 4) % 2 ? -14 : 0)}, front: (l) => <Dumbbell x={X} y={(Math.floor(l * 4) % 2 ? 1255 : 1270)} />, action: 'Jump cut 1: squatting, heaving a dumbbell (it bobs on the beat).'},
+  {section: 'STEP 2 — WORK ON YOURSELF', line: 'Learn a skill.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 31, x: 430}, props: () => <Laptop x={760} y={FLOOR} view="side" />, action: 'Jump cut 2: on the floor at the laptop (side-on, screen toward him).'},
+  {section: 'STEP 2 — WORK ON YOURSELF', line: 'Build something.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 10, x: 420}, props: () => <Birdhouse x={800} y={FLOOR} />, action: 'Jump cut 3: kneeling, finishing a wonky birdhouse.'},
+  {section: 'STEP 2 — WORK ON YOURSELF', line: 'Give your brain something productive to obsess over.', size: 'CU', move: 'push-in', from: CU(), to: Z(2.8, X, 850), konka: {pose: 23}, talk: true, action: 'Close-up: total focus, brow down.'},
+  {section: 'STEP 2 — WORK ON YOURSELF', line: 'And no, doing three push-ups', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 9, dy: (l) => (step(l, [0.5, 1.0, 1.5]) % 2 ? 20 : 0)}, text: (l) => (
+    <text x={540} y={560} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={120} fill={C.ink}>
+      {['', '1…', '1… 2…', '1… 2… 3.'][step(l, [0.5, 1.0, 1.5])]}
+    </text>
+  ), action: 'Three push-up dips on the counts, then he stays down.'},
+  {section: 'STEP 2 — WORK ON YOURSELF', line: "and checking your abs in the mirror doesn't count as a transformation.", size: 'FULL', move: 'static', from: FULL(), konka: {pose: 86, x: 400}, props: () => <Mirror x={790} y={FLOOR - 40} />, action: 'From behind, at the mirror, admiring his round tummy.'},
+  // ═════ STEP 3 ═════
+  {section: 'STEP 3 — CONTROL YOUR MIND', line: 'Third, stop entertaining every thought that enters your head.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.15, X, 1040), konka: {pose: 78, x: 620}, talk: true, card: [3, 'CONTROL', 'YOUR MIND'], action: 'Chapter card. Konka, finger up, arms crossed.'},
+  {section: 'STEP 3 — CONTROL YOUR MIND', line: "Just because your brain suggests something doesn't mean you have to follow through.", size: 'MS', move: 'static', from: MS(), konka: {pose: 54, x: 460}, talk: true, props: (l) => (l > 0.4 ? <Thought x={610} y={720} text="?!" /> : null), action: 'A thought bubble pops up by his head; he holds up a flat hand to it: no.'},
+  {section: 'STEP 3 — CONTROL YOUR MIND', line: 'Your brain also tells you to eat an entire pizza at midnight.', size: 'FULL', move: 'static', from: FULL(), night: true, konka: {pose: 27, x: 470}, props: () => <Pizza x={780} y={FLOOR} />, action: 'Night (the backdrop goes dark): Konka on the floor with an entire pizza, delighted.'},
+  {section: 'STEP 3 — CONTROL YOUR MIND', line: "Doesn't mean it's a genius.", size: 'ECU', move: 'snap-zoom', from: CU(), to: ECU(), night: true, konka: {pose: 8}, action: 'Mid-bite freeze, guilty side-eye to the lens.'},
+  // ═════ STEP 4 ═════
+  {section: 'STEP 4 — AVOID YOUR TRIGGERS', line: 'Fourth, stop feeding the temptation.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.15, X, 1040), konka: {pose: 39, x: 620}, talk: true, card: [4, 'AVOID YOUR', 'TRIGGERS'], action: 'Chapter card. Konka explaining.'},
+  {section: 'STEP 4 — AVOID YOUR TRIGGERS', line: 'You know that account you keep checking?', size: 'INSERT', move: 'static', from: Z(1, 540, 960), front: (_l, f) => <PhoneInsert x={540} y={980} screen="profile" t={f} skin={KONKA_SKIN} />, action: 'Insert (its own drawing): big hand, phone tilted, an account page (no photos, just tiles). Thumb hovers.'},
+  {section: 'STEP 4 — AVOID YOUR TRIGGERS', line: 'Yeah. That one.', size: 'CU', move: 'static', from: CU(), konka: {pose: 79}, talk: true, action: 'Caught. Nervous grin, hands together.'},
+  {section: 'STEP 4 — AVOID YOUR TRIGGERS', line: 'Unfollow it.', size: 'INSERT', move: 'static', from: Z(1, 540, 960), front: (l, f) => <PhoneInsert x={540} y={980} screen={l < 0.45 ? 'profile' : 'unfollow'} t={f} skin={KONKA_SKIN} />, action: 'Insert: the thumb taps; FOLLOWING flips to FOLLOW.'},
+  {section: 'STEP 4 — AVOID YOUR TRIGGERS', line: "You can't complain about being distracted while deliberately surrounding yourself with distractions.", size: 'FULL → WIDE', move: 'pull-out', from: FULL(), to: WIDE(), konka: {pose: 33},
+    props: (_l, f) => <>{[[-330, -20], [-200, 14], [200, -12], [330, 18], [-90, 28]].map(([dx, r], i) => <BigPhone key={i} x={X + dx} y={FLOOR - 70} rotate={r} screen="scroll" t={f + i * 3} />)}</>,
+    action: 'Pull out: Konka on the floor, hands up, surrounded by five phones all showing feeds.'},
+  // ═════ STEP 5 ═════
+  {section: 'STEP 5 — BUILD DISCIPLINE', line: 'Finally, practice self-discipline.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.15, X, 1040), konka: {pose: 38, x: 620}, talk: true, card: [5, 'BUILD', 'DISCIPLINE'], action: 'Chapter card. Konka, smug finger.'},
+  {section: 'STEP 5 — BUILD DISCIPLINE', line: 'Start small.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 1, x: 500, dy: () => 0}, action: 'Jump cut 1: one tiny step forward. Proud.'},
+  {section: 'STEP 5 — BUILD DISCIPLINE', line: 'Set boundaries.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 77}, props: () => <ChalkLine x={X} y={FLOOR + 30} />, action: 'Jump cut 2: he stands behind a chalk line on the floor, arms crossed.'},
+  {section: 'STEP 5 — BUILD DISCIPLINE', line: 'Stick to a routine.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 3, x: 380}, props: () => <Checklist x={780} y={900} />, action: 'Jump cut 3: he points at a routine checklist, three ticks.'},
+  {section: 'STEP 5 — BUILD DISCIPLINE', line: 'And remember, feeling attraction is completely normal.', size: 'MS', move: 'static', from: MS(), konka: {pose: 57}, talk: true, action: 'Sincere beat: relaxed open shrug, warm smile.'},
+  {section: 'STEP 5 — BUILD DISCIPLINE', line: "The goal isn't to become a robot.", size: 'MS', move: 'static', from: MS(), konka: {pose: 62}, talk: true, action: 'Gag: Konka goes stiff as a robot, blank eyes. Held.'},
+  {section: 'STEP 5 — BUILD DISCIPLINE', line: "It's to stop letting every passing impulse make your decisions.", size: 'WIDE', move: 'static', from: WIDE(560), konka: {pose: 31, x: 380}, christy: {x0: -350, dir: 1}, props: () => <Laptop x={720} y={FLOOR} view="side" />, action: 'Callback to shot 2: Christy walks past again. This time he stays on his work. Small smile.'},
+  // ═════ THE ENDING ═════
+  {section: 'THE ENDING', line: "Because if you can't control your attention...", size: 'MS → CU', move: 'push-in', from: MS(), to: CU(), konka: {pose: 72}, talk: true, action: 'Slow push-in on Konka, calm, serious, to the lens.'},
+  {section: 'THE ENDING', line: 'Something else will.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 72, x: 400, then: [{at: 0.7, pose: 66}]}, props: (l, f) => <BigPhone x={800} y={FLOOR - 30} rotate={-70} screen={l < 0.5 ? 'off' : 'scroll'} t={f} />, action: 'His phone lights up on the floor. His head turns to it on its own. Cut to black.'},
+];
+
+/** Shot timing: each shot starts on the first word of its line (letter-level match to the voice). */
+const norm = (t: string) => t.toLowerCase().replace(/[^a-z]/g, '');
+const k01Times = () => {
+  const owner: number[] = [];
+  WORDS.forEach((w, i) => norm(w.w).split('').forEach(() => owner.push(i)));
+  let pos = 0;
+  const starts = K01_PLAN.map((sh) => {
+    const st = WORDS[owner[Math.min(pos, owner.length - 1)]].s;
+    pos += norm(sh.line).length;
+    return Math.max(0, st - 0.08);
+  });
+  starts[0] = 0;
+  const end = WORDS[WORDS.length - 1].e + 1.0;
+  return starts.map((st, i) => ({start: st, length: (i + 1 < starts.length ? starts[i + 1] : end) - st}));
+};
+const TIMES = k01Times();
+export const K01_DURATION = Math.ceil((TIMES[TIMES.length - 1].start + TIMES[TIMES.length - 1].length) * VFPS);
+export const K01_SHOT_TIMES = TIMES.map((x) => x.start);
+export const k01ShotIndexAt = (f: number) => {
+  const t = f / VFPS;
+  let idx = 0;
+  for (let i = 0; i < TIMES.length; i++) if (t >= TIMES[i].start) idx = i;
+  return idx;
+};
+
+const shotCamera = (t: number, start: number, length: number, s: Shot): Framing => {
+  if (!s.to) return s.from;
+  const moves: CamMove[] = [];
+  if (s.move === 'snap-zoom') moves.push([start + Math.min(0.3, length * 0.25), s.to, 0.18, 'whip']);
+  else if (s.move === 'pan') moves.push([start + 0.1, s.to, Math.max(0.6, Math.min(length - 0.2, 1.6)), 'ease']);
+  else moves.push([start, s.to, Math.max(0.5, length * 0.9), 'ease']);
+  return camera(t, s.from, moves);
+};
+
+/** The chapter card text (above Konka's head; the caption sits at the top). */
+const Card: React.FC<{card: [number, string, string]; t: number; start: number}> = ({card, t, start}) => (
+  <g>
+    <Slam t={t} at={start} dist={-160} twist={-4}>
+      <text x={90} y={430} fontFamily={FONT} fontWeight={900} fontSize={54} fill={C.red} letterSpacing={8}>
+        STEP {card[0]}
+      </text>
+    </Slam>
+    <Slam t={t} at={start + 0.12} dist={-300} twist={-8}>
+      <text x={84} y={560} fontFamily={FONT} fontWeight={900} fontSize={128} fill={C.ink}>
+        {card[1]}
+      </text>
+      <text x={84} y={690} fontFamily={FONT} fontWeight={900} fontSize={128} fill={C.ink}>
+        {card[2]}
+      </text>
+      <rect x={92} y={730} width={220} height={18} rx={9} fill={C.red} />
+    </Slam>
+  </g>
+);
+
+export const K01Frame: React.FC<{f: number}> = ({f}) => {
+  const t = f / VFPS;
+  const i = k01ShotIndexAt(f);
+  const s = K01_PLAN[i];
+  const {start, length} = TIMES[i];
+  const local = t - start;
+  const k = s.konka;
+  const pose = k ? (k.then ?? []).reduce((p, th) => (local >= th.at ? th.pose : p), k.pose) : 0;
+  const end = TIMES[TIMES.length - 1];
+  const black = i === K01_PLAN.length - 1 && t > end.start + end.length - 0.5;
+  return (
+    <StageSizeContext.Provider value={{w: K01_W, h: K01_H}}>
+      <NoScaleContext.Provider value>
+        <HandDrawnContext.Provider value>
+          <AbsoluteFill style={{background: '#000'}}>
+            <VStage
+              framing={shotCamera(t, start, length, s)}
+              bg={s.night ? '#2E2848' : '#D2C4EE'}
+              blurBg={<Backdrop night={s.night} />}
+              overlay={
+                <g>
+                  {s.card && <Card card={s.card} t={t} start={start} />}
+                  {s.text?.(local)}
+                </g>
+              }
+            >
+              {s.christy && (
+                <RigCharacter who="christy" x={s.christy.x0 + s.christy.dir * local * cycleSpeed('christy', 'walk') * 2.3} y={FLOOR - 40} scale={2.3} facing={s.christy.dir} t={f} pose={{...POSES.standing, eyes: 'open', mouth: 'smile'}} cycle="walk" />
+              )}
+              {s.props?.(local, f)}
+              {k && (
+                <PoseCharacter who="konka" pose={pose} x={k.x ?? X} y={FLOOR + (k.dy?.(local) ?? 0)} facing={k.facing ?? 1} t={f} lip={s.talk ? lipFrame(ENV, WORDS, f) : undefined} look={k.look} />
+              )}
+              {s.front?.(local, f)}
+            </VStage>
+            <TopCaption chunks={CHUNKS} tSec={t} />
+            {black && <AbsoluteFill style={{background: '#000'}} />}
+          </AbsoluteFill>
+        </HandDrawnContext.Provider>
+      </NoScaleContext.Provider>
+    </StageSizeContext.Provider>
+  );
+};
+
+export const KonkaShort01: React.FC<{layer?: LayerMode}> = ({layer = 'full'}) => {
+  const f = useCurrentFrame();
+  return (
+    <LayerModeContext.Provider value={layer}>
+      <K01Frame f={f} />
+      {layer === 'full' && <Html5Audio src={staticFile('konka01/voice.mp3')} />}
+    </LayerModeContext.Provider>
+  );
+};
