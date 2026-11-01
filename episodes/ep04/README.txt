@@ -16,6 +16,11 @@ SCENES
   6 Wait For Magic · 7 Blame Everyone · 8 The Ending. Played in order they make the whole episode.
   Ebo's animated symbol is shared by all scenes; each scene's instance starts on the right frame.
 
+CAMERA
+  There is no camera animation in this file: every scene shows the full stage at zoom 1, with
+  characters, props and sets at their real positions. Add your own camera (Camera tool / camera
+  layer). The rendered video's camera moves are only a guide (see the storyboard and shot list).
+
 LAYERS in every scene (top to bottom)
   Captions    - editable text in caption pills at the bottom of the frame (Library > Captions)
   Graphics    - the title card, chapter cards, the "2017" stamp and the end card
@@ -32,9 +37,8 @@ LAYERS in every scene (top to bottom)
                 suitcase: editable vector symbols (Library > Props)
   Background  - the sets only (the plain backdrop, front door, living room day/night, living room reverse angle (TV on/off), kitchen, work room day/night,
                 bedroom, office) as editable vector symbols:
-                each set is drawn once in full and the camera is its instance's position and
-                size, so pans, push-ins and whip-pans are keyframes you can retime. Each set
-                is also in backgrounds/ as an .svg file.
+                each set is drawn once in full at its real position. Each set is also in
+                backgrounds/ as an .svg file.
 
 VOICE (already in the file)
   Every scene has a "Voice" layer on top that plays that scene's part of the voice from frame 1,

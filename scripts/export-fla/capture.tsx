@@ -25,6 +25,31 @@ const out = process.argv[2] || 'out/fla-export/capture.json';
 const ep = EPISODES[(process.argv[3] || 'ep01') as keyof typeof EPISODES];
 if (!ep) throw new Error(`unknown episode ${process.argv[3]} (have: ${Object.keys(EPISODES).join(', ')})`);
 const frames: (Capture & {f: number; shot: number})[] = [];
+
+// No camera in the Animate file (the animator does the camera there): every frame is taken back
+// out of its shot's camera and laid on one fixed full-stage view (zoom 1, centred), so characters,
+// props and sets sit at their real positions and nothing zooms, pans or punches in.
+type M6 = [number, number, number, number, number, number];
+const mul = (m1: M6, m2: M6): M6 => {
+  const [a1, b1, c1, d1, x1, y1] = m1;
+  const [a2, b2, c2, d2, x2, y2] = m2;
+  return [a1 * a2 + c1 * b2, b1 * a2 + d1 * b2, a1 * c2 + c1 * d2, b1 * c2 + d1 * d2, a1 * x2 + c1 * y2 + x1, b1 * x2 + d1 * y2 + y1];
+};
+const inv = (m: M6): M6 => {
+  const [a, b, c, d, e, f] = m;
+  const det = a * d - b * c;
+  return [d / det, -b / det, -c / det, a / det, (c * f - d * e) / det, (b * e - a * f) / det];
+};
+const KEEP_CAMERA = process.argv.includes('--keep-camera');
+const BASE: M6 = [1, 0, 0, 1, 0, 0]; // world = stage: the full set at zoom 1
+const noCamera = (cap: Capture) => {
+  const cam = cap.background?.cam as M6 | undefined;
+  if (KEEP_CAMERA || !cam) return;
+  const X = mul(BASE, inv(cam));
+  for (const c of cap.chars) c.outer = mul(X, c.outer as M6);
+  for (const p of cap.props) p.matrix = mul(X, p.matrix as M6);
+  cap.background!.cam = BASE;
+};
 for (let f = 0; f < ep.duration; f++) {
   const cap: Capture = {chars: [], graphics: [], props: [], caption: null};
   renderToStaticMarkup(
@@ -32,6 +57,7 @@ for (let f = 0; f < ep.duration; f++) {
       <ep.Frame f={ep.toSource(f)} />
     </CaptureContext.Provider>,
   );
+  noCamera(cap);
   frames.push({f, shot: ep.shotIndexAt(ep.toSource(f)), ...cap});
 }
 fs.mkdirSync(out.replace(/\/[^/]+$/, ''), {recursive: true});

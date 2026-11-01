@@ -20,6 +20,11 @@ SCENES
   Konka's pose symbol is one long symbol shared by all scenes; each scene's instance starts on
   the right frame of it, so editing a pose there updates every scene that uses it.
 
+CAMERA
+  There is no camera animation in this file: every scene shows the full stage at zoom 1, with
+  characters, props and sets at their real positions. Add your own camera (Camera tool / camera
+  layer). The rendered video's camera moves are only a guide (see the storyboard and shot list).
+
 LAYERS in every scene (top to bottom)
   Captions    - editable caption text (Library > Captions)
   Graphics    - chapter cards and the push-up count
