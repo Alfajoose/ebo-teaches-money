@@ -1,0 +1,382 @@
+[
+ {
+  "n": 1,
+  "section": "THE HOOK",
+  "time": "0:00\u20130:02",
+  "size": "MS",
+  "camera": "push-in",
+  "poses": [
+   37
+  ],
+  "action": "Konka alone on the plain backdrop, finger up, squinting at us. Slow push-in.",
+  "line": "So... you can't control your lust?"
+ },
+ {
+  "n": 2,
+  "section": "THE HOOK",
+  "time": "0:02\u20130:05",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   20
+  ],
+  "action": "Someone (Christy, just walking by) crosses the frame. Konka's head snaps to follow; his to-do list slips out of his hand.",
+  "line": "One attractive person walks past, and suddenly your brain forgets every important thing you were supposed to do today."
+ },
+ {
+  "n": 3,
+  "section": "THE HOOK",
+  "time": "0:05\u20130:08",
+  "size": "CU",
+  "camera": "snap-zoom",
+  "poses": [
+   36
+  ],
+  "action": "Snap-zoom on his face: dazed, dopey grin. Nobody home.",
+  "line": "Congratulations. Your hormones have officially taken over management."
+ },
+ {
+  "n": 4,
+  "section": "STEP 1 \u2014 FIND YOUR PURPOSE",
+  "time": "0:08\u20130:10",
+  "size": "MS",
+  "camera": "push-in",
+  "poses": [
+   85
+  ],
+  "action": "Chapter card: title slams in on the left, Konka thinking on the right.",
+  "line": "First, get yourself a purpose."
+ },
+ {
+  "n": 5,
+  "section": "STEP 1 \u2014 FIND YOUR PURPOSE",
+  "time": "0:10\u20130:11",
+  "size": "ECU",
+  "camera": "static",
+  "poses": [
+   64
+  ],
+  "action": "Hard cut to a deadpan stare into the lens. Hold.",
+  "line": "Seriously."
+ },
+ {
+  "n": 6,
+  "section": "STEP 1 \u2014 FIND YOUR PURPOSE",
+  "time": "0:11\u20130:14",
+  "size": "MS",
+  "camera": "static",
+  "poses": [
+   2
+  ],
+  "action": "Finger up, eyes up: the idea lands. Determined.",
+  "line": "Find something you actually want to achieve."
+ },
+ {
+  "n": 7,
+  "section": "STEP 1 \u2014 FIND YOUR PURPOSE",
+  "time": "0:14\u20130:19",
+  "size": "WS \u2192 MS",
+  "camera": "push-in",
+  "poses": [
+   32
+  ],
+  "action": "Konka slumped on the floor doing nothing; push in as his eyes slide sideways and a sly smirk creeps in.",
+  "line": "Because when your entire day consists of doing absolutely nothing, your brain has plenty of time to entertain some very questionable ideas."
+ },
+ {
+  "n": 8,
+  "section": "STEP 2 \u2014 WORK ON YOURSELF",
+  "time": "0:19\u20130:21",
+  "size": "MS",
+  "camera": "push-in",
+  "poses": [
+   84
+  ],
+  "action": "Chapter card. Konka arms crossed, pleased with himself.",
+  "line": "Second, work on yourself."
+ },
+ {
+  "n": 9,
+  "section": "STEP 2 \u2014 WORK ON YOURSELF",
+  "time": "0:21\u20130:22",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   11
+  ],
+  "action": "Jump cut 1: squatting, heaving a dumbbell up.",
+  "line": "Hit the gym."
+ },
+ {
+  "n": 10,
+  "section": "STEP 2 \u2014 WORK ON YOURSELF",
+  "time": "0:22\u20130:23",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   31
+  ],
+  "action": "Jump cut 2: on the floor at the laptop (side-on, screen toward him), typing.",
+  "line": "Learn a skill."
+ },
+ {
+  "n": 11,
+  "section": "STEP 2 \u2014 WORK ON YOURSELF",
+  "time": "0:23\u20130:24",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   10
+  ],
+  "action": "Jump cut 3: kneeling, finishing a wonky birdhouse.",
+  "line": "Build something."
+ },
+ {
+  "n": 12,
+  "section": "STEP 2 \u2014 WORK ON YOURSELF",
+  "time": "0:24\u20130:26",
+  "size": "CU",
+  "camera": "push-in",
+  "poses": [
+   23
+  ],
+  "action": "Close-up: total focus, brow down.",
+  "line": "Give your brain something productive to obsess over."
+ },
+ {
+  "n": 13,
+  "section": "STEP 2 \u2014 WORK ON YOURSELF",
+  "time": "0:26\u20130:28",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   9
+  ],
+  "action": "Three push-ups (held poses on the counts), then he flops.",
+  "line": "And no, doing three push-ups"
+ },
+ {
+  "n": 14,
+  "section": "STEP 2 \u2014 WORK ON YOURSELF",
+  "time": "0:28\u20130:30",
+  "size": "MS",
+  "camera": "static",
+  "poses": [
+   86
+  ],
+  "action": "Back view at the mirror, checking his round tummy, very satisfied.",
+  "line": "and checking your abs in the mirror doesn't count as a transformation."
+ },
+ {
+  "n": 15,
+  "section": "STEP 3 \u2014 CONTROL YOUR MIND",
+  "time": "0:30\u20130:32",
+  "size": "MS",
+  "camera": "push-in",
+  "poses": [
+   78
+  ],
+  "action": "Chapter card. Konka, finger up, arms crossed.",
+  "line": "Third, stop entertaining every thought that enters your head."
+ },
+ {
+  "n": 16,
+  "section": "STEP 3 \u2014 CONTROL YOUR MIND",
+  "time": "0:32\u20130:35",
+  "size": "MS",
+  "camera": "static",
+  "poses": [
+   54
+  ],
+  "action": "A thought bubble pops up beside his head; he holds up a flat hand to it: no.",
+  "line": "Just because your brain suggests something doesn't mean you have to follow through."
+ },
+ {
+  "n": 17,
+  "section": "STEP 3 \u2014 CONTROL YOUR MIND",
+  "time": "0:35\u20130:38",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   27
+  ],
+  "action": "Night (backdrop goes dark): Konka on the floor with an entire pizza, delighted.",
+  "line": "Your brain also tells you to eat an entire pizza at midnight."
+ },
+ {
+  "n": 18,
+  "section": "STEP 3 \u2014 CONTROL YOUR MIND",
+  "time": "0:38\u20130:41",
+  "size": "ECU",
+  "camera": "snap-zoom",
+  "poses": [
+   8
+  ],
+  "action": "Mid-bite freeze, guilty side-eye to the lens.",
+  "line": "Doesn't mean it's a genius."
+ },
+ {
+  "n": 19,
+  "section": "STEP 4 \u2014 AVOID YOUR TRIGGERS",
+  "time": "0:41\u20130:43",
+  "size": "MS",
+  "camera": "push-in",
+  "poses": [
+   39
+  ],
+  "action": "Chapter card. Konka explaining.",
+  "line": "Fourth, stop feeding the temptation."
+ },
+ {
+  "n": 20,
+  "section": "STEP 4 \u2014 AVOID YOUR TRIGGERS",
+  "time": "0:43\u20130:45",
+  "size": "INSERT",
+  "camera": "static",
+  "poses": [],
+  "action": "Insert (its own drawing): big hand, phone tilted, a profile page (no photo shown, just tiles). Thumb hovers.",
+  "line": "You know that account you keep checking?"
+ },
+ {
+  "n": 21,
+  "section": "STEP 4 \u2014 AVOID YOUR TRIGGERS",
+  "time": "0:45\u20130:47",
+  "size": "CU",
+  "camera": "static",
+  "poses": [
+   79
+  ],
+  "action": "Caught. Nervous grin, hands together, eyes darting.",
+  "line": "Yeah. That one."
+ },
+ {
+  "n": 22,
+  "section": "STEP 4 \u2014 AVOID YOUR TRIGGERS",
+  "time": "0:47\u20130:48",
+  "size": "INSERT",
+  "camera": "static",
+  "poses": [],
+  "action": "Insert: the thumb taps; FOLLOWING flips to FOLLOW.",
+  "line": "Unfollow it."
+ },
+ {
+  "n": 23,
+  "section": "STEP 4 \u2014 AVOID YOUR TRIGGERS",
+  "time": "0:48\u20130:52",
+  "size": "WS",
+  "camera": "pull-out",
+  "poses": [
+   33
+  ],
+  "action": "Pull out: Konka on the floor, hands up, surrounded by five phones all showing feeds.",
+  "line": "You can't complain about being distracted while deliberately surrounding yourself with distractions."
+ },
+ {
+  "n": 24,
+  "section": "STEP 5 \u2014 BUILD DISCIPLINE",
+  "time": "0:52\u20130:54",
+  "size": "MS",
+  "camera": "push-in",
+  "poses": [
+   38
+  ],
+  "action": "Chapter card. Konka, smug finger.",
+  "line": "Finally, practice self-discipline."
+ },
+ {
+  "n": 25,
+  "section": "STEP 5 \u2014 BUILD DISCIPLINE",
+  "time": "0:54\u20130:55",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   1
+  ],
+  "action": "Jump cut 1: one tiny step forward. Proud.",
+  "line": "Start small."
+ },
+ {
+  "n": 26,
+  "section": "STEP 5 \u2014 BUILD DISCIPLINE",
+  "time": "0:55\u20130:56",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   77
+  ],
+  "action": "Jump cut 2: he chalks a line on the floor and stands behind it, arms crossed.",
+  "line": "Set boundaries."
+ },
+ {
+  "n": 27,
+  "section": "STEP 5 \u2014 BUILD DISCIPLINE",
+  "time": "0:56\u20130:57",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   3
+  ],
+  "action": "Jump cut 3: he points at a routine checklist, three ticks.",
+  "line": "Stick to a routine."
+ },
+ {
+  "n": 28,
+  "section": "STEP 5 \u2014 BUILD DISCIPLINE",
+  "time": "0:57\u20131:00",
+  "size": "MS",
+  "camera": "static",
+  "poses": [
+   57
+  ],
+  "action": "Sincere beat: relaxed open shrug, warm smile.",
+  "line": "And remember, feeling attraction is completely normal."
+ },
+ {
+  "n": 29,
+  "section": "STEP 5 \u2014 BUILD DISCIPLINE",
+  "time": "1:00\u20131:02",
+  "size": "MS",
+  "camera": "static",
+  "poses": [
+   62
+  ],
+  "action": "Gag: Konka goes stiff as a robot, blank eyes. Held.",
+  "line": "The goal isn't to become a robot."
+ },
+ {
+  "n": 30,
+  "section": "STEP 5 \u2014 BUILD DISCIPLINE",
+  "time": "1:02\u20131:05",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   60
+  ],
+  "action": "Callback to shot 2: the same person walks past behind him. This time he stays on his work. Small smile.",
+  "line": "It's to stop letting every passing impulse make your decisions."
+ },
+ {
+  "n": 31,
+  "section": "THE ENDING",
+  "time": "1:05\u20131:07",
+  "size": "MS \u2192 CU",
+  "camera": "push-in",
+  "poses": [
+   72
+  ],
+  "action": "Slow push-in on Konka, calm, serious, to the lens.",
+  "line": "Because if you can't control your attention..."
+ },
+ {
+  "n": 32,
+  "section": "THE ENDING",
+  "time": "1:07\u20131:09",
+  "size": "WS",
+  "camera": "static",
+  "poses": [
+   66
+  ],
+  "action": "His phone lights up on the floor. His head turns to it on its own. Cut to black.",
+  "line": "Something else will."
+ }
+]
