@@ -13,9 +13,9 @@ const DumbbellDrawing: React.FC<{x?: number; y?: number; small?: boolean; rotate
   small ? (
     // hand-held size: a single dumbbell gripped in the middle
     <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
-      <rect x={-46} y={-6} width={92} height={12} fill="#666" {...S} strokeWidth={4} />
-      <rect x={-62} y={-22} width={20} height={44} rx={6} fill="#3A3A44" {...S} strokeWidth={5} />
-      <rect x={42} y={-22} width={20} height={44} rx={6} fill="#3A3A44" {...S} strokeWidth={5} />
+      <rect x={-50} y={-7} width={100} height={14} fill="#666" {...S} strokeWidth={4} />
+      <rect x={-76} y={-34} width={30} height={68} rx={9} fill="#3A3A44" {...S} strokeWidth={5} />
+      <rect x={46} y={-34} width={30} height={68} rx={9} fill="#3A3A44" {...S} strokeWidth={5} />
     </g>
   ) : (
     <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
@@ -24,6 +24,14 @@ const DumbbellDrawing: React.FC<{x?: number; y?: number; small?: boolean; rotate
       <rect x={108} y={-50} width={42} height={100} rx={10} fill="#3A3A44" {...S} />
     </g>
   );
+/** A wooden crate (a stand to work on, so nobody has to kneel). Its top is at y − 150. */
+const CrateDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-110} y={-150} width={220} height={150} fill="#B98A55" {...S} />
+    <path d="M -110 -100 L 110 -100 M -110 -50 L 110 -50" {...S} strokeWidth={4} />
+    <path d="M -110 -150 L 110 0" {...S} strokeWidth={4} />
+  </g>
+);
 const BirdhouseDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
   <g transform={`translate(${x} ${y}) rotate(-4)`}>
     <rect x={-90} y={-150} width={180} height={150} fill="#C99A62" {...S} />
@@ -138,6 +146,7 @@ const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P>
 };
 export const Dumbbell = prop('Dumbbell', DumbbellDrawing);
 export const Birdhouse = prop('Birdhouse', BirdhouseDrawing);
+export const Crate = prop('Crate', CrateDrawing);
 export const Mirror = prop('Mirror', MirrorDrawing);
 export const Pizza = prop('Pizza', PizzaDrawing);
 export const Thought = prop('Thought', ThoughtDrawing);

@@ -23,6 +23,9 @@
    - **The hand is on the prop.** Fingers overlap the object (the hand draws over it), and the object turns with the hand instead of floating upright beside it.
    - **Held props are rare and brief.** A prop is picked up for the beat that needs it, then put down or thrown.
    - **Props feel tangible.** Give the character something to handle in most acted shots (toss a ball, curl a dumbbell, hammer, bite, chalk a line, tick a box), and let props react physically: things that are dropped fall with gravity and bounce once, things that are hit jolt, things that are swatted fly off. Only translation and rotation (house rule 2).
+11. **The camera holds still unless the script calls for a move.** Cut between framings rather than pushing in or zooming on every line. Keep a move only when it is the joke or the reveal (e.g. the pull-out that shows the phones all around him). A planned snap-zoom becomes a straight cut to its close framing. This overrides the camera planning in rule 2.
+12. **Ebo stands.** No sitting on the floor, squatting or kneeling poses: he reads, works and eats standing up, and anything he works on goes on a stand (a crate, a desk) at hand height. The exceptions are a real seat (a couch or chair in the set) and lying down when the joke needs it.
+13. **Arms stay straight or gently bent.** The rigs have only an upper arm and a forearm, with no hand, palm or fingers, so a deep elbow bend (hands on hips, folded arms, a tight curl, robot arms) reads as a broken limb. Keep the elbow within about ±40° and act with the shoulder: reach, raise, point, swing. In code, pass Ebo's poses through `gentle()` (see `src/series/konka01.tsx`).
 
 ## Shared rig (all five characters)
 

@@ -10,8 +10,8 @@ import {POSES} from '../components/Character';
 import {cycleSpeed} from '../cast/cycles';
 import {Backdrop} from './sets';
 import {BigPhone, PhoneInsert} from '../components/StayBrokeProps';
-import {Laptop} from '../components/StayPoorProps';
-import {Dumbbell, Birdhouse, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, Hammer, Slice, Ball, Chalk, Marker, KONKA_SKIN} from '../components/KonkaProps';
+import {Laptop, Notebook} from '../components/StayPoorProps';
+import {Dumbbell, Birdhouse, Crate, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, Hammer, Slice, Ball, Chalk, Marker, KONKA_SKIN} from '../components/KonkaProps';
 import {Sticky} from '../components/StayBrokeProps';
 import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption, G, drop, beat} from './kit';
 import {C, FONT} from '../theme';
@@ -77,43 +77,54 @@ const step = (local: number, at: number[]) => at.filter((a) => local >= a).lengt
 
 const EBO_SCALE = 1.75;
 const CARD_X = STAR === 'ebo' ? 700 : 620; // on chapter cards, clear of the title // Ebo at Konka's height in this Short
-const FLOOR_SIT = (x: Partial<Pose> = {}): Pose => ({...POSE.sit, legL: [88, 0], legR: [82, 0], lift: 150, ...x});
-const PLANK: Pose = {...POSE.stand, tilt: 80, armL: [-100, 0], armR: [-100, 0], legL: [0, 0], legR: [0, 0], eyes: 'squeeze', mouth: 'grimace'};
+/** Push-up, side-on: up = arms straight to the floor, down = forearms flat; the head stays upright to us. */
+const PUSH_UP: Pose = {...POSE.stand, tilt: 60, headTilt: -45, armL: [-70, 0], armR: [50, 0], eyes: 'squint', mouth: 'grimace'};
+const PUSH_DOWN: Pose = {...POSE.stand, tilt: 74, headTilt: -58, armL: [-100, 0], armR: [80, 0], eyes: 'squeeze', mouth: 'teeth'};
 const TYPE: Partial<Pose> = {armR: [70, -60], armL: [55, -70], lookX: 10, lookY: 8};
 /**
  * Ebo's pose for each of Konka's (by his pose number in each shot), from Ebo's pose library;
  * `then` changes follow the same beats as Konka's.
  */
+/**
+ * Ebo's arm is an upper arm and a forearm with no hand or fingers, so a deep elbow bend reads as a
+ * broken limb (the user's note). Every pose in this Short goes through this: elbows stay within
+ * ±ELBOW_MAX (straight or gently bent).
+ */
+const ELBOW_MAX = 40;
+const gentle = (p: Pose): Pose => {
+  const c = (a: [number, number]): [number, number] => [a[0], Math.max(-ELBOW_MAX, Math.min(ELBOW_MAX, a[1]))];
+  return {...p, armL: c(p.armL), armR: c(p.armR)};
+};
 const EBO: Record<number, Pose> = {
   37: {...POSE.pointAtYou, view: 1},
   20: {...POSE.shocked, lookX: 14},
-  49: {...POSE.lean, eyes: 'wide', mouth: 'o', lookX: 16},
+  49: {...POSE.stand, tilt: 6, headTilt: 6, armR: [24, 10], eyes: 'wide', mouth: 'o', lookX: 16},
   36: {...POSE.happy, eyes: 'happy', mouth: 'laugh', headTilt: 10},
-  85: POSE.thinkChin,
+  85: {...POSE.point, view: 1, eyes: 'squint', mouth: 'smirk'},
   64: {...POSE.bored, view: 1, eyes: 'tired', mouth: 'flat'},
   2: {...POSE.ideaFinger, view: 0},
-  32: FLOOR_SIT({armL: [8, 4], armR: [10, 4], tilt: -7, headTilt: -6, eyes: 'half', mouth: 'flat'}),
-  30: FLOOR_SIT({armL: [26, 128], armR: [26, 128], tilt: -7, eyes: 'suspicious', mouth: 'smirk', lookX: 12}),
-  84: {...POSE.armsCrossed, eyes: 'happy', mouth: 'smirk'},
+  32: {...POSE.bored, eyes: 'half', mouth: 'flat'},
+  30: {...POSE.stand, armL: [26, 128], armR: [26, 128], eyes: 'suspicious', mouth: 'smirk', lookX: 12},
+  84: {...POSE.pointUp, eyes: 'happy', mouth: 'smirk'},
   11: {...POSE.stand, view: 1, legL: [45, 80], legR: [-35, 80], lift: 55, armL: [70, -70], armR: [70, -70], eyes: 'squeeze', mouth: 'grimace'},
-  31: FLOOR_SIT({...TYPE, eyes: 'squint', mouth: 'flat'}),
+  31: {...POSE.holdOut, eyes: 'squint', mouth: 'flat', lookX: 10, lookY: 8},
   10: {...POSE.kneel, armL: [60, -40], armR: [60, -40], eyes: 'squint', mouth: 'flat', lookX: 10, lookY: 8},
   23: {...POSE.explain, view: 1, eyes: 'squint', mouth: 'flat'},
-  9: PLANK,
+  9: PUSH_UP,
   86: {...POSE.backHips},
   78: POSE.pointUp,
   54: {...POSE.stopHand, view: 1},
-  27: FLOOR_SIT({armL: [36, 28], armR: [36, 28], eyes: 'happy', mouth: 'grin'}),
-  8: FLOOR_SIT({eyes: 'suspicious', mouth: 'grimace', lookX: 14}),
+  27: {...POSE.holdOut, eyes: 'happy', mouth: 'grin'},
+  8: {...POSE.stand, eyes: 'suspicious', mouth: 'grimace', lookX: 14},
   39: POSE.explain,
   79: POSE.nervous,
-  33: FLOOR_SIT({armL: [70, 82], armR: [70, 82], eyes: 'wide', mouth: 'grimace'}),
+  33: {...POSE.shocked, eyes: 'wide', mouth: 'grimace'},
   38: {...POSE.ideaFinger, eyes: 'half', mouth: 'smirk'},
   1: {...POSE.stand, legL: [22, 10], legR: [-8, 0], tilt: 4, eyes: 'happy', mouth: 'smile'},
-  77: {...POSE.armsCrossed, eyes: 'angry', mouth: 'flat'},
+  77: {...POSE.stopHand, view: 1, eyes: 'angry', mouth: 'flat'},
   3: {...POSE.point, eyes: 'happy', mouth: 'grin'},
-  57: {...POSE.shrug, view: 1, eyes: 'happy', mouth: 'smile', headTilt: 6},
-  62: {...POSE.stand, view: 1, armL: [90, 0], armR: [90, 0], eyes: 'open', mouth: 'flat'},
+  57: {...POSE.shrug, view: 1, armL: [60, -30], armR: [60, -30], eyes: 'happy', mouth: 'smile', headTilt: 6},
+  62: {...POSE.stand, armL: [90, 0], armR: [90, 0], eyes: 'open', mouth: 'flat'},
   72: {...POSE.hostFront, mouth: 'flat'},
   66: {...POSE.stand, eyes: 'wide', mouth: 'o', lookX: 16, lookY: 12, headTilt: -6},
 };
@@ -124,7 +135,7 @@ const EBO: Record<number, Pose> = {
  * that react: things fall with gravity and bounce once, get hit, swatted or ticked.
  * Hand-space units are world px / EBO_SCALE (what he holds is drawn in his hand's space).
  */
-type Act = {pose?: Pose; hold?: React.ReactNode; props?: React.ReactNode; replace?: boolean};
+type Act = {pose?: Pose; hold?: React.ReactNode; props?: React.ReactNode; replace?: boolean; dx?: number};
 const EBO_ACT: Record<number, (local: number, f: number) => Act> = {
   // walk-by: his to-do list in hand… slips out as he drifts after her, hits the floor, bounces
   1: (l) => ({hold: <Todo y={drop(l, 3.6, 190) / 1} rotate={l < 3.6 ? -8 : Math.min(80, (l - 3.6) * 260)} />}),
@@ -133,34 +144,58 @@ const EBO_ACT: Record<number, (local: number, f: number) => Act> = {
   // bored on the floor: tosses a ball up and catches it, over and over
   6: (l) => {
     const t = (l % 1.0) / 1.0; // one toss a second
-    return {pose: l < 5.2 ? FLOOR_SIT({armR: [t < 0.15 ? 62 : 44, t < 0.15 ? 20 : 0], armL: [8, 4], tilt: -7, headTilt: -6, eyes: 'half', mouth: 'flat', lookY: -14}) : undefined, hold: l < 5.2 ? <Ball y={-20 - 2200 * t * (1 - t)} /> : null};
+    return {pose: l < 5.2 ? {...POSE.stand, armR: [t < 0.15 ? 62 : 44, t < 0.15 ? 20 : 0], armL: [8, 4], headTilt: -6, eyes: 'half', mouth: 'flat', lookY: -14} : undefined, hold: l < 5.2 ? <Ball y={-20 - 1300 * t * (1 - t)} /> : null};
   },
   // gym: curls the dumbbell (right arm), rep after rep
-  8: (l) => ({pose: {...POSE.stand, view: 1, armL: [12, 6], armR: beat(l, 0.45) % 2 ? [14, 128] : [14, 10], eyes: beat(l, 0.45) % 2 ? 'squeeze' : 'squint', mouth: 'grimace', lift: beat(l, 0.45) % 2 ? 4 : 0}, hold: <Dumbbell small rotate={90} />, replace: true}),
-  // skill: typing — the hands alternate on the keys
-  9: (l, f) => ({pose: FLOOR_SIT({armR: f % 8 < 4 ? [70, -60] : [74, -48], armL: f % 8 < 4 ? [58, -62] : [54, -72], lookX: 10, lookY: 8, eyes: 'squint', mouth: 'flat'})}),
+  // (¾ view so the curl is seen from the side; effort face on the lift)
+  8: (l) => {
+    const up = beat(l, 0.45) % 2 === 1;
+    return {pose: {...POSE.stand, armL: [12, 6], armR: up ? [95, 0] : [12, 0], eyes: up ? 'angry' : 'squint', mouth: up ? 'teeth' : 'flat', brows: 'angry', lift: up ? 4 : 0, headTilt: up ? -4 : 0}, hold: <Dumbbell small rotate={90} />, replace: true};
+  },
+  // skill: standing, studying a notebook in his hand; the page fills as he reads on
+  9: (l) => ({pose: {...POSE.holdOut, armR: [70, -20], eyes: 'squint', mouth: 'flat', lookX: 10, lookY: 8, headTilt: -4}, hold: <Notebook y={-40} rotate={-8} lines={1 + Math.min(3, beat(l, 0.5))} />, replace: true}),
   // build: hammering the birdhouse; it jolts on every hit
   10: (l) => {
     const n = beat(l, 0.4);
     const hit = (l % 0.4) < 0.08;
-    return {pose: {...POSE.kneel, armR: n % 2 ? [82, -20] : [150, -40], armL: [60, -40], eyes: 'squint', mouth: 'flat', lookX: 12, lookY: 8}, hold: <Hammer rotate={-30} />, props: <Birdhouse x={800} y={FLOOR + (hit && n % 2 ? 8 : 0)} />, replace: true};
+    // standing at a crate, the birdhouse on top (it jolts on every hit)
+    return {pose: {...POSE.stand, armR: n % 2 ? [82, -20] : [150, -40], armL: [40, -30], eyes: 'squint', mouth: 'flat', brows: 'angry', lookX: 12, lookY: 8}, hold: <Hammer rotate={-30} />, props: <><Crate x={530} y={FLOOR} /><Birdhouse x={530} y={FLOOR - 150 + (hit && n % 2 ? 8 : 0)} /></>, replace: true, dx: -120};
   },
   // the thought bubble: he swats it away and it flies off
   15: (l) => {
-    const sw = l > 1.1;
-    const k = Math.max(0, l - 1.1);
-    return {pose: sw ? {...POSE.stopHand, view: 1, armR: [60, -90], tilt: 6} : undefined, props: l > 0.4 ? <Thought x={600 + k * 900} y={1010 - k * 500 + 0.5 * G * 0.3 * k * k} text="?!" /> : null, replace: true};
+    // the bubble pops up by his head; he eyes it, suspicious… then swats it away
+    const sw = l > 1.8;
+    const k = Math.max(0, l - 1.8);
+    return {pose: sw ? {...POSE.stopHand, view: 1, armR: [60, -90], tilt: 6} : {...POSE.stand, eyes: 'suspicious', mouth: 'flat', brows: 'angry', lookX: 14, lookY: -12, headTilt: 6}, props: l > 0.4 ? <Thought x={600 + k * 900} y={1010 - k * 500 + 0.5 * G * 0.3 * k * k} text="?!" /> : null, replace: true};
+  },
+  // three push-ups, on the counts (1… 2… 3.), then he collapses and stays down
+  12: (l) => {
+    const counts = [0.5, 1.0, 1.5];
+    const down = counts.some((c) => l >= c && l < c + 0.22) || l >= 1.9;
+    return {pose: l >= 1.9 ? {...PUSH_DOWN, eyes: 'tired', mouth: 'frown'} : down ? PUSH_DOWN : PUSH_UP};
+  },
+  // start small: one tiny step forward… and he's SO proud of it
+  24: (l) => (l < 0.3
+    ? {pose: {...POSE.stand, eyes: 'squint', mouth: 'flat', lookY: 14, headTilt: -6}}
+    : l < 0.55
+      ? {pose: {...POSE.stand, legL: [30, 10], legR: [-14, 6], armL: [-20, 0], armR: [30, 40], tilt: 4, eyes: 'squint', mouth: 'flat', lookY: 14}, dx: 30}
+      : {pose: {...POSE.stand, armL: [24, 0], armR: [24, 0], eyes: 'happy', mouth: 'smile', headTilt: -10, lift: -6}, dx: 60}),
+  // not a robot: stiff arms, the head snaps side to side on a beat
+  28: (l) => {
+    const n = beat(l, 0.35);
+    return {pose: {...POSE.stand, armL: n % 2 ? [90, 0] : [60, 0], armR: n % 2 ? [60, 0] : [90, 0], headTilt: n % 2 ? 8 : -8, eyes: 'open', mouth: 'flat'}};
   },
   // midnight pizza: picks up a slice and bites
   16: (l) => {
     const up = beat(l, 0.8) % 2 === 1;
-    return {pose: FLOOR_SIT({armFront: up, armR: up ? [70, 150] : [40, 60], armL: [36, 28], eyes: up ? 'happy' : 'wide', mouth: up ? 'laugh' : 'grin'}), hold: <Slice bitten={l > 1.6} rotate={-20} />};
+    return {pose: {...POSE.stand, armFront: up, armR: up ? [118, 30] : [50, 20], armL: [12, 6], eyes: up ? 'happy' : 'wide', mouth: up ? 'laugh' : 'grin'}, hold: <Slice bitten={l > 1.6} rotate={-20} />, replace: true};
   },
-  17: () => ({pose: FLOOR_SIT({armFront: true, armR: [70, 150], eyes: 'suspicious', mouth: 'grimace', lookX: 14}), hold: <Slice bitten rotate={-20} />}),
+  17: () => ({pose: {...POSE.stand, armFront: true, armR: [118, 30], eyes: 'suspicious', mouth: 'grimace', lookX: 14}, hold: <Slice bitten rotate={-20} />}),
   // boundaries: chalks the line himself, then stands behind it
-  25: (l) => (l < 0.75
-    ? {pose: {...POSE.kneel, armR: [70, 20], armL: [14, 8], eyes: 'squint', mouth: 'flat', lookY: 10}, hold: <Chalk rotate={-40} />, props: <ChalkLine x={X} y={FLOOR + 30} drawn={l / 0.75} />, replace: true}
-    : {props: <ChalkLine x={X} y={FLOOR + 30} />, replace: true}),
+  // the line is drawn; he stands behind it, hand up — NO — and drops the chalk (it bounces once)
+  25: (l) => ({pose: l < 0.9 ? {...POSE.stopHand, view: 1, eyes: 'angry', mouth: 'flat'} : undefined, hold: l < 0.9 ? <Chalk rotate={-40} /> : null, props: <><ChalkLine x={X} y={FLOOR + 30} />{l >= 0.9 && <Chalk x={X + 150} y={FLOOR - 330 + drop(l, 0.9, 330)} rotate={-40 + Math.min(130, (l - 0.9) * 500)} />}</>, replace: true}),
+  // impulses don't decide: studying, and he doesn't look up when she walks past
+  29: (l) => ({pose: {...POSE.holdOut, armR: [70, -20], eyes: 'squint', mouth: 'flat', lookX: 10, lookY: 8, headTilt: -4}, hold: <Notebook y={-40} rotate={-8} lines={3} />, replace: true}),
   // routine: ticks the checklist with a marker, one tap per tick
   26: (l) => {
     const n = Math.min(3, beat(l, 0.3, 0.15));
@@ -199,7 +234,7 @@ export const K01_PLAN: Shot[] = [
   {section: 'STEP 3 — CONTROL YOUR MIND', line: 'Third, stop entertaining every thought that enters your head.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.06, X, 1060), konka: {pose: 78, x: CARD_X}, talk: true, card: [3, 'CONTROL', 'YOUR MIND'], action: 'Chapter card. Konka, finger up, arms crossed.'},
   {section: 'STEP 3 — CONTROL YOUR MIND', line: "Just because your brain suggests something doesn't mean you have to follow through.", size: 'MS', move: 'static', from: MS(), konka: {pose: 54, x: 460}, talk: true, props: (l) => (l > 0.4 ? <Thought x={600} y={1010} text="?!" /> : null), action: 'A thought bubble pops up by his head; he holds up a flat hand to it: no.'},
   {section: 'STEP 3 — CONTROL YOUR MIND', line: 'Your brain also tells you to eat an entire pizza at midnight.', size: 'FULL', move: 'static', from: FULL(), night: true, konka: {pose: 27, x: 470}, props: () => <Pizza x={780} y={FLOOR} />, action: 'Night (the backdrop goes dark): Konka on the floor with an entire pizza, delighted.'},
-  {section: 'STEP 3 — CONTROL YOUR MIND', line: "Doesn't mean it's a genius.", size: 'ECU', move: 'snap-zoom', from: STAR === 'ebo' ? Z(2.3, X, 1170) : CU(), to: STAR === 'ebo' ? Z(3.3, X + 40, 1150) : ECU(), night: true, konka: {pose: 8}, action: 'Mid-bite freeze, guilty side-eye to the lens.'},
+  {section: 'STEP 3 — CONTROL YOUR MIND', line: "Doesn't mean it's a genius.", size: 'ECU', move: 'snap-zoom', from: CU(), to: ECU(), night: true, konka: {pose: 8}, action: 'Mid-bite freeze, guilty side-eye to the lens.'},
   // ═════ STEP 4 ═════
   {section: 'STEP 4 — AVOID YOUR TRIGGERS', line: 'Fourth, stop feeding the temptation.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.06, X, 1060), konka: {pose: 39, x: CARD_X}, talk: true, card: [4, 'AVOID YOUR', 'TRIGGERS'], action: 'Chapter card. Konka explaining.'},
   {section: 'STEP 4 — AVOID YOUR TRIGGERS', line: 'You know that account you keep checking?', size: 'INSERT', move: 'static', from: Z(1, 540, 960), front: (_l, f) => <PhoneInsert x={540} y={980} screen="profile" t={f} skin={STAR === 'ebo' ? SKIN : KONKA_SKIN} />, action: 'Insert (its own drawing): big hand, phone tilted, an account page (no photos, just tiles). Thumb hovers.'},
@@ -237,6 +272,8 @@ const IDEAS = [
   '#5 Build discipline', 'Start small', 'Set boundaries', 'Keep a routine', 'Attraction is normal', 'Not a robot',
   "Impulses don't decide", 'Control your attention…', '…or something else will.',
 ];
+/** Lines whose camera move the script calls for (the move is the joke). */
+const CAMERA_CALLED = ["You can't complain about being distracted"];
 K01_PLAN.forEach((sh, i) => {
   sh.idea = IDEAS[i];
   if (sh.card) {
@@ -250,6 +287,13 @@ K01_PLAN.forEach((sh, i) => {
     sh.from = BUST();
     sh.to = sh.move === 'push-in' ? Z(2.2, X, 900) : undefined;
     sh.size = 'BUST';
+  }
+  // the camera holds still unless the script calls for a move (the user's note): only the
+  // pull-out that reveals the phones all around him stays. A snap-zoom keeps its punch framing.
+  if (sh.move !== 'static' && !CAMERA_CALLED.some((c) => sh.line.startsWith(c))) {
+    if (sh.move === 'snap-zoom' && sh.to) sh.from = sh.to;
+    sh.to = undefined;
+    sh.move = 'static';
   }
 });
 const stepOf = (sec: string) => (sec.startsWith('STEP ') ? +sec[5] : sec === 'THE ENDING' ? 6 : 0);
@@ -394,12 +438,12 @@ export const K01Frame: React.FC<{f: number}> = ({f}) => {
               {k && STAR === 'ebo' && (
                 <RigCharacter
                   who="ebo"
-                  x={k.x ?? X}
-                  y={FLOOR + (k.dy?.(local) ?? 0) - (Math.abs(EBO[pose].tilt) > 45 ? LIE_Y * EBO_SCALE : 0)}
+                  x={(k.x ?? X) + (EBO_ACT[i]?.(local, f).dx ?? 0)}
+                  y={FLOOR + (STAR === 'ebo' && EBO_ACT[i] ? 0 : k.dy?.(local) ?? 0) - (EBO[pose].tilt < -45 ? LIE_Y * EBO_SCALE : 0)}
                   scale={EBO_SCALE}
                   facing={k.facing ?? 1}
                   t={f}
-                  pose={EBO_ACT[i]?.(local, f).pose ?? EBO[pose]}
+                  pose={gentle(EBO_ACT[i]?.(local, f).pose ?? EBO[pose])}
                   mouthFrame={s.talk ? lipFrame(ENV, WORDS, f) : undefined}
                   noBlink={EBO[pose].eyes === 'closed' || EBO[pose].eyes === 'squeeze'}
                 >
