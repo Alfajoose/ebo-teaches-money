@@ -13,7 +13,7 @@ import {BigPhone, PhoneInsert} from '../components/StayBrokeProps';
 import {Laptop} from '../components/StayPoorProps';
 import {Dumbbell, Birdhouse, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, Hammer, Slice, Ball, Chalk, Marker, KONKA_SKIN} from '../components/KonkaProps';
 import {Sticky} from '../components/StayBrokeProps';
-import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption} from './kit';
+import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption, G, drop, beat} from './kit';
 import {C, FONT} from '../theme';
 import {Slam, Still, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
@@ -125,18 +125,6 @@ const EBO: Record<number, Pose> = {
  * Hand-space units are world px / EBO_SCALE (what he holds is drawn in his hand's space).
  */
 type Act = {pose?: Pose; hold?: React.ReactNode; props?: React.ReactNode; replace?: boolean};
-const G = 2600; // gravity, px/s²
-/** A drop from rest at t0, falling `dist`, then one small bounce, then still. Returns the offset. */
-const drop = (local: number, t0: number, dist: number) => {
-  if (local < t0) return 0;
-  const tHit = Math.sqrt((2 * dist) / G);
-  const t = local - t0;
-  if (t < tHit) return 0.5 * G * t * t;
-  const u = (t - tHit) / 0.22;
-  return u < 1 ? dist - 34 * 4 * u * (1 - u) : dist;
-};
-/** Which beat of a repeating action we're on (period in seconds, starting at t0). */
-const beat = (local: number, period: number, t0 = 0) => Math.max(0, Math.floor((local - t0) / period));
 const EBO_ACT: Record<number, (local: number, f: number) => Act> = {
   // walk-by: his to-do list in hand… slips out as he drifts after her, hits the floor, bounces
   1: (l) => ({hold: <Todo y={drop(l, 3.6, 190) / 1} rotate={l < 3.6 ? -8 : Math.min(80, (l - 3.6) * 260)} />}),

@@ -13,6 +13,7 @@ import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
 import {SEAT_Y} from './ep03plan';
 import {EP04_PLAN, ep04Set, ep04Times, Ep04Set} from './ep04plan';
+import {EP04_ACTS} from './ep04acts';
 import wordsJson from './data/ep04-words.json';
 import envJson from './data/ep04-env.json';
 
@@ -172,17 +173,22 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
   const {start, length} = TIMES[i];
   const local = t - start;
   const host = s.talk || HOST_SETS.includes(s.set);
+  const c0 = s.cast[0];
+  const p00 = c0 && (c0.then && local >= c0.then.at ? c0.then.pose : c0.pose);
+  const act = p00 ? EP04_ACTS[s.line]?.(local, f, p00) : undefined; // Ebo handling the props (ep04acts.tsx)
   return (
     <StageSizeContext.Provider value={{w: EP04_W, h: EP04_H}}>
       <NoScaleContext.Provider value>
         <HandDrawnContext.Provider value={handDrawn}>
           <AbsoluteFill style={{background: '#000'}}>
             <VStage framing={shotCamera(t, start, length, s)} bg="#D2C4EE" blurBg={ep04Set(s.set)} overlay={<Overlay text={s.text} t={t} start={start} />}>
-              {live(s.props, f, local)}
+              {!act?.replace && live(s.props, f, local)}
               {s.cast.map((c, k) => {
+                const a = k === 0 ? act : undefined;
                 const walking = c.cycle !== undefined;
-                const x = walking ? c.x + local * cycleSpeed('ebo', c.cycle!) * (c.facing ?? 1) : c.x;
-                const p0 = c.then && local >= c.then.at ? c.then.pose : c.pose; // a pose change on a beat (slam, shove)
+                const cx = a?.x ?? c.x;
+                const x = walking ? cx + local * cycleSpeed('ebo', c.cycle!) * (c.facing ?? 1) : cx;
+                const p0 = a?.pose ?? (c.then && local >= c.then.at ? c.then.pose : c.pose); // a pose change on a beat (slam, shove)
                 const pose: Pose = host ? {...p0, headTilt: p0.headTilt + lipHeadNod(ENV, f)} : p0;
                 return (
                   <RigCharacter
@@ -197,10 +203,11 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
                     mouthFrame={host ? lipFrame(ENV, WORDS, f) : undefined}
                     noBlink={c.pose.eyes === 'closed'}
                   >
-                    {grip(live(c.hold, f, local))}
+                    {grip(live(a && 'hold' in a ? a.hold : c.hold, f, local))}
                   </RigCharacter>
                 );
               })}
+              {act?.props}
               {live(s.fore, f, local)}
             </VStage>
             <TopCaption chunks={CHUNKS} tSec={t} />

@@ -352,3 +352,17 @@ export const RedBurst: React.FC<{frame: number}> = ({frame}) => (
     })}
   </g>
 );
+
+/** Gravity for falling props (px/s²): house rule 10, tangible props. */
+export const G = 2600;
+/** A drop from rest at t0, falling `dist`, then one small bounce, then still. Returns the offset. */
+export const drop = (local: number, t0: number, dist: number) => {
+  if (local < t0) return 0;
+  const tHit = Math.sqrt((2 * dist) / G);
+  const t = local - t0;
+  if (t < tHit) return 0.5 * G * t * t;
+  const u = (t - tHit) / 0.22;
+  return u < 1 ? dist - 34 * 4 * u * (1 - u) : dist;
+};
+/** Which beat of a repeating action we're on (period in seconds, starting at t0). */
+export const beat = (local: number, period: number, t0 = 0) => Math.max(0, Math.floor((local - t0) / period));

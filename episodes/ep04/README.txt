@@ -56,3 +56,22 @@ NOTES
 FACTS USED
   - US adults watch about 2.8 hours of TV a day (BLS American Time Use Survey).
   - Big US jackpot odds are about 1 in 292 million (Powerball).
+
+PROP PASS (Ebo handles the props, and they feel tangible)
+  Defined per shot in src/series/ep04acts.tsx. Things fall with gravity and bounce once,
+  and get flicked, poked, slapped, shoved or flipped:
+  - "You don't need experience": the blank CV is flicked over his shoulder.
+  - Bedroom "Television." / "And we certainly can't have that": the remote clicks.
+  - Breakfast: bowl in hand, bobbing on each spoonful; it stays in hand on the whip to the TV.
+  - "Drawing?": he drops the brush on the shrug; it hits the floor and bounces.
+  - "Writing?": one poke and the notebook tips over flat on the desk.
+  - "Got an idea?": the sticky is slapped on the wall and settles.
+    "Forget it.": it peels off, falls and bounces.
+  - "next Monday": he reaches over and flips the pad to the next week.
+  - "What if they reject you?": the letter slips out of his fingers on the flinch.
+  - Comfort zone: munching from the chip bag.
+  - "Don't make a plan": the planner is shoved and slides to a stop.
+  - Typing shots: his hands alternate on the keys.
+  - "Pick one hobby": brush strokes, and the canvas fills stroke by stroke.
+  In the .fla, held props are keyed in his hand and falling props on the props layer;
+  each frame's position is a keyframe (no tweens).
