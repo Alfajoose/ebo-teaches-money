@@ -16,8 +16,10 @@ import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopC
 import {C, FONT} from '../theme';
 import {Slam, Still, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
-import wordsJson from './data/konka01-words.json';
-import envJson from './data/konka01-env.json';
+import danWords from './data/konka01-words-dan.json';
+import danEnv from './data/konka01-env-dan.json';
+import jimmyWords from './data/konka01-words-jimmy.json';
+import jimmyEnv from './data/konka01-env-jimmy.json';
 
 /**
  * KONKA SHORT 01 — "Can't control your lust?" (YouTube Short, 1080×1920).
@@ -30,8 +32,13 @@ import envJson from './data/konka01-env.json';
 
 export const K01_W = 1080;
 export const K01_H = 1920;
-const WORDS = wordsJson as Word[];
-const ENV = (envJson as {env: number[]}).env;
+/** Who stars: Ebo replaced Konka in this Short (Konka's version is still here: STAR = 'konka'). */
+export type Star = 'ebo' | 'konka';
+export const STAR = 'ebo' as Star;
+/** Each star has his own voice: Ebo is Dan, Konka is Jimmy (ElevenLabs). */
+const VOICE = STAR === 'ebo' ? {words: danWords, env: danEnv, audio: 'konka01/voice-dan.mp3'} : {words: jimmyWords, env: jimmyEnv, audio: 'konka01/voice-jimmy.mp3'};
+const WORDS = VOICE.words as Word[];
+const ENV = (VOICE.env as {env: number[]}).env;
 const CHUNKS = chunkWords(WORDS, 4, 22);
 
 // world: feet on y = FLOOR; Konka is ~860 px tall
@@ -67,9 +74,6 @@ type Shot = {
 
 const step = (local: number, at: number[]) => at.filter((a) => local >= a).length;
 
-/** Who stars: Ebo replaced Konka in this Short (Konka's version is still here: STAR = 'konka'). */
-export type Star = 'ebo' | 'konka';
-export const STAR = 'ebo' as Star;
 const EBO_SCALE = 1.75;
 const CARD_X = STAR === 'ebo' ? 700 : 620; // on chapter cards, clear of the title // Ebo at Konka's height in this Short
 const FLOOR_SIT = (x: Partial<Pose> = {}): Pose => ({...POSE.sit, legL: [88, 0], legR: [82, 0], lift: 150, ...x});
@@ -356,7 +360,7 @@ export const KonkaShort01: React.FC<{layer?: LayerMode}> = ({layer = 'full'}) =>
   return (
     <LayerModeContext.Provider value={layer}>
       <K01Frame f={f} />
-      {layer === 'full' && <Html5Audio src={staticFile('konka01/voice.mp3')} />}
+      {layer === 'full' && <Html5Audio src={staticFile(VOICE.audio)} />}
     </LayerModeContext.Provider>
   );
 };

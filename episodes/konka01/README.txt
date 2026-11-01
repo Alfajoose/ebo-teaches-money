@@ -1,6 +1,7 @@
 SHORT 01 — "Can't control your lust?" (Adobe Animate files)
 
-EBO VERSION (current): Short01_Ebo.fla / short01-ebo.mp4 — Ebo plays the part, in the tracker
+EBO VERSION (current): Short01_Ebo.fla / short01-ebo.mp4 — Ebo plays the part (voice: Dan,
+Short01_voice_dan.mp3; per-scene clips in voice_by_scene_dan/), in the tracker
 style (storyboard-tracker.png): five step badges at the top light up one by one, one short idea
 line per shot instead of word-by-word captions, chest-up framing when he talks to us. In the
 Animate file the badges and idea lines are on the Graphics layer as editable symbols. Each of Konka's
