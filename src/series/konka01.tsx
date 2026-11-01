@@ -460,6 +460,8 @@ export const KonkaShort01: React.FC<{layer?: LayerMode}> = ({layer = 'full'}) =>
     <LayerModeContext.Provider value={layer}>
       <K01Frame f={f} />
       {layer === 'full' && <Html5Audio src={staticFile(VOICE.audio)} />}
+      {/* sound effects (src/series/sfxCues.ts, mixed by scripts/sfx/mix.py) */}
+      {layer === 'full' && STAR === 'ebo' && <Html5Audio src={staticFile('konka01/sfx-ebo.mp3')} />}
     </LayerModeContext.Provider>
   );
 };

@@ -1,6 +1,6 @@
 """Build an Adobe Animate .fla for an Ebo Teaches Money episode.
 
-usage: python3 -I build_episode_fla.py CAPTURE.json BG_DIR CAST_SRC_DIR OUT.fla WORK_DIR [SVG_DIR] [VOICE.mp3]
+usage: python3 -I build_episode_fla.py CAPTURE.json BG_DIR CAST_SRC_DIR OUT.fla WORK_DIR [SVG_DIR] [VOICE.mp3] [SFX.mp3]
 
 VOICE.mp3, if given, is embedded: a "Voice" layer plays it (Sync: Stream) from frame 1; with
 scenes, each scene gets its own clip of it, starting on that scene's frame 1.
@@ -311,10 +311,10 @@ def embed_sound(work, src, start, length, name):
         'href': href, 'soundDataHRef': dat_name, 'format': '44kHz 16bit Mono', 'sampleCount': str(samples),
         'exportFormat': '1', 'exportBits': '7', 'dataLength': str(len(data)), 'exportNative': 'true', 'cachedSampleCount': str(cached)})
 
-def add_sound_layer(tl, sound_name, length):
-    """A "Voice" layer on top of the timeline, streaming `sound_name` from frame 1."""
+def add_sound_layer(tl, sound_name, length, layer='Voice', color='#4FFF4F'):
+    """A sound layer ("Voice", "SFX") on top of the timeline, streaming `sound_name` from frame 1."""
     layers = tl.find(N('layers'))
-    L = ET.Element(N('DOMLayer'), {'name': 'Voice', 'color': '#4FFF4F', 'autoNamed': 'false'})
+    L = ET.Element(N('DOMLayer'), {'name': layer, 'color': color, 'autoNamed': 'false'})
     fr = ET.SubElement(ET.SubElement(L, N('frames')), N('DOMFrame'), {'index': '0', 'duration': str(length), 'keyMode': '9728', 'soundName': sound_name, 'soundSync': 'stream'})
     env = ET.SubElement(fr, N('SoundEnvelope'))
     ET.SubElement(env, N('SoundEnvelopePoint'), {'level0': '32768', 'level1': '32768'})
@@ -685,7 +685,7 @@ def graphic_symbol(lib, name, elements):
 
 # ───────────────────────── main ─────────────────────────
 
-def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None):
+def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None, sfx=None):
     cap = json.load(open(capture_path))
     total, W, H, fps = cap['duration'], cap['width'], cap['height'], cap['fps']
     frames = cap['frames']
@@ -929,6 +929,14 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
             med.append(item)
             add_sound_layer(t, name, b - a)
         print(f'voice: {voice} embedded ({len(parts)} clip{"s" if len(parts) > 1 else ""}, Sync: Stream)')
+    if sfx:
+        # the sound-effects track, cut per scene like the voice, on its own layer
+        ET.SubElement(fol, N('DOMFolderItem'), {'name': 'SFX', 'itemID': new_id()})
+        for k, (t, a, b) in enumerate(parts):
+            name = f"SFX/{k + 1:02d} {t.get('name').split(' ', 1)[-1] if scenes else 'sfx'}.mp3"
+            med.append(embed_sound(work, sfx, a / fps, (b - a) / fps, name))
+            add_sound_layer(t, name, b - a, 'SFX', '#FF9933')
+        print(f'sfx: {sfx} embedded ({len(parts)} clip{"s" if len(parts) > 1 else ""}, Sync: Stream)')
     for t, _, _ in parts:
         tls.append(t)
     ET.ElementTree(doc).write(work / 'DOMDocument.xml', encoding='utf-8', xml_declaration=False)
@@ -958,4 +966,4 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
     print(f'wrote {out_fla} ({os.path.getsize(out_fla) / 1e6:.1f} MB)')
 
 if __name__ == '__main__':
-    main(*[a if a != '-' else None for a in sys.argv[1:8]])
+    main(*[a if a != '-' else None for a in sys.argv[1:9]])

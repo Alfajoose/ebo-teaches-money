@@ -230,6 +230,8 @@ export const EboEp04: React.FC<{layer?: LayerMode; handDrawn?: boolean}> = ({lay
     <LayerModeContext.Provider value={layer}>
       <Ep04Frame f={f} handDrawn={handDrawn} />
       {layer === 'full' && <Html5Audio src={staticFile('ebo-ep04/voice.mp3')} />}
+      {/* sound effects (src/series/sfxCues.ts, mixed by scripts/sfx/mix.py) */}
+      {layer === 'full' && <Html5Audio src={staticFile('ebo-ep04/sfx.mp3')} />}
     </LayerModeContext.Provider>
   );
 };
