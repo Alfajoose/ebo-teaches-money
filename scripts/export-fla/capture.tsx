@@ -9,6 +9,7 @@ import {Ep01Frame, EP01_DURATION, EP01_SHOT_TIMES, ep01ToSource, shotIndexAt as 
 import {Ep02Frame, EP02_DURATION, EP02_SHOT_TIMES, ep02ToSource, shotIndexAt as shot02} from '../../src/series/ep02';
 import {Ep03Frame, EP03_DURATION, EP03_SHOT_TIMES, EP03_W, EP03_H, shotIndexAt as shot03} from '../../src/series/ep03';
 import {Ep04Frame, EP04_DURATION, EP04_SHOT_TIMES, EP04_W, EP04_H, shotIndexAt as shot04} from '../../src/series/ep04';
+import {EP04_SECTIONS} from '../../src/series/ep04plan';
 import {K01Frame, K01_DURATION, K01_SHOT_TIMES, K01_W, K01_H, k01ShotIndexAt, K01_PLAN} from '../../src/series/konka01';
 import {Capture, CaptureContext} from '../../src/series/exportCtx';
 
@@ -16,7 +17,7 @@ const EPISODES = {
   ep01: {name: 'Ep01', Frame: Ep01Frame, duration: EP01_DURATION, shotTimes: EP01_SHOT_TIMES, shotIndexAt: shot01, toSource: ep01ToSource, width: 1080, height: 1920},
   ep02: {name: 'Ep02', Frame: Ep02Frame, duration: EP02_DURATION, shotTimes: EP02_SHOT_TIMES, shotIndexAt: shot02, toSource: ep02ToSource, width: 1080, height: 1920},
   ep03: {name: 'Ep03', Frame: Ep03Frame, duration: EP03_DURATION, shotTimes: EP03_SHOT_TIMES, shotIndexAt: shot03, toSource: (f: number) => f, width: EP03_W, height: EP03_H},
-  ep04: {name: 'Ep04', Frame: Ep04Frame, duration: EP04_DURATION, shotTimes: EP04_SHOT_TIMES, shotIndexAt: shot04, toSource: (f: number) => f, width: EP04_W, height: EP04_H},
+  ep04: {name: 'Ep04', Frame: Ep04Frame, duration: EP04_DURATION, shotTimes: EP04_SHOT_TIMES, shotIndexAt: shot04, toSource: (f: number) => f, width: EP04_W, height: EP04_H, sections: EP04_SECTIONS},
   konka01: {name: 'Konka Short01', Frame: K01Frame, duration: K01_DURATION, shotTimes: K01_SHOT_TIMES, shotIndexAt: k01ShotIndexAt, toSource: (f: number) => f, width: K01_W, height: K01_H, sections: K01_PLAN.map((p) => p.section)},
 };
 
@@ -37,7 +38,8 @@ fs.mkdirSync(out.replace(/\/[^/]+$/, ''), {recursive: true});
 // Animate scenes: one per section (where the plan names its sections), starting on that section's first shot
 const sections = (ep as {sections?: string[]}).sections;
 const scenes = sections
-  ? sections.flatMap((name, i) => (i === 0 || name !== sections[i - 1] ? [{name: name.replace(/^STEP (\d) — /, '').replace(/^THE /, '').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()), start: Math.ceil(ep.shotTimes[i] * 30 - 1e-6)}] : []))
+  ? sections.flatMap((name, i) => (i === 0 || name !== sections[i - 1] ? [{name: name !== name.toUpperCase() ? name : name.replace(/^STEP (\d) — /, '').replace(/^THE /, '').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()), start: Math.ceil(ep.shotTimes[i] * 30 - 1e-6)}] : []))
   : undefined;
+if (scenes) scenes[0].start = 0; // the first scene always starts the file
 fs.writeFileSync(out, JSON.stringify({episode: ep.name, fps: 30, width: ep.width, height: ep.height, duration: ep.duration, shotTimes: ep.shotTimes, scenes, frames}));
 console.log(`captured ${ep.name}: ${frames.length} frames → ${out}`);

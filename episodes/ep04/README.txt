@@ -10,7 +10,13 @@ the camera side; the reverse angle over the couch back shows the TV. Animated st
 the approved storyboard (storyboard/, shotlist.md): 114 shots, each starting on the first
 word of its line.
 
-LAYERS (top to bottom)
+SCENES
+  The file is split into 8 Animate scenes, one per section (Window > Scene to switch; each starts
+  at frame 1): 1 Introduction · 2 Watch TV All Day · 3 No Hobbies · 4 No Passion · 5 Comfort Zone ·
+  6 Wait For Magic · 7 Blame Everyone · 8 The Ending. Played in order they make the whole episode.
+  Ebo's animated symbol is shared by all scenes; each scene's instance starts on the right frame.
+
+LAYERS in every scene (top to bottom)
   Captions    - editable text in caption pills at the bottom of the frame (Library > Captions)
   Graphics    - the title card, chapter cards, the "2017" stamp and the end card
                 (Library > Graphics)
@@ -30,11 +36,11 @@ LAYERS (top to bottom)
                 size, so pans, push-ins and whip-pans are keyframes you can retime. Each set
                 is also in backgrounds/ as an .svg file.
 
-ADD THE VOICE (1 minute)
-  1. File > Import > Import to Library... > choose Ebo_Ep04_voice.mp3
-  2. Insert a new layer named "Voice", select frame 1
-  3. In Properties > Sound, pick Ebo_Ep04_voice.mp3 and set Sync to "Stream"
-  The animation is already timed to this file from frame 1.
+ADD THE VOICE
+  The voice is cut per scene in voice_by_scene/ (01 Introduction.mp3 … 08 The Ending.mp3). In each
+  scene: File > Import > Import to Library... > that scene's clip, then a "Voice" layer with the
+  sound on frame 1, Sync: Stream. Each clip starts exactly on its scene's frame 1.
+  (The full track is Ebo_Ep04_voice.mp3.)
 
 NOTES
   - Text uses Arial Black / Arial Bold; outlines are Glow filters on the text.

@@ -218,6 +218,21 @@ export const EP04_PLAN: S[] = [
   shot({line: 'Subscribe for more.', size: 'MS', move: 'push-in', from: MS(E - 380), to: Z(1.8, E - 230, 580), set: 'chapter', cast: ebo(E, pose('point', 'happy', {mouth: 'grin'})), text: 'SUBSCRIBE button · EBO TEACHES MONEY · EP 4', action: 'End card.', out: 'end'}),
 ];
 
+/** The episode's sections (one Animate scene each): the intro, a section per chapter card, and the ending. */
+const CHAPTER_NAMES: Record<string, string> = {
+  'WATCH TV ALL DAY': 'Watch TV All Day', 'NO HOBBIES': 'No Hobbies', 'NO PASSION': 'No Passion',
+  'COMFORT ZONE': 'Comfort Zone', 'WAIT FOR MAGIC': 'Wait For Magic', 'BLAME EVERYONE': 'Blame Everyone',
+};
+export const EP04_SECTIONS: string[] = (() => {
+  let cur = 'Introduction';
+  return EP04_PLAN.map((sh) => {
+    const ch = sh.text?.startsWith('HOW TO STAY BROKE / ') ? sh.text.split(' / ')[1] : null;
+    if (ch) cur = CHAPTER_NAMES[ch] ?? ch;
+    if (sh.line.startsWith('So there you have it')) cur = 'The Ending';
+    return cur;
+  });
+})();
+
 export const ep04Set = (key: Ep04Set): React.ReactNode => {
   switch (key) {
     case 'backdrop':
