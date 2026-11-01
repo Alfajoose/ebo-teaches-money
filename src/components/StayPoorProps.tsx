@@ -1,6 +1,7 @@
 import React from 'react';
 import {Prop} from '../prop';
 import {C, FONT} from '../theme';
+import {Fingers} from './grip';
 
 /**
  * Props for Episode 3 (How to Stay Poor). Each is a prop (see prop.tsx): hand-drawn in the
@@ -25,7 +26,7 @@ const PopcornDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x 
 );
 
 /** TV remote (held). Origin at its centre. */
-const RemoteDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+const RemoteDrawing: React.FC<{x?: number; y?: number; rotate?: number; grip?: boolean}> = ({x = 0, y = 0, rotate = 0, grip = false}) => (
   <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
     <rect x={-16} y={-50} width={32} height={100} rx={10} fill="#3A3A44" {...S} strokeWidth={5} />
     <circle cx={0} cy={-30} r={6} fill={C.red} />
@@ -35,11 +36,25 @@ const RemoteDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x =
         <circle cx={6} cy={yy} r={4} fill="#9A9AA6" />
       </g>
     ))}
+    {grip && <Fingers x={-16} y={8} side={-1} count={2} />}
   </g>
 );
 
 /** Open laptop on a table top. */
-const LaptopDrawing: React.FC<{x?: number; y?: number; screen?: 'off' | 'code' | 'shop'}> = ({x = 0, y = 0, screen = 'code'}) => (
+/**
+ * `view="side"`: seen from the side, screen facing left (toward whoever stands at the left of the
+ * desk), so the user sees it and we don't (house rule 10). `closed` slams the lid shut (rotation).
+ */
+const LaptopDrawing: React.FC<{x?: number; y?: number; screen?: 'off' | 'code' | 'shop'; view?: 'front' | 'side'; closed?: boolean; slamAt?: number; pushAt?: number}> = ({x = 0, y = 0, screen = 'code', view = 'front', closed = false}) =>
+  view === 'side' ? (
+    <g transform={`translate(${x} ${y})`}>
+      <rect x={-130} y={-16} width={260} height={16} rx={5} fill="#C9CDD6" {...S} />
+      <g transform={`translate(118 -12) rotate(${closed ? -90 : 16})`}>
+        <rect x={-6} y={-176} width={14} height={176} rx={5} fill="#2E3440" {...S} />
+        {!closed && screen !== 'off' && <rect x={-12} y={-166} width={6} height={150} rx={3} fill="#9FD3F2" />}
+      </g>
+    </g>
+  ) : (
   <g transform={`translate(${x} ${y})`}>
     <path d="M -110 -150 L 110 -150 L 110 -14 L -110 -14 Z" fill="#2E3440" {...S} />
     <rect x={-96} y={-138} width={192} height={112} rx={4} fill={screen === 'off' ? '#4B566E' : '#F6F0E4'} />
@@ -54,7 +69,7 @@ const LaptopDrawing: React.FC<{x?: number; y?: number; screen?: 'off' | 'code' |
     )}
     <path d="M -130 -14 L 130 -14 L 140 0 L -140 0 Z" fill="#C9CDD6" {...S} />
   </g>
-);
+  );
 
 /** Easel with a canvas; `done` 0–1 is how much of the portrait is painted (in steps). */
 const EaselDrawing: React.FC<{x?: number; y?: number; done?: number; framed?: boolean}> = ({x = 0, y = 0, done = 1, framed = false}) => {

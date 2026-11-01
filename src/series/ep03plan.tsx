@@ -26,7 +26,7 @@ const at = makeAt(wordsJson as Word[]);
 export type SetKey = 'chapter' | 'green' | 'studio' | 'living' | 'livingOff' | 'christyRoom' | 'micaRoom' | 'pinkRoom' | 'magicRoom' | 'bedroom' | 'office' | 'sneakers';
 export type Move = 'static' | 'push-in' | 'pull-out' | 'pan' | 'whip-pan' | 'snap-zoom' | 'follow' | 'drift';
 
-export type Placed = {who: CastId | 'ebo'; x: number; y?: number; seat?: boolean; pose: Pose; facing?: 1 | -1; hold?: React.ReactNode; cycle?: CycleName};
+export type Placed = {who: CastId | 'ebo'; x: number; y?: number; seat?: boolean; pose: Pose; facing?: 1 | -1; hold?: React.ReactNode; cycle?: CycleName; then?: {at: number; pose: Pose}};
 
 export type PlanShot<K extends string = SetKey> = {
   /** where the shot starts: a phrase in the voiceover (and which occurrence) */

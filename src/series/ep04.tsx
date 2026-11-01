@@ -4,7 +4,8 @@ import {NoScaleContext} from '../noScale';
 import {RigCharacter} from '../cast/RigCharacter';
 import {cycleSpeed} from '../cast/cycles';
 import {Pose} from '../components/Character';
-import {BigPhone, Diploma} from '../components/StayBrokeProps';
+import {BigPhone, Diploma, PhoneInsert, Letter, Chips} from '../components/StayBrokeProps';
+import {Laptop, Remote} from '../components/StayPoorProps';
 import {FLOOR_Y} from '../backgrounds/Backgrounds';
 import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, lipHeadNod, chunkWords, TopCaption, BigText} from './kit';
 import {C, FONT} from '../theme';
@@ -68,11 +69,21 @@ const planCamera = (t: number, start: number, length: number, s: (typeof EP04_PL
 const live = (node: React.ReactNode, f: number, local: number): React.ReactNode => {
   if (!React.isValidElement(node)) return node;
   const el = node as React.ReactElement<Record<string, unknown>>;
-  if (el.type === BigPhone) return React.cloneElement(el, {t: f});
+  if (el.type === BigPhone || el.type === PhoneInsert) return React.cloneElement(el, {t: f});
+  if (el.type === Laptop) {
+    // acted on in the shot: slammed shut / shoved along the desk at its beat (snaps in 3 frames)
+    const {slamAt, pushAt, x = 0} = el.props as {slamAt?: number; pushAt?: number; x?: number};
+    const k = pushAt === undefined ? 0 : Math.min(1, Math.max(0, (local - pushAt) * VFPS / 3));
+    return React.cloneElement(el, {closed: slamAt !== undefined && local >= slamAt, x: x + 260 * k * (2 - k) * (k < 1 ? 1.06 : 1)});
+  }
   if (el.type === Diploma) return React.cloneElement(el, {stamped: local > 0.45});
   if (el.type === React.Fragment) return <>{React.Children.map(el.props.children as React.ReactNode, (c) => live(c, f, local))}</>;
   return el;
 };
+
+/** What's held gets the holder's hand on it (house rule 10). */
+const grip = (node: React.ReactNode): React.ReactNode =>
+  React.isValidElement(node) && [BigPhone, Letter, Chips, Remote].includes(node.type as never) ? React.cloneElement(node as React.ReactElement<Record<string, unknown>>, {grip: true}) : node;
 
 /** On-screen text from the plan: the title, the chapter cards, the "2017" stamp and the end card. */
 const Overlay: React.FC<{text?: string; t: number; start: number}> = ({text, t, start}) => {
@@ -171,7 +182,8 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
               {s.cast.map((c, k) => {
                 const walking = c.cycle !== undefined;
                 const x = walking ? c.x + local * cycleSpeed('ebo', c.cycle!) * (c.facing ?? 1) : c.x;
-                const pose: Pose = host ? {...c.pose, headTilt: c.pose.headTilt + lipHeadNod(ENV, f)} : c.pose;
+                const p0 = c.then && local >= c.then.at ? c.then.pose : c.pose; // a pose change on a beat (slam, shove)
+                const pose: Pose = host ? {...p0, headTilt: p0.headTilt + lipHeadNod(ENV, f)} : p0;
                 return (
                   <RigCharacter
                     key={k}
@@ -185,7 +197,7 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
                     mouthFrame={host ? lipFrame(ENV, WORDS, f) : undefined}
                     noBlink={c.pose.eyes === 'closed'}
                   >
-                    {live(c.hold, f, local)}
+                    {grip(live(c.hold, f, local))}
                   </RigCharacter>
                 );
               })}

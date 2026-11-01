@@ -14,13 +14,15 @@ LAYERS (top to bottom)
   Captions    - editable text in caption pills at the bottom of the frame (Library > Captions)
   Graphics    - the title card, chapter cards, the "2017" stamp and the end card
                 (Library > Graphics)
-  Props front - things Ebo holds (phone, remote, chips, letters, CV) and the couch
+  Props front - things Ebo holds (phone, remote, chips, letters, CV; each with his thumb or
+                fingers drawn over it), the big-hand phone and laptop inserts, and the couch
                 back in the reverse angle
   Ebo         - his animated rig symbol (Library > Ebo > "Ebo – Ep04"). Built on the new Ebo master:
                 his views (3/4, front, back) and in-front arm are keyed per frame, so the
                 arm layers he isn't using in a view are empty keyframes. Walking uses his
                 fast walk (Obuor's, retargeted).
-  Props       - diploma, sticky notes, Monday pad, laptop, easel, notebook, blanket fort,
+  Props       - diploma, sticky notes, Monday pad, laptop (side-on at the desk, slammed shut /
+                shoved along on its beats), easel, notebook, blanket fort,
                 suitcase: editable vector symbols (Library > Props)
   Background  - the sets only (the plain backdrop, front door, living room day/night, living room reverse angle (TV on/off), kitchen, work room day/night,
                 bedroom, office) as editable vector symbols:

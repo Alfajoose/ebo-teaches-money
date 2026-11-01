@@ -13,7 +13,7 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 5 | 0:07.8 | 1.4s | You don't need experience. | MS | static | Ebo holds up a completely blank CV. | backdrop | – | cut |
 | 6 | 0:09.3 | 1.9s | You don't even need to leave your house. | WS | pull-out | Hard cut home: Ebo already on the couch. Pull out to show the whole cosy room. | living | – | cut |
 | 7 | 0:11.2 | 1.8s | All you need is a comfortable couch, | ECU | static | Insert: the couch cushion sinking. | living | – | cut |
-| 8 | 0:13.0 | 1.0s | a smartphone, | ECU | static | Insert: the phone glowing in his hand. | living | – | cut |
+| 8 | 0:13.0 | 1.0s | a smartphone, | INSERT | static | Insert (its own drawing): a big hand holds the phone up, tilted, filling the frame; the thumb scrolls. | living | – | cut |
 | 9 | 0:14.1 | 3.7s | and an extraordinary ability to make terrible decisions. | CU | snap-zoom | Backdrop: a proud, slightly unhinged grin. Snap-zoom on it. | backdrop | – | cut |
 | 10 | 0:17.8 | 5.9s | Now, obviously, life isn't fair. Some people start with way more opportunities than others. | MS | drift | Sincere for a beat. Slow sideways drift. | backdrop | – | cut |
 | 11 | 0:23.7 | 3.3s | But if your goal is to make your situation even worse… | MS → CU | push-in | The grin creeps back. Push in. | backdrop | – | cut |
@@ -28,12 +28,12 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 20 | 0:45.8 | 0.9s | Television. | CU | static | Remote already in hand, clicks. | bedroom | – | cut |
 | 21 | 0:46.7 | 1.1s | Eating breakfast? | WS | static | Kitchen: Ebo at the breakfast table, eyes already drifting. | kitchen | – | cut |
 | 22 | 0:47.8 | 1.0s | Television. | CU | whip-pan | Whip-pan along his eyeline to the kitchen TV. | kitchen | – | cut |
-| 23 | 0:48.8 | 2.1s | Supposed to be working on something important? | WS | static | Desk, laptop open: a real deadline. Ebo looks determined… | work | – | cut |
+| 23 | 0:48.8 | 2.1s | Supposed to be working on something important? | WS | static | At the desk, typing: a real deadline. The laptop is side-on, screen toward him. Ebo looks determined… | work | – | cut |
 | 24 | 0:50.9 | 1.0s | You guessed it. | CU | static | …his eyes slide sideways. | backdrop | – | cut |
 | 25 | 0:51.9 | 1.2s | Television! | WS | whip-pan | Whip to the living room: Ebo dives onto the couch. | living | – | cut |
 | 26 | 0:53.1 | 3.6s | And if you're feeling particularly ambitious, switch to your phone. | MS | push-in | TV still on (camera side), phone comes out too: double screens. We see the back of the phone; his eyes are on it. | living | – | cut |
 | 27 | 0:56.6 | 2.4s | Because why waste eight hours watching television | ECU | static | Insert: the TV screen. | livingTV | – | cut |
-| 28 | 0:59.0 | 4.8s | when you can waste twelve hours scrolling through videos of strangers doing absolutely nothing? | ECU | static | Insert: the phone feed scrolling, held frames. | living | – | cut |
+| 28 | 0:59.0 | 4.8s | when you can waste twelve hours scrolling through videos of strangers doing absolutely nothing? | INSERT | static | Insert: the big-hand phone, the feed scrolling under his thumb. | living | – | cut |
 | 29 | 1:03.9 | 4.4s | Remember, the goal isn't to relax. Relaxing is perfectly normal. | MS | static | Finger up, making a point. | backdrop | – | cut |
 | 30 | 1:08.3 | 4.3s | The goal is to make sure entertainment becomes your entire personality. | MS → CU | push-in | Push in on "entire personality". | backdrop | – | cut |
 | 31 | 1:12.5 | 3.8s | And whatever you do… never ask yourself where all that time went. | EWS | pull-out | Night now, same couch, same pose. Slow pull-out. | livingNight | – | cut |
@@ -42,7 +42,7 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 34 | 1:20.4 | 2.3s | Especially hobbies that teach you something. | MS | static | Mock horror. | backdrop | – | cut |
 | 35 | 1:22.7 | 2.5s | Drawing? Too much effort. | WS | static | An empty easel. Ebo looks at it and shrugs. | work | – | cut |
 | 36 | 1:25.2 | 1.7s | Writing? Sounds exhausting. | MS | static | A blank notebook. Ebo slumps just looking at it. | work | – | cut |
-| 37 | 1:27.0 | 1.2s | Learning to code? | ECU | static | Insert: lines of code on the laptop. | work | – | cut |
+| 37 | 1:27.0 | 1.2s | Learning to code? | INSERT | static | Insert (its own drawing): the laptop screen big and tilted, filling the frame — lines of code. | work | – | cut |
 | 38 | 1:28.2 | 1.8s | Absolutely disgusting. | ECU | snap-zoom | Snap-zoom: full disgust face. | backdrop | – | cut |
 | 39 | 1:29.9 | 2.5s | Why would you spend your free time developing a skill | MS | static | Reasoning with us. | backdrop | – | cut |
 | 40 | 1:32.4 | 3.4s | when you could spend twelve hours watching someone else develop theirs? | MS → CU | push-in | Ebo on the couch, entranced by a painting video on his phone (we see its back). Push in on his face. | living | – | cut |
@@ -66,14 +66,14 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 58 | 2:05.2 | 4.1s | This is called strategic procrastination. Very advanced stuff. | MS → CU | push-in | Hand on chin, very pleased with himself. | backdrop | – | cut |
 | 59 | 2:09.3 | 4.8s | Eventually, you'll become so good at planning things that you'll never actually have to do anything. | WS → EWS | pull-out | Night: a wall FULL of sticky notes. Pull out to reveal it all. | workNight | – | cut |
 | 60 | 2:14.2 | 2.2s | You'll have seventeen unfinished ideas, | ECU | pan | Pan across the seventeen notes. | workNight | – | cut |
-| 61 | 2:16.4 | 1.9s | forty motivational screenshots, | ECU | static | Insert: the phone gallery, grid of quote screenshots. | workNight | – | cut |
+| 61 | 2:16.4 | 1.9s | forty motivational screenshots, | INSERT | static | Insert: the big-hand phone, a grid of quote screenshots. | workNight | – | cut |
 | 62 | 2:18.3 | 2.4s | and absolutely nothing to show for them. | WS | static | Ebo, alone at the empty desk under the wall of notes. | workNight | – | cut |
 | 63 | 2:20.7 | 4.5s | But hey… at least your phone gallery looks inspirational. | CU | push-in | He holds the gallery up proudly. Push in. | workNight | – | cut to chapter |
 | 64 | 2:25.2 | 3.0s | Stay comfortable. At all costs. | MS | push-in | Chapter card: title slams in on the left, Ebo on the right. Slow push-in. | chapter | HOW TO STAY BROKE / COMFORT ZONE | cut |
-| 65 | 2:28.2 | 2.2s | Never apply for a better opportunity. | ECU | static | Insert: a job post, thumb hovering over APPLY. | living | – | cut |
+| 65 | 2:28.2 | 2.2s | Never apply for a better opportunity. | INSERT | static | Insert: the big-hand phone, a job post; the thumb hovers over APPLY… | living | – | cut |
 | 66 | 2:30.4 | 1.5s | What if they reject you? | CU | snap-zoom | Imagined: a REJECTED letter appears in his hand. He flinches. | living | – | cut |
-| 67 | 2:31.9 | 2.2s | Never try learning something difficult. | MS | static | Desk: a hard tutorial on the laptop. | work | – | cut |
-| 68 | 2:34.1 | 1.3s | What if you fail? | ECU | snap-zoom | He slams the laptop shut. Snap-zoom. | backdrop | – | cut |
+| 67 | 2:31.9 | 2.2s | Never try learning something difficult. | MS | static | At the desk, leaning in, typing slowly at a hard tutorial. | work | – | cut |
+| 68 | 2:34.1 | 1.3s | What if you fail? | MS | static | Hand up… and he SLAMS the laptop shut (on a beat). | work | – | cut |
 | 69 | 2:35.4 | 2.7s | And definitely never ask questions. | WS | static | Office: Ebo half-raises his hand… | office | – | cut |
 | 70 | 2:38.0 | 2.1s | What if somebody thinks you're stupid? | CU | push-in | …and lowers it slowly. Push in. | backdrop | – | cut |
 | 71 | 2:40.2 | 4.8s | See, the trick is to avoid every situation where you might feel uncomfortable. | MS | drift | Explaining. | backdrop | – | cut |
@@ -85,7 +85,7 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 77 | 2:57.2 | 3.3s | Besides… your comfort zone has snacks. | ECU → EWS | pull-out | From Ebo munching, pull out: he's inside a blanket fort labelled COMFORT ZONE, piled with snacks. | living | – | cut to chapter |
 | 78 | 3:00.5 | 1.4s | Wait for a miracle. | MS | push-in | Chapter card: title slams in on the left, Ebo on the right. Slow push-in. | chapter | HOW TO STAY BROKE / WAIT FOR MAGIC | cut |
 | 79 | 3:01.9 | 1.2s | Don't make a plan. | MS | static | He closes a blank planner. | work | – | cut |
-| 80 | 3:03.2 | 1.8s | Don't build useful skills. | MS | static | Laptop pushed away. | work | – | cut |
+| 80 | 3:03.2 | 1.8s | Don't build useful skills. | MS | static | He shoves the laptop away along the desk (on a beat). | work | – | cut |
 | 81 | 3:04.9 | 1.4s | Don't take action. | MS | static | He just sits down. (three matching cuts, same framing) | work | – | cut |
 | 82 | 3:06.4 | 4.8s | Just sit there and wait for the universe to recognize your incredible potential. | EWS → MS | push-in | Ebo lies on the living-room floor, arms out, waiting. Very slow push-in. | livingNight | – | cut |
 | 83 | 3:11.1 | 2.7s | Maybe a millionaire will randomly knock on your door. | WS | static | Ebo waits by the front door, hopeful. | door | – | cut |
@@ -112,7 +112,7 @@ Sizes: EWS extreme wide · WS wide · MS medium · CU close-up · ECU extreme cl
 | 104 | 4:07.8 | 6.3s | Of course, avoiding them won't magically make you rich. But changing even one might help you move forward. | MS → CU | push-in | Sincere and warm. Slow push. | backdrop | – | cut |
 | 105 | 4:14.2 | 2.4s | Turn off the TV for one hour. | MS (reverse) | static | Recap montage (each habit reversed). Reverse angle: the TV is off, Ebo still facing it. | livingTVOff | – | cut |
 | 106 | 4:16.6 | 1.4s | Pick one hobby. | MS | static | Ebo painting. | work | – | cut |
-| 107 | 4:18.0 | 2.2s | Start the Monday project today. | MS | static | Typing on the laptop; the sticky wall is gone. | work | – | cut |
+| 107 | 4:18.0 | 2.2s | Start the Monday project today. | MS | static | Back at the laptop, typing; the sticky wall is gone. | work | – | cut |
 | 108 | 4:20.2 | 2.0s | Do one scary thing a week. | MS | static | Hand up high in the office. | office | – | cut |
 | 109 | 4:22.2 | 1.4s | Make your own luck. | MS | static | Ebo opens the front door himself and steps out. | door | – | cut |
 | 110 | 4:23.6 | 2.5s | And own what you can control. | CU | push-in | Nod to camera. | backdrop | – | cut |

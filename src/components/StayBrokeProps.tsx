@@ -1,6 +1,7 @@
 import React from 'react';
 import {Prop} from '../prop';
 import {C, FONT} from '../theme';
+import {Thumb, Fingers, SKIN} from './grip';
 
 /**
  * Props for Episode 4 (The Ultimate Guide to Staying Broke). Each is a prop (see prop.tsx):
@@ -63,12 +64,13 @@ const StickyWallDrawing: React.FC<{x?: number; y?: number; n?: number}> = ({x = 
 );
 
 /** A big phone held up to camera. Origin at its centre. Screens: scroll feed, screenshot gallery, job page. */
-const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen?: 'scroll' | 'gallery' | 'job' | 'off' | 'back'; t?: number}> = ({
+const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen?: 'scroll' | 'gallery' | 'job' | 'off' | 'back'; t?: number; grip?: boolean}> = ({
   x = 0,
   y = 0,
   rotate = 0,
   screen = 'scroll',
   t = 0,
+  grip = false,
 }) => (
   <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
     <rect x={-70} y={-130} width={140} height={260} rx={22} fill={C.ink} />
@@ -109,6 +111,44 @@ const BigPhoneDrawing: React.FC<{x?: number; y?: number; rotate?: number; screen
         </text>
       </g>
     )}
+    {grip && (screen === 'back' ? <Fingers x={-70} y={10} side={-1} /> : <Thumb x={-78} y={60} angle={-35} />)}
+  </g>
+);
+
+/**
+ * Insert (house rule 10): its own big drawing, not a zoom into his hand. A big hand holds the
+ * phone up, tilted, filling the frame; the thumb taps / scrolls (moves only). Origin at the
+ * middle of the phone; drawn to fill a 1920×1080 frame at zoom 1.
+ */
+const PhoneInsertDrawing: React.FC<{x?: number; y?: number; screen?: 'scroll' | 'gallery' | 'job'; t?: number}> = ({x = 0, y = 0, screen = 'scroll', t = 0}) => {
+  const tap = Math.floor(t / 6) % 2; // the thumb taps on twos-ish, held
+  return (
+    <g transform={`translate(${x} ${y}) rotate(-8)`}>
+      {/* palm and wrist behind the phone */}
+      <path d="M 120 520 Q 330 470 360 300 L 380 120 Q 380 60 330 60 L 250 80 L 250 700 L 60 700 Z" fill={SKIN} {...S} strokeWidth={10} />
+      <g transform="scale(3.4)">
+        <BigPhoneDrawing screen={screen} t={t} />
+      </g>
+      {/* fingers round the left edge, thumb over the right edge */}
+      {[-150, -40, 70].map((yy) => (
+        <rect key={yy} x={-282} y={yy} width={70} height={84} rx={36} fill={SKIN} {...S} strokeWidth={9} />
+      ))}
+      <g transform={`translate(${tap ? 0 : 14} ${tap ? 0 : 26})`}>
+        <path d="M 330 340 Q 300 250 200 180 Q 160 155 140 190 Q 130 220 170 250 Q 240 300 250 380 Z" fill={SKIN} {...S} strokeWidth={9} />
+      </g>
+    </g>
+  );
+};
+
+/** Insert: the laptop screen, big and tilted, filling the frame, keyboard edge at the bottom. */
+const LaptopInsertDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(-6)`}>
+    <rect x={-760} y={-470} width={1520} height={880} rx={40} fill="#2E3440" {...S} strokeWidth={12} />
+    <rect x={-700} y={-415} width={1400} height={770} rx={16} fill="#F6F0E4" />
+    {Array.from({length: 11}).map((_, i) => (
+      <rect key={i} x={-640 + (i % 3) * 70} y={-370 + i * 66} width={[620, 460, 720, 380, 540, 300, 680, 420, 560, 340, 500][i]} height={30} rx={14} fill={['#45B69C', '#4D8FD6', '#E5484D', '#8F6BD1'][i % 4]} />
+    ))}
+    <path d="M -900 410 L 900 410 L 960 560 L -960 560 Z" fill="#C9CDD6" {...S} strokeWidth={12} />
   </g>
 );
 
@@ -124,7 +164,7 @@ const CerealDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
 );
 
 /** A bag of chips (held or on the floor). */
-const ChipsDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+const ChipsDrawing: React.FC<{x?: number; y?: number; rotate?: number; grip?: boolean}> = ({x = 0, y = 0, rotate = 0, grip = false}) => (
   <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
     <path d="M -46 0 L -54 -130 L 54 -130 L 46 0 Z" fill="#E5484D" {...S} />
     <path d="M -54 -130 L -46 -144 L -30 -130 L -14 -144 L 2 -130 L 18 -144 L 34 -130 L 50 -144 L 54 -130" fill="#E5484D" {...S} strokeWidth={5} />
@@ -132,6 +172,7 @@ const ChipsDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 
     <text x={0} y={-56} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={26} fill={C.ink}>
       YUM
     </text>
+    {grip && <Thumb x={-58} y={-40} angle={-20} />}
   </g>
 );
 
@@ -167,7 +208,7 @@ const SuitcaseDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x
 );
 
 /** A rejection letter (held). Origin at its centre. */
-const LetterDrawing: React.FC<{x?: number; y?: number; rotate?: number; label?: string}> = ({x = 0, y = 0, rotate = 0, label = 'REJECTED'}) => (
+const LetterDrawing: React.FC<{x?: number; y?: number; rotate?: number; label?: string; grip?: boolean}> = ({x = 0, y = 0, rotate = 0, label = 'REJECTED', grip = false}) => (
   <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
     <rect x={-60} y={-80} width={120} height={160} fill={C.white} {...S} strokeWidth={5} />
     {[0, 1, 2, 3].map((i) => (
@@ -179,6 +220,7 @@ const LetterDrawing: React.FC<{x?: number; y?: number; rotate?: number; label?: 
         {label}
       </text>
     </g>
+    {grip && <Thumb x={-70} y={40} angle={-25} />}
   </g>
 );
 
@@ -224,6 +266,8 @@ export const Diploma = prop('Diploma', DiplomaDrawing);
 export const Sticky = prop('Sticky', StickyDrawing);
 export const StickyWall = prop('StickyWall', StickyWallDrawing);
 export const BigPhone = prop('BigPhone', BigPhoneDrawing);
+export const PhoneInsert = prop('PhoneInsert', PhoneInsertDrawing);
+export const LaptopInsert = prop('LaptopInsert', LaptopInsertDrawing);
 export const Cereal = prop('Cereal', CerealDrawing);
 export const Chips = prop('Chips', ChipsDrawing);
 export const BlanketFort = prop('BlanketFort', BlanketFortDrawing);
