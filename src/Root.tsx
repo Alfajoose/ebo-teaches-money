@@ -6,7 +6,7 @@ import {CastTest} from './cast/CastTest';
 import {FaceTest} from './cast/FaceTest';
 import {CycleTest} from './cast/CycleTest';
 import {PoseSheetOld, PoseSheetCal, PoseSheetGroup} from './cast/PoseSheetComps';
-import {EboViewsSheet, EboFacesSheet} from './cast/EboSheets';
+import {EboViewsSheet, EboFacesSheet, EboCalibSheet} from './cast/EboSheets';
 import {KonkaShort01, K01_DURATION, K01_W, K01_H} from './series/konka01';
 import {CastVideo} from './castep/CastVideo';
 import {EboEp01, EP01_DURATION} from './series/ep01';
@@ -84,6 +84,7 @@ export const RemotionRoot: React.FC = () => (
     <Composition key={g} id={`PoseSheet-${g}`} component={PoseSheetGroup} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{group: g, who: 'ebo' as const}} />
   ))}
   <Composition id="Konka-Short01" component={KonkaShort01} durationInFrames={K01_DURATION} fps={30} width={K01_W} height={K01_H} defaultProps={{layer: 'full' as const}} />
+  <Composition id="Ebo-Calib" component={EboCalibSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
   <Composition id="Ebo-Views" component={EboViewsSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
   <Composition id="Ebo-Eyes" component={EboFacesSheet} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{part: 'eyes' as const}} />
   <Composition id="Ebo-Mouths" component={EboFacesSheet} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{part: 'mouths' as const}} />

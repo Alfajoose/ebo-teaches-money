@@ -1,4 +1,11 @@
-KONKA SHORT 01 — "Can't control your lust?" (Adobe Animate file)
+SHORT 01 — "Can't control your lust?" (Adobe Animate files)
+
+EBO VERSION (current): Short01_Ebo.fla / short01-ebo.mp4 — Ebo plays the part. Each of Konka's
+poses is matched to an Ebo pose from his pose library (src/series/konka01.tsx, EBO table): floor
+sitting, the dumbbell squat, push-ups and the robot are new Ebo poses. Same voice, timing,
+scenes and props; Ebo's rig is keyed in his symbol ("Ebo – Konka Short01").
+KONKA VERSION: Konka_Short01.fla / konka-short01.mp4 (set STAR = 'konka' to rebuild it).
+The notes below describe the Konka version; the Ebo file has the same scenes, layers and voice.
 
 Stage: 1080 x 1920 (vertical YouTube Short), 30 fps, 2594 frames (1:26)
 

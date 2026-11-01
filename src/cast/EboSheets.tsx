@@ -38,3 +38,20 @@ export const EboFacesSheet: React.FC<{part: 'eyes' | 'mouths'}> = ({part}) => (
     poses={part === 'eyes' ? EYES.map((e) => P(e, {eyes: e, mouth: 'smile', view: 1})) : MOUTHS.map((m) => P(m, {mouth: m, view: 1}))}
   />
 );
+
+/** Calibration for floor sitting, squat, push-up and robot (Konka Short with Ebo). */
+export const EboCalibSheet: React.FC = () => (
+  <PoseGrid
+    who="ebo"
+    cols={6}
+    title="Ebo · floor & gym calibration"
+    poses={[
+      P('plank a', {tilt: 75, armL: [-75, 0], armR: [-75, 0]}),
+      P('plank b', {tilt: 75, armL: [-90, 0], armR: [-90, 0], lift: -20}),
+      P('plank c', {tilt: 80, armL: [-100, 0], armR: [-100, 0], legL: [0, 0], legR: [0, 0]}),
+      P('plank d', {tilt: 80, armL: [280, 0], armR: [280, 0]}),
+      P('plank e', {tilt: -80, armL: [80, 0], armR: [80, 0]}),
+      P('plank f', {tilt: 75, armL: [105, 0], armR: [105, 0]}),
+    ]}
+  />
+);
