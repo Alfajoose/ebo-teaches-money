@@ -11,7 +11,8 @@ import {cycleSpeed} from '../cast/cycles';
 import {Backdrop} from './sets';
 import {BigPhone, PhoneInsert} from '../components/StayBrokeProps';
 import {Laptop} from '../components/StayPoorProps';
-import {Dumbbell, Birdhouse, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, KONKA_SKIN} from '../components/KonkaProps';
+import {Dumbbell, Birdhouse, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, Hammer, Slice, Ball, Chalk, Marker, KONKA_SKIN} from '../components/KonkaProps';
+import {Sticky} from '../components/StayBrokeProps';
 import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption} from './kit';
 import {C, FONT} from '../theme';
 import {Slam, Still, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
@@ -115,6 +116,71 @@ const EBO: Record<number, Pose> = {
   62: {...POSE.stand, view: 1, armL: [90, 0], armR: [90, 0], eyes: 'open', mouth: 'flat'},
   72: {...POSE.hostFront, mouth: 'flat'},
   66: {...POSE.stand, eyes: 'wide', mouth: 'o', lookX: 16, lookY: 12, headTilt: -6},
+};
+
+/**
+ * Ebo handles the props (house rule 10, and the user's note: props he interacts with, that feel
+ * tangible). Per shot: his pose over time, what is in his hand (it follows his grip), and props
+ * that react: things fall with gravity and bounce once, get hit, swatted or ticked.
+ * Hand-space units are world px / EBO_SCALE (what he holds is drawn in his hand's space).
+ */
+type Act = {pose?: Pose; hold?: React.ReactNode; props?: React.ReactNode; replace?: boolean};
+const G = 2600; // gravity, px/s²
+/** A drop from rest at t0, falling `dist`, then one small bounce, then still. Returns the offset. */
+const drop = (local: number, t0: number, dist: number) => {
+  if (local < t0) return 0;
+  const tHit = Math.sqrt((2 * dist) / G);
+  const t = local - t0;
+  if (t < tHit) return 0.5 * G * t * t;
+  const u = (t - tHit) / 0.22;
+  return u < 1 ? dist - 34 * 4 * u * (1 - u) : dist;
+};
+/** Which beat of a repeating action we're on (period in seconds, starting at t0). */
+const beat = (local: number, period: number, t0 = 0) => Math.max(0, Math.floor((local - t0) / period));
+const EBO_ACT: Record<number, (local: number, f: number) => Act> = {
+  // walk-by: his to-do list in hand… slips out as he drifts after her, hits the floor, bounces
+  1: (l) => ({hold: <Todo y={drop(l, 3.6, 190) / 1} rotate={l < 3.6 ? -8 : Math.min(80, (l - 3.6) * 260)} />}),
+  // "find something you want to achieve": holds up a GOAL note to us
+  5: () => ({pose: {...POSE.showToCamera, eyes: 'wide', mouth: 'grin'}, hold: <Sticky y={-70} text="GOAL" rotate={-6} />}),
+  // bored on the floor: tosses a ball up and catches it, over and over
+  6: (l) => {
+    const t = (l % 1.0) / 1.0; // one toss a second
+    return {pose: l < 5.2 ? FLOOR_SIT({armR: [t < 0.15 ? 62 : 44, t < 0.15 ? 20 : 0], armL: [8, 4], tilt: -7, headTilt: -6, eyes: 'half', mouth: 'flat', lookY: -14}) : undefined, hold: l < 5.2 ? <Ball y={-20 - 2200 * t * (1 - t)} /> : null};
+  },
+  // gym: curls the dumbbell (right arm), rep after rep
+  8: (l) => ({pose: {...POSE.stand, view: 1, armL: [12, 6], armR: beat(l, 0.45) % 2 ? [14, 128] : [14, 10], eyes: beat(l, 0.45) % 2 ? 'squeeze' : 'squint', mouth: 'grimace', lift: beat(l, 0.45) % 2 ? 4 : 0}, hold: <Dumbbell small rotate={90} />, replace: true}),
+  // skill: typing — the hands alternate on the keys
+  9: (l, f) => ({pose: FLOOR_SIT({armR: f % 8 < 4 ? [70, -60] : [74, -48], armL: f % 8 < 4 ? [58, -62] : [54, -72], lookX: 10, lookY: 8, eyes: 'squint', mouth: 'flat'})}),
+  // build: hammering the birdhouse; it jolts on every hit
+  10: (l) => {
+    const n = beat(l, 0.4);
+    const hit = (l % 0.4) < 0.08;
+    return {pose: {...POSE.kneel, armR: n % 2 ? [82, -20] : [150, -40], armL: [60, -40], eyes: 'squint', mouth: 'flat', lookX: 12, lookY: 8}, hold: <Hammer rotate={-30} />, props: <Birdhouse x={800} y={FLOOR + (hit && n % 2 ? 8 : 0)} />, replace: true};
+  },
+  // the thought bubble: he swats it away and it flies off
+  15: (l) => {
+    const sw = l > 1.1;
+    const k = Math.max(0, l - 1.1);
+    return {pose: sw ? {...POSE.stopHand, view: 1, armR: [60, -90], tilt: 6} : undefined, props: l > 0.4 ? <Thought x={600 + k * 900} y={1010 - k * 500 + 0.5 * G * 0.3 * k * k} text="?!" /> : null, replace: true};
+  },
+  // midnight pizza: picks up a slice and bites
+  16: (l) => {
+    const up = beat(l, 0.8) % 2 === 1;
+    return {pose: FLOOR_SIT({armFront: up, armR: up ? [70, 150] : [40, 60], armL: [36, 28], eyes: up ? 'happy' : 'wide', mouth: up ? 'laugh' : 'grin'}), hold: <Slice bitten={l > 1.6} rotate={-20} />};
+  },
+  17: () => ({pose: FLOOR_SIT({armFront: true, armR: [70, 150], eyes: 'suspicious', mouth: 'grimace', lookX: 14}), hold: <Slice bitten rotate={-20} />}),
+  // boundaries: chalks the line himself, then stands behind it
+  25: (l) => (l < 0.75
+    ? {pose: {...POSE.kneel, armR: [70, 20], armL: [14, 8], eyes: 'squint', mouth: 'flat', lookY: 10}, hold: <Chalk rotate={-40} />, props: <ChalkLine x={X} y={FLOOR + 30} drawn={l / 0.75} />, replace: true}
+    : {props: <ChalkLine x={X} y={FLOOR + 30} />, replace: true}),
+  // routine: ticks the checklist with a marker, one tap per tick
+  26: (l) => {
+    const n = Math.min(3, beat(l, 0.3, 0.15));
+    const tap = ((l - 0.15) % 0.3) < 0.1 && l > 0.15 && n < 3;
+    return {pose: {...POSE.point, armR: tap ? [100, -10] : [92, 20], eyes: 'happy', mouth: 'grin'}, hold: <Marker rotate={-60} />, props: <Checklist x={780} y={900} ticks={n} />, replace: true};
+  },
+  // the ending: the phone buzzes on the floor when it lights up
+  31: (l, f) => ({props: <BigPhone x={800} y={FLOOR - 30} rotate={-70 + (l > 0.5 && l < 1.4 ? (f % 4 < 2 ? 6 : -6) : 0)} screen={l < 0.5 ? 'off' : 'scroll'} t={f} />, replace: true}),
 };
 
 export const K01_PLAN: Shot[] = [
@@ -328,7 +394,15 @@ export const K01Frame: React.FC<{f: number}> = ({f}) => {
               {s.christy && (
                 <RigCharacter who="christy" x={s.christy.x0 + s.christy.dir * local * cycleSpeed('christy', 'walk') * 2.3} y={FLOOR - 40} scale={2.3} facing={s.christy.dir} t={f} pose={{...POSES.standing, eyes: 'open', mouth: 'smile'}} cycle="walk" />
               )}
-              {s.props?.(local, f)}
+              {(() => {
+                const act = STAR === 'ebo' ? EBO_ACT[i]?.(local, f) : undefined;
+                return (
+                  <>
+                    {!act?.replace && s.props?.(local, f)}
+                    {act?.props}
+                  </>
+                );
+              })()}
               {k && STAR === 'ebo' && (
                 <RigCharacter
                   who="ebo"
@@ -337,15 +411,17 @@ export const K01Frame: React.FC<{f: number}> = ({f}) => {
                   scale={EBO_SCALE}
                   facing={k.facing ?? 1}
                   t={f}
-                  pose={EBO[pose]}
+                  pose={EBO_ACT[i]?.(local, f).pose ?? EBO[pose]}
                   mouthFrame={s.talk ? lipFrame(ENV, WORDS, f) : undefined}
                   noBlink={EBO[pose].eyes === 'closed' || EBO[pose].eyes === 'squeeze'}
-                />
+                >
+                  {EBO_ACT[i]?.(local, f).hold}
+                </RigCharacter>
               )}
               {k && STAR === 'konka' && (
                 <PoseCharacter who="konka" pose={pose} x={k.x ?? X} y={FLOOR + (k.dy?.(local) ?? 0)} facing={k.facing ?? 1} t={f} lip={s.talk ? lipFrame(ENV, WORDS, f) : undefined} look={k.look} />
               )}
-              {s.front?.(local, f)}
+              {!(STAR === 'ebo' && EBO_ACT[i]?.(local, f).replace) && s.front?.(local, f)}
             </VStage>
             {black && <AbsoluteFill style={{background: '#000'}} />}
           </AbsoluteFill>

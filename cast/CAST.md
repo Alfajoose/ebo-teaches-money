@@ -22,6 +22,7 @@
    - **An insert is its own drawing, not a zoom.** Draw the object big and filling the frame, slightly tilted, often with a big hand in it (a finger tapping or scrolling the phone). Then cut back to the wide shot.
    - **The hand is on the prop.** Fingers overlap the object (the hand draws over it), and the object turns with the hand instead of floating upright beside it.
    - **Held props are rare and brief.** A prop is picked up for the beat that needs it, then put down or thrown.
+   - **Props feel tangible.** Give the character something to handle in most acted shots (toss a ball, curl a dumbbell, hammer, bite, chalk a line, tick a box), and let props react physically: things that are dropped fall with gravity and bounce once, things that are hit jolt, things that are swatted fly off. Only translation and rotation (house rule 2).
 
 ## Shared rig (all five characters)
 
