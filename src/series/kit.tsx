@@ -366,3 +366,42 @@ export const drop = (local: number, t0: number, dist: number) => {
 };
 /** Which beat of a repeating action we're on (period in seconds, starting at t0). */
 export const beat = (local: number, period: number, t0 = 0) => Math.max(0, Math.floor((local - t0) / period));
+
+/**
+ * Talking hands (the user's note: hand gestures help). While a character talks to us, the arms
+ * snap pose-to-pose on the stressed words of the line: open palms, a one-hand explain, a raised
+ * hand, a side point, a small shrug, or back to the shot's own pose. Each gesture holds at least
+ * MIN_HOLD seconds; the shot opens on its planned pose. Front-view safe (shoulders ≤ 105, elbows
+ * gentle). Deterministic per word, and never the same gesture twice in a row.
+ */
+type Arms = {armL: [number, number]; armR: [number, number]; headTilt?: number};
+const GESTURES: (Arms | null)[] = [
+  {armL: [55, -30], armR: [55, -30]}, // open palms
+  {armL: [12, 6], armR: [62, -35], headTilt: 3}, // one-hand explain
+  null, // the shot's own pose
+  {armL: [12, 6], armR: [100, -20], headTilt: -3}, // hand up, making a point
+  {armL: [48, -38], armR: [48, -38], headTilt: 5}, // small shrug
+  {armL: [70, -20], armR: [12, 6]}, // other hand explains
+  {armL: [12, 6], armR: [88, 0]}, // side point
+];
+const MIN_HOLD = 0.55;
+export const talkGesture = <P extends Arms>(base: P, words: Word[], t: number, shotStart: number): P => {
+  if (t - shotStart < 0.4) return base;
+  let pick = -1;
+  let last = -Infinity;
+  let prev = -1;
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    if (w.s < shotStart + 0.4) continue;
+    if (w.s > t) break;
+    const stressed = w.w.replace(/[^a-z]/gi, '').length >= 4 || (i > 0 && w.s - words[i - 1].e > 0.15);
+    if (!stressed || w.s - last < MIN_HOLD) continue;
+    let g = ((i * 2654435761) >>> 0) % GESTURES.length; // a scrambled pick per word
+    if (g === prev) g = (g + 3) % GESTURES.length;
+    prev = g;
+    pick = g;
+    last = w.s;
+  }
+  const G = pick >= 0 ? GESTURES[pick] : null;
+  return G ? {...base, armL: G.armL, armR: G.armR, headTilt: (base.headTilt ?? 0) + (G.headTilt ?? 0)} : base;
+};

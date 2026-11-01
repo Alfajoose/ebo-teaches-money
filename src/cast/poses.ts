@@ -146,3 +146,16 @@ export const gentle = (p: Pose): Pose => {
   const c = (a: [number, number]): [number, number] => [a[0], Math.max(-ELBOW_MAX, Math.min(ELBOW_MAX, a[1]))];
   return {...p, armL: c(p.armL), armR: c(p.armR)};
 };
+
+/**
+ * Ebo faces the camera (the user's note: no side-on poses). Every pose is drawn in his front view
+ * (view 1) unless it is a back view (3), the shy hands-in front view (2), or a side-only move tipped
+ * forward like the push-up (tilt > 45, the one allowed exception). In the front view the arms draw
+ * over the face, so they stop at shoulder height (≤ FRONT_ARM_MAX) — raised arms go out to the sides.
+ */
+export const FRONT_ARM_MAX = 105;
+export const frontOn = (p: Pose): Pose => {
+  if (p.view === 2 || p.view === 3 || p.tilt > 45) return p;
+  const c = (a: [number, number]): [number, number] => [Math.min(FRONT_ARM_MAX, a[0]), a[1]];
+  return {...p, view: 1, armL: c(p.armL), armR: c(p.armR)};
+};

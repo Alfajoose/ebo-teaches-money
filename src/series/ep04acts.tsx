@@ -120,6 +120,8 @@ export const EP04_ACTS: Record<string, ActFn> = {
   'Supposed to be working on something important?': (_l, f, b) => ({pose: typing(f, b)}),
   'Never try learning something difficult.': (l, f, b) => ({pose: beat(l, 0.9) % 2 ? b : typing(f, b)}), // slow: stop, stare, peck
   'Start the Monday project today.': (_l, f, b) => ({pose: typing(f, b)}),
+  // excusing himself: facing us, quick shuffle-steps off to the right (feet swap every 4 frames)
+  "Now, if you'll excuse me…": (l, f, b) => ({x: 840 + l * 700, pose: {...b, legL: f % 8 < 4 ? [18, 6] : [-6, 0], legR: f % 8 < 4 ? [6, 0] : [-18, 6], lift: f % 8 < 4 ? -6 : 0}}),
   // the recap: actually painting — brush strokes, and the canvas fills stroke by stroke
   'Pick one hobby.': (l, _f, b) => {
     const n = beat(l, 0.35);

@@ -3,7 +3,7 @@ import {AbsoluteFill, Html5Audio, staticFile, useCurrentFrame} from 'remotion';
 import {NoScaleContext} from '../noScale';
 import {PoseCharacter} from '../cast/PoseCharacter';
 import {RigCharacter} from '../cast/RigCharacter';
-import {POSE, LIE_Y, gentle} from '../cast/poses';
+import {POSE, LIE_Y, gentle, frontOn} from '../cast/poses';
 import {Pose} from '../components/Character';
 import {SKIN} from '../components/grip';
 import {POSES} from '../components/Character';
@@ -13,7 +13,7 @@ import {BigPhone, PhoneInsert} from '../components/StayBrokeProps';
 import {Laptop, Notebook} from '../components/StayPoorProps';
 import {Dumbbell, Birdhouse, Crate, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, Hammer, Slice, Ball, Chalk, Marker, KONKA_SKIN} from '../components/KonkaProps';
 import {Sticky} from '../components/StayBrokeProps';
-import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption, G, drop, beat} from './kit';
+import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption, G, drop, beat, talkGesture} from './kit';
 import {C, FONT} from '../theme';
 import {Slam, Still, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
@@ -434,7 +434,7 @@ export const K01Frame: React.FC<{f: number}> = ({f}) => {
                   scale={EBO_SCALE}
                   facing={k.facing ?? 1}
                   t={f}
-                  pose={gentle(EBO_ACT[i]?.(local, f).pose ?? EBO[pose])}
+                  pose={gentle(frontOn(EBO_ACT[i]?.(local, f).pose ?? (s.talk && EBO[pose].tilt === 0 ? talkGesture(EBO[pose], WORDS, t, TIMES[i].start) : EBO[pose])))}
                   mouthFrame={s.talk ? lipFrame(ENV, WORDS, f) : undefined}
                   noBlink={EBO[pose].eyes === 'closed' || EBO[pose].eyes === 'squeeze'}
                 >

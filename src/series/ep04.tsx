@@ -7,12 +7,12 @@ import {Pose} from '../components/Character';
 import {BigPhone, Diploma, PhoneInsert, Letter, Chips} from '../components/StayBrokeProps';
 import {Laptop, Remote} from '../components/StayPoorProps';
 import {FLOOR_Y} from '../backgrounds/Backgrounds';
-import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, lipHeadNod, chunkWords, TopCaption, BigText} from './kit';
+import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, lipHeadNod, chunkWords, TopCaption, BigText, talkGesture} from './kit';
 import {C, FONT} from '../theme';
 import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
 import {SEAT_Y} from './ep03plan';
-import {gentle} from '../cast/poses';
+import {gentle, frontOn} from '../cast/poses';
 import {EP04_PLAN, ep04Set, ep04Times, Ep04Set} from './ep04plan';
 import {EP04_ACTS} from './ep04acts';
 import wordsJson from './data/ep04-words.json';
@@ -193,8 +193,10 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
                 const walking = c.cycle !== undefined;
                 const cx = a?.x ?? c.x;
                 const x = walking ? cx + local * cycleSpeed('ebo', c.cycle!) * (c.facing ?? 1) : cx;
-                const p0 = a?.pose ?? (c.then && local >= c.then.at ? c.then.pose : c.pose); // a pose change on a beat (slam, shove)
-                const pose: Pose = gentle(host ? {...p0, headTilt: p0.headTilt + lipHeadNod(ENV, f)} : p0); // gentle elbows (house rule 13)
+                const planned = c.then && local >= c.then.at ? c.then.pose : c.pose; // a pose change on a beat (slam, shove)
+                // talking to us: the hands gesture on the stressed words (unless an act drives the arms)
+                const p0 = a?.pose ?? (host && k === 0 && !walking && planned.tilt === 0 ? talkGesture(planned, WORDS, t, start) : planned);
+                const pose: Pose = gentle(frontOn(host ? {...p0, headTilt: p0.headTilt + lipHeadNod(ENV, f)} : p0)); // facing the camera, gentle elbows (house rules 13–14)
                 return (
                   <RigCharacter
                     key={k}
