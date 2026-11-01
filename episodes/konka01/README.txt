@@ -1,6 +1,9 @@
 SHORT 01 — "Can't control your lust?" (Adobe Animate files)
 
-EBO VERSION (current): Short01_Ebo.fla / short01-ebo.mp4 — Ebo plays the part. Each of Konka's
+EBO VERSION (current): Short01_Ebo.fla / short01-ebo.mp4 — Ebo plays the part, in the tracker
+style (storyboard-tracker.png): five step badges at the top light up one by one, one short idea
+line per shot instead of word-by-word captions, chest-up framing when he talks to us. In the
+Animate file the badges and idea lines are on the Graphics layer as editable symbols. Each of Konka's
 poses is matched to an Ebo pose from his pose library (src/series/konka01.tsx, EBO table): floor
 sitting, the dumbbell squat, push-ups and the robot are new Ebo poses. Same voice, timing,
 scenes and props; Ebo's rig is keyed in his symbol ("Ebo – Konka Short01").

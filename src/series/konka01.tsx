@@ -14,7 +14,7 @@ import {Laptop} from '../components/StayPoorProps';
 import {Dumbbell, Birdhouse, Mirror, Pizza, Thought, ChalkLine, Checklist, Todo, KONKA_SKIN} from '../components/KonkaProps';
 import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, chunkWords, TopCaption} from './kit';
 import {C, FONT} from '../theme';
-import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
+import {Slam, Still, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
 import wordsJson from './data/konka01-words.json';
 import envJson from './data/konka01-env.json';
@@ -213,7 +213,8 @@ const Tracker: React.FC<{step: number; t: number; start: number}> = ({step, t, s
       const fresh = n === step && t - start < 0.4; // drops in when its step begins
       const dy = fresh ? -60 * Math.max(0, 1 - (t - start) / 0.17) : 0;
       return (
-        <g key={i} transform={`translate(${x} ${330 + dy})`}>
+        <Still key={i}>
+        <g transform={`translate(${x} ${330 + dy})`}>
           {n === step && <circle r={80} fill="none" stroke={C.ink} strokeWidth={6} strokeDasharray="10 10" />}
           <circle r={66} fill={lit ? b.color : '#C9C2D6'} stroke={C.ink} strokeWidth={7} />
           <g transform="scale(1.15)">
@@ -223,6 +224,7 @@ const Tracker: React.FC<{step: number; t: number; start: number}> = ({step, t, s
             #{n}
           </text>
         </g>
+        </Still>
       );
     })}
   </g>
@@ -230,9 +232,11 @@ const Tracker: React.FC<{step: number; t: number; start: number}> = ({step, t, s
 
 /** The idea line: one short sentence at the top, the shot's point (not the transcript). */
 const Idea: React.FC<{text: string; night?: boolean}> = ({text, night}) => (
+  <Still>
   <text x={540} y={170} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={text.length > 22 ? 62 : 74} fill={night ? '#F4F0FC' : C.ink}>
     {text}
   </text>
+  </Still>
 );
 
 /** Shot timing: each shot starts on the first word of its line (letter-level match to the voice). */
@@ -313,7 +317,7 @@ export const K01Frame: React.FC<{f: number}> = ({f}) => {
                   {s.card && <Card card={s.card} t={t} start={start} />}
                   {s.idea && <Idea text={s.idea} night={s.night} />}
                   {s.section !== 'THE ENDING' || local < length - 0.6 ? <Tracker step={stepOf(s.section)} t={t} start={TIMES[K01_PLAN.findIndex((p) => p.section === s.section)].start} /> : null}
-                  {s.text?.(local)}
+                  {s.text && <Still>{s.text(local)}</Still>}
                 </g>
               }
             >
