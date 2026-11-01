@@ -262,6 +262,35 @@ def build_poselib_symbol(lib, rig_el, anim_name, recs, total):
     lib.write_symbol(el, anim_name, '1')
     return el
 
+def slice_timeline(tl, a, b, name):
+    """Frames [a, b) of a main timeline as their own scene timeline, starting at frame 0. A key
+    that began before `a` is cut at `a`; its looping symbol instances (the characters) start that
+    many frames later so they stay in sync."""
+    out = ET.Element(N('DOMTimeline'), {'name': name})
+    layers_out = ET.SubElement(out, N('layers'))
+    for L in tl.findall(f'{N("layers")}/{N("DOMLayer")}'):
+        L2 = ET.SubElement(layers_out, N('DOMLayer'), {k: v for k, v in L.attrib.items()})
+        fe = ET.SubElement(L2, N('frames'))
+        for fr in L.findall(f'{N("frames")}/{N("DOMFrame")}'):
+            i, d = int(fr.get('index')), int(fr.get('duration', '1'))
+            lo, hi = max(i, a), min(i + d, b)
+            if lo >= hi:
+                continue
+            fr2 = copy.deepcopy(fr)
+            fr2.set('index', str(lo - a))
+            if hi - lo > 1:
+                fr2.set('duration', str(hi - lo))
+            else:
+                fr2.attrib.pop('duration', None)
+            if lo > i:
+                for inst in fr2.iter(N('DOMSymbolInstance')):
+                    if inst.get('loop') in ('loop', 'play once'):
+                        inst.set('firstFrame', str(int(inst.get('firstFrame', '0')) + lo - i))
+            fe.append(fr2)
+        if not len(fe):
+            ET.SubElement(fe, N('DOMFrame'), {'index': '0', 'duration': str(b - a), 'keyMode': '9728'}).append(ET.Element(N('elements')))
+    return out
+
 def _matrix_node(m):
     wrap = ET.Element(N('matrix'))
     me = ET.SubElement(wrap, N('Matrix'))
@@ -823,7 +852,15 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None):
     for href, iid, icon in lib.symbols:
         ET.SubElement(syms, N('Include'), {'href': href, 'itemIcon': icon, 'loadImmediate': 'false', 'itemID': iid})
     tls = ET.SubElement(doc, N('timelines'))
-    tls.append(tl)
+    scenes = cap.get('scenes')
+    if scenes:
+        # one Animate scene per section of the episode (Window > Scene); each starts at frame 1
+        bounds = [sc['start'] for sc in scenes] + [total]
+        for k, sc in enumerate(scenes):
+            tls.append(slice_timeline(tl, bounds[k], bounds[k + 1], f"{k + 1} {sc['name']}"))
+        print(f'scenes: {len(scenes)} ({", ".join(sc["name"] for sc in scenes)})')
+    else:
+        tls.append(tl)
     ET.ElementTree(doc).write(work / 'DOMDocument.xml', encoding='utf-8', xml_declaration=False)
 
     src0 = Path(cast_src) / 'Ebo'

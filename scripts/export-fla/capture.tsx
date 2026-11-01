@@ -9,7 +9,7 @@ import {Ep01Frame, EP01_DURATION, EP01_SHOT_TIMES, ep01ToSource, shotIndexAt as 
 import {Ep02Frame, EP02_DURATION, EP02_SHOT_TIMES, ep02ToSource, shotIndexAt as shot02} from '../../src/series/ep02';
 import {Ep03Frame, EP03_DURATION, EP03_SHOT_TIMES, EP03_W, EP03_H, shotIndexAt as shot03} from '../../src/series/ep03';
 import {Ep04Frame, EP04_DURATION, EP04_SHOT_TIMES, EP04_W, EP04_H, shotIndexAt as shot04} from '../../src/series/ep04';
-import {K01Frame, K01_DURATION, K01_SHOT_TIMES, K01_W, K01_H, k01ShotIndexAt} from '../../src/series/konka01';
+import {K01Frame, K01_DURATION, K01_SHOT_TIMES, K01_W, K01_H, k01ShotIndexAt, K01_PLAN} from '../../src/series/konka01';
 import {Capture, CaptureContext} from '../../src/series/exportCtx';
 
 const EPISODES = {
@@ -17,7 +17,7 @@ const EPISODES = {
   ep02: {name: 'Ep02', Frame: Ep02Frame, duration: EP02_DURATION, shotTimes: EP02_SHOT_TIMES, shotIndexAt: shot02, toSource: ep02ToSource, width: 1080, height: 1920},
   ep03: {name: 'Ep03', Frame: Ep03Frame, duration: EP03_DURATION, shotTimes: EP03_SHOT_TIMES, shotIndexAt: shot03, toSource: (f: number) => f, width: EP03_W, height: EP03_H},
   ep04: {name: 'Ep04', Frame: Ep04Frame, duration: EP04_DURATION, shotTimes: EP04_SHOT_TIMES, shotIndexAt: shot04, toSource: (f: number) => f, width: EP04_W, height: EP04_H},
-  konka01: {name: 'Konka Short01', Frame: K01Frame, duration: K01_DURATION, shotTimes: K01_SHOT_TIMES, shotIndexAt: k01ShotIndexAt, toSource: (f: number) => f, width: K01_W, height: K01_H},
+  konka01: {name: 'Konka Short01', Frame: K01Frame, duration: K01_DURATION, shotTimes: K01_SHOT_TIMES, shotIndexAt: k01ShotIndexAt, toSource: (f: number) => f, width: K01_W, height: K01_H, sections: K01_PLAN.map((p) => p.section)},
 };
 
 const out = process.argv[2] || 'out/fla-export/capture.json';
@@ -34,5 +34,10 @@ for (let f = 0; f < ep.duration; f++) {
   frames.push({f, shot: ep.shotIndexAt(ep.toSource(f)), ...cap});
 }
 fs.mkdirSync(out.replace(/\/[^/]+$/, ''), {recursive: true});
-fs.writeFileSync(out, JSON.stringify({episode: ep.name, fps: 30, width: ep.width, height: ep.height, duration: ep.duration, shotTimes: ep.shotTimes, frames}));
+// Animate scenes: one per section (where the plan names its sections), starting on that section's first shot
+const sections = (ep as {sections?: string[]}).sections;
+const scenes = sections
+  ? sections.flatMap((name, i) => (i === 0 || name !== sections[i - 1] ? [{name: name.replace(/^STEP (\d) — /, '').replace(/^THE /, '').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()), start: Math.ceil(ep.shotTimes[i] * 30 - 1e-6)}] : []))
+  : undefined;
+fs.writeFileSync(out, JSON.stringify({episode: ep.name, fps: 30, width: ep.width, height: ep.height, duration: ep.duration, shotTimes: ep.shotTimes, scenes, frames}));
 console.log(`captured ${ep.name}: ${frames.length} frames → ${out}`);
