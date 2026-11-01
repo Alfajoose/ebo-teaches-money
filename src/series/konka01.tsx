@@ -57,6 +57,7 @@ type Shot = {
   talk?: boolean; // Konka says the line to camera (lip sync)
   night?: boolean;
   card?: [number, string, string]; // chapter card: step, title lines
+  idea?: string; // the idea line at the top
   props?: (local: number, f: number) => React.ReactNode;
   front?: (local: number, f: number) => React.ReactNode; // drawn over Konka (inserts)
   christy?: {x0: number; dir: 1 | -1}; // walking past
@@ -130,7 +131,7 @@ export const K01_PLAN: Shot[] = [
   {section: 'STEP 2 — WORK ON YOURSELF', line: 'Learn a skill.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 31, x: 430}, props: () => <Laptop x={760} y={FLOOR} view="side" />, action: 'Jump cut 2: on the floor at the laptop (side-on, screen toward him).'},
   {section: 'STEP 2 — WORK ON YOURSELF', line: 'Build something.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 10, x: 420}, props: () => <Birdhouse x={800} y={FLOOR} />, action: 'Jump cut 3: kneeling, finishing a wonky birdhouse.'},
   {section: 'STEP 2 — WORK ON YOURSELF', line: 'Give your brain something productive to obsess over.', size: 'CU', move: 'push-in', from: CU(), to: Z(2.8, X, 850), konka: {pose: 23}, talk: true, action: 'Close-up: total focus, brow down.'},
-  {section: 'STEP 2 — WORK ON YOURSELF', line: 'And no, doing three push-ups', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 9, x: STAR === 'ebo' ? 250 : X, dy: (l) => (step(l, [0.5, 1.0, 1.5]) % 2 ? 20 : 0)}, text: (l) => (
+  {section: 'STEP 2 — WORK ON YOURSELF', line: 'And no, doing three push-ups', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 9, x: STAR === 'ebo' ? 130 : X, dy: (l) => (step(l, [0.5, 1.0, 1.5]) % 2 ? 20 : 0)}, text: (l) => (
     <text x={540} y={560} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={120} fill={C.ink}>
       {['', '1…', '1… 2…', '1… 2… 3.'][step(l, [0.5, 1.0, 1.5])]}
     </text>
@@ -138,7 +139,7 @@ export const K01_PLAN: Shot[] = [
   {section: 'STEP 2 — WORK ON YOURSELF', line: "and checking your abs in the mirror doesn't count as a transformation.", size: 'FULL', move: 'static', from: FULL(), konka: {pose: 86, x: 400}, props: () => <Mirror x={790} y={FLOOR - 40} />, action: 'From behind, at the mirror, admiring his round tummy.'},
   // ═════ STEP 3 ═════
   {section: 'STEP 3 — CONTROL YOUR MIND', line: 'Third, stop entertaining every thought that enters your head.', size: 'FULL', move: 'push-in', from: FULL(), to: Z(1.06, X, 1060), konka: {pose: 78, x: CARD_X}, talk: true, card: [3, 'CONTROL', 'YOUR MIND'], action: 'Chapter card. Konka, finger up, arms crossed.'},
-  {section: 'STEP 3 — CONTROL YOUR MIND', line: "Just because your brain suggests something doesn't mean you have to follow through.", size: 'MS', move: 'static', from: MS(), konka: {pose: 54, x: 460}, talk: true, props: (l) => (l > 0.4 ? <Thought x={610} y={720} text="?!" /> : null), action: 'A thought bubble pops up by his head; he holds up a flat hand to it: no.'},
+  {section: 'STEP 3 — CONTROL YOUR MIND', line: "Just because your brain suggests something doesn't mean you have to follow through.", size: 'MS', move: 'static', from: MS(), konka: {pose: 54, x: 460}, talk: true, props: (l) => (l > 0.4 ? <Thought x={600} y={1010} text="?!" /> : null), action: 'A thought bubble pops up by his head; he holds up a flat hand to it: no.'},
   {section: 'STEP 3 — CONTROL YOUR MIND', line: 'Your brain also tells you to eat an entire pizza at midnight.', size: 'FULL', move: 'static', from: FULL(), night: true, konka: {pose: 27, x: 470}, props: () => <Pizza x={780} y={FLOOR} />, action: 'Night (the backdrop goes dark): Konka on the floor with an entire pizza, delighted.'},
   {section: 'STEP 3 — CONTROL YOUR MIND', line: "Doesn't mean it's a genius.", size: 'ECU', move: 'snap-zoom', from: STAR === 'ebo' ? Z(2.3, X, 1170) : CU(), to: STAR === 'ebo' ? Z(3.3, X + 40, 1150) : ECU(), night: true, konka: {pose: 8}, action: 'Mid-bite freeze, guilty side-eye to the lens.'},
   // ═════ STEP 4 ═════
@@ -161,6 +162,78 @@ export const K01_PLAN: Shot[] = [
   {section: 'THE ENDING', line: "Because if you can't control your attention...", size: 'MS → CU', move: 'push-in', from: MS(), to: CU(), konka: {pose: 72}, talk: true, action: 'Slow push-in on Konka, calm, serious, to the lens.'},
   {section: 'THE ENDING', line: 'Something else will.', size: 'FULL', move: 'static', from: FULL(), konka: {pose: 72, x: 400, then: [{at: 0.7, pose: 66}]}, props: (l, f) => <BigPhone x={800} y={FLOOR - 30} rotate={-70} screen={l < 0.5 ? 'off' : 'scroll'} t={f} />, action: 'His phone lights up on the floor. His head turns to it on its own. Cut to black.'},
 ];
+
+/**
+ * The "tracker" look (after the reference Short the user loves): a row of five step badges at
+ * the top that light up one by one (the last stays a "?" until its step), one short idea line
+ * above it instead of word-by-word captions, and chest-up framing whenever the star talks to us.
+ * The tracker does the chapter cards' job, so there are no big title cards.
+ */
+const BUST = (cx = X) => Z(1.8, cx, 980);
+const IDEAS = [
+  "Can't control your lust?", 'One person walks past…', 'Hormones: now in charge.',
+  '#1 Find your purpose', 'Seriously.', 'Want something real', 'Bored brain = bad ideas',
+  '#2 Work on yourself', 'Gym', 'Skill', 'Build', 'Obsess over progress', '3 push-ups…', '…is not a glow-up',
+  '#3 Control your mind', 'A thought is not an order', 'The midnight pizza idea', 'Not a genius.',
+  '#4 Avoid your triggers', 'That account?', 'Yeah. That one.', 'Unfollow.', 'Distracted… by choice',
+  '#5 Build discipline', 'Start small', 'Set boundaries', 'Keep a routine', 'Attraction is normal', 'Not a robot',
+  "Impulses don't decide", 'Control your attention…', '…or something else will.',
+];
+K01_PLAN.forEach((sh, i) => {
+  sh.idea = IDEAS[i];
+  if (sh.card) {
+    sh.card = undefined;
+    sh.from = BUST();
+    sh.to = undefined;
+    sh.move = 'static';
+    sh.size = 'BUST';
+    if (sh.konka) sh.konka.x = X;
+  } else if (sh.talk && (sh.size === 'MS' || sh.size === 'MS → CU')) {
+    sh.from = BUST();
+    sh.to = sh.move === 'push-in' ? Z(2.2, X, 900) : undefined;
+    sh.size = 'BUST';
+  }
+});
+const stepOf = (sec: string) => (sec.startsWith('STEP ') ? +sec[5] : sec === 'THE ENDING' ? 6 : 0);
+
+/** The step tracker: five badges, grey "?" until their step begins, then their colour and icon. */
+const BADGES: {color: string; icon: React.ReactNode}[] = [
+  {color: '#F3C53F', icon: <g><circle r={30} fill="#fff" /><circle r={20} fill="#E5484D" /><circle r={10} fill="#fff" /><circle r={4} fill="#E5484D" /></g>},
+  {color: '#E5484D', icon: <g><rect x={-26} y={-5} width={52} height={10} fill="#fff" /><rect x={-34} y={-16} width={12} height={32} rx={3} fill="#fff" /><rect x={22} y={-16} width={12} height={32} rx={3} fill="#fff" /></g>},
+  {color: '#8F6BD1', icon: <g fill="#fff"><circle cx={-12} cy={-6} r={16} /><circle cx={12} cy={-6} r={16} /><circle cx={-8} cy={10} r={13} /><circle cx={9} cy={10} r={13} /><path d="M 0 -20 L 0 22" stroke="#8F6BD1" strokeWidth={4} /></g>},
+  {color: '#3B82F6', icon: <g><rect x={-15} y={-26} width={30} height={52} rx={6} fill="#fff" /><path d="M -26 26 L 26 -26" stroke={C.ink} strokeWidth={7} strokeLinecap="round" /></g>},
+  {color: '#45B69C', icon: <g><rect x={-26} y={-22} width={52} height={46} rx={6} fill="#fff" /><rect x={-26} y={-22} width={52} height={12} fill={C.ink} /><path d="M -12 6 l 9 9 l 17 -19" stroke="#45B69C" strokeWidth={7} fill="none" strokeLinecap="round" /></g>},
+];
+const Tracker: React.FC<{step: number; t: number; start: number}> = ({step, t, start}) => (
+  <g>
+    {BADGES.map((b, i) => {
+      const n = i + 1;
+      const lit = n <= step;
+      const x = 540 + (i - 2) * 190;
+      const fresh = n === step && t - start < 0.4; // drops in when its step begins
+      const dy = fresh ? -60 * Math.max(0, 1 - (t - start) / 0.17) : 0;
+      return (
+        <g key={i} transform={`translate(${x} ${330 + dy})`}>
+          {n === step && <circle r={80} fill="none" stroke={C.ink} strokeWidth={6} strokeDasharray="10 10" />}
+          <circle r={66} fill={lit ? b.color : '#C9C2D6'} stroke={C.ink} strokeWidth={7} />
+          <g transform="scale(1.15)">
+          {lit ? b.icon : <text y={22} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={62} fill="#fff">?</text>}
+          </g>
+          <text y={-88} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={lit ? C.red : '#9C94AA'}>
+            #{n}
+          </text>
+        </g>
+      );
+    })}
+  </g>
+);
+
+/** The idea line: one short sentence at the top, the shot's point (not the transcript). */
+const Idea: React.FC<{text: string; night?: boolean}> = ({text, night}) => (
+  <text x={540} y={170} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={text.length > 22 ? 62 : 74} fill={night ? '#F4F0FC' : C.ink}>
+    {text}
+  </text>
+);
 
 /** Shot timing: each shot starts on the first word of its line (letter-level match to the voice). */
 const norm = (t: string) => t.toLowerCase().replace(/[^a-z]/g, '');
@@ -238,6 +311,8 @@ export const K01Frame: React.FC<{f: number}> = ({f}) => {
               overlay={
                 <g>
                   {s.card && <Card card={s.card} t={t} start={start} />}
+                  {s.idea && <Idea text={s.idea} night={s.night} />}
+                  {s.section !== 'THE ENDING' || local < length - 0.6 ? <Tracker step={stepOf(s.section)} t={t} start={TIMES[K01_PLAN.findIndex((p) => p.section === s.section)].start} /> : null}
                   {s.text?.(local)}
                 </g>
               }
@@ -264,7 +339,6 @@ export const K01Frame: React.FC<{f: number}> = ({f}) => {
               )}
               {s.front?.(local, f)}
             </VStage>
-            <TopCaption chunks={CHUNKS} tSec={t} />
             {black && <AbsoluteFill style={{background: '#000'}} />}
           </AbsoluteFill>
         </HandDrawnContext.Provider>
