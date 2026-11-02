@@ -87,7 +87,31 @@ export const CAST: Record<CastId, CastConfig> = {
   },
   mica: {name: 'Mica', rig: mica as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_B, hide: [], blinkOffset: 23},
   obuor: {name: 'Obuor', rig: obuor as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_B, hide: [], blinkOffset: 41},
-  ama: {name: 'Ama', rig: ama as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_A, hide: [], blinkOffset: 57},
+  // Ama (new master, Nov 2026, cast/masters/Ama.fla): built on Ebo's part set — the same 15 mouths
+  // in the same order and Ebo's eye + pupil frames — so she shares his face and lip-sync mapping.
+  // One view (¾); her symbol's later keys are a test animation, the rig is its frame-0 rest pose.
+  ama: {
+    name: 'Ama',
+    rig: ama as RigData,
+    scale: S,
+    eyeLayers: ['eye_1', 'eye_2'],
+    eyes: {},
+    pupils: {
+      layers: ['pupil_1', 'pupil_2'],
+      eyes: {
+        open: [null, null], dollar: [null, null], wide: [0, 0], closed: [12, 7], happy: [9, 4], half: [7, 3],
+        sad: [10, 3], squint: [11, 2], angry: [5, 1], suspicious: [11, 5], tired: [10, 3], squeeze: [8, 7],
+      },
+    },
+    mouth: {smile: 6, grin: 1, o: 5, scream: 11, frown: 13, flat: 0, wobbly: [7, 9], smirk: 2, snore: [12, 5], teeth: 2, laugh: 4, grimace: 9},
+    lip: {
+      happy: [6, [3, 1], [1, 3], 5],
+      neutral: [0, [3, 1], [3, 12], 12],
+      sad: [13, [11, 10], [8, 10], 12],
+    },
+    hide: [],
+    blinkOffset: 57,
+  },
   // Christy's eye_1 layer holds both eyes (exported as eye_1 + eye_1__2); her eye_2 layer is a stray copy parked off-canvas.
   christy: {name: 'Christy', rig: christy as RigData, scale: S, eyeLayers: ['eye_1', 'eye_1__2'], eyes: EYES_7, mouth: MOUTH_A, hide: ['eye_2'], blinkOffset: 71},
 };

@@ -118,26 +118,11 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 
 ## AMA
 
-- **File:** `masters/Ama_pretty.fla`. **Symbol:** `Ama port`. **Stage:** 1280×720 at 24 fps.
-- **Design:** swept dark hair with highlights, orange top, brown ruffled skirt, earring.
-- **Eyes** (`eye 11` / `eye 12`, 5 frames):
-  - 0 neutral
-  - 1 wide/round
-  - 2 closed / happy curve
-  - 3 surprised
-  - 4 blank
-- **Mouth** (4 frames):
-  - 0 rest
-  - 1 open wide
-  - 2 open mid
-  - 3 O
-- **Outfit and hair swaps:**
-  - `head` 0 dark hair, 1 red hair, 2 red head-wrap (back view)
-  - `torso` 0–2 top variants
-  - `ear_1` / `ear_2` 0 front, 1 back
-  - Arm and forearm variants
-- **Skirt:** `waist` has a **15-frame skirt animation**, so it moves on its own when the symbol is set to loop.
-- The library also contains older `Ebo`, `Ama` and `Christy` rigs.
+- **File:** `masters/Ama.fla` (new master, Nov 2026; the earlier `Ama_pretty.fla` is in git history). **Symbol:** `Ama`.
+- **Design:** pink bucket hat, dark teal top, yellow skirt.
+- **Built on Ebo's part set.** She has the same layer names and parenting as Ebo, the same 15 mouths in the same order, and Ebo's eye and pupil frames (13 eye shapes). She shares his face mapping and lip-sync mood sets in `castConfig.ts`.
+- **One view (¾).** The `Ama` symbol's keys after frame 0 are a test animation. The rig is exported from frame 0 (her rest pose) from a copy trimmed to that frame.
+- **Export:** trim `Ama.xml` to each layer's first keyframe, then `tools/export_rig.py <dir> Ama src/cast/data/ama.json`, then `node scripts/measure-rigs.mjs`.
 
 ## CHRISTY
 

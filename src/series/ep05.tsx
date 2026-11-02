@@ -7,7 +7,7 @@ import {Pose, POSES} from '../components/Character';
 import {POSE, frontOn, gentle} from '../cast/poses';
 import {Backdrop} from './sets';
 import {StageSizeContext, Slam} from './exportCtx';
-import {VFPS, Word, VStage, Framing} from './kit';
+import {VFPS, Word, VStage, Framing, lipFrame, talkGesture} from './kit';
 import {C} from '../theme';
 import wordsJson from './data/ep05-words.json';
 
@@ -35,7 +35,7 @@ const CU_AMA = Z(1.7, 790, 900);
 const EBO_TWO_X = 320;
 const AMA_X = 800;
 const EBO_SCALE = 1.75;
-const AMA_SCALE = 1.5;
+const AMA_SCALE = 1.6;
 
 type Shot = {
   /** first word of the line (index into words.json), or a time in seconds */
@@ -58,10 +58,10 @@ export const EP05_PLAN: Shot[] = [
   {at: 6, line: '"…Oh, nice."', size: 'CU Ebo', frame: CU_EBO, ebo: ebo({...POSE.stand, eyes: 'half', mouth: 'flat', lookX: 14, armL: [4, 2], armR: [4, 2]}, EBO_TWO_X), ama: {pose: amaPose({})}, action: 'Ebo, flat and limp: "Oh, nice." Nothing else.'},
   {at: {t: 3.2}, line: '(dead silence)', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'open', mouth: 'flat', lookX: 14, armL: [4, 2], armR: [4, 2]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'half', mouth: 'flat'})}, action: 'The dead beat: Ama\'s smile drops. Both frozen. One awkward second.'},
   {at: 8, line: "Don't be that guy.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.pointAtYou, eyes: 'squint', mouth: 'smirk'}), action: 'Hard cut: Ebo alone on the backdrop, to camera, pointing at us.'},
-  {at: 12, line: "Here's the fix. Grab one word and ask about it.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, armR: [100, -20], armL: [12, 6], eyes: 'happy', mouth: 'grin'}), action: 'Ebo explains, hands talking; on "grab" his hand snaps up and grabs the air.'},
+  {at: 12, line: "Here's the fix. Grab one word and ask about it.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, armR: [20, 6], armL: [12, 6], eyes: 'happy', mouth: 'grin'}), action: 'Ebo explains, hands talking; on "grab" his hand snaps up and grabs the air.'},
   {at: 22, line: '"Chicago? What took you there?"', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'wide', mouth: 'o', lookX: 16, tilt: 6, armR: [60, -30]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile'})}, chain: 1, action: 'Back in the two-shot. Ebo leans in, curious. "Chicago" pops up handwritten over them.'},
   {at: 27, line: '"My sister\'s wedding."', size: 'CU Ama', frame: CU_AMA, ebo: ebo({...POSE.stand, lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile', armR: [40, -30]}), talking: true}, chain: 1, action: 'Ama, warm, opening up.'},
-  {at: 30, line: 'Grab another.', size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'smirk', armR: [100, -20]}), chain: 1, action: 'Quick aside to camera: Ebo grabs the air again, a little smug.'},
+  {at: 30, line: 'Grab another.', size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'smirk', armR: [20, 6]}), chain: 1, action: 'Quick aside to camera: Ebo grabs the air again, a little smug.'},
   {at: 32, line: '"How was the wedding?"', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'wide', mouth: 'o', lookX: 16, tilt: 6, armL: [50, -30]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile'})}, chain: 2, action: 'Two-shot. "wedding" pops up next to "Chicago".'},
   {at: 36, line: '"Chaos. The caterer didn\'t show up!"', size: 'CU Ama', frame: CU_AMA, ebo: ebo({...POSE.stand, lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'happy', mouth: 'grin', armL: [100, -20], armR: [100, -20]}), talking: true}, chain: 3, action: 'Ama laughs, arms up — the story is pouring out now. "caterer" pops up.'},
   {at: 42, line: '"No! So what did you eat?"', size: 'TWO', frame: TWO, ebo: ebo({...POSE.shocked, eyes: 'wide', mouth: 'o', lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'wide', mouth: 'grin'})}, chain: 3, action: 'Ebo gasps, arms out, hooked. Ama grinning.'},
@@ -84,6 +84,73 @@ export const ep05ShotAt = (f: number) => {
   let i = 0;
   for (let k = 0; k < TIMES.length; k++) if (t >= TIMES[k].start) i = k;
   return i;
+};
+
+// ───────────────────────── performance ─────────────────────────
+/**
+ * Lip sync per speaker. Until the voice audio is in (episodes/ep05/SOURCES.txt), each speaker's
+ * loudness is synthesised from their own word timings: open on the word, a short dip between
+ * syllables (every ~0.13s), closed between words. Swap in the real envelope when the audio lands.
+ */
+const synthEnv = (words: W5[]): number[] => {
+  const n = Math.ceil(END * VFPS) + 2;
+  const env = new Array(n).fill(0);
+  for (const w of words) {
+    for (let f = Math.floor(w.s * VFPS); f <= Math.ceil(w.e * VFPS); f++) {
+      const k = (f / VFPS - w.s) / 0.13;
+      env[f] = 0.35 + 0.55 * Math.abs(Math.sin(k * Math.PI));
+    }
+  }
+  return env;
+};
+const W_EBO = WORDS.filter((w) => w.who === 'ebo');
+const W_AMA = WORDS.filter((w) => w.who === 'ama');
+const ENV_EBO = synthEnv(W_EBO);
+const ENV_AMA = synthEnv(W_AMA);
+const talking = (env: number[], f: number) => (env[f] ?? 0) > 0.1;
+const beat = (l: number, p: number) => Math.floor(l / p);
+const at = (k: number) => WORDS[k].s;
+
+/** Per-shot acting on top of the shot's pose: (time in the shot, absolute time) → pose changes. */
+type Act = {ebo?: Partial<Pose>; ama?: Partial<Pose>; amaTalks?: boolean};
+const ACTS: Record<number, (l: number, t: number) => Act> = {
+  // the dead beat: her smile holds a moment, then drops
+  2: (l) => (l < 0.4 ? {ama: {eyes: 'open', mouth: 'smile'}} : {}),
+  // "grab one word": anticipation down, the hand snaps up, then closes to his chest
+  4: (_l, t) => {
+    const g = at(15);
+    if (t < g - 0.07) return {};
+    if (t < g) return {ebo: {armR: [40, 10]}};
+    if (t < g + 0.3) return {ebo: {armR: [105, -10], headTilt: -4}};
+    return {ebo: {armR: [22, 40], eyes: 'happy', mouth: 'grin'}};
+  },
+  // "Grab another." — the same grab, quicker
+  7: (_l, t) => {
+    const g = at(30);
+    if (t < g) return {ebo: {armR: [40, 10]}};
+    if (t < g + 0.22) return {ebo: {armR: [105, -10], headTilt: -4}};
+    return {ebo: {armR: [22, 40]}};
+  },
+  // "No!": a gasp, then leaning in, hooked
+  10: (_l, t) => (t < at(43) ? {ebo: {lift: -10}} : {ebo: {eyes: 'wide', mouth: 'o', tilt: 6, armL: [40, -20], armR: [40, -20]}}),
+  // she tells the whole story (miming, arms going); he just nods
+  11: (l) => {
+    const n = beat(l, 0.45);
+    return {
+      ama: {armR: n % 2 ? [90, -30] : [50, -10], armL: n % 3 === 0 ? [70, -30] : [20, 6], headTilt: n % 2 ? 4 : -2},
+      amaTalks: true,
+      ebo: {headTilt: beat(l, 0.5) % 2 ? 5 : -1},
+    };
+  },
+  // "freeze": dead still
+  13: () => ({ebo: {headTilt: 0}}),
+  // searching his head… then he shakes it off on "clever"
+  14: (_l, t) => {
+    const c = at(83);
+    if (t < c) return {};
+    const k = beat(t - c, 0.09);
+    return t - c < 0.45 ? {ebo: {headTilt: k % 2 ? 8 : -8, eyes: 'squeeze', lookY: 0}} : {ebo: {eyes: 'happy', mouth: 'smile', lookY: 0, armR: [12, 6]}};
+  },
 };
 
 /** The grabbed words: handwritten, popping in on the word, then staying as a chain. */
@@ -128,14 +195,29 @@ export const Ep05Frame: React.FC<{f: number}> = ({f}) => {
   const t = f / VFPS;
   const i = ep05ShotAt(f);
   const s = EP05_PLAN[i];
+  const local = t - TIMES[i].start;
+  const act = ACTS[i]?.(local, t) ?? {};
+  const toCamera = s.size === 'BUST';
+  const eboTalk = talking(ENV_EBO, f);
+  const amaTalk = talking(ENV_AMA, f) || (act.amaTalks && talking(synthEnv([{w: 'mime', s: TIMES[i].start, e: TIMES[i].start + TIMES[i].length, who: 'ama'}]), f));
+  // Ebo: hands talk when he's to camera and nothing else drives his arms
+  let eboPose: Pose | undefined = s.ebo && {...s.ebo.pose, ...act.ebo};
+  if (eboPose && toCamera && !act.ebo?.armR && i !== 13) eboPose = talkGesture(eboPose, W_EBO, t, TIMES[i].start);
+  const amaPose: Pose | undefined = s.ama && {...s.ama.pose, ...act.ama};
   return (
     <StageSizeContext.Provider value={{w: EP05_W, h: EP05_H}}>
       <NoScaleContext.Provider value>
         <HandDrawnContext.Provider value>
           <AbsoluteFill style={{background: '#000'}}>
             <VStage framing={s.frame} bg="#D2C4EE" blurBg={<Backdrop id="ep05" />} overlay={s.chain ? <Chain n={s.chain} t={t} /> : undefined}>
-              {s.ama && <RigCharacter who="ama" x={AMA_X} y={FLOOR} scale={AMA_SCALE} facing={-1} t={f} pose={gentle(s.ama.pose)} />}
-              {s.ebo && <RigCharacter who="ebo" x={s.ebo.x ?? 540} y={FLOOR} scale={EBO_SCALE} t={f} pose={gentle(frontOn(s.ebo.pose))} />}
+              {amaPose && (
+                <RigCharacter who="ama" x={AMA_X} y={FLOOR} scale={AMA_SCALE} facing={-1} t={f} pose={gentle(amaPose)}
+                  mouthFrame={amaTalk ? (lipFrame(act.amaTalks ? synthEnv([{w: 'mime', s: TIMES[i].start, e: TIMES[i].start + TIMES[i].length, who: 'ama'}]) : ENV_AMA, W_AMA, f)) : undefined} />
+              )}
+              {eboPose && (
+                <RigCharacter who="ebo" x={s.ebo!.x ?? 540} y={FLOOR} scale={EBO_SCALE} t={f} pose={gentle(frontOn(eboPose))}
+                  mouthFrame={eboTalk ? lipFrame(ENV_EBO, W_EBO, f) : undefined} />
+              )}
             </VStage>
           </AbsoluteFill>
         </HandDrawnContext.Provider>

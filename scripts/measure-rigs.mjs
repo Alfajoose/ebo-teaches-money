@@ -3,7 +3,8 @@
 // usage: node scripts/measure-rigs.mjs  -> writes src/cast/data/measure.json
 import fs from 'fs';
 import path from 'path';
-const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const pw = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const {chromium} = pw.chromium ? pw : pw.default; // ESM or CommonJS build
 
 const dir = path.resolve('src/cast/data');
 const names = ['ebo', 'mica', 'obuor', 'ama', 'christy'];
