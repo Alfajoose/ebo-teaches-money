@@ -19,6 +19,7 @@ import {EboEp04, EP04_DURATION, EP04_W, EP04_H} from './series/ep04';
 import {VW, VH, VFPS} from './series/kit';
 import {FPS, HEIGHT, TOTAL_FRAMES, WIDTH} from './timing';
 import type {NarrationTiming} from './sync';
+import {EboEp05, EP05_DURATION, EP05_W, EP05_H} from './series/ep05';
 import {Short01ThumbVertical, Short01ThumbWide} from './series/thumbs';
 
 const hasPublicFile = async (name: string) => {
@@ -86,6 +87,7 @@ export const RemotionRoot: React.FC = () => (
   ))}
   <Composition id="Konka-Short01" component={KonkaShort01} durationInFrames={K01_DURATION} fps={30} width={K01_W} height={K01_H} defaultProps={{layer: 'full' as const}} />
   <Composition id="Ebo-Calib" component={EboCalibSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
+  <Composition id="EboTeachesMoney-Ep05" component={EboEp05} durationInFrames={EP05_DURATION} fps={30} width={EP05_W} height={EP05_H} />
   <Composition id="Short01-Thumb" component={Short01ThumbVertical} durationInFrames={1} fps={30} width={1080} height={1920} />
   <Composition id="Short01-Thumb-16x9" component={Short01ThumbWide} durationInFrames={1} fps={30} width={1280} height={720} />
   <Composition id="Ebo-Views" component={EboViewsSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
