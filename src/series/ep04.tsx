@@ -7,7 +7,7 @@ import {Pose} from '../components/Character';
 import {BigPhone, Diploma, PhoneInsert, Letter, Chips} from '../components/StayBrokeProps';
 import {Laptop, Remote} from '../components/StayPoorProps';
 import {FLOOR_Y} from '../backgrounds/Backgrounds';
-import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, lipHeadNod, chunkWords, TopCaption, BigText, talkGesture} from './kit';
+import {VFPS, Word, VStage, Framing, CamMove, camera, lipFrame, lipHeadNod, chunkWords, TopCaption, BigText, beatGesture} from './kit';
 import {C, FONT} from '../theme';
 import {Slam, LayerMode, LayerModeContext, StageSizeContext} from './exportCtx';
 import {HandDrawnContext} from '../handDrawn';
@@ -194,8 +194,8 @@ export const Ep04Frame: React.FC<{f: number; handDrawn?: boolean}> = ({f, handDr
                 const cx = a?.x ?? c.x;
                 const x = walking ? cx + local * cycleSpeed('ebo', c.cycle!) * (c.facing ?? 1) : cx;
                 const planned = c.then && local >= c.then.at ? c.then.pose : c.pose; // a pose change on a beat (slam, shove)
-                // talking to us: the hands gesture on the stressed words (unless an act drives the arms)
-                const p0 = a?.pose ?? (host && k === 0 && !walking && planned.tilt === 0 ? talkGesture(planned, WORDS, t, start) : planned);
+                // talking to us: the hands gesture on the beats of the read (unless an act drives the arms)
+                const p0 = a?.pose ?? (host && k === 0 && !walking && planned.tilt === 0 ? beatGesture(planned, WORDS, ENV, f, start, start + length) : planned);
                 const pose: Pose = gentle(frontOn(host ? {...p0, headTilt: p0.headTilt + lipHeadNod(ENV, f)} : p0)); // facing the camera, gentle elbows (house rules 13–14)
                 return (
                   <RigCharacter

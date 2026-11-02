@@ -405,3 +405,80 @@ export const talkGesture = <P extends Arms>(base: P, words: Word[], t: number, s
   const G = pick >= 0 ? GESTURES[pick] : null;
   return G ? {...base, armL: G.armL, armR: G.armR, headTilt: (base.headTilt ?? 0) + (G.headTilt ?? 0)} : base;
 };
+
+/**
+ * Hand gestures on the beat of the voice (Ep4). Beats are the stressed syllables of the read: local
+ * peaks of the loudness envelope (≥ 0.75) that rise out of a dip, at least MIN_HOLD apart. The
+ * gesture matches the word on the beat where it's obvious (open palms on "you", a raised hand on
+ * numbers and "first", a shrug on "maybe" / "just", a point on "this" / "that", a flat stop on
+ * "never" / "don't"), otherwise it alternates explain-right / explain-left / open / the shot's pose.
+ * Each change is house rule 1: a 1-frame anticipation, a 2-frame snap with a small overshoot that
+ * peaks on the beat, a 1-frame settle, then dead still.
+ */
+type Gest = Arms | null;
+const G_OPEN: Arms = {armL: [55, -30], armR: [55, -30]};
+const G_UP: Arms = {armL: [12, 6], armR: [100, -20], headTilt: -3};
+const G_SHRUG: Arms = {armL: [48, -38], armR: [48, -38], headTilt: 5};
+const G_POINT: Arms = {armL: [12, 6], armR: [88, 0]};
+const G_STOP: Arms = {armL: [12, 6], armR: [80, -36], headTilt: -2};
+const G_EXPL_R: Arms = {armL: [12, 6], armR: [62, -35], headTilt: 3};
+const G_EXPL_L: Arms = {armL: [70, -20], armR: [12, 6], headTilt: -3};
+const KEY: [RegExp, Arms][] = [
+  [/^(you|your|youre|yourself|everybody|everyone)$/, G_OPEN],
+  [/^(one|two|three|six|eight|twelve|seventeen|forty|hundred|thousand|million|first|second|third|finally|lots)$/, G_UP],
+  [/^(maybe|just|probably|obviously|actually|perhaps|whatever|well)$/, G_SHRUG],
+  [/^(this|that|these|those|there|here|it)$/, G_POINT],
+  [/^(never|dont|no|not|nothing|stop|cant|wont)$/, G_STOP],
+];
+const CYCLE: Gest[] = [G_EXPL_R, G_OPEN, G_EXPL_L, null];
+const peaksCache = new WeakMap<number[], number[]>();
+const voicePeaks = (env: number[]): number[] => {
+  const hit = peaksCache.get(env);
+  if (hit) return hit;
+  const out: number[] = [];
+  for (let i = 5; i < env.length - 3; i++) {
+    const v = env[i];
+    if (v < 0.75) continue;
+    let isMax = true;
+    for (let k = -3; k <= 3; k++) if (env[i + k] > v || (k < 0 && env[i + k] === v)) isMax = false;
+    if (!isMax) continue;
+    const dip = Math.min(...env.slice(i - 5, i));
+    if (v - dip < 0.25) continue;
+    if (out.length && i - out[out.length - 1] < MIN_HOLD * VFPS) continue;
+    out.push(i);
+  }
+  peaksCache.set(env, out);
+  return out;
+};
+const lerpA = (a: [number, number], b: [number, number], u: number): [number, number] => [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u];
+export const beatGesture = <P extends Arms>(base: P, words: Word[], env: number[], f: number, shotStart: number, shotEnd: number): P => {
+  const a = Math.ceil((shotStart + 0.4) * VFPS);
+  const b = Math.floor(shotEnd * VFPS) - 3;
+  const beats = voicePeaks(env).filter((p) => p >= a && p <= b);
+  const asArms = (g: Gest): Arms => g ?? {armL: base.armL, armR: base.armR, headTilt: 0};
+  // the gesture for each beat
+  const gs: Arms[] = [];
+  let ci = 0;
+  for (const p of beats) {
+    const t = p / VFPS;
+    const w = words.find((x) => x.s - 0.08 <= t && t <= x.e + 0.05);
+    const key = w ? KEY.find(([re]) => re.test(w.w.toLowerCase().replace(/[^a-z]/g, '')))?.[1] : undefined;
+    let g = key ?? asArms(CYCLE[ci++ % CYCLE.length]);
+    if (gs.length && JSON.stringify(gs[gs.length - 1]) === JSON.stringify(g)) g = asArms(CYCLE[ci++ % CYCLE.length]);
+    gs.push(g);
+  }
+  // where we are: the last beat whose move has started (it starts 2 frames before the beat)
+  let k = -1;
+  for (let i = 0; i < beats.length; i++) if (f >= beats[i] - 2) k = i;
+  if (k < 0) return base;
+  const prev = k > 0 ? gs[k - 1] : asArms(null);
+  const tgt = gs[k];
+  const d = f - beats[k]; // -2 anticipation, -1 snap, 0 overshoot on the beat, 1 settle, ≥2 hold
+  const u = d <= -2 ? -0.12 : d === -1 ? 0.6 : d === 0 ? 1.12 : d === 1 ? 1.03 : 1;
+  return {
+    ...base,
+    armL: lerpA(prev.armL, tgt.armL, u),
+    armR: lerpA(prev.armR, tgt.armR, u),
+    headTilt: (base.headTilt ?? 0) + ((prev.headTilt ?? 0) + ((tgt.headTilt ?? 0) - (prev.headTilt ?? 0)) * u),
+  };
+};
