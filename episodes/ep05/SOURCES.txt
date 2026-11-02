@@ -1,0 +1,5 @@
+Voice takes (ElevenLabs flow "Ebo Ep5 – Never Run Out of Things to Say", id wWJ4lCZK00QHnbOSjTQd).
+Save each as named here, then run: python3 -I scripts/ep05-voice.py
+  raw_dan.mp3   Dan, generation OYoCeZ1MWd704vK6Eu5f (33.4s, all of Ebo's lines)
+  raw_hook.mp3  Dan, generation uzYTDidBlim5PtGb2MZ8 (2.96s, "Don't be that guy. Here's the fix.")
+  raw_ama.mp3   Yuria, generation ffJSp5RES16XKaKurF1F (7.4s, Ama's three lines)
