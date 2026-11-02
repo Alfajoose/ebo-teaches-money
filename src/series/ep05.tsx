@@ -57,7 +57,7 @@ const ebo = (p: Pose, x?: number) => ({pose: p, x});
 export const EP05_PLAN: Shot[] = [
   {at: 0, line: 'I just got back from Chicago.', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'open', mouth: 'flat', lookX: 14}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'wide', mouth: 'grin', armR: [60, -30]}), talking: true}, action: 'Cold open, mid-conversation. Ama, bright, tells Ebo her news. Ebo listens with a blank face.'},
   {at: 6, line: '"…Oh, nice."', size: 'CU Ebo', frame: CU_EBO, ebo: ebo({...POSE.stand, eyes: 'half', mouth: 'flat', lookX: 14, armL: [4, 2], armR: [4, 2]}, EBO_TWO_X), ama: {pose: amaPose({})}, action: 'Ebo, flat and limp: "Oh, nice." Nothing else.'},
-  {at: {t: 3.2}, line: '(dead silence)', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'open', mouth: 'flat', lookX: 14, armL: [4, 2], armR: [4, 2]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'half', mouth: 'flat'})}, action: 'The dead beat: Ama\'s smile drops. Both frozen. One awkward second.'},
+  {at: {t: 3.35}, line: '(dead silence — crickets)', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'open', mouth: 'flat', lookX: 14, armL: [4, 2], armR: [4, 2]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'half', mouth: 'flat'})}, action: 'The dead beat: Ama\'s smile drops. Both frozen. A lone cricket chirps.'},
   {at: 8, line: "Don't be that guy.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.pointAtYou, eyes: 'squint', mouth: 'smirk'}), action: 'Hard cut: Ebo alone on the backdrop, to camera, pointing at us.'},
   {at: 12, line: "Here's the fix. Grab one word and ask about it.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, armR: [20, 6], armL: [12, 6], eyes: 'happy', mouth: 'grin'}), action: 'Ebo explains, hands talking; on "grab" his hand snaps up and grabs the air.'},
   {at: 22, line: '"Chicago? What took you there?"', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'wide', mouth: 'o', lookX: 16, tilt: 6, armR: [60, -30]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile'})}, chain: 1, action: 'Back in the two-shot. Ebo leans in, curious. "Chicago" pops up handwritten over them.'},
@@ -66,15 +66,17 @@ export const EP05_PLAN: Shot[] = [
   {at: 32, line: '"How was the wedding?"', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'wide', mouth: 'o', lookX: 16, tilt: 6, armL: [50, -30]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile'})}, chain: 2, action: 'Two-shot. "wedding" pops up next to "Chicago".'},
   {at: 36, line: '"Chaos. The caterer didn\'t show up!"', size: 'CU Ama', frame: CU_AMA, ebo: ebo({...POSE.stand, lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'happy', mouth: 'grin', armL: [100, -20], armR: [100, -20]}), talking: true}, chain: 3, action: 'Ama laughs, arms up — the story is pouring out now. "caterer" pops up.'},
   {at: 42, line: '"No! So what did you eat?"', size: 'TWO', frame: TWO, ebo: ebo({...POSE.shocked, eyes: 'wide', mouth: 'o', lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'wide', mouth: 'grin'})}, chain: 3, action: 'Ebo gasps, arms out, hooked. Ama grinning.'},
-  {at: 48, line: 'You said almost nothing, and she told you a whole story.', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'smile', lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'wide', mouth: 'grin', armR: [80, -30], armL: [50, -20]}), talking: true}, chain: 3, action: 'Ama mid-story, gesturing big (mouth moving, no sound); Ebo just nods. The word chain sits over them.'},
-  {at: 59, line: "That's how you win clients, jobs and deals, one conversation at a time.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'grin', armL: [55, -30], armR: [55, -30]}), action: 'Ebo to camera, hands on the beats: clients… jobs… deals.'},
-  {at: 72, line: 'So next time you freeze,', size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'wide', mouth: 'flat', armL: [2, 0], armR: [2, 0]}), action: 'Ebo goes stiff — frozen, eyes wide.'},
-  {at: 77, line: "don't search your head for something clever.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'suspicious', mouth: 'flat', lookY: -16, lookX: 6, armR: [100, -20]}), action: 'Eyes roll up, searching his head; then he shakes it off.'},
-  {at: 84, line: "The answer's in what they just said.", size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'smile', armR: [88, 0], lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile'})}, chain: 3, action: 'Ebo points at Ama, smiling. LOOP: hard cut straight back to "I just got back from Chicago."'},
+  {at: 48, line: '"Pizza. Forty pizzas. At a wedding!"', size: 'CU Ama', frame: CU_AMA, ebo: ebo({...POSE.stand, lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'happy', mouth: 'laugh', armL: [100, -20], armR: [100, -20], headTilt: -6}), talking: true}, chain: 3, action: 'The payoff: Ama, laughing, throws her arms out — forty pizzas, at a wedding.'},
+  {at: 54, line: '(laughs) "Forty?!"', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'laugh', headTilt: -10, lookX: 16, armL: [50, -30], armR: [50, -30]}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'happy', mouth: 'grin'})}, chain: 3, action: 'Ebo cracks up. They\'re both laughing — a real conversation.'},
+  {at: 55, line: 'You said almost nothing, and she told you a whole story.', size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'smile', lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'wide', mouth: 'grin', armR: [80, -30], armL: [50, -20]}), talking: true}, chain: 3, action: 'Ama mid-story, gesturing big (mouth moving, no sound); Ebo just nods. The word chain sits over them.'},
+  {at: 66, line: "That's how you win clients, jobs and deals, one conversation at a time.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'grin', armL: [55, -30], armR: [55, -30]}), action: 'Ebo to camera, hands on the beats: clients… jobs… deals.'},
+  {at: 79, line: 'So next time you freeze,', size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'wide', mouth: 'flat', armL: [2, 0], armR: [2, 0]}), action: 'Ebo goes stiff — frozen, eyes wide.'},
+  {at: 84, line: "don't search your head for something clever.", size: 'BUST', frame: BUST, ebo: ebo({...POSE.stand, eyes: 'suspicious', mouth: 'flat', lookY: -16, lookX: 6, armR: [100, -20]}), action: 'Eyes roll up, searching his head; then he shakes it off.'},
+  {at: 91, line: "The answer's in what they just said.", size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'smile', armR: [88, 0], lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile'})}, chain: 3, action: 'Ebo points at Ama, smiling. LOOP: hard cut straight back to "I just got back from Chicago."'},
 ];
 
 /** One Animate scene per section. */
-export const EP05_SECTIONS: string[] = EP05_PLAN.map((_, i) => (i < 3 ? 'Cold Open' : i < 5 ? 'The Fix' : i < 12 ? 'The Conversation' : 'Payoff'));
+export const EP05_SECTIONS: string[] = EP05_PLAN.map((_, i) => (i < 3 ? 'Cold Open' : i < 5 ? 'The Fix' : i < 14 ? 'The Conversation' : 'Payoff'));
 
 export const ep05Times = () => {
   const starts = EP05_PLAN.map((s) => (typeof s.at === 'number' ? Math.max(0, WORDS[s.at].s - 0.08) : s.at.t));
@@ -139,7 +141,9 @@ const ACTS: Record<number, (l: number, t: number) => Act> = {
   // "No!": a gasp, then leaning in, hooked
   10: (_l, t) => (t < at(43) ? {ebo: {lift: -10}} : {ebo: {eyes: 'wide', mouth: 'o', tilt: 6, armL: [40, -20], armR: [40, -20]}}),
   // she tells the whole story (miming, arms going); he just nods
-  11: (l) => {
+  // Ebo cracks up: a little laughing bounce
+  12: (l) => ({ebo: {lift: beat(l, 0.12) % 2 ? -6 : 0, headTilt: beat(l, 0.12) % 2 ? -12 : -8}}),
+  13: (l) => {
     const n = beat(l, 0.45);
     return {
       ama: {armR: n % 2 ? [90, -30] : [50, -10], armL: n % 3 === 0 ? [70, -30] : [20, 6], headTilt: n % 2 ? 4 : -2},
@@ -148,10 +152,10 @@ const ACTS: Record<number, (l: number, t: number) => Act> = {
     };
   },
   // "freeze": dead still
-  13: () => ({ebo: {headTilt: 0}}),
+  15: () => ({ebo: {headTilt: 0}}),
   // searching his head… then he shakes it off on "clever"
-  14: (_l, t) => {
-    const c = at(83);
+  16: (_l, t) => {
+    const c = at(90);
     if (t < c) return {};
     const k = beat(t - c, 0.09);
     return t - c < 0.45 ? {ebo: {headTilt: k % 2 ? 8 : -8, eyes: 'squeeze', lookY: 0}} : {ebo: {eyes: 'happy', mouth: 'smile', lookY: 0, armR: [12, 6]}};
@@ -209,7 +213,7 @@ export const Ep05Frame: React.FC<{f: number}> = ({f}) => {
   const amaTalk = talking(ENV_AMA, f) || (act.amaTalks && talking(synthEnv([{w: 'mime', s: TIMES[i].start, e: TIMES[i].start + TIMES[i].length, who: 'ama'}]), f));
   // Ebo: hands talk when he's to camera and nothing else drives his arms
   let eboPose: Pose | undefined = s.ebo && {...s.ebo.pose, ...act.ebo};
-  if (eboPose && toCamera && !act.ebo?.armR && i !== 13) eboPose = beatGesture(eboPose, W_EBO, ENV_EBO, f, TIMES[i].start, TIMES[i].start + TIMES[i].length); // hands on the beat of his read
+  if (eboPose && toCamera && !act.ebo?.armR && i !== 15) eboPose = beatGesture(eboPose, W_EBO, ENV_EBO, f, TIMES[i].start, TIMES[i].start + TIMES[i].length); // hands on the beat of his read
   const amaPose: Pose | undefined = s.ama && {...s.ama.pose, ...act.ama};
   return (
     <StageSizeContext.Provider value={{w: EP05_W, h: EP05_H}}>

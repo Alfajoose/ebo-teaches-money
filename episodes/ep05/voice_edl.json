@@ -1,5 +1,5 @@
 {
- "note": "Cold open (approved hook): Ama's line, Ebo's flat 'Oh, nice.', a dead beat, then Ebo to camera. The ending loops back into Ama's first line.",
+ "note": "Cold open (approved hook), crickets in the dead beat; the story pays off ('Forty pizzas') before the lesson; holds after each handwritten word and each grab. The ending loops back into Ama's first line.",
  "segments": [
   {
    "who": "ama",
@@ -14,8 +14,8 @@
    "src": "dan",
    "from": 6.4,
    "to": 7.5,
-   "gap": 1.0,
-   "line": "Oh, nice. (flat) -- then a dead beat"
+   "gap": 1.2,
+   "line": "Oh, nice. (flat) -- dead beat, crickets"
   },
   {
    "who": "ebo",
@@ -29,9 +29,17 @@
    "who": "ebo",
    "src": "dan",
    "from": 9.48,
+   "to": 11.6,
+   "gap": 0.3,
+   "line": "Grab one word and ask about it."
+  },
+  {
+   "who": "ebo",
+   "src": "dan",
+   "from": 11.6,
    "to": 13.62,
-   "gap": 0.25,
-   "line": "Grab one word and ask about it. \"Chicago? What took you there?\""
+   "gap": 0.45,
+   "line": "\"Chicago? What took you there?\" (hold on the word)"
   },
   {
    "who": "ama",
@@ -45,25 +53,57 @@
    "who": "ebo",
    "src": "dan",
    "from": 13.7,
+   "to": 14.66,
+   "gap": 0.3,
+   "line": "Grab another."
+  },
+  {
+   "who": "ebo",
+   "src": "dan",
+   "from": 14.66,
    "to": 15.84,
-   "gap": 0.25,
-   "line": "Grab another. \"How was the wedding?\""
+   "gap": 0.45,
+   "line": "\"How was the wedding?\" (hold on the word)"
   },
   {
    "who": "ama",
    "src": "ama",
    "from": 3.64,
    "to": 7.44,
-   "gap": 0.25,
-   "line": "Chaos. The caterer didn't show up!"
+   "gap": 0.4,
+   "line": "Chaos. The caterer didn't show up! (hold on the word)"
   },
   {
    "who": "ebo",
    "src": "dan",
    "from": 15.86,
+   "to": 18.4,
+   "gap": 0.2,
+   "line": "\"No! So what did you eat?\""
+  },
+  {
+   "who": "ama",
+   "src": "ama2",
+   "from": 0.55,
+   "to": 5.06,
+   "gap": 0.2,
+   "line": "(laughing) Pizza. Forty pizzas. At a wedding!"
+  },
+  {
+   "who": "ebo",
+   "src": "dan2",
+   "from": 0.0,
+   "to": 1.72,
+   "gap": 0.35,
+   "line": "(laughs) Forty?!"
+  },
+  {
+   "who": "ebo",
+   "src": "dan",
+   "from": 18.6,
    "to": 33.44,
    "gap": 0.3,
-   "line": "\"No! So what did you eat?\" ... The answer's in what they just said."
+   "line": "You said almost nothing... The answer's in what they just said."
   }
  ]
 }

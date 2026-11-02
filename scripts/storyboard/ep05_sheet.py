@@ -19,7 +19,7 @@ rows = (len(shots) + COLS - 1) // COLS
 sheet = Image.new('RGB', (COLS * (PW + 40) + 40, 170 + rows * (PH + TXT + 40)), '#F6F0E4')
 d = ImageDraw.Draw(sheet)
 d.text((40, 40), 'EBO TEACHES MONEY · EP 05 · Never Run Out of Things to Say', font=F('Bold', 40), fill='#1D1A1A')
-d.text((40, 100), 'Vertical Short · 37.8s · cold open hook · still camera · Ebo faces camera · loops back to shot 1', font=F('Regular', 24), fill='#55505A')
+d.text((40, 100), 'Vertical Short · 45.9s · cold open hook + crickets · story payoff · still camera · Ebo faces camera · loops back to shot 1', font=F('Regular', 24), fill='#55505A')
 md = ['# Ep 05 — Never Run Out of Things to Say: shot list', '', '| # | time | size | line | action |', '|---|---|---|---|---|']
 for i, (at, line, size, action) in enumerate(shots):
     line, action = eval(line), eval(action)

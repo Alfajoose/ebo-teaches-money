@@ -8,7 +8,7 @@ loudness-normalises to -14 LUFS, and writes episodes/ep05/voice.mp3 plus episode
 import json, subprocess, os
 D = 'episodes/ep05'
 edl = json.load(open(f'{D}/voice_edl.json'))
-words = {k: json.load(open(f'{D}/words_{k}_raw.json')) for k in ('dan', 'ama', 'hook')}
+words = {k: json.load(open(f'{D}/words_{k}_raw.json')) for k in {s['src'] for s in edl['segments']}}
 t, parts, out_words = 0.0, [], []
 for k, s in enumerate(edl['segments']):
     p = f'/tmp/ep05_seg{k}.wav'

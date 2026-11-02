@@ -22,6 +22,11 @@ Ebo: "...Oh, nice." *(flat; then a dead beat of silence)*
 Ebo, to camera: "Don't be that guy. Here's the fix. Grab one word and ask about it. 'Chicago? What took you there?'"
 *(The rest plays as written.)* About 37 to 38 seconds.
 
+## Additions (2026-11-02): payoff, crickets, breathing room
+- After "No! So what did you eat?": Ama, laughing: "Pizza. Forty pizzas. At a wedding!" Then Ebo cracks up: "Forty?!" (new takes `raw_ama2.mp3`, `raw_dan2.mp3`).
+- A lone cricket chirps through the dead beat after "…Oh, nice." (`episodes/sfx/cricket.mp3`, looped).
+- Short holds after each handwritten word and each grab. Runtime about 46 seconds.
+
 ## Production notes
 - Ebo teaches to camera, then the conversation plays out with Ama.
 - Each grabbed word pops up handwritten: Chicago, wedding, caterer.
