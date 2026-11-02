@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {AbsoluteFill, continueRender, delayRender, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Html5Audio, continueRender, delayRender, staticFile, useCurrentFrame} from 'remotion';
 import {NoScaleContext} from '../noScale';
 import {HandDrawnContext} from '../handDrawn';
 import {RigCharacter} from '../cast/RigCharacter';
@@ -7,9 +7,10 @@ import {Pose, POSES} from '../components/Character';
 import {POSE, frontOn, gentle} from '../cast/poses';
 import {Backdrop} from './sets';
 import {StageSizeContext, Slam} from './exportCtx';
-import {VFPS, Word, VStage, Framing, lipFrame, talkGesture} from './kit';
+import {VFPS, Word, VStage, Framing, lipFrame, beatGesture} from './kit';
 import {C} from '../theme';
 import wordsJson from './data/ep05-words.json';
+import envJson from './data/ep05-env.json';
 
 /**
  * EBO TEACHES MONEY — Ep 05 "Never Run Out of Things to Say" (YouTube Short, 1080×1920, ~38s).
@@ -72,6 +73,9 @@ export const EP05_PLAN: Shot[] = [
   {at: 84, line: "The answer's in what they just said.", size: 'TWO', frame: TWO, ebo: ebo({...POSE.stand, eyes: 'happy', mouth: 'smile', armR: [88, 0], lookX: 16}, EBO_TWO_X), ama: {pose: amaPose({eyes: 'open', mouth: 'smile'})}, chain: 3, action: 'Ebo points at Ama, smiling. LOOP: hard cut straight back to "I just got back from Chicago."'},
 ];
 
+/** One Animate scene per section. */
+export const EP05_SECTIONS: string[] = EP05_PLAN.map((_, i) => (i < 3 ? 'Cold Open' : i < 5 ? 'The Fix' : i < 12 ? 'The Conversation' : 'Payoff'));
+
 export const ep05Times = () => {
   const starts = EP05_PLAN.map((s) => (typeof s.at === 'number' ? Math.max(0, WORDS[s.at].s - 0.08) : s.at.t));
   starts[0] = 0;
@@ -88,9 +92,9 @@ export const ep05ShotAt = (f: number) => {
 
 // ───────────────────────── performance ─────────────────────────
 /**
- * Lip sync per speaker. Until the voice audio is in (episodes/ep05/SOURCES.txt), each speaker's
- * loudness is synthesised from their own word timings: open on the word, a short dip between
- * syllables (every ~0.13s), closed between words. Swap in the real envelope when the audio lands.
+ * Lip sync per speaker from the real read (ep05-env.json). The story mime in shot 12 (Ama talking
+ * under Ebo's voice-over) has no audio of its own, so it uses a loudness synthesised from timing:
+ * open, a dip every ~0.13s.
  */
 const synthEnv = (words: W5[]): number[] => {
   const n = Math.ceil(END * VFPS) + 2;
@@ -105,8 +109,9 @@ const synthEnv = (words: W5[]): number[] => {
 };
 const W_EBO = WORDS.filter((w) => w.who === 'ebo');
 const W_AMA = WORDS.filter((w) => w.who === 'ama');
-const ENV_EBO = synthEnv(W_EBO);
-const ENV_AMA = synthEnv(W_AMA);
+/** The real read: each speaker's loudness from the assembled voice (episodes/ep05/voice.mp3). */
+const ENV_EBO = (envJson as {ebo: number[]}).ebo;
+const ENV_AMA = (envJson as {ama: number[]}).ama;
 const talking = (env: number[], f: number) => (env[f] ?? 0) > 0.1;
 const beat = (l: number, p: number) => Math.floor(l / p);
 const at = (k: number) => WORDS[k].s;
@@ -161,8 +166,10 @@ const GRABBED = [
 ];
 const MARKER = 'EboMarker';
 const useMarkerFont = () => {
-  const [handle] = useState(() => delayRender('marker font'));
+  // (the Animate export renders frames outside the player, where there's nothing to wait for)
+  const [handle] = useState(() => (typeof document === 'undefined' ? null : delayRender('marker font')));
   useEffect(() => {
+    if (handle === null) return;
     const f = new FontFace(MARKER, `url(${staticFile('fonts/PermanentMarker-Regular.ttf')})`);
     f.load().then((ff) => {
       (document.fonts as unknown as {add: (f: FontFace) => void}).add(ff);
@@ -202,7 +209,7 @@ export const Ep05Frame: React.FC<{f: number}> = ({f}) => {
   const amaTalk = talking(ENV_AMA, f) || (act.amaTalks && talking(synthEnv([{w: 'mime', s: TIMES[i].start, e: TIMES[i].start + TIMES[i].length, who: 'ama'}]), f));
   // Ebo: hands talk when he's to camera and nothing else drives his arms
   let eboPose: Pose | undefined = s.ebo && {...s.ebo.pose, ...act.ebo};
-  if (eboPose && toCamera && !act.ebo?.armR && i !== 13) eboPose = talkGesture(eboPose, W_EBO, t, TIMES[i].start);
+  if (eboPose && toCamera && !act.ebo?.armR && i !== 13) eboPose = beatGesture(eboPose, W_EBO, ENV_EBO, f, TIMES[i].start, TIMES[i].start + TIMES[i].length); // hands on the beat of his read
   const amaPose: Pose | undefined = s.ama && {...s.ama.pose, ...act.ama};
   return (
     <StageSizeContext.Provider value={{w: EP05_W, h: EP05_H}}>
@@ -226,4 +233,11 @@ export const Ep05Frame: React.FC<{f: number}> = ({f}) => {
   );
 };
 
-export const EboEp05: React.FC = () => <Ep05Frame f={useCurrentFrame()} />;
+export const EboEp05: React.FC = () => (
+  <>
+    <Ep05Frame f={useCurrentFrame()} />
+    <Html5Audio src={staticFile('ebo-ep05/voice.mp3')} />
+    {/* sound effects (src/series/sfxCues.ts, mixed by scripts/sfx/mix.py) */}
+    <Html5Audio src={staticFile('ebo-ep05/sfx.mp3')} />
+  </>
+);

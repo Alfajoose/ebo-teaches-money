@@ -55,3 +55,15 @@ export const K01_SFX: Record<number, Shot> = {
   26: () => [0.15, 0.45, 0.75].map((at) => ({at, sfx: 'marker_tick'})),
   31: () => [{at: 0.5, sfx: 'phone_buzz'}],
 };
+
+/** Ep5, absolute times (seconds) from the word timings: a pop for each handwritten word, a whoosh and
+ * a soft catch for each air-grab. Built by scripts/sfx/gen.tsx from ep05-words.json. */
+export const ep05Sfx = (w: {s: number}[]): Cue[] => [
+  {at: w[22].s, sfx: 'pop'}, // "Chicago" pops up
+  {at: w[35].s, sfx: 'pop'}, // "wedding"
+  {at: w[38].s, sfx: 'pop'}, // "caterer"
+  {at: w[15].s - 0.04, sfx: 'whoosh', vol: 0.8}, // the grab
+  {at: w[15].s + 0.3, sfx: 'ball_catch', vol: 0.6}, // …and the hand closes
+  {at: w[30].s - 0.04, sfx: 'whoosh', vol: 0.8}, // "Grab another."
+  {at: w[30].s + 0.22, sfx: 'ball_catch', vol: 0.6},
+];

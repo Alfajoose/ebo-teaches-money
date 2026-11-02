@@ -39,7 +39,7 @@ CAST = {  # capture id -> (source folder, rig symbol, display name)
     'ebo': ('Ebo', 'Ebo', 'Ebo'),
     'mica': ('mica_drip', 'Obuor', 'Mica'),
     'obuor': ('obuor', 'Obuor', 'Obuor'),
-    'ama': ('Ama_pretty', 'Ama port', 'Ama'),
+    'ama': ('Ama', 'Ama', 'Ama'),  # new master (cast/masters/Ama.fla), rig = its frame-0 rest pose
     'christy': ('christy', 'Christy', 'Christy'),
     'konka': ('konka', 'Symbol 2', 'Konka'),  # pose library: one drawn pose per frame
 }
