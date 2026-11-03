@@ -1,0 +1,5 @@
+Voice takes (ElevenLabs flow "Ebo Ep6 – Say No Without the Guilt", id b6Nc2lQDEbsHQu6effnO).
+Assemble with: python3 -I scripts/voice-assemble.py episodes/ep06   (writes voice.mp3, words.json, env.json)
+  raw_dan.mp3      Dan (Ebo),        generation faUISPXZfpzWHRiqIZSW (43.5s)
+  raw_ama.mp3      Yuria (Ama),      generation Wma45DRkCBUQewn7Ku9P (13.1s)
+  raw_christy.mp3  Olivia (Christy), generation hYCm5xzjItYRUJIJQUCm (7.9s)
