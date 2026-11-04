@@ -68,3 +68,17 @@ export const ep05Sfx = (w: {s: number; e: number}[]): Cue[] => [
   {at: w[30].s - 0.04, sfx: 'whoosh', vol: 0.8}, // "Grab another."
   {at: w[30].s + 0.22, sfx: 'ball_catch', vol: 0.6},
 ];
+
+/** Ep6, absolute times from the word timings (ep06-words.json): the cash register on the money,
+ * the stamp as the tax card slams, a pop for each handwritten move, a cricket in the dead beat
+ * before "Oh. Never mind.", her footsteps out, and the register again for the money kept. */
+export const ep06Sfx = (w: {s: number; e: number}[]): Cue[] => [
+  {at: w[4].s, sfx: 'cha_ching', vol: 0.7}, // "two hundred?"
+  {at: w[35].s, sfx: 'stamp', vol: 0.8}, // THE PEOPLE-PLEASER TAX slams down
+  {at: w[52].s, sfx: 'pop'}, // "Buy time"
+  {at: w[63].s, sfx: 'pop'}, // "Not you, the request"
+  {at: w[84].s, sfx: 'pop'}, // "Offer what you can"
+  {at: w[93].e + 0.3, sfx: 'cricket', vol: 0.9, loop: Math.max(0.6, w[94].s - w[93].e - 0.4)},
+  ...[0, 1, 2, 3].map((i) => ({at: w[96].s + 0.35 + i * 0.26, sfx: 'footstep', vol: 0.5 - i * 0.08})),
+  {at: w[110].s, sfx: 'cha_ching', vol: 0.55}, // "the two hundred stays in your pocket"
+];

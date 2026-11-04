@@ -119,10 +119,10 @@ const ACTS: Record<number, (l: number, t: number) => Act> = {
   12: (l) => ({christy: {eyes: l > 0.45 && l < 0.57 ? 'closed' : 'open'}}),
   // "Never mind." then she turns and walks off (stepping, out of frame left)
   13: (_l, t) => {
-    const go = WORDS[96].e + 0.1;
+    const go = WORDS[96].s + 0.35; // she turns on "mind." (the word is timed long) so the walk-off reads before the cut
     if (t < go) return {};
     const k = t - go;
-    return {christy: {legL: Math.floor(k / 0.13) % 2 ? [20, 6] : [-8, 0], legR: Math.floor(k / 0.13) % 2 ? [-8, 0] : [20, 6], eyes: 'half'}, christyX: -k * 900, christyFacing: -1};
+    return {christy: {legL: Math.floor(k / 0.13) % 2 ? [20, 6] : [-8, 0], legR: Math.floor(k / 0.13) % 2 ? [-8, 0] : [20, 6], eyes: 'half'}, christyX: -k * 1100, christyFacing: -1};
   },
   // "Wait…" staring at her hands… "that actually worked?" delighted
   14: (_l, t) => (t >= at(98) ? {ama: {eyes: 'happy', mouth: 'grin', lookY: 0, armL: [60, -30], armR: [60, -30]}} : {}),

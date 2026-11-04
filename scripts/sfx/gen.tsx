@@ -1,8 +1,10 @@
 // Absolute SFX cue lists (seconds) for each episode, from src/series/sfxCues.ts and the shot timing.
 import fs from 'fs';
-import {EP04_SFX, K01_SFX, Cue, ep05Sfx} from '../../src/series/sfxCues';
+import {EP04_SFX, K01_SFX, Cue, ep05Sfx, ep06Sfx} from '../../src/series/sfxCues';
 import ep05Words from '../../src/series/data/ep05-words.json';
 import {EP05_DURATION} from '../../src/series/ep05';
+import ep06Words from '../../src/series/data/ep06-words.json';
+import {EP06_DURATION} from '../../src/series/ep06';
 import {EP04_PLAN, ep04Times} from '../../src/series/ep04plan';
 import {K01_PLAN, K01_SHOT_TIMES, K01_DURATION} from '../../src/series/konka01';
 
@@ -24,5 +26,6 @@ K01_PLAN.forEach((_, i) => {
 });
 out.konka01 = {duration: kd, cues: k};
 out.ep05 = {duration: EP05_DURATION / 30, cues: ep05Sfx(ep05Words)};
+out.ep06 = {duration: EP06_DURATION / 30, cues: ep06Sfx(ep06Words)};
 fs.writeFileSync(process.argv[2], JSON.stringify(out, null, 1));
 console.log('cues: ep04', c4.length, 'konka01', k.length);
