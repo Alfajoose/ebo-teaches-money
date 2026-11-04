@@ -13,13 +13,15 @@ import wordsJson from './data/ep06-words.json';
 import envJson from './data/ep06-env.json';
 
 /**
- * EBO TEACHES MONEY — Ep 06 "Say No Without the Guilt" (YouTube Short, 1080×1920, ~67s).
- * Cold open: Christy (played by Ama Pretty, the 'pretty' rig) asks to borrow two hundred, Ama caves. Ebo, to camera, names the cost and the
- * three moves; Ama practises each in a coaching two-shot, and each move pops up handwritten,
- * building a chain (Buy time → No to the request → Offer what you can). Christy pushes, Ama holds,
- * a cricket fills the beat, "…Okay. Fair." Ebo's wrap-up recaps the moves over the chain and ends
- * on "A kind no beats a broke yes", which loops back to Christy's first line.
- * Still camera (house rule 11), Ebo faces us (14), hands on the beat (15).
+ * EBO TEACHES MONEY — Ep 06 "Say No Without the Guilt" (YouTube Short, 1080×1920, ~49s), v2:
+ * snappy Practical-Psychology-style pacing within the house rules.
+ * 1. Hook: Christy (played by Ama Pretty) asks for two hundred, and Ama gives a silent, panicked smile.
+ *    Ebo names the PEOPLE-PLEASER TAX (red card).
+ * 2. Buy time / 3. Not you, the request / Offer what you can: handwritten, unnumbered cards build a
+ *    stack while Ama does each one.
+ * 4. Cricket beat, "Oh. Never mind." (Christy walks off), then Ama, stunned: "that actually worked?"
+ * 5. Loop: "A kind no beats a broke yes." Hard cut back to Christy's first line.
+ * Still camera (house rule 11), Ebo faces us (14), hands on the beat (15); the acting carries it, with no icons.
  */
 export const EP06_W = 1080;
 export const EP06_H = 1920;
@@ -51,6 +53,8 @@ type Shot = {
   christy?: Pose;
   /** how many of the three moves are on screen (the chain) */
   chain?: number;
+  /** the red PEOPLE-PLEASER TAX card */
+  tax?: boolean;
   action: string;
 };
 
@@ -58,40 +62,35 @@ const stand = (x: Partial<Pose>): Pose => ({...POSES.standing, armL: [12, 6], ar
 const ebo = (p: Partial<Pose>, x?: number) => ({pose: {...POSE.stand, ...p} as Pose, x});
 
 export const EP06_PLAN: Shot[] = [
-  // ── Cold open ──
-  {at: 0, line: '"Hey, can I borrow two hundred? Just till Friday."', size: 'TWO C+A', frame: TWO, christy: stand({mouth: 'grin', armR: [55, -30], lookX: 14}), ama: stand({mouth: 'smile', eyes: 'open'}), action: 'Christy, breezy, hand out. Ama, smiling, frozen. (cha-ching)'},
-  {at: 9, line: '"…Of course!"', size: 'CU Ama', frame: CU_AMA, christy: stand({}), ama: stand({eyes: 'wide', mouth: 'grimace', armL: [20, 10], armR: [20, 10]}), action: 'Ama: a forced smile, dying inside.'},
-  // ── The problem ──
-  {at: 11, line: "That's the third time this month.", size: 'BUST', frame: BUST, ebo: ebo({eyes: 'half', mouth: 'flat'}), action: 'Hard cut: Ebo to camera, dry.'},
-  {at: 17, line: 'Rent? Short. Savings? Gone.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'squint', mouth: 'flat'}), action: 'Ticking them off, hands on the beats.'},
-  {at: 21, line: 'And Friday? Never comes.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'half', mouth: 'flat', armL: [4, 2], armR: [4, 2]}), action: 'Deadpan. Arms limp.'},
-  {at: 25, line: "Here's how to say no and keep the friend.", size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'grin'}), action: 'Ebo perks up: the fix.'},
-  // ── The moves ──
-  {at: 34, line: "Don't answer right away. Buy yourself time.", size: 'BUST', frame: BUST, ebo: ebo({eyes: 'open', mouth: 'smile'}), chain: 1, action: '"Buy time" pops up handwritten.'},
-  {at: 41, line: '"Let me check and get back to you."', size: 'TWO E+A', frame: TWO, ebo: ebo({eyes: 'happy', mouth: 'smile', lookX: 16}, LEFT_X), ama: stand({eyes: 'open', mouth: 'smile', armR: [40, -20]}), chain: 1, action: 'Coaching two-shot: Ama practises, a little unsure. Ebo nods.'},
-  {at: 49, line: 'Then say no to the request, not the person.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'open', mouth: 'smile'}), chain: 2, action: '"No to the request" joins the chain.'},
-  {at: 58, line: '"I can\'t lend money right now…"', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'open', mouth: 'flat', armR: [30, -20]}), chain: 2, action: 'Ama, gently, getting the hang of it.'},
-  {at: 64, line: 'And offer something you can give.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'grin'}), chain: 3, action: '"Offer what you can" completes the chain.'},
-  {at: 70, line: '"…but I can help you make a budget this weekend?"', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'wide', mouth: 'grin', armL: [50, -30], armR: [50, -30]}), chain: 3, action: 'Ama brightens: that one feels good.'},
-  // ── The test ──
-  {at: 80, line: '"Come on, you always help me!"', size: 'TWO C+A', frame: TWO, christy: stand({eyes: 'sad', mouth: 'wobbly', armL: [70, -30], armR: [70, -30], lookX: 14}), ama: stand({eyes: 'wide', mouth: 'flat'}), action: 'Christy pushes, arms out, whiny. Ama wobbles.'},
-  {at: 86, line: 'This is where most people cave. Don\'t.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'squint', mouth: 'flat'}), action: 'Ebo, low, aside to camera. On "Don\'t." his hand comes up: stop.'},
-  {at: 93, line: '"I know. And I still can\'t."', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'open', mouth: 'smile', headTilt: 4}), action: 'Ama, steady and warm. She holds.'},
-  {at: {t: 0}, line: '(beat — cricket)', size: 'TWO C+A', frame: TWO, christy: stand({eyes: 'open', mouth: 'flat'}), ama: stand({eyes: 'open', mouth: 'smile'}), action: 'Silence. Christy blinks. A lone cricket chirps.'},
-  {at: 99, line: '"…Okay. Fair."', size: 'TWO C+A', frame: TWO, christy: stand({eyes: 'half', mouth: 'smile', armL: [40, -40], armR: [40, -40]}), ama: stand({eyes: 'open', mouth: 'smile'}), action: 'Christy shrugs. No drama.'},
-  {at: 101, line: '"Wait. That worked?"', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'wide', mouth: 'o'}), action: 'Ama, stunned… then delighted.'},
-  // ── The lesson ──
-  {at: 104, line: 'Look what she did. She bought time, said no to the request, not the person, and offered what she could actually give.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'smile'}), chain: 3, action: 'Ebo recaps over the chain; each move turns red as he says it.'},
-  {at: 126, line: 'No lies. No drama. No guilt.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'grin'}), action: 'Three beats, three hand moves.'},
-  {at: 132, line: 'And the two hundred? Still in her pocket, where it can pay her rent.', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'happy', mouth: 'grin', armL: [30, -30], armR: [30, -30]}), action: 'Ama, smiling, relieved — rent paid.'},
-  {at: 146, line: "People respect a no that's clear and kind.", size: 'BUST', frame: BUST, ebo: ebo({eyes: 'open', mouth: 'smile'}), action: 'Ebo, warm, to camera.'},
-  {at: 154, line: 'So next time someone asks and your gut says no… say it.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'squint', mouth: 'smirk'}), action: 'On "say it." he points straight at us.'},
-  {at: 166, line: 'A kind no beats a broke yes. Every time.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'grin', armL: [50, -30], armR: [50, -30]}), action: 'The line. LOOP: hard cut back to "Hey, can I borrow two hundred?"'},
+  // ── 1. The hook ──
+  {at: 0, line: '"Hey, can I borrow two hundred? Just till Friday."', size: 'TWO C+A', frame: TWO, christy: stand({mouth: 'grin', armR: [55, -30], lookX: 14}), ama: stand({mouth: 'smile', eyes: 'open'}), action: 'Christy leans in, breezy, hand out. (cha-ching)'},
+  {at: {t: 0}, line: '(Ama: a tight, panicked smile)', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'wide', mouth: 'grimace', armL: [20, 10], armR: [20, 10]}), action: 'Ama, silent: a tight, panicked smile.'},
+  {at: 9, line: 'That\'s the third time this month. And that "Friday"? It never comes.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'half', mouth: 'flat'}), action: 'Hard cut: Ebo to camera, dry; deadpan on "never comes".'},
+  {at: 21, line: 'If your gut screams no, but your mouth says yes…', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'squint', mouth: 'flat', tilt: 4}), action: 'Leaning in, hands on the beats.'},
+  {at: 31, line: 'you\'re suffering from the People-Pleaser Tax.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'wide', mouth: 'o'}), tax: true, action: 'THE PEOPLE-PLEASER TAX slams up in red.'},
+  // ── 2. The shift: buy time ──
+  {at: 37, line: 'Stop answering on the spot. Panic makes you a yes-man.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'squint', mouth: 'flat'}), action: 'Brisk, confident.'},
+  {at: 47, line: 'Your first move is to pause.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'smile'}), chain: 1, action: 'BUY TIME pops up handwritten.'},
+  {at: 53, line: '"Let me check my week and get back to you."', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'open', mouth: 'smile', armR: [95, -30]}), chain: 1, action: 'Ama, calm, hand up: the pause.'},
+  // ── 3. Not you, the request / offer what you can ──
+  {at: 63, line: 'Next, separate the person from the favor.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'open', mouth: 'smile'}), chain: 2, action: 'NOT YOU, THE REQUEST joins the stack.'},
+  {at: 70, line: 'You aren\'t rejecting them; you\'re declining the task.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'smile'}), chain: 2, action: 'Hands on the beats.'},
+  {at: 78, line: '"I can\'t lend money right now…"', size: 'TWO C+A', frame: TWO, christy: stand({eyes: 'wide', mouth: 'flat', lookX: 14}), ama: stand({eyes: 'open', mouth: 'flat', armR: [30, -20]}), chain: 2, action: 'Ama to Christy, gently. Christy blinks.'},
+  {at: 84, line: '"…but I can help you build a budget this weekend."', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'wide', mouth: 'grin', armL: [50, -30], armR: [50, -30]}), chain: 3, action: 'Ama brightens. OFFER WHAT YOU CAN completes the stack.'},
+  // ── 4. The climax and resolution ──
+  {at: {t: 0}, line: '(beat — cricket)', size: 'TWO C+A', frame: TWO, christy: stand({eyes: 'open', mouth: 'flat'}), ama: stand({eyes: 'open', mouth: 'smile'}), chain: 3, action: 'Silence. Christy blinks. A lone cricket chirps.'},
+  {at: 94, line: '"Oh. Never mind."', size: 'TWO C+A', frame: TWO, christy: stand({eyes: 'half', mouth: 'flat', armL: [30, -30], armR: [30, -30]}), ama: stand({eyes: 'open', mouth: 'smile'}), chain: 3, action: 'Christy shrugs… then turns and walks off.'},
+  {at: 97, line: '"Wait… that actually worked?"', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'wide', mouth: 'o', lookY: 14, armL: [40, -20], armR: [40, -20]}), action: 'Ama stares at her hands, wide-eyed… then delighted.'},
+  {at: 101, line: 'No lies. No drama. Just a clear boundary.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'grin'}), chain: 3, action: 'Ebo, warm, three beats over the stack.'},
+  {at: 109, line: 'The two hundred stays in your pocket.', size: 'CU Ama', frame: CU_AMA, ama: stand({eyes: 'happy', mouth: 'grin', armL: [30, -30], armR: [30, -30]}), action: 'Ama, relieved and happy.'},
+  // ── 5. The loop ──
+  {at: 116, line: 'A kind no beats a broke yes. Every time.', size: 'BUST', frame: BUST, ebo: ebo({eyes: 'happy', mouth: 'grin', armL: [50, -30], armR: [50, -30]}), action: 'The line. LOOP: hard cut back to "Hey, can I borrow two hundred?"'},
 ];
-// the cricket beat starts just after Ama's "can't." ends
-(EP06_PLAN[15] as Shot).at = {t: WORDS[98].e + 0.15};
+// the two timed beats: Ama's silent smile after Christy's ask, and the cricket after Ama's offer
+(EP06_PLAN[1] as Shot).at = {t: WORDS[8].e + 0.1};
+(EP06_PLAN[12] as Shot).at = {t: WORDS[93].e + 0.15};
 
-export const EP06_SECTIONS: string[] = EP06_PLAN.map((_, i) => (i < 2 ? 'Cold Open' : i < 6 ? 'The Problem' : i < 12 ? 'The Moves' : i < 18 ? 'The Test' : 'The Lesson'));
+export const EP06_SECTIONS: string[] = EP06_PLAN.map((_, i) => (i < 5 ? 'The Hook' : i < 8 ? 'Buy Time' : i < 12 ? 'Not You, The Request' : i < 17 ? 'The Resolution' : 'The Loop'));
 
 export const ep06Times = () => {
   const starts = EP06_PLAN.map((s) => (typeof s.at === 'number' ? Math.max(0, WORDS[s.at].s - 0.08) : s.at.t));
@@ -114,26 +113,30 @@ const talking = (who: Who, f: number) => (ENV[who][f] ?? 0) > 0.1;
 const at = (k: number) => WORDS[k].s;
 
 /** Per-shot acting on top of the shot's poses: (time in the shot, absolute time) → changes. */
-type Act = {ebo?: Partial<Pose>; ama?: Partial<Pose>; christy?: Partial<Pose>};
+type Act = {ebo?: Partial<Pose>; ama?: Partial<Pose>; christy?: Partial<Pose>; christyX?: number; christyFacing?: 1 | -1};
 const ACTS: Record<number, (l: number, t: number) => Act> = {
-  // "Don't.": the hand comes up flat — stop
-  13: (_l, t) => (t >= at(92) - 0.07 ? {ebo: {armR: t < at(92) ? [40, 10] : [100, -10], eyes: 'angry', mouth: 'flat'}} : {}),
-  // the beat: Christy blinks, the cricket chirps
-  15: (l) => ({christy: {eyes: l > 0.5 && l < 0.62 ? 'closed' : 'open'}}),
-  // "Wait." stunned… "That worked?" delighted
-  17: (_l, t) => (t >= at(102) ? {ama: {eyes: 'happy', mouth: 'grin', armL: [60, -30], armR: [60, -30]}} : {}),
-  // "say it." — pointing straight at us
-  22: (_l, t) => (t >= at(164) - 0.07 ? {ebo: {...POSE.pointAtYou, eyes: 'squint', mouth: 'smirk'}} : {}),
+  // the cricket beat: Christy blinks
+  12: (l) => ({christy: {eyes: l > 0.45 && l < 0.57 ? 'closed' : 'open'}}),
+  // "Never mind." then she turns and walks off (stepping, out of frame left)
+  13: (_l, t) => {
+    const go = WORDS[96].e + 0.1;
+    if (t < go) return {};
+    const k = t - go;
+    return {christy: {legL: Math.floor(k / 0.13) % 2 ? [20, 6] : [-8, 0], legR: Math.floor(k / 0.13) % 2 ? [-8, 0] : [20, 6], eyes: 'half'}, christyX: -k * 900, christyFacing: -1};
+  },
+  // "Wait…" staring at her hands… "that actually worked?" delighted
+  14: (_l, t) => (t >= at(98) ? {ama: {eyes: 'happy', mouth: 'grin', lookY: 0, armL: [60, -30], armR: [60, -30]}} : {}),
 };
 /** Shots where Ebo's own act drives the arms (no beat gestures then). */
-const ARMS_ACTED = (i: number, t: number) => (i === 13 && t >= at(92) - 0.07) || (i === 22 && t >= at(164) - 0.07);
+const ARMS_ACTED = (_i: number, _t: number) => false;
 
-/** The three moves, handwritten, building a chain; in the recap each turns red as Ebo names it. */
+/** The three moves, handwritten, no numbers (house rule 6), building a stack. */
 const MOVES = [
-  {text: 'Buy time', at: at(38), y: 170, x: 540, rot: -4, recap: at(109)},
-  {text: 'No to the request', at: at(54), y: 285, x: 540, rot: 2, recap: at(111)},
-  {text: 'Offer what you can', at: at(65), y: 400, x: 540, rot: -2, recap: at(120)},
+  {text: 'Buy time', at: at(52), y: 170, x: 540, rot: -4},
+  {text: 'Not you, the request', at: at(63), y: 285, x: 540, rot: 2},
+  {text: 'Offer what you can', at: at(84), y: 400, x: 540, rot: -2},
 ];
+const TAX = {text: ['The People-', 'Pleaser Tax'], at: at(35)};
 const MARKER = 'EboMarker';
 const useMarkerFont = () => {
   // (the Animate export renders frames outside the player, where there's nothing to wait for)
@@ -147,11 +150,10 @@ const useMarkerFont = () => {
     }).catch(() => continueRender(handle));
   }, [handle]);
 };
-const Chain: React.FC<{n: number; t: number; recap: boolean}> = ({n, t, recap}) => (
+const Chain: React.FC<{n: number; t: number}> = ({n, t}) => (
   <g>
     {MOVES.slice(0, n).map((m, i) => {
-      // newest move red while building; during the recap, the one he's naming
-      const hot = recap ? t >= m.recap && (i === MOVES.length - 1 || t < MOVES[i + 1].recap) : i === n - 1;
+      const hot = i === n - 1; // the newest one in red
       return (
         <Slam key={m.text} t={t} at={m.at} dist={-60} twist={m.rot}>
           <g transform={`translate(${m.x} ${m.y}) rotate(${m.rot})`}>
@@ -163,6 +165,20 @@ const Chain: React.FC<{n: number; t: number; recap: boolean}> = ({n, t, recap}) 
       );
     })}
   </g>
+);
+
+/** THE PEOPLE-PLEASER TAX: a red stamped card in the hook. */
+const TaxCard: React.FC<{t: number}> = ({t}) => (
+  <Slam t={t} at={TAX.at} dist={-80} twist={-6}>
+    <g transform="translate(540 250) rotate(-5)">
+      <rect x={-430} y={-150} width={860} height={270} rx={26} fill="#fff" stroke="#E5484D" strokeWidth={14} />
+      {TAX.text.map((l, k) => (
+        <text key={l} y={-30 + k * 115} textAnchor="middle" fontFamily={MARKER} fontSize={104} fill="#E5484D">
+          {l}
+        </text>
+      ))}
+    </g>
+  </Slam>
 );
 
 export const Ep06Frame: React.FC<{f: number}> = ({f}) => {
@@ -181,9 +197,9 @@ export const Ep06Frame: React.FC<{f: number}> = ({f}) => {
       <NoScaleContext.Provider value>
         <HandDrawnContext.Provider value>
           <AbsoluteFill style={{background: '#000'}}>
-            <VStage framing={s.frame} bg="#D2C4EE" blurBg={<Backdrop id="ep06" />} overlay={s.chain ? <Chain n={s.chain} t={t} recap={i === 18} /> : undefined}>
+            <VStage framing={s.frame} bg="#D2C4EE" blurBg={<Backdrop id="ep06" />} overlay={s.tax ? <TaxCard t={t} /> : s.chain ? <Chain n={s.chain} t={t} /> : undefined}>
               {christyPose && (
-                <RigCharacter who="pretty" x={LEFT_X + 30} y={FLOOR} scale={CHRISTY_SCALE} facing={1} t={f} pose={gentle(christyPose)}
+                <RigCharacter who="pretty" x={LEFT_X + 30 + (act.christyX ?? 0)} y={FLOOR} scale={CHRISTY_SCALE} facing={act.christyFacing ?? 1} t={f} pose={gentle(christyPose)}
                   mouthFrame={talking('christy', f) ? lipFrame(ENV.christy, W_BY.christy, f) : undefined} />
               )}
               {amaPose && (

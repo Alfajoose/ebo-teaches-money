@@ -3,3 +3,8 @@ Assemble with: python3 -I scripts/voice-assemble.py episodes/ep06   (writes voic
   raw_dan.mp3      Dan (Ebo),        generation faUISPXZfpzWHRiqIZSW (43.5s)
   raw_ama.mp3      Yuria (Ama),      generation Wma45DRkCBUQewn7Ku9P (13.1s)
   raw_christy.mp3  Olivia (Christy), generation hYCm5xzjItYRUJIJQUCm (7.9s)
+v2 takes (2026-11-04, same flow):
+  raw_dan2.mp3      Dan (Ebo),        generation Sw0IeqPGJK5HN4oibgEM (31.2s)
+  raw_ama2.mp3      Yuria (Ama),      generation FjgV2uqNKjrxWl4ZCfN5 (9.8s)
+  raw_christy2.mp3  Olivia (Christy), generation AHHRjFInDwRYSMNJ6pMI (2.1s, "Oh. Never mind.")
+  Christy's opening line is cut from raw_christy.mp3 (v1). The v1 edit list is kept as voice_edl_v1.json.

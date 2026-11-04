@@ -10,8 +10,9 @@ shots = re.findall(r"\{at: ([^,]+|\{t: [\d.]+\}), line: ('(?:[^'\\]|\\.)*'|\"(?:
 words = json.load(open('src/series/data/ep06-words.json'))
 def start(at):
     m = re.match(r'\{t: ([\d.]+)\}', at)
-    return 0 if at == '0' else (words[98]['e'] + 0.15) if m else max(0, words[int(at)]['s'] - 0.08)  # the one timed shot: the cricket beat after Ama's "can't."
+    return 0 if at == '0' else TIMED.pop(0) if m else max(0, words[int(at)]['s'] - 0.08)
 ims = sorted(glob.glob(f'{panels_dir}/s*.png'))
+TIMED = [words[8]['e'] + 0.1, words[93]['e'] + 0.15]  # the two timed beats: Ama's silent smile, the cricket
 F = lambda w, s: ImageFont.truetype(f'/usr/share/fonts/opentype/inter/Inter-{w}.otf', s)
 PW, PH = 324, 576
 COLS, TXT = 4, 250
@@ -20,7 +21,7 @@ rows = (len(shots) + COLS - 1) // COLS
 sheet = Image.new('RGB', (COLS * (PW + 40) + 40, 170 + rows * (PH + TXT + 40)), '#F6F0E4')
 d = ImageDraw.Draw(sheet)
 d.text((40, 40), 'EBO TEACHES MONEY · EP 06 · Say No Without the Guilt', font=F('Bold', 40), fill='#1D1A1A')
-d.text((40, 100), 'Vertical Short · 67s · cold open · coaching two-shot · cricket beat · still camera · Ebo faces camera · loops back to shot 1', font=F('Regular', 24), fill='#55505A')
+d.text((40, 100), 'v2 · Vertical Short · 49s · People-Pleaser Tax hook · unnumbered move cards · cricket beat · still camera · Ebo faces camera · loops back to shot 1', font=F('Regular', 24), fill='#55505A')
 md = ['# Ep 06 — Say No Without the Guilt: shot list', '', '| # | time | size | line | action |', '|---|---|---|---|---|']
 for i, (at, line, size, action) in enumerate(shots):
     line, action = eval(line), eval(action)

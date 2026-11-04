@@ -1,19 +1,93 @@
-{"note": "Cold open (Christy asks, Ama caves), Ebo's three moves with Ama practising, Christy pushes, Ama holds, the cricket beat, Ebo's wrap-up. Loops back to Christy's first line.",
+{
+ "note": "v2 (Practical-Psychology pacing): Christy asks (cha-ching), Ama's silent panicked smile, Ebo names the People-Pleaser Tax, the three moves with Ama, the cricket beat, 'Oh. Never mind.', Ama stunned, Ebo's wrap. Loops back to Christy's line.",
  "segments": [
-  {"who": "christy", "src": "christy", "from": 0.30, "to": 3.10, "gap": 0.3, "line": "Hey, can I borrow two hundred? Just till Friday."},
-  {"who": "ama", "src": "ama", "from": 0.0, "to": 1.06, "gap": 0.55, "line": "...Of course!"},
-  {"who": "ebo", "src": "dan", "from": 0.14, "to": 7.98, "gap": 0.3, "line": "That's the third time this month. Rent? Short. Savings? Gone. And Friday? Never comes."},
-  {"who": "ebo", "src": "dan", "from": 7.98, "to": 10.68, "gap": 0.35, "line": "Here's how to say no and keep the friend."},
-  {"who": "ebo", "src": "dan", "from": 10.68, "to": 13.40, "gap": 0.25, "line": "Don't answer right away. Buy yourself time."},
-  {"who": "ama", "src": "ama", "from": 1.70, "to": 3.90, "gap": 0.35, "line": "Let me check and get back to you."},
-  {"who": "ebo", "src": "dan", "from": 13.40, "to": 16.58, "gap": 0.25, "line": "Then say no to the request, not the person."},
-  {"who": "ama", "src": "ama", "from": 4.10, "to": 5.95, "gap": 0.2, "line": "I can't lend money right now..."},
-  {"who": "ebo", "src": "dan", "from": 16.60, "to": 18.42, "gap": 0.25, "line": "And offer something you can give."},
-  {"who": "ama", "src": "ama", "from": 6.10, "to": 8.50, "gap": 0.35, "line": "...but I can help you make a budget this weekend?"},
-  {"who": "christy", "src": "christy", "from": 3.38, "to": 5.60, "gap": 0.25, "line": "Come on, you always help me!"},
-  {"who": "ebo", "src": "dan", "from": 18.44, "to": 21.08, "gap": 0.25, "line": "This is where most people cave. Don't."},
-  {"who": "ama", "src": "ama", "from": 8.70, "to": 11.20, "gap": 1.0, "line": "I know. And I still can't. (beat, cricket)"},
-  {"who": "christy", "src": "christy", "from": 6.60, "to": 8.00, "gap": 0.35, "line": "...Okay. Fair."},
-  {"who": "ama", "src": "ama", "from": 11.45, "to": 13.17, "gap": 0.35, "line": "Wait. That worked?"},
-  {"who": "ebo", "src": "dan", "from": 21.10, "to": 43.55, "gap": 0.3, "line": "Look what she did... A kind no beats a broke yes. Every time."}
- ]}
+  {
+   "who": "christy",
+   "src": "christy",
+   "from": 0.3,
+   "to": 3.1,
+   "gap": 1.1,
+   "line": "Hey, can I borrow two hundred? Just till Friday. (then Ama's silent panicked smile)"
+  },
+  {
+   "who": "ebo",
+   "src": "dan2",
+   "from": 0.14,
+   "to": 4.6,
+   "gap": 0.2,
+   "line": "That's the third time this month. And that 'Friday'? It never comes."
+  },
+  {
+   "who": "ebo",
+   "src": "dan2",
+   "from": 4.79,
+   "to": 11.02,
+   "gap": 0.35,
+   "line": "If your gut screams no, but your mouth says yes... you're suffering from the People-Pleaser Tax."
+  },
+  {
+   "who": "ebo",
+   "src": "dan2",
+   "from": 11.19,
+   "to": 16.78,
+   "gap": 0.25,
+   "line": "Stop answering on the spot. Panic makes you a yes-man. Your first move is to pause."
+  },
+  {
+   "who": "ama",
+   "src": "ama2",
+   "from": 0.15,
+   "to": 2.26,
+   "gap": 0.35,
+   "line": "Let me check my week and get back to you."
+  },
+  {
+   "who": "ebo",
+   "src": "dan2",
+   "from": 16.88,
+   "to": 22.76,
+   "gap": 0.25,
+   "line": "Next, separate the person from the favor. You aren't rejecting them; you're declining the task."
+  },
+  {
+   "who": "ama",
+   "src": "ama2",
+   "from": 2.9,
+   "to": 7.45,
+   "gap": 1.0,
+   "line": "I can't lend money right now... but I can help you build a budget this weekend. (cricket)"
+  },
+  {
+   "who": "christy",
+   "src": "christy2",
+   "from": 0.37,
+   "to": 2.1,
+   "gap": 0.35,
+   "line": "Oh. Never mind."
+  },
+  {
+   "who": "ama",
+   "src": "ama2",
+   "from": 7.74,
+   "to": 9.86,
+   "gap": 0.35,
+   "line": "Wait... that actually worked?"
+  },
+  {
+   "who": "ebo",
+   "src": "dan2",
+   "from": 22.78,
+   "to": 28.06,
+   "gap": 0.3,
+   "line": "No lies. No drama. Just a clear boundary. The two hundred stays in your pocket."
+  },
+  {
+   "who": "ebo",
+   "src": "dan2",
+   "from": 28.12,
+   "to": 31.35,
+   "gap": 0.3,
+   "line": "A kind no beats a broke yes. Every time."
+  }
+ ]
+}

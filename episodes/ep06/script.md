@@ -1,43 +1,40 @@
 # Ebo Teaches Money, Ep 06: Say No Without the Guilt
 
-Status: script approved on 2026-11-03. Vertical YouTube Short, about 55 seconds.
+Status: script v2 approved on 2026-11-04. Faster, Practical-Psychology-style pacing, adapted to the house rules: unnumbered handwritten cards, the acting carries it, still camera with hard cuts. Vertical YouTube Short, about 45 to 50 seconds. Christy is played by Ama Pretty.
 
 ## Script
-**Cold open (two-shot: Christy and Ama)**
-CHRISTY: "Hey, can I borrow two hundred? Just till Friday."
-AMA *(forced smile, dying inside)*: "…Of course!"
+**1. The hook**
+CHRISTY: "Hey, can I borrow two hundred? Just till Friday." *(cha-ching)*
+AMA: *(a tight, panicked smile; says nothing)*
+Card: **THE PEOPLE-PLEASER TAX**
+EBO *(VO / to camera)*: "That's the third time this month. And that 'Friday'? It never comes. If your gut screams no, but your mouth says yes… you're suffering from the People-Pleaser Tax."
 
-EBO *(to camera)*: "That's the third time this month. Rent? Short. Savings? Gone. And Friday? Never comes."
-EBO: "Here's how to say no and keep the friend."
+**2. The shift: buy time**
+Card: **BUY TIME**
+EBO: "Stop answering on the spot. Panic makes you a yes-man. Your first move is to pause."
+AMA *(hand up, calm)*: "Let me check my week and get back to you."
 
-EBO: "Don't answer right away. Buy yourself time."
-AMA: "Let me check and get back to you."
-EBO: "Then say no to the request, not the person."
-AMA: "I can't lend money right now…"
-EBO: "And offer something you *can* give."
-AMA: "…but I can help you make a budget this weekend?"
+**3. Not you, the request / offer what you can**
+Card: **NOT YOU, THE REQUEST**
+EBO: "Next, separate the person from the favor. You aren't rejecting them; you're declining the task."
+Card: **OFFER WHAT YOU CAN**
+AMA: "I can't lend money right now… but I can help you build a budget this weekend."
 
-CHRISTY *(pushing)*: "Come on, you always help me!"
-EBO *(aside to camera)*: "This is where most people cave. Don't."
-AMA *(steady, warm)*: "I know. And I still can't."
-CHRISTY *(beat)*: "…Okay. Fair."
-AMA *(stunned)*: "Wait. That worked?"
+**4. The climax and resolution**
+*(cricket)*
+CHRISTY: "Oh. Never mind." *(walks off)*
+AMA *(staring at her hands, wide-eyed)*: "Wait… that actually worked?"
+EBO: "No lies. No drama. Just a clear boundary. The two hundred stays in your pocket."
 
-EBO *(to camera)*: "Look what she did. She bought time, said no to the request, not the person, and offered what she could actually give. No lies. No drama. No guilt."
-EBO: "And the two hundred? Still in her pocket, where it can pay *her* rent."
-EBO: "People respect a no that's clear and kind. So next time someone asks and your gut says no… say it."
+**5. The loop**
 EBO: "A kind no beats a broke yes. Every time."
-*(Loop: hard cut back to "Hey, can I borrow two hundred?")*
-
-## Cast
-- **Christy is played by Ama Pretty**, the new version from cast/masters/Ama_pretty.fla, cast id `pretty`. Her voice is still Olivia.
+*(Hard cut straight back to "Hey, can I borrow two hundred?")*
 
 ## Production notes
-- **Pop-ups:** the three moves pop up handwritten as Ebo names them: *Buy time → No to the request → Offer what you can*. They stay up as a chain for the recap. None are numbered (no lesson numbers).
-- **Sound effects:** a cash-register cha-ching when Christy asks, and the cricket in the pause before "…Okay. Fair."
-- **Staging:** the camera holds still and Ebo faces the camera.
+- **Cards:** handwritten (marker), no numbers. They build a stack: BUY TIME → NOT YOU, THE REQUEST → OFFER WHAT YOU CAN. THE PEOPLE-PLEASER TAX is a red card in the hook.
+- **Staging:** characters act it, with no icons or infographics. Still camera with hard cuts (no whip-pan). Ebo faces the camera.
+- **Sound effects:** a cha-ching when Christy asks, and the cricket before "Oh. Never mind."
 - **Voices:**
-  - Ebo: Dan (1cuDPO8sIMatoOE4Z2Zv)
-  - Ama: Yuria (vGfq3y2g8QTWjuUhrNYc)
-  - Christy: Olivia (iEbJsqzb6jw8MYxZ2xca)
-  - All on eleven_v4, one take each.
+  - Ebo: Dan.
+  - Ama: Yuria.
+  - Christy: Olivia. Her opening line is reused from the v1 take.
