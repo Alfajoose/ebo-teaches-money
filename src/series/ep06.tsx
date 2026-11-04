@@ -14,7 +14,7 @@ import envJson from './data/ep06-env.json';
 
 /**
  * EBO TEACHES MONEY — Ep 06 "Say No Without the Guilt" (YouTube Short, 1080×1920, ~67s).
- * Cold open: Christy asks to borrow two hundred, Ama caves. Ebo, to camera, names the cost and the
+ * Cold open: Christy (played by Ama Pretty, the 'pretty' rig) asks to borrow two hundred, Ama caves. Ebo, to camera, names the cost and the
  * three moves; Ama practises each in a coaching two-shot, and each move pops up handwritten,
  * building a chain (Buy time → No to the request → Offer what you can). Christy pushes, Ama holds,
  * a cricket fills the beat, "…Okay. Fair." Ebo's wrap-up recaps the moves over the chain and ends
@@ -38,7 +38,7 @@ const LEFT_X = 320;
 const RIGHT_X = 800;
 const EBO_SCALE = 1.75;
 const AMA_SCALE = 1.6;
-const CHRISTY_SCALE = 1.7;
+const CHRISTY_SCALE = 1.5; // played by Ama Pretty (cast 'pretty')
 
 type Shot = {
   /** first word of the line (index into words.json), or a time in seconds */
@@ -112,8 +112,6 @@ const ENV = envJson as Record<Who, number[]>;
 const W_BY: Record<Who, W6[]> = {ebo: WORDS.filter((w) => w.who === 'ebo'), ama: WORDS.filter((w) => w.who === 'ama'), christy: WORDS.filter((w) => w.who === 'christy')};
 const talking = (who: Who, f: number) => (ENV[who][f] ?? 0) > 0.1;
 const at = (k: number) => WORDS[k].s;
-/** Christy's rig has no lip-sync sets: talk with her own mouth frames (lipFrame level → frame). */
-const CHRISTY_LIP = [0, 1, 1, 3];
 
 /** Per-shot acting on top of the shot's poses: (time in the shot, absolute time) → changes. */
 type Act = {ebo?: Partial<Pose>; ama?: Partial<Pose>; christy?: Partial<Pose>};
@@ -185,8 +183,8 @@ export const Ep06Frame: React.FC<{f: number}> = ({f}) => {
           <AbsoluteFill style={{background: '#000'}}>
             <VStage framing={s.frame} bg="#D2C4EE" blurBg={<Backdrop id="ep06" />} overlay={s.chain ? <Chain n={s.chain} t={t} recap={i === 18} /> : undefined}>
               {christyPose && (
-                <RigCharacter who="christy" x={LEFT_X} y={FLOOR} scale={CHRISTY_SCALE} facing={1} t={f} pose={gentle(christyPose)}
-                  mouthFrame={talking('christy', f) ? CHRISTY_LIP[lipFrame(ENV.christy, W_BY.christy, f)] : undefined} />
+                <RigCharacter who="pretty" x={LEFT_X + 30} y={FLOOR} scale={CHRISTY_SCALE} facing={1} t={f} pose={gentle(christyPose)}
+                  mouthFrame={talking('christy', f) ? lipFrame(ENV.christy, W_BY.christy, f) : undefined} />
               )}
               {amaPose && (
                 <RigCharacter who="ama" x={RIGHT_X} y={FLOOR} scale={AMA_SCALE} facing={-1} t={f} pose={gentle(amaPose)}

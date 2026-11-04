@@ -7,7 +7,7 @@ const pw = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const {chromium} = pw.chromium ? pw : pw.default; // ESM or CommonJS build
 
 const dir = path.resolve('src/cast/data');
-const names = ['ebo', 'mica', 'obuor', 'ama', 'christy'];
+const names = ['ebo', 'mica', 'obuor', 'ama', 'christy', 'pretty'];
 const mul = (m1, m2) => {
   const [a1, b1, c1, d1, x1, y1] = m1, [a2, b2, c2, d2, x2, y2] = m2;
   return [a1 * a2 + c1 * b2, b1 * a2 + d1 * b2, a1 * c2 + c1 * d2, b1 * c2 + d1 * d2, a1 * x2 + c1 * y2 + x1, b1 * x2 + d1 * y2 + y1];

@@ -29,6 +29,9 @@ EBO: "People respect a no that's clear and kind. So next time someone asks and y
 EBO: "A kind no beats a broke yes. Every time."
 *(Loop: hard cut back to "Hey, can I borrow two hundred?")*
 
+## Cast
+- **Christy is played by Ama Pretty**, the new version from cast/masters/Ama_pretty.fla, cast id `pretty`. Her voice is still Olivia.
+
 ## Production notes
 - **Pop-ups:** the three moves pop up handwritten as Ebo names them: *Buy time → No to the request → Offer what you can*. They stay up as a chain for the recap. None are numbered (no lesson numbers).
 - **Sound effects:** a cash-register cha-ching when Christy asks, and the cricket in the pause before "…Okay. Fair."

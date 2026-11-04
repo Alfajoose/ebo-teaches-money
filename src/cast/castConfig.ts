@@ -4,6 +4,7 @@ import mica from './data/mica.json';
 import obuor from './data/obuor.json';
 import ama from './data/ama.json';
 import christy from './data/christy.json';
+import pretty from './data/pretty.json';
 
 /**
  * The show's cast, exported from the user's .fla files (cast/tools/export_rig.py).
@@ -23,7 +24,7 @@ export const EYES_FALLBACK: Partial<Record<Eyes, Eyes>> = {angry: 'squint', susp
 export const LIP_MOOD: Partial<Record<Mouth, 'happy' | 'sad' | 'neutral'>> = {frown: 'sad', wobbly: 'sad', grimace: 'sad', scream: 'sad', o: 'sad', flat: 'neutral'};
 export const MOUTH_FALLBACK: Partial<Record<Mouth, Mouth>> = {teeth: 'grin', laugh: 'grin', grimace: 'wobbly'};
 
-export type CastId = 'ebo' | 'mica' | 'obuor' | 'ama' | 'christy';
+export type CastId = 'ebo' | 'mica' | 'obuor' | 'ama' | 'christy' | 'pretty';
 
 export type CastConfig = {
   name: string;
@@ -114,4 +115,29 @@ export const CAST: Record<CastId, CastConfig> = {
   },
   // Christy's eye_1 layer holds both eyes (exported as eye_1 + eye_1__2); her eye_2 layer is a stray copy parked off-canvas.
   christy: {name: 'Christy', rig: christy as RigData, scale: S, eyeLayers: ['eye_1', 'eye_1__2'], eyes: EYES_7, mouth: MOUTH_A, hide: ['eye_2'], blinkOffset: 71},
+  // Ama Pretty (new version, Nov 2026, cast/masters/Ama_pretty.fla, symbol 'Ama port'): built on the
+  // same Ebo part set as Ama, so she shares the same face and lip-sync mapping. One view (¾); the rig is
+  // the symbol's frame-0 rest pose (its later keys are a test animation; a palette reference image removed).
+  pretty: {
+    name: 'Ama Pretty',
+    rig: pretty as RigData,
+    scale: S,
+    eyeLayers: ['eye_1', 'eye_2'],
+    eyes: {},
+    pupils: {
+      layers: ['pupil_1', 'pupil_2'],
+      eyes: {
+        open: [null, null], dollar: [null, null], wide: [0, 0], closed: [12, 7], happy: [9, 4], half: [7, 3],
+        sad: [10, 3], squint: [11, 2], angry: [5, 1], suspicious: [11, 5], tired: [10, 3], squeeze: [8, 7],
+      },
+    },
+    mouth: {smile: 6, grin: 1, o: 5, scream: 11, frown: 13, flat: 0, wobbly: [7, 9], smirk: 2, snore: [12, 5], teeth: 2, laugh: 4, grimace: 9},
+    lip: {
+      happy: [6, [3, 1], [1, 3], 5],
+      neutral: [0, [3, 1], [3, 12], 12],
+      sad: [13, [11, 10], [8, 10], 12],
+    },
+    hide: [],
+    blinkOffset: 37,
+  },
 };

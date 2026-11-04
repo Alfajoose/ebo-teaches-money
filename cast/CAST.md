@@ -124,6 +124,15 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 - **One view (¾).** The `Ama` symbol's keys after frame 0 are a test animation. The rig is exported from frame 0 (her rest pose) from a copy trimmed to that frame.
 - **Export:** trim `Ama.xml` to each layer's first keyframe, then `tools/export_rig.py <dir> Ama src/cast/data/ama.json`, then `node scripts/measure-rigs.mjs`.
 
+## AMA PRETTY
+
+- **File:** `masters/Ama_pretty.fla` (new version, Nov 2026). **Symbol:** `Ama port`. **Cast id:** `pretty`.
+- **Design:** swept dark hair, olive top, peach skirt, earring.
+- **Built on Ebo's part set, like Ama.** She shares Ama's face mapping and lip-sync mood sets.
+- **One view (¾).** The rig is exported from frame 0. A palette reference image on her `hand_top_1` layer is removed from the rig.
+- **Export:** same steps as Ama, with symbol `Ama port`, output to `src/cast/data/pretty.json`.
+- **First role:** Christy in Ep6.
+
 ## CHRISTY
 
 - **File:** `masters/christy.fla`. **Symbol:** `Christy`. **Stage:** 1280×720 at 24 fps.
