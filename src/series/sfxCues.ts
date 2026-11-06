@@ -58,8 +58,10 @@ export const K01_SFX: Record<number, Shot> = {
 
 /** Ep5, absolute times (seconds) from the word timings: a pop for each handwritten word, a whoosh and
  * a soft catch for each air-grab. Built by scripts/sfx/gen.tsx from ep05-words.json. */
-export const ep05Sfx = (w: {s: number; e: number}[]): Cue[] => [
-  {at: w[7].e + 0.2, sfx: 'cricket', vol: 0.9, loop: 1.0}, // the dead beat after "Oh, nice.": a lone cricket
+export const ep05Sfx = (w: {s: number; e: number}[], holdExtra = 0): Cue[] => [
+  // the dead beat after "Oh, nice.": crickets (the user's night take), running a few frames past the beat;
+  // `holdExtra` stretches it over a longer held pause (the Animate cut holds the Cold Open 4.07s longer)
+  {at: w[7].e + 0.2, sfx: 'cricket_night', vol: 0.9, loop: 1.3 + holdExtra},
   {at: w[22].s, sfx: 'pop'}, // "Chicago" pops up
   {at: w[35].s, sfx: 'pop'}, // "wedding"
   {at: w[38].s, sfx: 'pop'}, // "caterer"

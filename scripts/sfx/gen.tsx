@@ -26,6 +26,9 @@ K01_PLAN.forEach((_, i) => {
 });
 out.konka01 = {duration: kd, cues: k};
 out.ep05 = {duration: EP05_DURATION / 30, cues: ep05Sfx(ep05Words)};
+// the Animate cut of Ep5: the Cold Open (to 4.6s) is held 122 frames longer, so later cues move by that much
+const HOLD = 122 / 30;
+out.ep05cut = {duration: EP05_DURATION / 30 + HOLD, cues: ep05Sfx(ep05Words, HOLD - 0.25).map((c) => (c.at > 4.6 ? {...c, at: c.at + HOLD} : c))};
 out.ep06 = {duration: EP06_DURATION / 30, cues: ep06Sfx(ep06Words)};
 fs.writeFileSync(process.argv[2], JSON.stringify(out, null, 1));
 console.log('cues: ep04', c4.length, 'konka01', k.length);

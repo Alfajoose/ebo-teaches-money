@@ -10,7 +10,7 @@ cues_path, ep, out = sys.argv[1:4]
 data = json.load(open(cues_path))[ep]
 SRC, CLEAN = 'episodes/sfx', 'out/sfx/clean'
 os.makedirs(CLEAN, exist_ok=True)
-CAP = {'typing': 1.04, 'marker_tick': 0.35, 'phone_buzz': 1.6, 'slide': 0.8, 'couch_flop': 0.7}
+CAP = {'typing': 1.04, 'marker_tick': 0.35, 'phone_buzz': 1.6, 'slide': 0.8, 'couch_flop': 0.7, 'cricket_night': 9.3}
 LEVEL = 0.55  # effects sit under the voice
 
 
@@ -37,7 +37,8 @@ for i, c in enumerate(data['cues']):
     else:
         args += ['-i', src]
     ms = int(round(c['at'] * 1000))
-    filt.append(f"[{i + 1}]volume={c.get('vol', 1) * LEVEL:.3f},adelay={ms}[c{i}]")
+    fade = f",afade=t=out:st={max(0, c['loop'] - 0.3):.3f}:d=0.3" if c.get('loop') else ''  # loops tail off instead of cutting
+    filt.append(f"[{i + 1}]volume={c.get('vol', 1) * LEVEL:.3f}{fade},adelay={ms}[c{i}]")
 mix = ''.join(f'[c{i}]' for i in range(len(data['cues'])))
 filt.append(f"[0]{mix}amix=inputs={len(data['cues']) + 1}:normalize=0:duration=first,alimiter=limit=0.9[o]")
 subprocess.run(args + ['-filter_complex', ';'.join(filt), '-map', '[o]', '-ac', '1', '-ar', '44100', out], check=True)
