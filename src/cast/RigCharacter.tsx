@@ -148,6 +148,7 @@ type Props = {
   t?: number;
   children?: React.ReactNode; // held in the raised (right) hand
   holdL?: React.ReactNode; // held in the left hand
+  wear?: React.ReactNode; // worn on the chest (drawn in the torso's own space, over the torso, under head and arms)
   mouthFrame?: number; // direct mouth swap (lip sync) — overrides pose.mouth
   eyeFrame?: number | number[]; // direct eye swap — overrides pose.eyes
   noBlink?: boolean;
@@ -155,7 +156,7 @@ type Props = {
   cycleOffset?: number; // shift the cycle in video frames (so two walkers aren't in step)
 };
 
-export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, holdL, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
+export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, holdL, wear, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
   const mode = useLayerMode();
   const cap = useCapture();
   const cam = useContext(CameraContext);
@@ -316,7 +317,17 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
       <g transform={`rotate(${pose.tilt} 0 0) translate(0 ${pose.lift / cfg.scale}) translate(${-ox} ${-oy})`}>
         {layers.map((l) => {
           const f = propFrame(l.name) ?? Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
-          return <g key={l.name} transform={`matrix(${world(l.name).join(',')})`} dangerouslySetInnerHTML={{__html: l.frames[f]}} />;
+          const g = <g key={l.name} transform={`matrix(${world(l.name).join(',')})`} dangerouslySetInnerHTML={{__html: l.frames[f]}} />;
+          if (!wear || base(l.name) !== 'torso') return g;
+          // worn props ride the torso (the export keys them as a prop at the torso's screen matrix)
+          return (
+            <React.Fragment key={l.name}>
+              {g}
+              <CameraContext.Provider value={mmul(outer, world(l.name)) as M}>
+                <g transform={`matrix(${world(l.name).join(',')})`}>{wear}</g>
+              </CameraContext.Provider>
+            </React.Fragment>
+          );
         })}
         {children && !rigHeldR && (
           // held props: tell the Animate export where the hand is on screen

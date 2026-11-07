@@ -21,7 +21,7 @@ for k, s in enumerate(edl['segments']):
         if s['from'] - 0.02 <= w['s'] and w['e'] <= s['to'] + 0.05:
             out_words.append({'w': w['w'], 's': round(t + w['s'] - s['from'], 3), 'e': round(t + w['e'] - s['from'], 3), 'who': s['who']})
     sil = f'{tmp}/gap{k}.wav'
-    subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-f', 'lavfi', '-t', str(s['gap']), '-i', 'anullsrc=r=44100:cl=mono', sil], check=True)
+    subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-f', 'lavfi', '-t', str(max(0.01, s['gap'])), '-i', 'anullsrc=r=44100:cl=mono', sil], check=True)
     parts += [p, sil]
     d = s['to'] - s['from']
     spans.append((t, t + d, s['who']))

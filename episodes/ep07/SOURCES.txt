@@ -1,0 +1,4 @@
+Voice take (ElevenLabs flow "Ebo Ep7 Wants vs Needs", id Kl2Ww63zbZuUh1sFkw4L), 2026-11-07.
+  raw_dan.mp3   Dan (Ebo), eleven_v4, generation VfXQ29afPlATASdFBTpS (79.0s, 1393 credits), one take.
+  words_dan_raw.json  Scribe word timings (direction tags stripped).
+Assemble with: python3 -I scripts/voice-assemble.py episodes/ep07   (writes voice.mp3, words.json, env.json)
