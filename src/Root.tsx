@@ -22,7 +22,7 @@ import type {NarrationTiming} from './sync';
 import {EboEp06, EP06_DURATION, EP06_W, EP06_H} from './series/ep06';
 import {EboEp07, EP07_DURATION, EP07_W, EP07_H} from './series/ep07';
 import {EboEp05, EP05_DURATION, EP05_W, EP05_H} from './series/ep05';
-import {Short01ThumbVertical, Short01ThumbWide} from './series/thumbs';
+import {Short01ThumbVertical, Short01ThumbWide, Ep05ThumbVertical, Ep05ThumbWide} from './series/thumbs';
 
 const hasPublicFile = async (name: string) => {
   try {
@@ -94,6 +94,8 @@ export const RemotionRoot: React.FC = () => (
   <Composition id="EboTeachesMoney-Ep05" component={EboEp05} durationInFrames={EP05_DURATION} fps={30} width={EP05_W} height={EP05_H} />
   <Composition id="Short01-Thumb" component={Short01ThumbVertical} durationInFrames={1} fps={30} width={1080} height={1920} />
   <Composition id="Short01-Thumb-16x9" component={Short01ThumbWide} durationInFrames={1} fps={30} width={1280} height={720} />
+  <Composition id="Ep05-Thumb" component={Ep05ThumbVertical} durationInFrames={1} fps={30} width={1080} height={1920} />
+  <Composition id="Ep05-Thumb-16x9" component={Ep05ThumbWide} durationInFrames={1} fps={30} width={1280} height={720} />
   <Composition id="Ebo-Views" component={EboViewsSheet} durationInFrames={1} fps={30} width={1920} height={1080} />
   <Composition id="Ebo-Eyes" component={EboFacesSheet} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{part: 'eyes' as const}} />
   <Composition id="Ebo-Mouths" component={EboFacesSheet} durationInFrames={1} fps={30} width={1920} height={1080} defaultProps={{part: 'mouths' as const}} />
