@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 panels_dir, out = sys.argv[1:3]
 src = open('src/series/ep07.tsx').read()
 plan = src[src.index('export const EP07_PLAN'):src.index('export const EP07_SECTIONS')]
-shots = re.findall(r"\{at: ([^,]+|\{t: [\d.]+\}), line: ('(?:[^'\\]|\\.)*'|\"(?:[^\"\\]|\\.)*\"), size: '([^']+)'.*?action: ('(?:[^'\\]|\\.)*'|\"(?:[^\"\\]|\\.)*\")\}", plan)
+shots = re.findall(r"\{at: ([^,]+|\{t: [\d.]+\}), line: ('(?:[^'\\]|\\.)*'|\"(?:[^\"\\]|\\.)*\"), stage: '([^']+)'.*?action: ('(?:[^'\\]|\\.)*'|\"(?:[^\"\\]|\\.)*\")\}", plan, re.S)
 words = json.load(open('src/series/data/ep07-words.json'))
 def start(at):
     m = re.match(r'\{t: ([\d.]+)\}', at)
@@ -21,7 +21,7 @@ rows = (len(shots) + COLS - 1) // COLS
 sheet = Image.new('RGB', (COLS * (PW + 40) + 40, 170 + rows * (PH + TXT + 40)), '#F6F0E4')
 d = ImageDraw.Draw(sheet)
 d.text((40, 40), 'EBO TEACHES MONEY · EP 07 · Wants vs. Needs', font=F('Bold', 40), fill='#1D1A1A')
-d.text((40, 100), 'Vertical · 1:20 · Ebo alone, teaching to camera · broke in three gold chains · unnumbered cards stack up · still camera, hard cuts · loops back to shot 1', font=F('Regular', 24), fill='#55505A')
+d.text((40, 100), 'v2 staging · Vertical · 1:20 · the prop gets the room: Ebo small below, the idea drawn big above him · close shots for the punches · still camera, hard cuts · loops', font=F('Regular', 24), fill='#55505A')
 md = ['# Ep 07 — Wants vs. Needs: shot list', '', '| # | time | size | line | action |', '|---|---|---|---|---|']
 for i, (at, line, size, action) in enumerate(shots):
     line, action = eval(line), eval(action)

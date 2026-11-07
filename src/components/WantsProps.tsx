@@ -135,6 +135,8 @@ const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P>
 };
 
 export const ChainsWorn = prop('ChainsWorn', ChainsWornDrawing);
+/** The worn chains' drawing without the prop wrapper (for drawings that include them). */
+export const ChainsWornArt = ChainsWornDrawing;
 export const ChainsHeld = prop('ChainsHeld', ChainsHeldDrawing);
 export const NeedsList = prop('NeedsList', NeedsListDrawing);
 export const AppPhone = prop('AppPhone', AppPhoneDrawing);

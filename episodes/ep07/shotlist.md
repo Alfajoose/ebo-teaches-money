@@ -2,26 +2,26 @@
 
 | # | time | size | line | action |
 |---|---|---|---|---|
-| 1 | 0.00s | BUST | I can't make rent this month. I don't get it. | Cold open: three gold chains on, staring at his bank app ($14.20, RENT DUE). |
-| 2 | 3.18s | BUST | (looks down at the chains… back up at us) | Silent beat: eyes drop to the chains… and slowly come back up to us. |
-| 3 | 4.23s | BUST | …Okay. I get it. | Deadpan. |
-| 4 | 6.40s | BUST | A lot of us aren't broke because we earn too little. | To camera, dry; hands on the beat. |
-| 5 | 9.20s | BUST | We're broke because our wants are dressed up as needs. | Leans in on "dressed up". |
-| 6 | 12.24s | BUST | So let's learn to tell them apart. Without giving up everything fun. | Warmer: "everything fun" with a grin. |
-| 7 | 16.29s | BUST | Here's the test. If it vanished tomorrow, would you have to replace it? | WOULD YOU HAVE TO REPLACE IT? slams up, handwritten. |
-| 8 | 19.84s | MID | Rent? Yes. Food? Yes. Getting to work? Yes. | His NEEDS list up: a green tick lands on each "Yes". |
-| 9 | 24.39s | BUST | …These? No. | Long beat, hand on the chains, eyes down… "No." |
-| 10 | 26.53s | BUST | Now watch the sneaky ones. A need with a want hiding inside. | WATCH THE SNEAKY ONES joins the stack. |
-| 11 | 30.68s | BUST | You need food. You want delivery. | One hand for the need, the other for the want. |
-| 12 | 33.52s | MID | You need a phone. You want the new one. Every year. | Holds up his phone, taps it on "Every year". |
-| 13 | 37.20s | BUST | You need clothes. You want the brand. | Tugs his shirt on "brand". |
-| 14 | 39.92s | BUST | And the sneakiest of all: subscriptions. | Slowing down. |
-| 15 | 43.12s | MID | Four streaming apps. …I watch one. | Phone up: four apps… three fade. Embarrassed. |
-| 16 | 46.22s | BUST | Here's the thing. Needs are urgent. Wants can wait. | WANTS CAN WAIT joins the stack. |
-| 17 | 49.92s | BUST | So give every want a one-day pause. Still want it tomorrow? Fine, think about it. | Hand up: "pause". Shrug on "Fine". |
-| 18 | 55.04s | BUST | Forgot about it by tomorrow? It was never that important. | Touches the chains. Shrugs. |
-| 19 | 58.16s | BUST | So when the money lands, pay your needs first. Rent, food, transport. Done. | NEEDS FIRST. WANTS ON PURPOSE. completes the stack. Counting off. |
-| 20 | 64.00s | BUST | Then give your wants a fixed amount. Your fun money. Spend it however you like, no guilt. | Loosens up: "fun money" with a grin. |
-| 21 | 69.40s | BUST | When it's gone, it's gone. Until next month. | Dry. Flat hand cuts the air. |
-| 22 | 72.40s | BUST | Wants aren't the enemy. Wants with no limit are. | Sincere, to camera. The cards are gone. |
-| 23 | 75.92s | MID | This one? Paid for. With want money. | Takes two chains off (they hang from his hand), keeps one. Slow grin. LOOP: hard cut back to shot 1. |
+| 1 | 0.00s | corner | I can't make rent this month. I don't get it. | Cold open: his bank app fills the frame ($14.20, RENT DUE); Ebo, gold chains on, peeks up at it from the corner. |
+| 2 | 3.18s | bust | (looks down at the chains… back up at us) | Hard cut close: the three chains. His eyes drop to them… and slowly come back up to us. |
+| 3 | 4.23s | bust | …Okay. I get it. | Deadpan. |
+| 4 | 6.40s | wide | A lot of us aren't broke because we earn too little. | Wide: Ebo small below; a payslip slams in above him on "earn"… "not the problem". |
+| 5 | 9.20s | wide | We're broke because our wants are dressed up as needs. | A little purple want in a hat and moustache, holding up a NEED sign. He points at it. |
+| 6 | 12.24s | bust | So let's learn to tell them apart. Without giving up everything fun. | Close, warmer: "everything fun" with a grin. |
+| 7 | 16.29s | wide | Here's the test. If it vanished tomorrow, would you have to replace it? | The question, handwritten big in the space above him. |
+| 8 | 19.84s | wide | Rent? Yes. Food? Yes. Getting to work? Yes. | Rent, food, the bus to work land in a row; a big green tick on each "Yes". |
+| 9 | 24.39s | wide | …These? No. | His three chains, big above him. He looks down at his own… "No." A red cross. |
+| 10 | 26.53s | wide | Now watch the sneaky ones. A need with a want hiding inside. | A box marked NEED… a little want peeks out of it on "want hiding". |
+| 11 | 30.68s | wide | You need food. You want delivery. | need: a bowl of home food. want: a delivery bag with a long $$$ receipt. |
+| 12 | 33.52s | wide | You need a phone. You want the new one. Every year. | need: his old cracked phone. want: the shiny NEW! one… 2025, 2026, 2027 on "Every year". |
+| 13 | 37.20s | wide | You need clothes. You want the brand. | need: a plain $8 tee. want: the black LUXE tee, $250. |
+| 14 | 39.92s | bust | And the sneakiest of all: subscriptions. | Hard cut close, slowing down. |
+| 15 | 43.12s | corner | Four streaming apps. …I watch one. | Insert: the phone fills the frame, four apps; three grey out on "I watch one". Ebo winces in the corner. |
+| 16 | 46.22s | wide | Here's the thing. Needs are urgent. Wants can wait. | urgent: the rent bill, DUE TODAY. can wait: the want, holding ticket #99. |
+| 17 | 49.92s | wide | So give every want a one-day pause. Still want it tomorrow? Fine, think about it. | A calendar page: TODAY… it turns to TOMORROW, and the want is still there, waiting. |
+| 18 | 55.04s | bust | Forgot about it by tomorrow? It was never that important. | Close: a shrug. |
+| 19 | 58.16s | wide | So when the money lands, pay your needs first. Rent, food, transport. Done. | PAYDAY lands; "needs first"; rent, food, the bus line up… "Done." A big tick. |
+| 20 | 64.00s | wide | Then give your wants a fixed amount. Your fun money. Spend it however you like, no guilt. | "wants on purpose"; a FUN MONEY jar with some cash in it, and the want, happy beside it. |
+| 21 | 69.40s | wide | When it's gone, it's gone. Until next month. | The jar empties on "gone"; the want deflates. Dry. |
+| 22 | 72.40s | bust | Wants aren't the enemy. Wants with no limit are. | Close, sincere, to camera. |
+| 23 | 75.92s | mid | This one? Paid for. With want money. | Takes two chains off (they hang from his hand), keeps one. Slow grin. LOOP: hard cut back to shot 1. |

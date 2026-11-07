@@ -1,6 +1,7 @@
 import React from 'react';
 import {Prop} from '../prop';
 import {C, FONT} from '../theme';
+import {ChainsWornArt} from './WantsProps';
 
 /**
  * Big props for Ep7's "give the prop the room" staging (after the user's reference: the prop
@@ -112,6 +113,170 @@ const ShirtDrawing: React.FC<{x?: number; y?: number; brand?: boolean}> = ({x = 
   </g>
 );
 
+/** The "want": a little purple blob with big eyes (the sneaky one). Origin at its centre.
+ * mood: sneaky (eyes slid sideways), happy (smile), sad (frown). Extras: a disguise (hat and
+ * moustache, holding a NEED sign), a waiting ticket. */
+const WantGuyDrawing: React.FC<{x?: number; y?: number; rotate?: number; mood?: 'sneaky' | 'happy' | 'sad'; disguise?: boolean; ticket?: boolean}> = ({x = 0, y = 0, rotate = 0, mood = 'sneaky', disguise = false, ticket = false}) => {
+  const px = mood === 'sneaky' ? 8 : 0;
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+      <ellipse cx={0} cy={0} rx={80} ry={64} fill="#8F6BD1" {...S} />
+      <ellipse cx={-26} cy={-10} rx={18} ry={22} fill="#fff" {...S} strokeWidth={5} />
+      <ellipse cx={26} cy={-10} rx={18} ry={22} fill="#fff" {...S} strokeWidth={5} />
+      <circle cx={-26 + px} cy={mood === 'sad' ? -2 : -6} r={8} fill={C.ink} />
+      <circle cx={26 + px} cy={mood === 'sad' ? -2 : -6} r={8} fill={C.ink} />
+      {mood === 'happy' && <path d="M -24 24 Q 0 44 24 24" fill="none" stroke={C.ink} strokeWidth={6} strokeLinecap="round" />}
+      {mood === 'sad' && <path d="M -22 36 Q 0 20 22 36" fill="none" stroke={C.ink} strokeWidth={6} strokeLinecap="round" />}
+      {mood === 'sneaky' && !disguise && <path d="M -16 30 Q 6 36 22 26" fill="none" stroke={C.ink} strokeWidth={6} strokeLinecap="round" />}
+      {disguise && (
+        <g>
+          {/* hat */}
+          <path d="M -70 -50 L 70 -50 L 50 -60 L 40 -120 L -40 -120 L -50 -60 Z" fill="#3A3F4E" {...S} strokeWidth={5} />
+          <rect x={-42} y={-74} width={84} height={12} fill="#E5484D" />
+          {/* glasses and moustache */}
+          <path d="M -46 -12 L 46 -12" stroke={C.ink} strokeWidth={5} />
+          <path d="M -40 26 Q -20 10 0 24 Q 20 10 40 26 Q 20 34 0 30 Q -20 34 -40 26 Z" fill={C.ink} />
+          {/* the NEED sign on a stick */}
+          <path d="M 80 60 L 110 -40" stroke="#8B6A48" strokeWidth={10} strokeLinecap="round" />
+          <g transform="translate(118 -80) rotate(8)">
+            <rect x={-80} y={-40} width={160} height={74} rx={8} fill="#fff" {...S} strokeWidth={5} />
+            <text y={16} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={44} fill={C.ink}>
+              NEED
+            </text>
+          </g>
+        </g>
+      )}
+      {ticket && (
+        <g transform="translate(-96 30) rotate(-14)">
+          <rect x={-34} y={-24} width={68} height={48} rx={6} fill="#FFF6DA" {...S} strokeWidth={4} />
+          <text y={12} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={28} fill={C.ink}>
+            #99
+          </text>
+        </g>
+      )}
+    </g>
+  );
+};
+
+/** A pay slip: "PAY" and a modest amount (origin at its centre). */
+const PaySlipDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <rect x={-170} y={-110} width={340} height={220} rx={10} fill="#E9F5EC" {...S} />
+    <text x={-140} y={-56} fontFamily={FONT} fontWeight={900} fontSize={40} fill="#2E7D52">
+      PAYSLIP
+    </text>
+    {[0, 1].map((i) => (
+      <line key={i} x1={-140} x2={40 - i * 60} y1={-14 + i * 30} y2={-14 + i * 30} stroke="#9CC5A8" strokeWidth={8} strokeLinecap="round" />
+    ))}
+    <text x={140} y={78} textAnchor="end" fontFamily={FONT} fontWeight={900} fontSize={54} fill={C.ink}>
+      $1,800
+    </text>
+  </g>
+);
+
+/** Big hand-drawn tick or cross (origin at its centre). */
+const MarkDrawing: React.FC<{x?: number; y?: number; kind?: 'tick' | 'cross'; size?: number}> = ({x = 0, y = 0, kind = 'tick', size = 1}) => (
+  <g transform={`translate(${x} ${y})`} fill="none" strokeLinecap="round" strokeLinejoin="round" stroke={kind === 'tick' ? '#2E9E6A' : '#E5484D'} strokeWidth={26 * size}>
+    {kind === 'tick' ? <path d={`M ${-60 * size} 0 L ${-14 * size} ${46 * size} L ${70 * size} ${-60 * size}`} /> : <path d={`M ${-70 * size} ${-70 * size} L ${70 * size} ${70 * size} M ${70 * size} ${-70 * size} L ${-70 * size} ${70 * size}`} />}
+  </g>
+);
+
+/** Rent, food, getting to work: a little house, a bowl, a bus (origin at the centre of each). */
+const HouseDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <path d="M -110 -10 L 0 -110 L 110 -10" fill="#C96F5A" {...S} />
+    <rect x={-90} y={-14} width={180} height={124} fill="#F6E3C6" {...S} />
+    <rect x={-24} y={36} width={48} height={74} fill="#8B6A48" {...S} strokeWidth={5} />
+    <rect x={-74} y={10} width={36} height={36} fill="#9FD3F5" {...S} strokeWidth={5} />
+  </g>
+);
+const BusDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-140} y={-80} width={280} height={150} rx={22} fill="#F3C53F" {...S} />
+    {[0, 1, 2].map((i) => (
+      <rect key={i} x={-120 + i * 80} y={-60} width={64} height={52} rx={6} fill="#9FD3F5" {...S} strokeWidth={5} />
+    ))}
+    <circle cx={-80} cy={78} r={26} fill={C.ink} />
+    <circle cx={80} cy={78} r={26} fill={C.ink} />
+  </g>
+);
+
+/** A bill with a DUE TODAY stamp (urgent). */
+const BillDueDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <rect x={-100} y={-130} width={200} height={260} fill="#fff" {...S} />
+    <text x={-76} y={-80} fontFamily={FONT} fontWeight={900} fontSize={34} fill={C.ink}>
+      RENT
+    </text>
+    {[0, 1, 2].map((i) => (
+      <line key={i} x1={-76} x2={60 - i * 30} y1={-40 + i * 26} y2={-40 + i * 26} stroke="#B5A88C" strokeWidth={7} strokeLinecap="round" />
+    ))}
+    <g transform="translate(0 70) rotate(-12)">
+      <rect x={-96} y={-32} width={192} height={64} rx={8} fill="none" stroke="#E5484D" strokeWidth={8} />
+      <text y={14} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={36} fill="#E5484D">
+        DUE TODAY
+      </text>
+    </g>
+  </g>
+);
+
+/** A tear-off calendar page: TODAY or TOMORROW. */
+const DayPageDrawing: React.FC<{x?: number; y?: number; rotate?: number; tomorrow?: boolean}> = ({x = 0, y = 0, rotate = 0, tomorrow = false}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <rect x={-170} y={-150} width={340} height={300} rx={18} fill="#fff" {...S} />
+    <rect x={-170} y={-150} width={340} height={84} rx={18} fill="#E5484D" {...S} />
+    {[-110, -40, 40, 110].map((cx) => (
+      <circle key={cx} cx={cx} cy={-150} r={12} fill="#fff" {...S} strokeWidth={4} />
+    ))}
+    <text y={-92} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={36} fill="#fff">
+      {tomorrow ? 'TOMORROW' : 'TODAY'}
+    </text>
+    <text y={70} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={130} fill={C.ink}>
+      {tomorrow ? '2' : '1'}
+    </text>
+  </g>
+);
+
+/** A payday envelope, cash sticking out. */
+const PaydayDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    {[0, 1, 2].map((i) => (
+      <rect key={i} x={-120 + i * 26} y={-120 - i * 14} width={200} height={100} rx={8} fill="#7BC47F" {...S} strokeWidth={5} transform={`rotate(${-8 + i * 7})`} />
+    ))}
+    <rect x={-170} y={-70} width={340} height={180} rx={12} fill="#F2E3C4" {...S} />
+    <path d="M -170 -70 L 0 30 L 170 -70" fill="none" {...S} strokeWidth={6} />
+    <text y={92} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={40} fill={C.ink}>
+      PAYDAY
+    </text>
+  </g>
+);
+
+/** A FUN MONEY jar: some cash in it, or empty. */
+const FunJarDrawing: React.FC<{x?: number; y?: number; empty?: boolean}> = ({x = 0, y = 0, empty = false}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-110} y={-170} width={220} height={36} rx={8} fill="#B88A10" {...S} />
+    <path d="M -120 -134 L 120 -134 L 130 140 Q 130 170 100 170 L -100 170 Q -130 170 -130 140 Z" fill="#E7F3FB" {...S} />
+    {!empty && (
+      <g>
+        <path d="M -118 40 L 118 30 L 124 140 Q 124 160 100 162 L -100 162 Q -124 160 -124 140 Z" fill="#7BC47F" stroke={C.ink} strokeWidth={5} />
+        <circle cx={-40} cy={20} r={26} fill="#F2C230" stroke={C.ink} strokeWidth={5} />
+        <circle cx={40} cy={10} r={26} fill="#F2C230" stroke={C.ink} strokeWidth={5} />
+      </g>
+    )}
+    <rect x={-100} y={-90} width={200} height={84} rx={10} fill="#fff" {...S} strokeWidth={5} />
+    <text y={-36} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={C.ink}>
+      FUN MONEY
+    </text>
+  </g>
+);
+
+/** The three gold chains on their own (as worn on his chest; the caller sizes them). Origin near their centre. */
+const ChainsBigDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
+  <g transform={`translate(${x - 100} ${y - 60})`}>
+    <ChainsWornArt count={3} />
+  </g>
+);
+
 const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P> => {
   const Wrapped: React.FC<P> = (props) => (
     <Prop name={name}>
@@ -126,3 +291,13 @@ export const FoodBowl = prop('FoodBowl', FoodBowlDrawing);
 export const DeliveryBag = prop('DeliveryBag', DeliveryBagDrawing);
 export const ModelPhone = prop('ModelPhone', ModelPhoneDrawing);
 export const Shirt = prop('Shirt', ShirtDrawing);
+export const WantGuy = prop('WantGuy', WantGuyDrawing);
+export const PaySlip = prop('PaySlip', PaySlipDrawing);
+export const Mark = prop('Mark', MarkDrawing);
+export const House = prop('House', HouseDrawing);
+export const Bus = prop('Bus', BusDrawing);
+export const BillDue = prop('BillDue', BillDueDrawing);
+export const DayPage = prop('DayPage', DayPageDrawing);
+export const Payday = prop('Payday', PaydayDrawing);
+export const FunJar = prop('FunJar', FunJarDrawing);
+export const ChainsBig = prop('ChainsBig', ChainsBigDrawing);
