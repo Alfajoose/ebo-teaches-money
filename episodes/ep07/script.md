@@ -1,39 +1,41 @@
-# Ebo Teaches Money, Ep 07: Beat the Add-to-Cart Itch
+# Ebo Teaches Money, Ep 07: Wants vs. Needs
 
-Status: draft for approval. Vertical YouTube Short, about 50 to 55 seconds. Ebo teaches to camera; Ama (phone in hand) is the shopper.
-House rules: no lesson numbers (the three moves are unnumbered handwritten cards that stack up), the acting carries it, still camera with hard cuts, Ebo faces us and stands. One real number (the sneakers).
+Status: draft for approval (replaces the dropped add-to-cart draft). Vertical YouTube Short, about 50 to 55 seconds.
+Ebo is the one who gets caught (self-roast, like Ep4): his "needs" list is mostly wants. Ama reads it out.
+House rules: no lesson numbers (unnumbered handwritten cards that stack up), the acting carries it, still camera with hard cuts, Ebo faces us and stands.
+Props he handles: his budget list (paper) and a gold chain.
 
 ## Cold open
-AMA (thumb hovering, thrilled): It's on sale! Seventy percent off!
-EBO: Off what?
-AMA (beat. looks at the phone): …I don't know yet.
-(sfx: a lone notification ping in the silence)
+AMA (reading Ebo's list): Rent. Food. Light bill… "Gold chain"?
+EBO: Need.
+AMA: Need?
+EBO (straightens up): …For confidence.
 
 ## Hook
-EBO (to camera): That sale isn't saving you money. It's spending it. Faster.
-EBO: Here's how to beat the add-to-cart itch.
+EBO (to camera): Okay. If your needs list has jewellery on it, we have to talk. Wants versus needs.
 
-## Wait a day
-(card: Wait a day)
-EBO: First, wait twenty-four hours. Still want it tomorrow? Fine, think about it.
-EBO: Forgot it existed? That wasn't a need. That was an itch.
+## Needs keep you going
+(card: Needs keep you going)
+EBO: A need keeps you fed, housed, and able to get to work. Skip it, and life breaks.
 
-## Price it in hours
-(card: Price it in hours)
-EBO: Next, price it in hours. Those sixty-dollar sneakers?
-EBO: At fifteen an hour, that's four hours of your life.
-AMA (staring at the phone): Four hours… for shoes I'll wear twice.
+## Wants make it nicer
+(card: Wants make it nicer)
+EBO: A want makes life nicer. Nothing wrong with that… until you pay for wants with need money.
 
-## Add a speed bump
-(card: Add a speed bump)
-EBO: And take your card out of the app. Every extra step gives your brain time to catch up with your thumb.
+## Watch the sneaky ones
+(card: Watch the sneaky ones)
+EBO: And watch the sneaky ones. You need food. You want delivery.
+EBO: You need a phone. You want the new one. Every year.
+AMA (running a finger down his list): Delivery. New phone. Gold chain.
+EBO (long beat): …Wants.
+AMA: All of them?
+EBO (deflates): All of them.
 
-## Resolution
-AMA (taps, sighs, puts the phone down): Fine. Cart's empty.
-EBO: And the sixty dollars?
-AMA (slow grin): …Still mine.
-(sfx: cha-ching)
+## The fix
+EBO (to camera): So pay your needs first. Then pick your wants on purpose. Guilt-free.
+AMA: And the chain?
+EBO (puts it on, slow grin): Paid for. With want money.
 
 ## The loop
-EBO (to camera): A sale only saves you money if you were going to buy it anyway.
-(hard cut back to the cold open: "It's on sale!")
+EBO (to camera): Cover what you need. Then enjoy what you want.
+(hard cut back to the cold open: "Gold chain?")
