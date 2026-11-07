@@ -84,3 +84,15 @@ export const ep06Sfx = (w: {s: number; e: number}[]): Cue[] => [
   ...[0, 1, 2, 3].map((i) => ({at: w[96].s + 0.35 + i * 0.26, sfx: 'footstep', vol: 0.5 - i * 0.08})),
   {at: w[110].s, sfx: 'cha_ching', vol: 0.55}, // "the two hundred stays in your pocket"
 ];
+
+/** Ep7, absolute times from the word timings (ep07-words.json): the bank app buzzes, a tick for each
+ * "Yes", a pop per card, a tap on the phone, a clink as two chains come off, and the register at the end. */
+export const ep07Sfx = (w: {s: number; e: number}[]): Cue[] => [
+  {at: 0.05, sfx: 'phone_buzz', vol: 0.6}, // RENT DUE
+  ...[61, 63, 67].map((k) => ({at: w[k].s, sfx: 'marker_tick', vol: 0.8})), // ticks on the list
+  ...[50, 71, 124, 157].map((k) => ({at: w[k].s, sfx: 'pop'})), // the cards
+  {at: w[97].s, sfx: 'click', vol: 0.6}, // taps his phone on "Every year"
+  {at: w[115].s, sfx: 'slide', vol: 0.5}, // three apps fade
+  {at: w[201].s - 0.25, sfx: 'clink', vol: 0.8}, // two chains off
+  {at: w[203].s, sfx: 'cha_ching', vol: 0.6}, // "With want money."
+];

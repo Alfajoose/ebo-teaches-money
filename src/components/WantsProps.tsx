@@ -54,7 +54,7 @@ const ChainsHeldDrawing: React.FC<{x?: number; y?: number; rotate?: number; coun
   <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
     {Array.from({length: count}, (_, k) => (
       <g key={k} transform={`translate(${(k - (count - 1) / 2) * 14} 0)`}>
-        <Links w={12 + k * 4} d={60 + k * 14} n={11 + k * 2} />
+        <Links w={18 + k * 5} d={95 + k * 18} n={13 + k * 2} big />
       </g>
     ))}
   </g>
