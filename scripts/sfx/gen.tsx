@@ -6,7 +6,7 @@ import {EP05_DURATION} from '../../src/series/ep05';
 import ep06Words from '../../src/series/data/ep06-words.json';
 import {EP06_DURATION} from '../../src/series/ep06';
 import ep07Words from '../../src/series/data/ep07-words.json';
-import {EP07_DURATION} from '../../src/series/ep07';
+import {EP07_DURATION, EP07_SLAMS, EP07_TICKS} from '../../src/series/ep07';
 import {EP04_PLAN, ep04Times} from '../../src/series/ep04plan';
 import {K01_PLAN, K01_SHOT_TIMES, K01_DURATION} from '../../src/series/konka01';
 
@@ -32,6 +32,6 @@ out.ep05 = {duration: EP05_DURATION / 30, cues: ep05Sfx(ep05Words)};
 const HOLD = 122 / 30;
 out.ep05cut = {duration: EP05_DURATION / 30 + HOLD, cues: ep05Sfx(ep05Words, HOLD - 0.25).map((c) => (c.at > 4.6 ? {...c, at: c.at + HOLD} : c))};
 out.ep06 = {duration: EP06_DURATION / 30, cues: ep06Sfx(ep06Words)};
-out.ep07 = {duration: EP07_DURATION / 30, cues: ep07Sfx(ep07Words)};
+out.ep07 = {duration: EP07_DURATION / 30, cues: ep07Sfx(ep07Words, EP07_SLAMS, EP07_TICKS)};
 fs.writeFileSync(process.argv[2], JSON.stringify(out, null, 1));
 console.log('cues: ep04', c4.length, 'konka01', k.length);

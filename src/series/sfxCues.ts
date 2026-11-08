@@ -85,13 +85,16 @@ export const ep06Sfx = (w: {s: number; e: number}[]): Cue[] => [
   {at: w[110].s, sfx: 'cha_ching', vol: 0.55}, // "the two hundred stays in your pocket"
 ];
 
-/** Ep7, absolute times from the word timings (ep07-words.json): the bank app buzzes, a tick for each
- * "Yes", a pop per card, a tap on the phone, a clink as two chains come off, and the register at the end. */
-export const ep07Sfx = (w: {s: number; e: number}[]): Cue[] => [
+/** Ep7 (v2 staging), absolute times from the word timings (ep07-words.json) and the plan's drop-in
+ * times (EP07_SLAMS / EP07_TICKS in ep07.tsx): the bank app buzzes, a pop for everything that lands,
+ * a tick for each green tick, a stamp for the red cross, a tap on "Every year", the apps fade,
+ * a clink as two chains come off, and the register at the end. */
+export const ep07Sfx = (w: {s: number; e: number}[], slams: number[], ticks: number[]): Cue[] => [
   {at: 0.05, sfx: 'phone_buzz', vol: 0.6}, // RENT DUE
-  ...[61, 63, 67].map((k) => ({at: w[k].s, sfx: 'marker_tick', vol: 0.8})), // ticks on the list
-  ...[50, 71, 124, 157].map((k) => ({at: w[k].s, sfx: 'pop'})), // the cards
-  {at: w[97].s, sfx: 'click', vol: 0.6}, // taps his phone on "Every year"
+  ...slams.map((at) => ({at, sfx: 'pop', vol: 0.75})),
+  ...ticks.map((at) => ({at, sfx: 'marker_tick', vol: 0.8})),
+  {at: w[69].s, sfx: 'stamp', vol: 0.7}, // the red cross on the chains
+  {at: w[97].s, sfx: 'click', vol: 0.6}, // "Every year"
   {at: w[115].s, sfx: 'slide', vol: 0.5}, // three apps fade
   {at: w[201].s - 0.25, sfx: 'clink', vol: 0.8}, // two chains off
   {at: w[203].s, sfx: 'cha_ching', vol: 0.6}, // "With want money."
