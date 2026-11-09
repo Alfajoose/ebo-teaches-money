@@ -108,6 +108,7 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 - **New eye names** angry, suspicious, tired and squeeze, and **new mouth names** teeth, laugh and grimace, work on everyone: rigs without those drawings fall back to the nearest ones they have.
 - **Cycles** play in view 0.
 - **Voice:** the file has no voice track (the old master had the Dan test read).
+- **Voice direction (user, 2026-11-09):** Dan stays confident and upbeat. No [lower], [quiet], [serious] or similar tags that drop him into a low, quiet voice.
 
 ## MICA
 
