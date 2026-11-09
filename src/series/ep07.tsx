@@ -10,7 +10,7 @@ import {StageSizeContext, Slam} from './exportCtx';
 import {VFPS, Word, VStage, Framing, lipFrame, beatGesture} from './kit';
 import {C} from '../theme';
 import {AppPhone, ChainsHeld, ChainsWorn} from '../components/WantsProps';
-import {NeedBox, FoodBowl, DeliveryBag, ModelPhone, Shirt, WantGuy, PaySlip, Mark, House, Bus, BillDue, DayPage, Payday, FunJar, ChainsBig} from '../components/WantsInserts';
+import {DisguiseHat, NeedSign, NeedBox, FoodBowl, DeliveryBag, ModelPhone, Shirt, WantGuy, PaySlip, Mark, House, Bus, BillDue, DayPage, Payday, FunJar, ChainsBig} from '../components/WantsInserts';
 import wordsJson from './data/ep07-words.json';
 import envJson from './data/ep07-env.json';
 
@@ -89,6 +89,10 @@ type Shot = {
   /** acting that drives the arms (otherwise his hands go on the beat) */
   arms?: (t: number) => Partial<Pose> | null;
   hold?: (t: number) => React.ReactNode;
+  /** props in his world, on the floor beside him (world space, drawn in front of him): the physical gags */
+  floor?: (t: number) => React.ReactNode;
+  /** where he is (a hop aside) and where he looks, by absolute time */
+  move?: (t: number) => {dx?: number; lift?: number; look?: Partial<Pose>};
   action: string;
 };
 
@@ -96,6 +100,113 @@ const POINT_L: Partial<Pose> = {armR: [100, -10], armL: [12, 6]}; // his right h
 const POINT_R: Partial<Pose> = {armL: [100, -10], armR: [12, 6]};
 /** Point left on the need, right on the want. */
 const pointAt = (needK: number, wantK: number) => (t: number) => (t >= at(wantK) ? POINT_R : t >= at(needK) ? POINT_L : null);
+
+// ───────────────────────── physical gags (props in his world) ─────────────────────────
+const FLOOR_Y = 1850; // his feet in the wide shots
+const clamp01 = (u: number) => Math.min(1, Math.max(0, u));
+const easeOut = (u: number) => 1 - (1 - clamp01(u)) ** 2;
+/** A quick fall (0.45s, accelerating) from y0 to y1 from t0, then one small bounce. */
+const fall = (t: number, t0: number, y0: number, y1: number, dur = 0.45) => {
+  if (t < t0) return y0;
+  const u = (t - t0) / dur;
+  if (u < 1) return y0 + (y1 - y0) * u * u;
+  const b = (t - t0 - dur) / 0.2;
+  return b < 1 ? y1 - 26 * 4 * b * (1 - b) : y1;
+};
+/** A hop aside: from dx a to b over 0.2s starting at t0, with a little lift. */
+const hop = (t: number, t0: number, a: number, b: number) => {
+  const u = clamp01((t - t0) / 0.2);
+  return {dx: a + (b - a) * u, lift: t >= t0 && u < 1 ? -50 * 4 * u * (1 - u) : 0};
+};
+
+// 1. "dressed up as needs": the disguised want sidles in beside him; on "needs" his arm lands on it and the disguise falls off; it scurries away
+const WANT_X = 840;
+const WANT_Y = FLOOR_Y - 118;
+const unmask = () => at(32); // on "up": early enough for the scurry to land before the cut
+const disguiseFloor = (t: number) => {
+  const inX = 1300 - (1300 - WANT_X) * easeOut((t - at(26)) / 0.7);
+  const off = t >= unmask() + 0.45 ? (t - unmask() - 0.45) * 1700 : 0;
+  const bob = t < at(29) ? Math.abs(Math.sin(t * 14)) * -10 : 0;
+  const x = inX + off;
+  return (
+    <g>
+      <g transform={`translate(${x} ${WANT_Y + bob}) scale(1.8)`}>
+        <WantGuy disguise={t < unmask()} mood={t < unmask() ? 'sneaky' : 'sad'} t={LIVELY.on ? t : undefined} />
+      </g>
+      {t >= unmask() && (
+        <g>
+          <g transform={`translate(${WANT_X + 10 + (t - unmask()) * 60} ${fall(t, unmask(), WANT_Y - 190, FLOOR_Y - 60)}) rotate(${Math.min(160, (t - unmask()) * 400)}) scale(1.7)`}><DisguiseHat /></g>
+          <g transform={`translate(${WANT_X + 140} ${FLOOR_Y - 10}) rotate(${Math.min(90, (t - unmask()) * 320)}) scale(1.6)`}><NeedSign /></g>
+        </g>
+      )}
+    </g>
+  );
+};
+
+// 2. "the new one. Every year.": new phones drop where he stands; he hops aside each time, the third misses
+const PHONES = [{t0: 0.06, x: 540}, {t0: 0.61, x: 330}, {t0: 1.16, x: 900}];
+const phoneT0 = (k: number) => at(94) + PHONES[k].t0;
+const phonesFloor = (t: number) => (
+  <g>
+    {PHONES.map((p, k) => {
+      if (t < phoneT0(k)) return null;
+      const y = fall(t, phoneT0(k), 1150, FLOOR_Y - 70, 0.4);
+      const landed = t >= phoneT0(k) + 0.45;
+      return (
+        <g key={k} transform={`translate(${p.x} ${y}) rotate(${landed ? 84 + k * 4 : (t - phoneT0(k)) * 200}) scale(0.85)`}>
+          <ModelPhone fresh year={['2025', '2026', '2027'][k]} />
+        </g>
+      );
+    })}
+  </g>
+);
+const phonesMove = (t: number) => {
+  const l1 = phoneT0(0) + 0.02; // he hops as soon as it appears
+  const l2 = phoneT0(1) + 0.02;
+  const m = t < l2 ? hop(t, l1, 0, -210) : hop(t, l2, -210, 210);
+  const look: Partial<Pose> = t >= phoneT0(2) + 0.2 ? {lookX: 16, lookY: 10, eyes: 'wide', mouth: 'o'} : t >= phoneT0(0) ? {lookY: -14, eyes: 'wide'} : {};
+  return {...m, look};
+};
+
+// 3. "Wants can wait.": the want with ticket #99 shuffles up to him; on "Wants" he shoves it offscreen… it slides back in, still holding its ticket
+const shoveAt = () => at(124);
+const backAt = () => at(125) + 0.05; // back in on "can", settled by "wait"
+const waitingFloor = (t: number) => {
+  let x = 860 - 130 * easeOut((t - at(121)) / 0.6);
+  let rot = 0;
+  if (t >= shoveAt() && t < backAt()) {
+    const u = t - shoveAt();
+    x = 730 + 3000 * u * u + 600 * u;
+    rot = u * 300;
+  } else if (t >= backAt()) x = 1300 - 400 * easeOut((t - backAt()) / 0.35);
+  return (
+    <g>
+      <g transform={`translate(${x} ${WANT_Y}) rotate(${rot}) scale(1.8)`}>
+        <WantGuy mood={t >= backAt() ? 'sneaky' : 'happy'} ticket t={LIVELY.on ? t : undefined} />
+      </g>
+    </g>
+  );
+};
+
+// 4. "With want money.": he tosses the two chains offscreen; a beat; a clang off camera
+const tossAt = () => at(203);
+const tossFloor = (t: number) => {
+  if (t < tossAt()) return null;
+  const u = t - tossAt();
+  if (u > 1.2) return null;
+  return <g transform={`translate(${230 - 650 * u} ${1180 - 1500 * u + 0.5 * 2600 * u * u}) rotate(${-600 * u})`}><ChainsHeld count={2} /></g>;
+};
+
+/** The gags' sound effects (sfxCues.ts): what lands, what's shoved, what's thrown. */
+export const EP07_GAG_SFX = () => [
+  {at: unmask() + 0.3, sfx: 'drop', vol: 0.6}, // the hat lands
+  {at: unmask() + 0.55, sfx: 'whoosh', vol: 0.7}, // it scurries off
+  ...PHONES.map((_, k) => ({at: phoneT0(k) + 0.45, sfx: 'drop', vol: 0.8})), // phones land
+  {at: shoveAt(), sfx: 'whoosh', vol: 0.8}, // the shove
+  {at: backAt(), sfx: 'slide', vol: 0.6}, // …it slides back
+  {at: tossAt(), sfx: 'whoosh', vol: 0.8}, // the toss
+  {at: tossAt() + 0.6, sfx: 'clink', vol: 1}, // clang, off camera
+];
 
 export const EP07_PLAN: Shot[] = [
   // ── 1. The hook ──
@@ -113,12 +224,10 @@ export const EP07_PLAN: Shot[] = [
       </g>
     ), action: 'Wide: Ebo small below; a payslip slams in above him on "earn"… "not the problem".'},
   {at: 25, line: 'We\'re broke because our wants are dressed up as needs.', stage: 'wide', pose: {eyes: 'open', mouth: 'smirk'},
-    board: (t) => (
-      <g>
-        <In t={t} at={at(29)} x={470} y={860} k={2.1} alive><WantGuy disguise t={LIVELY.on ? t : undefined} /></In>
-        <In t={t} at={at(31)} x={0} y={0}><Label x={540} y={400} text="a want in disguise" red rot={-3} size={76} /></In>
-      </g>
-    ), arms: (t) => (t >= at(29) ? POINT_L : null), action: 'A little purple want in a hat and moustache, holding up a NEED sign. He points at it.'},
+    board: (t) => <In t={t} at={at(31)} x={0} y={0}><Label x={540} y={700} text="a want in disguise" red rot={-3} size={84} /></In>,
+    floor: disguiseFloor, move: (t) => ({look: t >= at(26) ? {lookX: 16, lookY: 6} : {}}),
+    arms: (t) => (t >= at(31) && t < unmask() + 0.45 ? POINT_R : null),
+    action: 'GAG: a little purple want in a hat and moustache, holding a NEED sign, sidles in beside him. He stares. On "needs" his arm lands on it: the hat and sign fall off, and it scurries away.'},
   {at: 35, line: 'So let\'s learn to tell them apart. Without giving up everything fun.', stage: 'bust', pose: {eyes: 'happy', mouth: 'smile'}, action: 'Close, warmer: "everything fun" with a grin.'},
   // ── 2. The test ──
   {at: 47, line: 'Here\'s the test. If it vanished tomorrow, would you have to replace it?', stage: 'wide', pose: {eyes: 'open', mouth: 'smile'},
@@ -158,7 +267,8 @@ export const EP07_PLAN: Shot[] = [
     action: 'need: a bowl of home food. want: a delivery bag with a long $$$ receipt.'},
   {at: 88, line: 'You need a phone. You want the new one. Every year.', stage: 'wide', pose: {eyes: 'half', mouth: 'smirk'},
     board: (t) => <Pair t={t} needAt={at(89)} wantAt={at(93)} need={<ModelPhone />} want={<ModelPhone fresh year={t >= at(98) ? '2027' : t >= at(97) + 0.3 ? '2026' : t >= at(97) ? '2025' : undefined} />} />,
-    arms: pointAt(88, 92), action: 'need: his old cracked phone. want: the shiny NEW! one… 2025, 2026, 2027 on "Every year".'},
+    arms: pointAt(88, 92), floor: phonesFloor, move: phonesMove,
+    action: 'need: his old cracked phone. want: the shiny NEW! one. GAG: then new phones rain down where he stands (2025, 2026, 2027); he hops aside twice, the third misses. He stares at it.'},
   {at: 99, line: 'You need clothes. You want the brand.', stage: 'wide', pose: {eyes: 'open', mouth: 'smile'},
     board: (t) => <Pair t={t} needAt={at(100)} wantAt={at(103)} need={<Shirt />} want={<Shirt brand />} />, arms: pointAt(99, 102),
     action: 'need: a plain $8 tee. want: the black LUXE tee, $250.'},
@@ -168,8 +278,16 @@ export const EP07_PLAN: Shot[] = [
     action: 'Insert: the phone fills the frame, four apps; three grey out on "I watch one". Ebo winces in the corner.'},
   // ── 4. Wants can wait ──
   {at: 118, line: 'Here\'s the thing. Needs are urgent. Wants can wait.', stage: 'wide', pose: {eyes: 'open', mouth: 'smile'},
-    board: (t) => <Pair t={t} needAt={at(121)} wantAt={at(124)} need={<BillDue />} want={<WantGuy mood="happy" ticket t={LIVELY.on ? t : undefined} />} needText="urgent" wantText="can wait" />, arms: pointAt(121, 124),
-    action: 'urgent: the rent bill, DUE TODAY. can wait: the want, holding ticket #99.'},
+    board: (t) => (
+      <g>
+        <In t={t} at={at(121)} x={285} y={840} k={1.6}><BillDue /></In>
+        <In t={t} at={at(121)} x={0} y={0}><Label x={285} y={470} text="urgent" rot={-4} /></In>
+        <In t={t} at={at(125)} x={0} y={0} twist={4}><Label x={790} y={1420} text="can wait" red rot={4} /></In>
+      </g>
+    ),
+    floor: waitingFloor, arms: (t) => (t >= at(121) && t < at(123) ? POINT_L : t >= shoveAt() - 0.08 && t < shoveAt() + 0.4 ? POINT_R : null),
+    move: (t) => ({look: t >= at(121) ? {lookX: 16, lookY: 6} : {}}),
+    action: 'urgent: the rent bill, DUE TODAY (above). GAG: the want with ticket #99 shuffles up beside him; on "Wants" he shoves it offscreen… "can wait": it slides back in, still holding its ticket.'},
   {at: 127, line: 'So give every want a one-day pause. Still want it tomorrow? Fine, think about it.', stage: 'wide', pose: {eyes: 'happy', mouth: 'smile'},
     board: (t) => (
       <g>
@@ -208,7 +326,8 @@ export const EP07_PLAN: Shot[] = [
     ), action: 'The jar empties on "gone"; the want deflates. Dry.'},
   // ── 6. The close ──
   {at: 190, line: 'Wants aren\'t the enemy. Wants with no limit are.', stage: 'bust', pose: {eyes: 'open', mouth: 'smile'}, action: 'Close, sincere, to camera.'},
-  {at: 199, line: 'This one? Paid for. With want money.', stage: 'mid', pose: {eyes: 'happy', mouth: 'grin'}, action: 'Takes two chains off (they hang from his hand), keeps one. Slow grin. LOOP: hard cut back to shot 1.'},
+  {at: 199, line: 'This one? Paid for. With want money.', stage: 'mid', pose: {eyes: 'happy', mouth: 'grin'}, floor: tossFloor,
+    action: 'Takes two chains off (they hang from his hand), keeps one. GAG: on "With" he tosses the two offscreen… a beat… CLANG, off camera. Slow grin. LOOP: hard cut back to shot 1.'},
 ];
 // the silent beat after "I don't get it."
 (EP07_PLAN[1] as Shot).at = {t: WORDS[9].e + 0.1};
@@ -281,7 +400,7 @@ const ACTS: Record<number, (l: number, t: number) => Act> = {
   // four apps… three grey out: he winces
   14: (_l, t) => (t >= at(115) ? {pose: {eyes: 'squeeze', mouth: 'grimace'}} : {}),
   // two chains off: from "Paid for." two hang from his hand, one stays on
-  22: (_l, t) => (t >= at(201) - 0.25 ? {chains: 1, holdL: <ChainsHeld count={2} />, pose: {armL: [85, -25]}} : {}),
+  22: (_l, t) => (t >= tossAt() ? {chains: 1, pose: {armL: [120, -10]}} : t >= at(201) - 0.25 ? {chains: 1, holdL: <ChainsHeld count={2} />, pose: {armL: [85, -25]}} : {}),
 };
 
 const useMarkerFont = () => {
@@ -343,7 +462,10 @@ export const Ep07Frame: React.FC<{f: number; lively?: boolean}> = ({f, lively = 
     pose = {...pose, ...reactAt(i, t), tilt: (pose.tilt ?? 0) + (id.tilt ?? 0), lift: (pose.lift ?? 0) + (id.lift ?? 0),
       lookX: look.lookX ?? (pose.lookX || id.lookX || 0), lookY: look.lookY ?? pose.lookY, ...(id.eyes ? {eyes: id.eyes} : {})} as Pose;
   }
-  const e = PLACE[s.stage];
+  const mv = s.move?.(t) ?? {};
+  if (mv.look) pose = {...pose, ...mv.look} as Pose;
+  if (mv.lift) pose = {...pose, lift: (pose.lift ?? 0) + mv.lift} as Pose;
+  const e = {...PLACE[s.stage], x: PLACE[s.stage].x + (mv.dx ?? 0)};
   return (
     <StageSizeContext.Provider value={{w: EP07_W, h: EP07_H}}>
       <NoScaleContext.Provider value>
@@ -352,6 +474,7 @@ export const Ep07Frame: React.FC<{f: number; lively?: boolean}> = ({f, lively = 
             <VStage framing={FRAMES[s.stage]} bg={SHADES[SECTION_SHADE[EP07_SECTIONS[i]]][2]} blurBg={<Backdrop id={`ep07-${SECTION_SHADE[EP07_SECTIONS[i]]}`} shade={SECTION_SHADE[EP07_SECTIONS[i]]} />} overlay={s.board?.(t)}>
               <RigCharacter who="ebo" x={e.x} y={e.y} scale={e.scale} t={f} pose={gentle(frontOn(pose))} holdL={act.holdL}
                 wear={<ChainsWorn count={act.chains ?? 3} />} mouthFrame={talking(f) ? lipFrame(ENV, WORDS, f) : undefined} />
+              {s.floor?.(t)}
             </VStage>
           </AbsoluteFill>
         </HandDrawnContext.Provider>

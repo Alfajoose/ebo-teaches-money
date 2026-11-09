@@ -282,6 +282,25 @@ const ChainsBigDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) =>
   </g>
 );
 
+/** The disguise, once it comes off: the hat (origin at its centre) and the NEED sign on its stick (origin at the stick's foot). */
+const DisguiseHatDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <path d="M -70 35 L 70 35 L 50 25 L 40 -35 L -40 -35 L -50 25 Z" fill="#3A3F4E" {...S} strokeWidth={5} />
+    <rect x={-42} y={11} width={84} height={12} fill="#E5484D" />
+  </g>
+);
+const NeedSignDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <path d="M 0 0 L 30 -100" stroke="#8B6A48" strokeWidth={10} strokeLinecap="round" />
+    <g transform="translate(38 -140) rotate(8)">
+      <rect x={-80} y={-40} width={160} height={74} rx={8} fill="#fff" {...S} strokeWidth={5} />
+      <text y={16} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={44} fill={C.ink}>
+        NEED
+      </text>
+    </g>
+  </g>
+);
+
 const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P> => {
   const Wrapped: React.FC<P> = (props) => (
     <Prop name={name}>
@@ -306,3 +325,5 @@ export const DayPage = prop('DayPage', DayPageDrawing);
 export const Payday = prop('Payday', PaydayDrawing);
 export const FunJar = prop('FunJar', FunJarDrawing);
 export const ChainsBig = prop('ChainsBig', ChainsBigDrawing);
+export const DisguiseHat = prop('DisguiseHat', DisguiseHatDrawing);
+export const NeedSign = prop('NeedSign', NeedSignDrawing);

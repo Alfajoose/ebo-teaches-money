@@ -89,7 +89,8 @@ export const ep06Sfx = (w: {s: number; e: number}[]): Cue[] => [
  * times (EP07_SLAMS / EP07_TICKS in ep07.tsx): the bank app buzzes, a pop for everything that lands,
  * a tick for each green tick, a stamp for the red cross, a tap on "Every year", the apps fade,
  * a clink as two chains come off, and the register at the end. */
-export const ep07Sfx = (w: {s: number; e: number}[], slams: number[], ticks: number[]): Cue[] => [
+export const ep07Sfx = (w: {s: number; e: number}[], slams: number[], ticks: number[], gags: Cue[] = []): Cue[] => [
+  ...gags,
   {at: 0.05, sfx: 'phone_buzz', vol: 0.6}, // RENT DUE
   ...slams.map((at) => ({at, sfx: 'pop', vol: 0.75})),
   ...ticks.map((at) => ({at, sfx: 'marker_tick', vol: 0.8})),
