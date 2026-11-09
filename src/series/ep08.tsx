@@ -9,304 +9,250 @@ import {Backdrop, SHADES} from './sets';
 import {StageSizeContext} from './exportCtx';
 import {VFPS, Word, VStage, Framing, lipFrame, beatGesture} from './kit';
 import {Badge, BigBadge, Dim, Glow, Header, In, INK, Label, RED, Tracker, badgeX, swoopZoom, useMarkerFont} from './filterKit';
-import {CarKeys, ChatPhone, Crown, DinnerTable, Doormat, Heart, MovingBox, Receipt, SaleClock, Speech} from '../components/NiceGuyProps';
-import {Mark} from '../components/WantsInserts';
-import {BigPhone} from '../components/StayBrokeProps';
+import {Cake, CalPage, CarKeys, Clock, DinnerTable, Heart, Lobster, MovingBox, ParkingTicket, Receipt, Speech} from '../components/NiceGuyProps';
+import {Mark, House} from '../components/WantsInserts';
+import {Wallet} from '../components/Props';
 import wordsJson from './data/ep08-words.json';
 import envJson from './data/ep08-env.json';
 
 /**
- * EBO TEACHES MONEY — Ep 08 "Why Nice Guys Get Taken Advantage Of" (vertical, 1080×1920, ~63s).
- * House rule 19 (the 3rd-Filter format): a tracker of three badges (an open door: you never say no · a
- * lit-up phone: you're always available · "?" until the payoff: liked isn't respected, a crown); a new
- * picture every 1–2 s; Ebo big along the bottom reacting, close-ups for the punches; tiny stories with
- * Christy (Ama Pretty) and Ama. v2: the bold-and-blunt script (house rule 20), straight in on the claim;
- * the last line loops back to the first.
+ * EBO TEACHES MONEY — Ep 08 "Why Nice Guys Get Taken Advantage Of" (vertical, 1080×1920, ~35s), v3:
+ * the Peanut style (house rules 20 and 21). A deadpan story about Ebo: dinner when Christy forgot her wallet
+ * (four times), helping Ama move (twice, same apartment), lending his car ("one hour"… three days and a
+ * parking ticket), then the twist: a surprise party at his favourite restaurant… and they sent him the bill.
+ * The lesson in two lines, and a button: next birthday he's ordering lobster.
+ * - A picture on every key word, landing on it, showing the action; things swoop in from the sides with a swoosh.
+ * - The camera swoops on every shot (video only; the Animate file stays camera-free).
+ * - Every take moves: Ebo, Christy and Ama walk in, act on the words and react.
+ * - The tracker (rule 19): dinner · the move · the car · ? → the bill.
  */
 export const EP08_W = 1080;
 export const EP08_H = 1920;
 type W8 = Word & {who: 'ebo'};
 const WORDS = wordsJson as W8[];
-const END = WORDS[WORDS.length - 1].e + 0.5;
+const END = WORDS[WORDS.length - 1].e + 0.6;
 export const EP08_DURATION = Math.ceil(END * VFPS);
 const at = (k: number) => WORDS[k].s;
 
-type Stage = 'react' | 'close' | 'story' | 'insert' | 'mid';
+/** scene: the story, everyone full figure (Ebo included) · react: an example above, Ebo big along the bottom ·
+ * close: his face · insert: a prop fills the frame, his head in the corner · story: the example alone. */
+type Stage = 'scene' | 'react' | 'close' | 'insert' | 'story';
 const WHOLE: Framing = {zoom: 1, cx: 540, cy: 960};
-const FRAMES: Record<Stage, Framing> = {react: WHOLE, close: {zoom: 1.8, cx: 540, cy: 980}, story: WHOLE, insert: WHOLE, mid: {zoom: 1.35, cx: 540, cy: 1040}};
+const FRAMES: Record<Stage, Framing> = {scene: WHOLE, react: WHOLE, close: {zoom: 1.8, cx: 540, cy: 980}, insert: WHOLE, story: WHOLE};
+const FLOOR = 1520;
+const CAST_SCALE = 1.3;
 const EBO_AT: Record<Stage, {x: number; y: number; scale: number} | null> = {
+  scene: {x: 540, y: FLOOR, scale: CAST_SCALE},
   react: {x: 540, y: 2440, scale: 2.7},
   close: {x: 540, y: 1500, scale: 1.75},
-  story: null,
   insert: {x: 860, y: 2350, scale: 2.4},
-  mid: {x: 540, y: 1500, scale: 1.75},
+  story: null,
 };
-const FLOOR = 1520;
 
 // ───────────────────────── the tracker ─────────────────────────
 const BADGES: Badge[] = [
-  {
-    color: '#45B69C',
-    icon: (
-      // an open door: you say yes to everything
-      <g>
-        <rect x={-26} y={-34} width={52} height={68} fill="none" stroke="#fff" strokeWidth={6} />
-        <path d="M -26 -34 L 6 -24 L 6 42 L -26 34 Z" fill="#fff" />
-      </g>
-    ),
-  },
-  {
-    color: '#F5A33A',
-    icon: (
-      // a phone lighting up: always available
-      <g>
-        <rect x={-18} y={-30} width={36} height={60} rx={7} fill="#fff" />
-        <path d="M -34 -20 Q -42 0 -34 20 M 34 -20 Q 42 0 34 20" fill="none" stroke="#fff" strokeWidth={5} strokeLinecap="round" />
-      </g>
-    ),
-  },
-  {
-    color: '#8F6BD1',
-    icon: (
-      // a crown: liked isn't respected
-      <path d="M -30 18 L -34 -14 L -16 0 L 0 -24 L 16 0 L 34 -14 L 30 18 Z" fill="#fff" />
-    ),
-  },
+  {color: '#45B69C', icon: <g><circle r={30} fill="#fff" /><circle r={18} fill="none" stroke="#45B69C" strokeWidth={4} /><path d="M 38 -26 L 38 26" stroke="#fff" strokeWidth={6} strokeLinecap="round" /></g>}, // dinner: a plate and a fork
+  {color: '#F5A33A', icon: <g><rect x={-28} y={-24} width={56} height={48} fill="#fff" /><rect x={-6} y={-24} width={12} height={48} fill="#F5A33A" opacity={0.5} /></g>}, // the move: a box
+  {color: '#2F80ED', icon: <g><circle cx={-14} cy={-8} r={14} fill="none" stroke="#fff" strokeWidth={6} /><path d="M -2 2 L 28 30 M 18 20 L 26 12 M 24 26 L 32 18" stroke="#fff" strokeWidth={6} strokeLinecap="round" /></g>}, // the car: a key
+  {color: '#E5484D', icon: <g><rect x={-20} y={-30} width={40} height={60} fill="#fff" /><text y={14} textAnchor="middle" fontFamily="EboMarker" fontSize={30} fill="#E5484D">$$</text></g>}, // ? → the bill
 ];
-const SLOT_AT = () => [at(34), at(65), at(98)];
-const TRACK_FROM = () => at(28);
+const SLOT_AT = () => [at(12), at(23), at(30), at(62)];
+const TRACK_FROM = () => at(12);
 
 // ───────────────────────── the shots ─────────────────────────
-/** A side character in a story shot. Rule 21: they act the whole time: they walk in (`enter`: from x, at a time),
- * change pose on the words (`acts`: [word, pose]), and can walk off (`exit`: to x, at a word). */
-type Side = {who: 'ama' | 'pretty'; x: number; pose: Partial<Pose>; hold?: React.ReactNode; facing?: 1 | -1;
-  enter?: {from: number; dur?: number}; exit?: {to: number; at: number; dur?: number}; acts?: [number, Partial<Pose>][]};
+type Actor = {x: number; pose?: Partial<Pose>; hold?: React.ReactNode; holdL?: React.ReactNode; facing?: 1 | -1;
+  enter?: {from: number; dur?: number}; exit?: {to: number; at: number; dur?: number}; acts?: [number, Partial<Pose> & {hold?: React.ReactNode | null; holdL?: React.ReactNode | null}][]};
+type Side = Actor & {who: 'ama' | 'pretty'};
 type Shot = {
   at: number;
   line: string;
   stage: Stage;
-  pose?: Partial<Pose>;
+  /** Ebo: his face and arms; in a scene, where he stands and what he does */
+  ebo?: Actor;
   touch?: keyof typeof CONTACT;
   board?: (t: number) => React.ReactNode;
   side?: Side[];
-  under?: (t: number) => React.ReactNode;
-  /** props in his world, drawn in front of him (the table, things he throws) */
+  /** props in the world, in front of everyone (the table) */
   front?: (t: number) => React.ReactNode;
-  /** what he holds in his left hand */
-  holdL?: (t: number) => React.ReactNode;
-  arms?: (t: number) => Partial<Pose> | null;
-  header?: [string, string?];
-  /** the camera swoop (video only): a quick zoom-out reveal, or a slow push-in; default reveal for wide shots, push for close */
+  /** drawn in the world behind everyone (a glow behind a character) */
+  under?: (t: number) => React.ReactNode;
   cam?: 'reveal' | 'push' | 'none';
-  /** dim the scene from this time (word index) while a title or badge is up */
   dim?: number;
+  header?: [string, string?];
   action: string;
 };
 const stand = (x: Partial<Pose>): Partial<Pose> => ({...POSES.standing, armL: [12, 6], armR: [12, 6], eyes: 'open', mouth: 'smile', ...x});
-const bigBadge = (t: number, k: number, a: number, from?: 'left' | 'right' | 'top') => (
+const badgeIn = (t: number, k: number, from: 'left' | 'right' | 'top' = 'right') => (
   <g>
-    <Glow x={badgeX(k, 3)} y={120} r={140} />
-    <Glow x={540} y={760} r={380} />
-    <In t={t} at={a} x={540} y={760} k={3.2} from={from}><BigBadge b={BADGES[k]} /></In>
+    <Glow x={badgeX(k, 4)} y={120} r={140} />
+    <In t={t} at={SLOT_AT()[k]} x={540} y={520} k={2.2} from={from}><BigBadge b={BADGES[k]} /></In>
   </g>
 );
-const keysToss = () => at(50);
+const TABLE_Y = 1290;
 
 export const EP08_PLAN: Shot[] = [
-  // ── 1. The hook ──
-  {at: 0, line: 'Being nice isn\'t your problem.', stage: 'react', pose: {eyes: 'half', mouth: 'flat', lookY: -14},
-    board: (t) => (
+  // ── The story ──
+  {at: 0, line: 'Ebo was the nicest guy…', stage: 'scene', cam: 'reveal',
+    ebo: {x: 540, pose: {eyes: 'happy', mouth: 'grin'}, acts: [[3, {armR: [140, -10], eyes: 'happy', mouth: 'laugh', headTilt: 6}]]},
+    under: () => <Glow x={540} y={1200} r={480} />,
+    board: (t) => <In t={t} at={at(3)} x={0} y={0} from="left"><Label x={540} y={560} text="the nicest guy" red size={100} rot={-3} /></In>,
+    action: 'Ebo, beaming, in a glow; on "nicest" he waves big. "the nicest guy" swoops in.'},
+  {at: 5, line: '…in his whole friend group.', stage: 'scene', cam: 'reveal',
+    ebo: {x: 540, pose: {eyes: 'happy', mouth: 'grin'}},
+    side: [
+      {who: 'pretty', x: 210, pose: stand({eyes: 'happy', mouth: 'grin'}), enter: {from: -300}, acts: [[8, {armL: [130, -10], headTilt: 8}]]},
+      {who: 'ama', x: 870, pose: stand({eyes: 'happy', mouth: 'grin'}), facing: -1, enter: {from: 1400}, acts: [[8, {armL: [130, -10], headTilt: -8}]]},
+    ],
+    action: 'Christy and Ama walk in from both sides; on "friend group" all three wave.'},
+  {at: 10, line: 'He covered dinner…', stage: 'scene', cam: 'push',
+    ebo: {x: 540, pose: {eyes: 'happy', mouth: 'smile'}, acts: [[11, {armR: [80, -20]}]]},
+    side: [{who: 'pretty', x: 210, pose: stand({eyes: 'happy', mouth: 'grin'})}],
+    front: (t) => (
       <g>
-        <In t={t} at={at(1)} x={540} y={720} k={2.2}><Heart /></In>
-        <In t={t} at={at(2)} x={0} y={0}><Label x={540} y={1010} text="not the problem" red rot={-3} /></In>
+        <DinnerTable x={540} y={TABLE_Y} />
+        <In t={t} at={at(12)} x={560} y={TABLE_Y - 20} k={1} rot={-80} from="right"><Receipt len={260} /></In>
       </g>
-    ), action: 'Straight in: a big pink heart (nice) above him… "not the problem".'},
-  {at: 5, line: 'Being available is.', stage: 'insert', pose: {eyes: 'squint', mouth: 'flat', lookX: -18, lookY: -12},
+    ),
+    board: (t) => badgeIn(t, 0, 'top'),
+    action: 'A dinner table: Christy and Ebo. On "dinner" the bill swoops onto the table in front of Ebo. The first badge (a plate) lights up.'},
+  {at: 13, line: '…when Christy forgot her wallet.', stage: 'story', cam: 'push',
+    side: [{who: 'pretty', x: 420, pose: stand({eyes: 'wide', mouth: 'o', armL: [30, -30], armR: [30, -30]}), acts: [[15, {armL: [60, 20], armR: [60, 20], headTilt: 10, mouth: 'grimace'}], [17, {eyes: 'happy', mouth: 'grin', headTilt: -8}]]}],
     board: (t) => (
       <g>
-        <Glow x={470} y={820} r={420} />
-        <g transform="translate(470 820) rotate(-4) scale(2.4)"><ChatPhone /></g>
-        <In t={t} at={at(7)} x={0} y={0}><Label x={330} y={1250} text="the problem" red rot={-4} /></In>
+        <In t={t} at={at(17)} x={800} y={760} k={2.4} from="right"><Wallet x={0} y={0} /></In>
+        <In t={t} at={at(17) + 0.25} x={800} y={760} k={1.6} twist={0}><Mark kind="cross" /></In>
       </g>
-    ), action: 'Insert: his phone, lit up with a midnight "need a favor", glowing. "the problem".'},
-  {at: 8, line: 'Every free yes teaches people your time is worthless.', stage: 'react', pose: {eyes: 'squint', mouth: 'flat', lookY: -14},
+    ), action: 'Christy pats her pockets… "wallet": a wallet swoops in and gets crossed out. She grins.'},
+  {at: 18, line: 'Four times.', stage: 'story', cam: 'reveal',
     board: (t) => (
       <g>
-        <In t={t} at={at(10)} x={0} y={0}><Label x={540} y={660} text="YES" size={170} /></In>
-        <In t={t} at={at(9)} x={700} y={720} k={1.9} rot={16}>
+        {[0, 1, 2, 3].map((k) => (
+          <In key={k} t={t} at={at(18) + k * 0.16} x={230 + k * 210} y={900} k={1.1} rot={k % 2 ? 8 : -8} from={k % 2 ? 'right' : 'left'}><Receipt len={360} /></In>
+        ))}
+      </g>
+    ), action: 'Four bills slap down in a row, one after another.'},
+  {at: 20, line: 'He helped Ama move.', stage: 'scene', cam: 'reveal',
+    ebo: {x: 330, pose: {eyes: 'happy', mouth: 'smile', armR: [70, -30]}, hold: <MovingBox x={0} y={-20} />},
+    side: [{who: 'ama', x: 820, pose: stand({eyes: 'happy', mouth: 'grin'}), facing: -1, acts: [[23, {armR: [110, -10], headTilt: -8}]]}],
+    board: (t) => (
+      <g>
+        {badgeIn(t, 1, 'left')}
+        <In t={t} at={at(23)} x={640} y={1300} k={1.2} from="top"><MovingBox /></In>
+        <In t={t} at={at(23) + 0.15} x={640} y={1120} k={1.2} from="top"><MovingBox rotate={5} /></In>
+      </g>
+    ), action: 'Ebo carrying a box; Ama points; on "move" more boxes drop. The second badge (a box) lights up.'},
+  {at: 24, line: 'Twice.', stage: 'close', ebo: {x: 540, pose: {eyes: 'tired', mouth: 'flat'}},
+    board: (t) => <In t={t} at={at(24)} x={0} y={0} from="right"><Label x={760} y={560} text="x2" red size={150} /></In>,
+    action: 'Close: Ebo, deadpan. "x2" swoops in.'},
+  {at: 25, line: 'Same apartment.', stage: 'story', cam: 'reveal',
+    board: (t) => (
+      <g>
+        <In t={t} at={at(25)} x={290} y={900} k={1.6} from="left"><House /></In>
+        <In t={t} at={at(26)} x={0} y={0}><Label x={540} y={930} text="=" size={160} /></In>
+        <In t={t} at={at(26)} x={790} y={900} k={1.6} from="right"><House /></In>
+      </g>
+    ), action: 'An apartment… "=" the same apartment.'},
+  {at: 27, line: 'He lent his car…', stage: 'scene', cam: 'push',
+    ebo: {x: 330, pose: {eyes: 'happy', mouth: 'smile', armR: [80, -20]}, hold: <CarKeys />, acts: [[30, {armR: [90, -10], hold: null}]]},
+    side: [{who: 'pretty', x: 790, pose: stand({eyes: 'happy', mouth: 'grin', armR: [80, -20]}), facing: -1, acts: [[30, {hold: <CarKeys />, armR: [120, -10], mouth: 'laugh'}]]}],
+    board: (t) => badgeIn(t, 2, 'top'),
+    action: 'Ebo holds out his keys; on "car" they jump to Christy, who throws her arm up. The third badge (a key) lights up.'},
+  {at: 31, line: '…for "one hour."', stage: 'story', cam: 'push',
+    board: (t) => (
+      <g>
+        <In t={t} at={at(32)} x={540} y={820} k={2} from="top"><Clock h={1} /></In>
+        <In t={t} at={at(33)} x={0} y={0} from="left"><Label x={540} y={1200} text='"one hour"' red size={110} rot={-3} /></In>
+      </g>
+    ), action: 'A clock… "one hour".'},
+  {at: 34, line: 'It came back three days later…', stage: 'story', cam: 'reveal',
+    board: (t) => (
+      <g>
+        {['1', '2', '3'].map((n, k) => (
+          <In key={n} t={t} at={at(37) + k * 0.2} x={250 + k * 290} y={880} k={1} rot={(k - 1) * 6} from="top"><CalPage top="DAY" n={n} /></In>
+        ))}
+      </g>
+    ), action: 'Calendar pages drop: day 1, day 2, day 3.'},
+  {at: 40, line: '…with a parking ticket.', stage: 'insert', ebo: {x: 860, pose: {eyes: 'wide', mouth: 'o', lookX: -18, lookY: -12}},
+    board: (t) => (
+      <g>
+        <In t={t} at={at(42)} x={480} y={820} k={2.4} rot={-6} from="right"><ParkingTicket /></In>
+        <In t={t} at={at(42) + 0.35} x={180} y={1250} k={1.4} rot={-20}><CarKeys /></In>
+      </g>
+    ), action: 'Insert: the keys come back… with a parking ticket, $85, filling the frame. Ebo stares from the corner.'},
+  {at: 44, line: 'So for his birthday…', stage: 'scene', cam: 'reveal',
+    ebo: {x: 540, pose: {eyes: 'wide', mouth: 'grin'}, acts: [[47, {armL: [120, -10], armR: [120, -10], eyes: 'happy', mouth: 'laugh', lift: -20}]]},
+    board: (t) => <In t={t} at={at(47)} x={540} y={760} k={1.8} from="top"><Cake /></In>,
+    action: 'A birthday cake drops in above Ebo; he throws both arms up.'},
+  {at: 48, line: '…they threw him a surprise party.', stage: 'scene', cam: 'reveal',
+    ebo: {x: 540, pose: {eyes: 'wide', mouth: 'o'}, acts: [[52, {eyes: 'happy', mouth: 'laugh', armL: [100, -20], armR: [100, -20]}]]},
+    side: [
+      {who: 'pretty', x: 210, pose: stand({eyes: 'happy', mouth: 'laugh', armL: [140, -10], armR: [140, -10], lift: -20}), enter: {from: -300, dur: 0.3}},
+      {who: 'ama', x: 870, pose: stand({eyes: 'happy', mouth: 'laugh', armL: [140, -10], armR: [140, -10], lift: -20}), facing: -1, enter: {from: 1400, dur: 0.3}},
+    ],
+    board: (t) => <In t={t} at={at(52)} x={0} y={0} from="top"><Label x={540} y={520} text="SURPRISE!" red size={130} rot={-4} /></In>,
+    action: 'Christy and Ama jump in from both sides, arms up: "SURPRISE!" Ebo is thrilled.'},
+  {at: 54, line: 'At his favorite restaurant.', stage: 'scene', cam: 'push',
+    ebo: {x: 540, pose: {eyes: 'happy', mouth: 'grin'}},
+    side: [
+      {who: 'pretty', x: 210, pose: stand({eyes: 'happy', mouth: 'grin'})},
+      {who: 'ama', x: 870, pose: stand({eyes: 'happy', mouth: 'grin'}), facing: -1},
+    ],
+    front: (t) => (
+      <g>
+        <DinnerTable x={540} y={TABLE_Y} />
+        <In t={t} at={at(57)} x={540} y={TABLE_Y - 90} k={0.8} from="top"><Cake /></In>
+      </g>
+    ), action: 'All three at the restaurant table; on "restaurant" the cake lands on it.'},
+  {at: 58, line: 'And sent him the bill.', stage: 'close', ebo: {x: 540, pose: {eyes: 'wide', mouth: 'scream'}},
+    board: (t) => (
+      <g>
+        <Glow x={badgeX(3, 4)} y={120} r={150} />
+        <In t={t} at={at(62) + 0.15} x={300} y={780} k={1.5} rot={-10} from="top"><Receipt len={560} total="$412.80" /></In>
+      </g>
+    ), action: 'THE TWIST: close on Ebo… on "bill" the last badge turns red ($$) and a huge bill slams down in front of him.'},
+  // ── The lesson ──
+  {at: 63, line: 'Ebo didn\'t get used because he was nice.', stage: 'react', ebo: {x: 540, pose: {eyes: 'half', mouth: 'flat', lookY: -14}}, cam: 'push',
+    board: (t) => (
+      <g>
+        <In t={t} at={at(70)} x={540} y={760} k={2.2} from="left"><Heart /></In>
+        <In t={t} at={at(70) + 0.2} x={0} y={0}><Label x={540} y={1060} text="not the problem" red rot={-3} /></In>
+      </g>
+    ), action: 'A heart (nice)… "not the problem".'},
+  {at: 71, line: 'He got used because his yes was free.', stage: 'react', ebo: {x: 540, pose: {eyes: 'squint', mouth: 'flat', lookY: -14}}, cam: 'push',
+    board: (t) => (
+      <g>
+        <In t={t} at={at(76)} x={0} y={0} from="left"><Label x={540} y={660} text="YES" size={170} /></In>
+        <In t={t} at={at(78)} x={700} y={720} k={1.9} rot={16} from="right">
           <g>
             <path d="M 0 -40 L 170 -40 L 200 0 L 170 40 L 0 40 Z" fill={RED} stroke={INK} strokeWidth={6} />
             <text x={90} y={16} textAnchor="middle" fontFamily="EboMarker" fontSize={46} fill="#fff">FREE</text>
           </g>
         </In>
-        <In t={t} at={at(14)} x={300} y={940} k={0.7}><SaleClock /></In>
       </g>
-    ), action: 'A big YES with a red FREE tag… then his time: a clock marked down to $0.99.'},
-  {at: 17, line: 'And nobody respects worthless things.', stage: 'story',
+    ), action: 'A big YES… a red FREE tag slaps onto it.'},
+  {at: 79, line: 'So now he says no.', stage: 'scene', cam: 'reveal',
+    ebo: {x: 720, pose: {eyes: 'half', mouth: 'smile'}, acts: [[83, {armL: [95, 0], eyes: 'half', mouth: 'flat'}]]},
+    side: [{who: 'pretty', x: 280, pose: stand({eyes: 'happy', mouth: 'grin', armR: [80, -20]}), hold: <Receipt len={220} rotate={-20} />, acts: [[83, {eyes: 'wide', mouth: 'o'}]]}],
+    board: (t) => <In t={t} at={at(83)} x={760} y={640} k={1.3} from="right"><Speech short /></In>,
+    action: 'Christy holds out another bill; on "no" Ebo puts a hand up: "No." She blinks.'},
+  {at: 84, line: 'No speech.', stage: 'story', cam: 'push',
+    board: (t) => <In t={t} at={at(85)} x={540} y={880} k={1.3} from="left"><Speech /></In>,
+    action: 'The long speech of excuses, crossed out.'},
+  {at: 86, line: 'And next birthday…', stage: 'scene', cam: 'push',
+    ebo: {x: 540, pose: {eyes: 'half', mouth: 'smirk'}},
+    front: () => <DinnerTable x={540} y={TABLE_Y} />,
+    action: 'Back at the restaurant table, Ebo, smug.'},
+  {at: 89, line: '…he\'s ordering lobster.', stage: 'insert', ebo: {x: 860, pose: {eyes: 'happy', mouth: 'grin', lookX: -18, lookY: -12}},
     board: (t) => (
       <g>
-        <In t={t} at={at(18)} x={540} y={880} k={1.8}><Doormat /></In>
-        <In t={t} at={at(20)} x={0} y={0}><Label x={540} y={560} text="worthless" red size={110} /></In>
+        <Glow x={480} y={860} r={460} />
+        <In t={t} at={at(91)} x={480} y={860} k={2.1} from="top"><Lobster /></In>
       </g>
-    ), action: 'A WELCOME doormat covered in footprints. "worthless".'},
-  {at: 22, line: 'Here\'s how nice guys get used. Three ways.', stage: 'react', pose: {eyes: 'open', mouth: 'smirk', lookY: -18}, touch: 'thinkChin',
-    action: 'Ebo, hand on chin; on "Three ways" the tracker appears: three grey "?" badges.'},
-  {at: 30, line: 'The last one stings.', stage: 'close', pose: {eyes: 'suspicious', mouth: 'flat', lookX: 10, lookY: -12, headTilt: 6},
-    board: () => <Glow x={badgeX(2, 3)} y={120} r={150} />, action: 'Close: Ebo leans in. The last "?" badge glows.'},
-  // ── 2. You never say no ──
-  {at: 34, line: 'First. You never say no.', stage: 'react', pose: {eyes: 'wide', mouth: 'o', lookY: -18}, header: ['You never say', 'no'], dim: 34, cam: 'push',
-    board: (t) => bigBadge(t, 0, at(34), 'right'), action: 'The first badge lights up (green, an open door) and drops in big.'},
-  {at: 39, line: 'Cover the bill? Yes.', stage: 'story', header: ['You never say', 'no'],
-    side: [{who: 'pretty', x: 360, pose: stand({armR: [80, -20], eyes: 'happy', mouth: 'grin'}), hold: <Receipt len={260} rotate={-20} />, enter: {from: -250},
-      acts: [[40, {tilt: 6, headTilt: 8, eyes: 'happy', mouth: 'grin'}], [41, {tilt: -2, headTilt: -6, mouth: 'smile'}], [42, {armL: [150, -10], lift: -24, eyes: 'happy', mouth: 'laugh', headTilt: 10}]]}],
-    cam: 'push',
-    board: (t) => <In t={t} at={at(42)} x={0} y={0} from="right"><Label x={800} y={900} text="Yes." red size={110} /></In>,
-    action: 'Story: Christy, all smiles, holds out the bill. "Yes."'},
-  {at: 43, line: 'Help them move? Yes.', stage: 'story', header: ['You never say', 'no'],
-    side: [{who: 'ama', x: 330, pose: stand({armR: [70, -30], eyes: 'happy', mouth: 'smile'}), enter: {from: -250, dur: 0.35},
-      acts: [[44, {armR: [100, -10], eyes: 'open', mouth: 'o', headTilt: -6}], [45, {armR: [100, -10], armL: [40, -30], eyes: 'happy', mouth: 'grin', headTilt: 6}], [46, {armL: [140, -10], armR: [140, -10], lift: -26, eyes: 'happy', mouth: 'laugh'}]]}],
-    board: (t) => (
-      <g>
-        <In t={t} at={at(43)} x={760} y={1330} k={1.3} from="top"><MovingBox /></In>
-        <In t={t} at={at(44)} x={760} y={1120} k={1.3} from="top" twist={6}><MovingBox rotate={4} /></In>
-        <In t={t} at={at(45)} x={760} y={910} k={1.3} from="top"><MovingBox rotate={-5} /></In>
-        <In t={t} at={at(46)} x={0} y={0} from="left"><Label x={540} y={560} text="Yes." red size={110} /></In>
-      </g>
-    ), action: 'Ama, sweet, next to a growing stack of moving boxes. "Yes."'},
-  {at: 47, line: 'Lend the car? Yes.', stage: 'close', pose: {eyes: 'tired', mouth: 'flat'},
-    front: (t) => {
-      if (t < keysToss()) return null;
-      const u = t - keysToss();
-      if (u > 0.9) return null;
-      return <g transform={`translate(${380 - 520 * u} ${1300 - 1000 * u + 1300 * u * u}) rotate(${-500 * u}) scale(1.4)`}><CarKeys /></g>;
-    },
-    arms: (t) => (t >= keysToss() ? {armL: [110, -10]} : null),
-    action: 'Close, resigned: "Yes." His car keys are already flying out of his hand.'},
-  {at: 51, line: 'A yes that costs nothing is worth nothing.', stage: 'react', pose: {eyes: 'squint', mouth: 'flat', lookY: -14},
-    board: (t) => (
-      <g>
-        <In t={t} at={at(52)} x={0} y={0} from="left"><Label x={540} y={660} text="YES" size={170} /></In>
-        <In t={t} at={at(55)} x={700} y={720} k={1.9} rot={16} from="right">
-          <g>
-            <path d="M 0 -40 L 170 -40 L 200 0 L 170 40 L 0 40 Z" fill={RED} stroke={INK} strokeWidth={6} />
-            <text x={90} y={16} textAnchor="middle" fontFamily="EboMarker" fontSize={46} fill="#fff">$0</text>
-          </g>
-        </In>
-        <In t={t} at={at(58)} x={0} y={0} from="top"><Label x={540} y={1010} text="worth nothing" red rot={-3} /></In>
-      </g>
-    ), action: 'YES again, tagged $0… "worth nothing".'},
-  {at: 59, line: 'People stop asking. They start expecting.', stage: 'story',
-    side: [
-      {who: 'pretty', x: 250, pose: stand({armR: [80, -20], eyes: 'half', mouth: 'smirk', lookX: 14}), hold: <Receipt len={220} rotate={-20} />, enter: {from: -300},
-        acts: [[61, {tilt: 8, headTilt: 10, eyes: 'half'}], [64, {armR: [100, -10], tilt: 10, eyes: 'squint', mouth: 'grin'}]]},
-      {who: 'ama', x: 840, pose: stand({armR: [80, -20], eyes: 'half', mouth: 'smirk', lookX: -14}), facing: -1, hold: <CarKeys />, enter: {from: 1380},
-        acts: [[62, {tilt: 8, headTilt: -8}], [64, {armR: [100, -10], tilt: 10, eyes: 'squint', mouth: 'grin'}]]},
-    ],
-    board: (t) => <In t={t} at={at(64)} x={0} y={0} from="top"><Label x={540} y={520} text="expecting" red size={100} /></In>,
-    action: 'Christy and Ama, both holding out what they want, not even asking. "expecting".'},
-  // ── 3. Always available ──
-  {at: 65, line: 'Next. You answer instantly.', stage: 'react', pose: {eyes: 'open', mouth: 'smile', lookY: -18}, header: ['You answer', 'instantly'],
-    board: (t) => bigBadge(t, 1, at(65)), action: 'The second badge lights up (orange, a phone lighting up) and drops in big.'},
-  {at: 69, line: 'Every call. Every text. Even at midnight.', stage: 'story', header: ['You answer', 'instantly'],
-    board: (t) => (
-      <g>
-        <In t={t} at={at(71)} x={540} y={880} k={1.8}><ChatPhone /></In>
-        <In t={t} at={at(75)} x={0} y={0}><Label x={540} y={1380} text="12:00 AM" red /></In>
-      </g>
-    ), action: 'Her text, big: "u up? need a favor". 12:00 AM.'},
-  {at: 76, line: 'Instant replies say one thing:', stage: 'insert', pose: {eyes: 'wide', mouth: 'grin', lookX: -18, lookY: -12},
-    board: (t) => (
-      <g>
-        <g transform="translate(470 820) rotate(-4) scale(2.4)"><ChatPhone reply={t >= at(77) ? 'On my way!' : undefined} read={t >= at(78) ? '12:00:02' : undefined} /></g>
-        <In t={t} at={at(78)} x={0} y={0}><Label x={380} y={1330} text="2 seconds" red rot={-4} /></In>
-      </g>
-    ), action: 'Insert: his reply pops in instantly: "On my way!" Ebo, eager, in the corner.'},
-  {at: 81, line: '"I have nothing better to do."', stage: 'story',
-    board: (t) => (
-      <g>
-        <In t={t} at={at(81)} x={0} y={0}><Label x={540} y={680} text='"I have nothing' size={96} rot={-3} /></In>
-        <In t={t} at={at(84)} x={0} y={0}><Label x={540} y={800} text='better to do."' red size={96} rot={-3} /></In>
-        <In t={t} at={at(83)} x={540} y={1120} k={1}><SaleClock /></In>
-      </g>
-    ), action: 'The message, handwritten big… and his time, on sale.'},
-  {at: 87, line: 'And people will make sure you don\'t.', stage: 'story',
-    side: [
-      {who: 'pretty', x: 300, pose: stand({armR: [60, -30], eyes: 'half', mouth: 'smirk', lookY: 10}), hold: <BigPhone screen="scroll" />},
-      {who: 'ama', x: 780, pose: stand({armR: [60, -30], eyes: 'half', mouth: 'smirk', lookY: 10}), facing: -1, hold: <BigPhone screen="scroll" />},
-    ],
-    board: (t) => <In t={t} at={at(90)} x={0} y={0}><Label x={540} y={520} text="more favors" red size={100} /></In>,
-    action: 'Christy and Ama, both already typing the next favor. "more favors".'},
-  // ── 4. Liked isn't respected (the payoff) ──
-  {at: 94, line: 'And the real problem?', stage: 'close', pose: {eyes: 'squint', mouth: 'flat', headTilt: -4},
-    board: () => <Glow x={badgeX(2, 3)} y={120} r={160} />, action: 'Close, serious. The last "?" glows… a beat.'},
-  {at: 98, line: 'You\'re chasing liked. Not respected.', stage: 'react', pose: {eyes: 'wide', mouth: 'o', lookY: -18}, header: ['Liked isn\'t', 'respected'],
-    board: (t) => (
-      <g>
-        {bigBadge(t, 2, at(98))}
-        <In t={t} at={at(100)} x={300} y={1060} k={1}><Heart /></In>
-        <In t={t} at={at(101)} x={0} y={0}><Label x={540} y={1090} text="≠" size={140} /></In>
-        <In t={t} at={at(102)} x={780} y={1080} k={0.85}><Crown /></In>
-      </g>
-    ), action: 'THE PAYOFF: the "?" turns purple, a crown, and drops in big; under it a heart ≠ a crown.'},
-  {at: 103, line: 'Liked people get asked for favors.', stage: 'story', header: ['Liked:', 'favors'],
-    side: [{who: 'pretty', x: 380, pose: stand({armR: [80, -20], eyes: 'happy', mouth: 'grin', headTilt: 10}), hold: <MovingBox rotate={-6} />}],
-    under: () => <Glow x={380} y={1100} r={320} />,
-    board: (t) => (
-      <g>
-        <In t={t} at={at(104)} x={790} y={760} k={0.7}><Heart /></In>
-        <In t={t} at={at(108)} x={0} y={0}><Label x={760} y={1000} text="favors" red size={96} /></In>
-      </g>
-    ), action: 'Christy, all hearts, holding out a box for him to carry. "favors".'},
-  {at: 109, line: 'Respected people get asked for their time. Politely. In advance.', stage: 'story', header: ['Respected:', 'asked first'],
-    side: [{who: 'pretty', x: 380, pose: stand({armR: [60, -30], eyes: 'open', mouth: 'flat', lookY: 10}), hold: <BigPhone screen="gallery" />}],
-    board: (t) => (
-      <g>
-        <In t={t} at={at(109)} x={790} y={700} k={0.9}><Crown /></In>
-        <In t={t} at={at(117)} x={0} y={0}><Label x={760} y={1000} text="in advance" red size={90} /></In>
-      </g>
-    ), action: 'Christy checking his calendar before she asks: a crown over her. "in advance".'},
-  // ── 5. The rule ──
-  {at: 119, line: 'So here\'s the rule.', stage: 'close', pose: {eyes: 'half', mouth: 'flat'}, touch: 'armsCrossed', action: 'Close, firm, arms crossed.'},
-  {at: 123, line: 'Kindness is a gift. Not a service.', stage: 'react', pose: {eyes: 'happy', mouth: 'smile', lookY: -16}, header: ['Kindness is a', 'gift'],
-    board: (t) => (
-      <g>
-        <Glow x={540} y={760} r={340} />
-        <In t={t} at={at(123)} x={540} y={760} k={2}><Heart /></In>
-        <In t={t} at={at(126)} x={0} y={0}><Label x={540} y={1010} text="a gift" rot={-3} /></In>
-        <In t={t} at={at(129)} x={0} y={0}><Label x={540} y={1110} text="not a service" red rot={-3} /></In>
-      </g>
-    ), action: 'The heart, glowing: "a gift"… "not a service".'},
-  {at: 130, line: 'Say no. Don\'t explain.', stage: 'story', header: ['Say', 'no'],
-    board: (t) => (
-      <g>
-        <In t={t} at={at(131)} x={540} y={760} k={1.6}><Speech short /></In>
-        <In t={t} at={at(132)} x={760} y={1160} k={0.7}><Speech /></In>
-      </g>
-    ), action: 'A clean "No." … and the long speech of excuses, crossed out.'},
-  {at: 134, line: 'Reply when it suits you.', stage: 'story', header: ['Reply when it', 'suits you'],
-    board: (t) => <In t={t} at={at(134)} x={540} y={880} k={1.8}><ChatPhone time="9:00 AM" reply="Can't, sorry." read="Read 9:00 AM" /></In>,
-    action: 'The same chat, answered the next morning, calmly: 9:00 AM.'},
-  {at: 139, line: 'Let people pay their own way.', stage: 'story', header: ['Pay their', 'own way'],
-    side: [{who: 'pretty', x: 420, pose: stand({armR: [60, -30], eyes: 'half', mouth: 'flat', lookY: 10}), hold: <Receipt len={260} rotate={-10} />}],
-    board: (t) => <In t={t} at={at(144)} x={790} y={760} k={1.4} twist={0}><Mark kind="tick" /></In>,
-    action: 'Christy holding her own receipt, reading it. A tick.'},
-  // ── 6. The close ──
-  {at: 145, line: 'Be kind.', stage: 'react', pose: {eyes: 'open', mouth: 'smile', lookY: -16},
-    board: (t) => (
-      <g>
-        <Glow x={540} y={760} r={460} />
-        {[0, 1, 2].map((k) => (
-          <In key={k} t={t} at={at(145) + k * 0.12} x={540 + (k - 1) * 260} y={760} k={1.9}><BigBadge b={BADGES[k]} /></In>
-        ))}
-      </g>
-    ), action: 'All three badges land together in the middle. Ebo, sincere.'},
-  {at: 147, line: 'Never convenient.', stage: 'close', pose: {eyes: 'squint', mouth: 'smirk', headTilt: 5}, touch: 'armsCrossed',
-    action: 'Close, arms crossed: the line. LOOP: hard cut back to "Being nice isn\'t your problem."'},
+    ), action: 'THE BUTTON: a lobster lands, glowing, filling the frame. Ebo grins in the corner.'},
 ];
 
-export const EP08_SECTIONS: string[] = EP08_PLAN.map((s) => (s.at < 34 ? 'The Hook' : s.at < 65 ? 'You Never Say No' : s.at < 94 ? 'You Answer Instantly' : s.at < 119 ? 'Liked Isnt Respected' : s.at < 145 ? 'The Rule' : 'The Close'));
-/** A pop for each new picture that lands, and each badge. */
-export const EP08_SLAMS: number[] = [1, 2, 7, 9, 10, 14, 18, 20, 42, 43, 44, 45, 46, 52, 55, 58, 64, 71, 75, 78, 81, 83, 84, 90, 100, 101, 102, 104, 108, 109, 117, 123, 126, 129, 131, 132, 134, 145].map(at);
+export const EP08_SECTIONS: string[] = EP08_PLAN.map((s) => (s.at < 10 ? 'The Nicest Guy' : s.at < 44 ? 'The Favors' : s.at < 63 ? 'The Party' : 'The Lesson'));
+
 export const ep08Times = () => {
   const starts = EP08_PLAN.map((s) => Math.max(0, WORDS[s.at].s - 0.08));
   starts[0] = 0;
@@ -320,28 +266,30 @@ export const ep08ShotAt = (f: number) => {
   for (let k = 0; k < TIMES.length; k++) if (t >= TIMES[k].start) i = k;
   return i;
 };
-/** Swooshes (rule 21): a loud one for each piece that swoops in from the side or the top, a soft one for each camera reveal. */
+
+/** A pop for each picture that lands without a swoop. */
+export const EP08_SLAMS: number[] = [26, 52].map(at).concat([at(17) + 0.25, at(42) + 0.35, at(70) + 0.2]);
+/** Swooshes (rule 21): a loud one for each piece that swoops in, a soft one on each camera reveal. */
 export const EP08_SWOOSH = () => {
-  const pieces = [34, 42, 43, 44, 45, 46, 52, 55, 58, 64].map(at);
+  const pieces = [3, 12, 17, 23, 24, 25, 26, 32, 33, 42, 47, 52, 57, 62, 70, 76, 78, 83, 85, 91].map(at)
+    .concat([0, 1, 2, 3].map((k) => at(18) + k * 0.16), [0, 1, 2].map((k) => at(37) + k * 0.2));
   const reveals = EP08_PLAN.map((s, i) => ((s.cam ?? (s.stage === 'close' ? 'push' : 'reveal')) === 'reveal' && i > 0 ? TIMES[i].start : null)).filter((x): x is number => x !== null);
-  return [...pieces.map((a) => ({at: a - 0.05, sfx: 'swoosh', vol: 0.8})), ...reveals.map((a) => ({at: a, sfx: 'swoosh', vol: 0.4}))];
+  return [...pieces.map((a) => ({at: a - 0.05, sfx: 'swoosh', vol: 0.75})), ...reveals.map((a) => ({at: a, sfx: 'swoosh', vol: 0.35}))];
 };
 /** Sound effects beyond the pops (sfxCues.ts). */
 export const EP08_SFX = () => [
   ...EP08_SWOOSH(),
-  ...SLOT_AT().map((a) => ({at: a, sfx: 'pop', vol: 0.9})),
-  {at: keysToss(), sfx: 'whoosh', vol: 0.8},
-  {at: keysToss() + 0.5, sfx: 'clink', vol: 0.8},
-  {at: at(5), sfx: 'phone_buzz', vol: 0.6},
-  {at: at(75), sfx: 'phone_buzz', vol: 0.6},
-  {at: at(77), sfx: 'click', vol: 0.7},
-  {at: at(144), sfx: 'marker_tick', vol: 0.8},
+  ...SLOT_AT().map((a) => ({at: a + 0.05, sfx: 'pop', vol: 0.8})),
+  {at: at(62) + 0.3, sfx: 'stamp', vol: 0.9}, // the bill slams down
+  {at: at(52), sfx: 'pop', vol: 1}, // SURPRISE!
+  {at: at(42) + 0.4, sfx: 'clink', vol: 0.7}, // the keys come back
+  {at: at(91) + 0.2, sfx: 'cha_ching', vol: 0.6}, // lobster
 ];
 
 // ───────────────────────── performance ─────────────────────────
 const ENV = (envJson as Record<string, number[]>).ebo;
 const talking = (f: number) => (ENV[f] ?? 0) > 0.1;
-/** Never frozen (rule 18). */
+/** Never frozen (rule 18): a slow lean and shoulder shift, a glance while talking, a blink on every cut. */
 const idle = (t: number, l: number, f: number, i: number): Partial<Pose> => {
   const glance = Math.floor(t / 1.7) % 3 === 1 && t % 1.7 < 0.25 && talking(f) ? (Math.floor(t / 1.7) % 2 ? 7 : -7) : 0;
   return {
@@ -351,6 +299,36 @@ const idle = (t: number, l: number, f: number, i: number): Partial<Pose> => {
     ...(i > 0 && l < 0.1 ? {eyes: 'closed' as const} : {}),
   };
 };
+/** Where an actor is and what they're doing now: walk in / walk off (legs swap every 0.12 s while moving), pose-to-pose on the words. */
+const perform = (c: Actor, t: number, local: number, st: number) => {
+  let x = c.x;
+  let moving = false;
+  if (c.enter) {
+    const u = Math.min(1, local / (c.enter.dur ?? 0.45));
+    x = c.enter.from + (c.x - c.enter.from) * (1 - (1 - u) ** 2);
+    moving = u < 1;
+  }
+  if (c.exit && t >= at(c.exit.at)) {
+    const u = Math.min(1, (t - at(c.exit.at)) / (c.exit.dur ?? 0.5));
+    x = c.x + (c.exit.to - c.x) * u * u;
+    moving = u < 1;
+  }
+  let p: Partial<Pose> = {...c.pose};
+  let hold = c.hold;
+  let holdL = c.holdL;
+  for (const [w, a] of c.acts ?? []) {
+    if (t < at(w)) continue;
+    const {hold: h, holdL: hl, ...rest} = a;
+    p = {...p, ...rest};
+    if (h !== undefined) hold = h ?? undefined;
+    if (hl !== undefined) holdL = hl ?? undefined;
+  }
+  if (moving) {
+    const ph = Math.floor((t - st) / 0.12) % 2;
+    p = {...p, legL: ph ? [20, 6] : [-8, 0], legR: ph ? [-8, 0] : [20, 6], lift: -6 * ph};
+  }
+  return {x, p, hold, holdL};
+};
 
 export const Ep08Frame: React.FC<{f: number}> = ({f}) => {
   useMarkerFont();
@@ -358,21 +336,23 @@ export const Ep08Frame: React.FC<{f: number}> = ({f}) => {
   const i = ep08ShotAt(f);
   const s = EP08_PLAN[i];
   const local = t - TIMES[i].start;
+  const st = TIMES[i].start;
   const place = EBO_AT[s.stage];
 
-  let pose: Pose = {...POSE.stand, ...s.pose} as Pose;
-  const acted = s.arms?.(t);
-  if (acted) pose = {...pose, ...acted} as Pose;
-  else if (s.touch) {
+  // Ebo: the shot's face and acting; a contact pose, or his hands on the beat; idle and nods on top
+  const me = s.ebo ? perform(s.ebo, t, local, st) : null;
+  let pose: Pose = {...POSE.stand, ...me?.p} as Pose;
+  const actedArms = s.ebo?.acts?.some(([w, a]) => t >= at(w) && (a.armL || a.armR)) || s.ebo?.hold || s.ebo?.pose?.armR;
+  if (s.touch) {
     const c = CONTACT[s.touch];
-    pose = {...pose, armL: c.armL, armR: c.armR, armFront: c.armFront, contact: true, headTilt: s.pose?.headTilt ?? c.headTilt, view: 1};
-  } else pose = beatGesture(pose, WORDS, ENV, f, TIMES[i].start, TIMES[i].start + TIMES[i].length);
+    pose = {...pose, armL: c.armL, armR: c.armR, armFront: c.armFront, contact: true, headTilt: c.headTilt, view: 1};
+  } else if (!actedArms) pose = beatGesture(pose, WORDS, ENV, f, st, st + TIMES[i].length);
   const id = idle(t, local, f, i);
   pose = {...pose, tilt: (pose.tilt ?? 0) + (id.tilt ?? 0), lift: (pose.lift ?? 0) + (id.lift ?? 0), ...(id.lookX ? {lookX: id.lookX} : {}), ...(id.eyes ? {eyes: id.eyes} : {})} as Pose;
-
-  // Ebo nods on the words while he talks (rule 21: every take moves)
+  // he nods on the words while he talks
   const wi = WORDS.findIndex((w) => t >= w.s && t < w.e);
-  if (place && wi >= 0 && talking(f)) pose = {...pose, headTilt: (pose.headTilt ?? 0) + (wi % 2 ? 4 : -3)} as Pose;
+  if (wi >= 0 && talking(f)) pose = {...pose, headTilt: (pose.headTilt ?? 0) + (wi % 2 ? 4 : -3)} as Pose;
+
   // the camera swoop (video only; the Animate file stays camera-free)
   const camKind = s.cam ?? (s.stage === 'close' ? 'push' : 'reveal');
   const zoom = swoopZoom(camKind, local, TIMES[i].length);
@@ -387,6 +367,7 @@ export const Ep08Frame: React.FC<{f: number}> = ({f}) => {
       {s.header && <Header text={s.header} />}
     </g>
   );
+  const eboX = s.stage === 'scene' && me ? me.x : place?.x ?? 540;
   return (
     <StageSizeContext.Provider value={{w: EP08_W, h: EP08_H}}>
       <NoScaleContext.Provider value>
@@ -395,35 +376,18 @@ export const Ep08Frame: React.FC<{f: number}> = ({f}) => {
             <VStage framing={framing} bg={SHADES.cream[2]} blurBg={<Backdrop id="ep08-cream" shade="cream" />} overlay={overlay}>
               {s.under?.(t)}
               {s.side?.map((c, k) => {
-                // walk in / walk off (legs swap every 0.12 s while moving), pose-to-pose on the words
-                const st = TIMES[i].start;
-                let x = c.x;
-                let moving = false;
-                if (c.enter) {
-                  const u = Math.min(1, local / (c.enter.dur ?? 0.45));
-                  x = c.enter.from + (c.x - c.enter.from) * (1 - (1 - u) ** 2);
-                  moving = u < 1;
-                }
-                if (c.exit && t >= at(c.exit.at)) {
-                  const u = Math.min(1, (t - at(c.exit.at)) / (c.exit.dur ?? 0.5));
-                  x = c.x + (c.exit.to - c.x) * u * u;
-                  moving = u < 1;
-                }
-                let p: Partial<Pose> = {...c.pose};
-                for (const [w, a] of c.acts ?? []) if (t >= at(w)) p = {...p, ...a};
-                if (moving) {
-                  const ph = Math.floor((t - st) / 0.12) % 2;
-                  p = {...p, legL: ph ? [20, 6] : [-8, 0], legR: ph ? [-8, 0] : [20, 6], lift: -6 * ph};
-                }
+                const a = perform(c, t, local, st);
                 return (
-                  <RigCharacter key={k} who={c.who} x={x} y={FLOOR} scale={1.7} facing={c.facing ?? 1} t={f + k * 13} pose={gentle({...(POSES.standing as Pose), ...p} as Pose)}>
-                    {c.hold}
+                  <RigCharacter key={k} who={c.who} x={a.x} y={FLOOR} scale={CAST_SCALE} facing={c.facing ?? 1} t={f + k * 13} pose={gentle({...(POSES.standing as Pose), ...a.p} as Pose)} holdL={a.holdL}>
+                    {a.hold}
                   </RigCharacter>
                 );
               })}
               {place && (
-                <RigCharacter who="ebo" x={place.x} y={place.y} scale={place.scale} t={f} pose={gentle(frontOn(pose))} holdL={s.holdL?.(t)}
-                  mouthFrame={talking(f) ? lipFrame(ENV, WORDS, f) : undefined} />
+                <RigCharacter who="ebo" x={eboX} y={place.y} scale={place.scale} t={f} pose={gentle(frontOn(pose))} holdL={me?.holdL}
+                  mouthFrame={talking(f) ? lipFrame(ENV, WORDS, f) : undefined}>
+                  {me?.hold}
+                </RigCharacter>
               )}
               {s.front?.(t)}
             </VStage>

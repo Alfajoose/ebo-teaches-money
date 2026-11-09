@@ -21,7 +21,7 @@ rows = (len(shots) + COLS - 1) // COLS
 sheet = Image.new('RGB', (COLS * (PW + 40) + 40, 170 + rows * (PH + TXT + 40)), '#F6F0E4')
 d = ImageDraw.Draw(sheet)
 d.text((40, 40), 'EBO TEACHES MONEY · EP 08 · Why Nice Guys Get Taken Advantage Of', font=F('Bold', 40), fill='#1D1A1A')
-d.text((40, 100), 'v2 · bold-and-blunt script (rule 20) · rule 19 format · 1:03, 28 shots · tracker: an open door, a lit phone, ? till the payoff (a crown) · loops', font=F('Regular', 24), fill='#55505A')
+d.text((40, 100), 'v3 · the Peanut style (rules 20, 21) · 0:35, 22 shots · a story about Ebo · a picture on every key word · camera swoops (video only) · tracker: dinner, the move, the car, ? → the bill', font=F('Regular', 24), fill='#55505A')
 md = ['# Ep 08 — Why Nice Guys Get Taken Advantage Of: shot list', '', '| # | time | size | line | action |', '|---|---|---|---|---|']
 for i, (at, line, size, action) in enumerate(shots):
     line, action = eval(line), eval(action)

@@ -172,6 +172,85 @@ const SpeechDrawing: React.FC<{x?: number; y?: number; short?: boolean}> = ({x =
   </g>
 );
 
+/** A plain wall clock (no tag). */
+const ClockDrawing: React.FC<{x?: number; y?: number; h?: number}> = ({x = 0, y = 0, h = 1}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <circle r={120} fill="#fff" {...S} strokeWidth={9} />
+    {Array.from({length: 12}, (_, i) => (
+      <line key={i} x1={0} x2={0} y1={-96} y2={-82} stroke={C.ink} strokeWidth={6} transform={`rotate(${i * 30})`} />
+    ))}
+    <path d={`M 0 0 L 0 -66 M 0 0 L ${44 * Math.sin((h * 30 * Math.PI) / 180)} ${-44 * Math.cos((h * 30 * Math.PI) / 180)}`} stroke={C.ink} strokeWidth={9} strokeLinecap="round" />
+  </g>
+);
+
+/** A calendar page: a day name and a big number. */
+const CalPageDrawing: React.FC<{x?: number; y?: number; rotate?: number; top?: string; n?: string}> = ({x = 0, y = 0, rotate = 0, top = 'DAY', n = '1'}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <rect x={-120} y={-110} width={240} height={220} rx={14} fill="#fff" {...S} />
+    <rect x={-120} y={-110} width={240} height={62} rx={14} fill="#E5484D" {...S} />
+    <text y={-66} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill="#fff">
+      {top}
+    </text>
+    <text y={70} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={110} fill={C.ink}>
+      {n}
+    </text>
+  </g>
+);
+
+/** A parking ticket: a yellow envelope, VIOLATION, a fine. */
+const ParkingTicketDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <rect x={-110} y={-150} width={220} height={300} rx={8} fill="#F3D14A" {...S} />
+    <rect x={-110} y={-150} width={220} height={60} fill="#E5484D" {...S} strokeWidth={5} />
+    <text y={-108} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill="#fff">
+      PARKING
+    </text>
+    <text y={-40} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={C.ink}>
+      VIOLATION
+    </text>
+    {[0, 1, 2].map((i) => (
+      <line key={i} x1={-80} x2={80 - i * 30} y1={0 + i * 28} y2={0 + i * 28} stroke="#A88B1F" strokeWidth={7} strokeLinecap="round" />
+    ))}
+    <text y={124} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={46} fill="#E5484D">
+      $85
+    </text>
+  </g>
+);
+
+/** A birthday cake with candles. */
+const CakeDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <rect x={-150} y={-40} width={300} height={130} rx={14} fill="#F7C6D9" {...S} />
+    <path d="M -150 -10 Q -120 20 -90 -10 Q -60 20 -30 -10 Q 0 20 30 -10 Q 60 20 90 -10 Q 120 20 150 -10" fill="none" stroke="#fff" strokeWidth={14} strokeLinecap="round" />
+    <rect x={-170} y={86} width={340} height={20} rx={10} fill="#D9D3C7" {...S} strokeWidth={5} />
+    {[-80, -25, 30, 85].map((cx, i) => (
+      <g key={cx}>
+        <rect x={cx - 8} y={-100} width={16} height={60} fill={['#45B69C', '#F5A33A', '#2F80ED', '#E5484D'][i]} {...S} strokeWidth={4} />
+        <path d={`M ${cx} -130 Q ${cx + 12} -112 ${cx} -102 Q ${cx - 12} -112 ${cx} -130 Z`} fill="#F2C230" stroke={C.ink} strokeWidth={3} />
+      </g>
+    ))}
+  </g>
+);
+
+/** A lobster on a plate. */
+const LobsterDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = ({x = 0, y = 0, rotate = 0}) => (
+  <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <ellipse cx={0} cy={70} rx={230} ry={50} fill="#fff" {...S} />
+    {/* claws */}
+    <path d="M -70 -10 L -150 -90 M 70 -10 L 150 -90" stroke="#D2452F" strokeWidth={22} strokeLinecap="round" />
+    <path d="M -190 -150 Q -120 -170 -130 -90 Q -170 -110 -150 -90 Q -210 -100 -190 -150 Z" fill="#E5533B" {...S} strokeWidth={6} />
+    <path d="M 190 -150 Q 120 -170 130 -90 Q 170 -110 150 -90 Q 210 -100 190 -150 Z" fill="#E5533B" {...S} strokeWidth={6} />
+    {/* body and tail */}
+    <ellipse cx={0} cy={0} rx={80} ry={60} fill="#E5533B" {...S} />
+    {[0, 1, 2].map((i) => (
+      <ellipse key={i} cx={0} cy={60 + i * 26} rx={60 - i * 12} ry={18} fill="#D2452F" {...S} strokeWidth={5} />
+    ))}
+    <circle cx={-26} cy={-30} r={9} fill={C.ink} />
+    <circle cx={26} cy={-30} r={9} fill={C.ink} />
+    <path d="M -20 -56 Q -60 -140 -110 -150 M 20 -56 Q 60 -140 110 -150" fill="none" stroke={C.ink} strokeWidth={4} />
+  </g>
+);
+
 const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P> => {
   const Wrapped: React.FC<P> = (props) => (
     <Prop name={name}>
@@ -191,3 +270,8 @@ export const Doormat = prop('Doormat', DoormatDrawing);
 export const Crown = prop('Crown', CrownDrawing);
 export const Heart = prop('Heart', HeartDrawing);
 export const Speech = prop('Speech', SpeechDrawing);
+export const Clock = prop('Clock', ClockDrawing);
+export const CalPage = prop('CalPage', CalPageDrawing);
+export const ParkingTicket = prop('ParkingTicket', ParkingTicketDrawing);
+export const Cake = prop('Cake', CakeDrawing);
+export const Lobster = prop('Lobster', LobsterDrawing);
