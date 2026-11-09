@@ -36,6 +36,8 @@ export type Pose = {
   view?: number;
   /** Draw the right arm in front of the head (hand-to-face poses). Default: the view's own layering. */
   armFront?: boolean;
+  /** a contact pose (hand on chin, facepalm, arms crossed…): the arm's end lands on him, so the gentle-elbow and front-arm limits don't apply */
+  contact?: boolean;
 };
 
 const base: Pose = {

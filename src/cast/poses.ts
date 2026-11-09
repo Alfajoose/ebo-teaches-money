@@ -137,12 +137,30 @@ export type PoseKey = {[G in keyof Groups]: keyof Groups[G]}[keyof Groups];
 export const POSE = Object.assign({}, ...Object.values(POSE_GROUPS)) as Record<PoseKey, Pose>;
 
 /**
+ * Contact poses (the user's call after the handless-style reference): the end of the arm lands on
+ * him — chin, mouth, cheek, face, the other arm — so the missing hand reads as there. Front view;
+ * exempt from the gentle-elbow and front-arm limits (that's the point). Hands on hips was tried and
+ * dropped: in the front view this rig's forearms fold over the belly instead.
+ */
+export const CONTACT = {
+  armsCrossed: {...POSE.stand, contact: true, armL: [30, -130], armR: [30, -130], headTilt: -4, eyes: 'half', mouth: 'flat'},
+  thinkChin: {...POSE.thinkChin, contact: true},
+  hmm: {...POSE.hmm, contact: true},
+  thinking: {...POSE.thinking, contact: true},
+  facepalm: {...POSE.facepalm, contact: true},
+  handOverMouth: {...POSE.handOverMouth, contact: true},
+  cheekWorry: {...POSE.cheekWorry, contact: true},
+  bothCheeks: {...POSE.panic, contact: true},
+} as Record<string, Pose>;
+
+/**
  * The rigs have only an upper arm and a forearm (no hand, palm or fingers), so a deep elbow bend
  * reads as a broken limb (house rule 13). Every pose goes through this before it's drawn: the
  * elbow stays within ±ELBOW_MAX, straight or gently bent; the shoulder does the acting.
  */
 export const ELBOW_MAX = 40;
 export const gentle = (p: Pose): Pose => {
+  if (p.contact) return p;
   const c = (a: [number, number]): [number, number] => [a[0], Math.max(-ELBOW_MAX, Math.min(ELBOW_MAX, a[1]))];
   return {...p, armL: c(p.armL), armR: c(p.armR)};
 };
@@ -155,6 +173,7 @@ export const gentle = (p: Pose): Pose => {
  */
 export const FRONT_ARM_MAX = 105;
 export const frontOn = (p: Pose): Pose => {
+  if (p.contact) return {...p, view: p.view ?? 1};
   if (p.view === 2 || p.view === 3 || p.tilt > 45) return p;
   const c = (a: [number, number]): [number, number] => [Math.min(FRONT_ARM_MAX, a[0]), a[1]];
   return {...p, view: 1, armL: c(p.armL), armR: c(p.armR)};
