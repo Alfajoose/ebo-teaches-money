@@ -5,3 +5,7 @@ Assemble with: python3 -I scripts/voice-assemble.py episodes/ep09   (writes voic
 2026-11-09 fix (the user didn't like the low, quiet delivery): "And the last one is invisible." and "And the invisible lock?
 Waiting for one big break." re-recorded in the confident tone (raw_fix.mp3, generation LVQgV4YhU8PpYHWUHu2a, 6.0s,
 177 credits) and spliced in by voice_edl.json.
+
+v2 (script from the user's reference board, 2026-11-09): raw_dan.mp3 = ElevenLabs eleven_v4, Dan, one take, 901 credits
+(+165 for the Scribe transcript). Word timings re-timed locally with faster-whisper small.en (Scribe drifted up to 0.5s).
+v1 files kept as *_v1.

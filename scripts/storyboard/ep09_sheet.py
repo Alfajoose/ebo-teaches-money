@@ -15,13 +15,13 @@ ims = sorted(glob.glob(f'{panels_dir}/s*.png'))
 TIMED = []
 F = lambda w, s: ImageFont.truetype(f'/usr/share/fonts/opentype/inter/Inter-{w}.otf', s)
 PW, PH = 324, 576
-COLS, TXT = 4, 250
-COLS = 6
+COLS, TXT = 4, 330
+COLS = 4
 rows = (len(shots) + COLS - 1) // COLS
 sheet = Image.new('RGB', (COLS * (PW + 40) + 40, 170 + rows * (PH + TXT + 40)), '#F6F0E4')
 d = ImageDraw.Draw(sheet)
 d.text((40, 40), 'EBO TEACHES MONEY · EP 09 · Why Some People Never Escape Poverty', font=F('Bold', 40), fill='#1D1A1A')
-d.text((40, 100), 'bold & blunt (rule 20) · Peanut animation (rule 21) · 0:54, 29 shots · a picture on every key word · camera swoops (video only) · tracker: 3 padlocks — no buffer, the broke tax, ? → waiting for a big break', font=F('Regular', 24), fill='#55505A')
+d.text((40, 100), 'v2, from your reference board · Peanut animation (rule 21) · 0:56, 16 shots', font=F('Regular', 24), fill='#55505A')
 md = ['# Ep 09 — Why Some People Never Escape Poverty: shot list', '', '| # | time | size | line | action |', '|---|---|---|---|---|']
 for i, (at, line, size, action) in enumerate(shots):
     line, action = eval(line), eval(action)
@@ -32,10 +32,10 @@ for i, (at, line, size, action) in enumerate(shots):
     t = start(at)
     d.text((x, y + PH + 10), f'{i + 1}  ·  {int(t // 60)}:{t % 60:05.2f}  ·  {size}', font=F('Bold', 20), fill='#E5484D')
     yy = y + PH + 40
-    for ln in textwrap.wrap(line, 30)[:3]:
+    for ln in textwrap.wrap(line, 30)[:6]:
         d.text((x, yy), ln, font=F('SemiBold', 19), fill='#1D1A1A'); yy += 24
     yy += 6
-    for ln in textwrap.wrap(action, 34)[:6]:
+    for ln in textwrap.wrap(action, 34)[:8]:
         d.text((x, yy), ln, font=F('Regular', 16), fill='#55505A'); yy += 20
     md.append(f'| {i + 1} | {t:.2f}s | {size} | {line.replace("|", "/")} | {action.replace("|", "/")} |')
 sheet.save(f'{out}/storyboard.png')

@@ -2,32 +2,19 @@
 
 | # | time | size | line | action |
 |---|---|---|---|---|
-| 1 | 0.00s | react | Poverty isn't just low income. | A payslip swoops in above him on "low income"… "not just this". |
-| 2 | 2.72s | story | It's a trap. | A big padlock slams down: "a trap". |
-| 3 | 3.92s | story | With three locks. | Three padlocks land in a row, one after another; the tracker appears: three grey "?". |
-| 4 | 5.68s | close | And the last one is invisible. | Close: Ebo leans in. The last "?" glows. |
-| 5 | 8.23s | react | First. No buffer. | The first lock lights up (green, an empty jar) and drops in big; an empty jar swoops in beside it. |
-| 6 | 9.41s | story | One flat tire. | A flat tire rolls in from the left and slumps. |
-| 7 | 10.37s | story | One doctor's bill. | A doctor's bill swoops in: $200. |
-| 8 | 11.41s | scene | No savings, so it goes on a card. | Ebo, the empty jar crossed out beside him… on "card" he pulls out a credit card. |
-| 9 | 13.73s | story | Now a two-hundred-dollar problem costs three hundred. | The card: $200… on "three hundred" it ticks up to $300. "+ interest". |
-| 10 | 16.69s | close | Being broke is expensive. | Close: Ebo facepalms. "expensive". |
-| 11 | 18.69s | react | Next. The broke tax. | The second lock lights up (red, FEE) and drops in big. |
-| 12 | 20.41s | story | Overdraft fees. Late fees. | OVERDRAFT FEE stamps down… LATE FEE stamps down under it. |
-| 13 | 22.29s | scene | Cheap shoes that last three months, | Ebo looks down: a cheap shoe drops in, its sole flapping. "3 months". |
-| 14 | 23.84s | story | so you buy them four times a year. | Four cheap shoes slap down in a row. "x4 a year". |
-| 15 | 25.64s | react | The less you have, the more everything costs. | "less $" → "more cost". |
-| 16 | 28.93s | close | And the invisible lock? | Close: Ebo squints. The last "?" glows. |
-| 17 | 30.34s | react | Waiting for one big break. | THE PAYOFF: the "?" turns gold (a lucky 7) and drops in big. Ebo looks up, hopeful. |
-| 18 | 32.68s | story | The lottery ticket. | A lottery ticket, glowing. |
-| 19 | 33.88s | story | The viral idea. | A lightbulb: the viral idea. "1M views?" |
-| 20 | 35.28s | story | The perfect job. | A job ad, APPLY. |
-| 21 | 36.72s | story | Big breaks are rare. | The lottery ticket again… on "rare": NOT A WINNER. |
-| 22 | 38.40s | story | Small wins are daily. | Small coins rain in, one a day, filling the frame. "every day". |
-| 23 | 40.00s | react | So break it small. | A padlock… on "small" it pops open. |
-| 24 | 41.32s | story | Save ten dollars a week. | A $10 coin drops into the jar; the jar fills. |
-| 25 | 42.68s | story | A buffer, not a fortune. | The jar, with a little in it… "not a fortune". |
-| 26 | 44.40s | story | Pay the bill before the fee. | The bill gets a tick… the LATE FEE gets a cross. |
-| 27 | 46.24s | story | Buy once. Buy right. | One good shoe, sole intact. A tick. |
-| 28 | 48.40s | scene | Nobody escapes in one jump. | Ebo jumps… and lands right where he was. "one jump? no." |
-| 29 | 50.48s | scene | You climb out. One step at a time. | A ladder: a rung lights on each word… Ebo reaches up, grinning; the three padlocks pop open. |
+| 1 | 0.00s | react | Ever noticed how being broke actually costs you more money? | Ebo, surprised. A stack of coins swoops in on "broke"… on "more" a red arrow shoots up: "costs MORE". |
+| 2 | 3.52s | story | It's like climbing out of a hole while someone keeps digging. | A little guy climbs out of a hole, step by step… a digger swoops in and keeps shovelling; he slides back down. |
+| 3 | 6.52s | story | And three locks keep people down. | Three padlocks land in a row: a jar, FEES, a "?". The tracker appears: three grey "?". |
+| 4 | 8.92s | react | First. No safety net. | The first lock lights up (green, an empty jar) and drops in big; an empty jar swoops in beside it. |
+| 5 | 11.00s | story | Your car breaks down. You borrow to fix it. Interest piles up. | Built left to right: a flat tire → a repair bill ($400) → a credit card… on "piles up" it ticks to $520: "+ interest". |
+| 6 | 14.86s | story | Now you're paying for yesterday's emergency with tomorrow's paycheck. | A calendar page: YESTERDAY (emergency)… an arrow… NEXT PAYCHECK (paying for it). |
+| 7 | 18.52s | react | Second. The poverty tax. | The second lock lights up (red, FEE) and drops in big. |
+| 8 | 20.98s | story | Late fees. Overdraft charges. | LATE FEE $35 slams down… OVERDRAFT FEE $38 slams down beside it. |
+| 9 | 23.18s | story | Cheap shoes that fall apart. You know the expensive pair lasts longer. | CHEAP: a shoe… on "fall apart" its sole flaps off: "3 months". Then BETTER swoops in beside it: "lasts longer". |
+| 10 | 27.12s | react | But your wallet says, "Not today, my friend." | Ebo, sad. His empty wallet swoops in… and speaks: "Not today, my friend." |
+| 11 | 30.20s | react | Third. The escape fantasy. | THE PAYOFF: the "?" turns gold ($) and drops in big; a lottery ticket swoops in beside it. |
+| 12 | 32.42s | react | Waiting for that one lucky break. That viral idea. That miracle job. | Ebo daydreams, chin on his hand. Three thought bubbles pop, one per phrase: $$$, a viral video, a briefcase. |
+| 13 | 37.40s | scene | But hope without a plan keeps you standing still. | Ebo beside a wooden sign: HOPE… on "plan": "(no plan)". On "standing still" he stops moving. |
+| 14 | 40.42s | story | So where do you start? Build a tiny buffer. Dodge the fees you can. Learn a skill that opens another door. | Three pictures, one per phrase: a jar with a few coins, a LATE FEE crossed out, a laptop with a gear. |
+| 15 | 47.24s | story | And remember: some locks need more than one person to break. | The three locks again… on "break" the first pops open; the other two stay shut. |
+| 16 | 51.34s | scene | Poverty isn't always a choice. And escaping it isn't always a straight line. | Ebo, front on. A hill swoops in beside him: a winding path climbs to a flag. "not a straight line". |

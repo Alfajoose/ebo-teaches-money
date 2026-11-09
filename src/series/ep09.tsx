@@ -9,18 +9,16 @@ import {Backdrop, SHADES} from './sets';
 import {StageSizeContext} from './exportCtx';
 import {VFPS, Word, VStage, Framing, lipFrame, beatGesture} from './kit';
 import {Badge, BigBadge, Dim, Glow, Header, In, INK, Label, RED, Tracker, badgeX, swoopZoom, useMarkerFont} from './filterKit';
-import {CheapShoe, CreditCard, DoctorBill, FeeStamp, FlatTire, Ladder, LotteryTicket, Padlock, TenCoin} from '../components/PovertyProps';
-import {FunJar, Mark, BillDue, PaySlip} from '../components/WantsInserts';
-import {BigPhone} from '../components/StayBrokeProps';
-import {Lightbulb} from '../components/Props';
+import {Arrow, BufferJar, CalNote, CheapShoe, CoinStack, CreditCard, EmptyWallet, FeeSlip, FlatTire, GoodShoe, HillPath, Hole, HopeSign, LittleGuy, LotteryTicket, Padlock, SayBubble, Shovel, SkillLaptop, Thought} from '../components/PovertyProps';
 import wordsJson from './data/ep09-words.json';
 import envJson from './data/ep09-env.json';
 
 /**
- * EBO TEACHES MONEY — Ep 09 "Why Some People Never Escape Poverty" (vertical, 1080×1920, ~54s).
- * Bold-and-blunt script (rule 20); rule 19 format with a tracker of three padlocks (no buffer · the broke tax ·
- * ? → waiting for a big break); the Peanut animation (rule 21): a picture on every key word, swoops with a
- * swoosh, camera swoops in the video only, every take moves. The joke is never on poor people: it names the traps.
+ * EBO TEACHES MONEY — Ep 09 "Why Some People Never Escape Poverty" (vertical, 1080×1920, ~56s).
+ * v2: the script and the pictures follow the user's reference board (16 shots). Rule 19 format with a tracker of
+ * three padlocks (no safety net · the poverty tax · ? → the escape fantasy); the Peanut animation (rule 21): a
+ * picture on every key word, swoops with a swoosh, camera swoops in the video only, every take moves.
+ * The joke is never on poor people: it names the traps. (v1, the bold-and-blunt cut, is in git: 758b08c.)
  */
 export const EP09_W = 1080;
 export const EP09_H = 1920;
@@ -79,12 +77,12 @@ const LOCK = (inner: React.ReactNode) => (
   </g>
 );
 const BADGES: Badge[] = [
-  {color: '#45B69C', icon: LOCK(<rect x={-10} y={-12} width={20} height={24} rx={4} fill="none" stroke="#45B69C" strokeWidth={4} />)}, // no buffer: an empty jar
-  {color: '#E5484D', icon: LOCK(<text y={9} textAnchor="middle" fontFamily="EboMarker" fontSize={22} fill="#E5484D">FEE</text>)}, // the broke tax
-  {color: '#F2C230', icon: LOCK(<text y={10} textAnchor="middle" fontFamily="EboMarker" fontSize={26} fill="#B88A10">7</text>)}, // ? → waiting for a big break: a lucky 7
+  {color: '#45B69C', icon: LOCK(<rect x={-10} y={-12} width={20} height={24} rx={4} fill="none" stroke="#45B69C" strokeWidth={4} />)}, // no safety net: an empty jar
+  {color: '#E5484D', icon: LOCK(<text y={9} textAnchor="middle" fontFamily="EboMarker" fontSize={22} fill="#E5484D">FEE</text>)}, // the poverty tax
+  {color: '#F2C230', icon: LOCK(<text y={10} textAnchor="middle" fontFamily="EboMarker" fontSize={28} fill="#B88A10">$</text>)}, // ? → the escape fantasy: easy money
 ];
-const SLOT_AT = () => [at(17), at(45), at(79)];
-const TRACK_FROM = () => at(9);
+const SLOT_AT = () => [at(27), at(52), at(80)];
+const TRACK_FROM = () => at(23);
 const badgeIn = (t: number, k: number, from: 'left' | 'right' | 'top' = 'right') => (
   <g>
     <Glow x={badgeX(k, 3)} y={120} r={140} />
@@ -96,176 +94,138 @@ const ebo = (p: Partial<Pose>): Actor => ({x: 540, pose: p});
 
 export const EP09_PLAN: Shot[] = [
   // ── The hook ──
-  {at: 0, line: 'Poverty isn\'t just low income.', stage: 'react', ebo: ebo({eyes: 'half', mouth: 'flat', lookY: -14}),
+  {at: 0, line: 'Ever noticed how being broke actually costs you more money?', stage: 'react', ebo: ebo({eyes: 'wide', mouth: 'o', lookY: -16}),
     board: (t) => (
       <g>
-        <In t={t} at={at(3)} x={540} y={720} k={1.7} from="left"><PaySlip /></In>
-        <In t={t} at={at(4)} x={0} y={0}><Label x={540} y={1020} text="not just this" red rot={-3} /></In>
+        <In t={t} at={at(4)} x={480} y={740} k={1.5} from="left"><CoinStack up={t >= at(8)} /></In>
+        <In t={t} at={at(8)} x={0} y={0} from="right"><Label x={540} y={1060} text="costs MORE" red size={100} rot={-3} /></In>
       </g>
-    ), action: 'A payslip swoops in above him on "low income"… "not just this".'},
-  {at: 5, line: 'It\'s a trap.', stage: 'story', cam: 'push',
+    ), action: 'Ebo, surprised. A stack of coins swoops in on "broke"… on "more" a red arrow shoots up: "costs MORE".'},
+  {at: 10, line: 'It\'s like climbing out of a hole while someone keeps digging.', stage: 'story', cam: 'push',
+    board: (t) => {
+      const dug = t >= at(20);
+      const swing = t >= at(19) ? Math.floor((t - at(19)) / 0.22) % 2 : 0;
+      return (
+        <g>
+          <g transform="translate(540 1040)"><Hole /></g>
+          <g transform={`translate(540 ${dug ? 1230 : t >= at(13) ? 1050 : t >= at(12) ? 1130 : 1230})`}><LittleGuy climbing sad={dug} /></g>
+          <In t={t} at={at(18)} x={850} y={910} k={1} from="right"><LittleGuy color="#F2C9A0" /></In>
+          <In t={t} at={at(18) + 0.1} x={720} y={900} k={1} from="right" rot={swing ? 40 : 10}><Shovel dirt={!!swing} /></In>
+        </g>
+      );
+    }, action: 'A little guy climbs out of a hole, step by step… a digger swoops in and keeps shovelling; he slides back down.'},
+  {at: 21, line: 'And three locks keep people down.', stage: 'story', cam: 'reveal',
     board: (t) => (
       <g>
-        <Glow x={540} y={860} r={380} />
-        <In t={t} at={at(7)} x={540} y={900} k={2.4} from="top"><Padlock /></In>
-        <In t={t} at={at(7) + 0.2} x={0} y={0}><Label x={540} y={520} text="a trap" red size={120} /></In>
+        {(['jar', 'fees', 'q'] as const).map((face, k) => <In key={k} t={t} at={at(22) + k * 0.18} x={230 + k * 310} y={900} k={1.3} from={(['left', 'top', 'right'] as const)[k]}><Padlock rotate={(k - 1) * 6} face={face} /></In>)}
       </g>
-    ), action: 'A big padlock slams down: "a trap".'},
-  {at: 8, line: 'With three locks.', stage: 'story', cam: 'reveal',
-    board: (t) => (
-      <g>
-        {[0, 1, 2].map((k) => <In key={k} t={t} at={at(9) + k * 0.18} x={230 + k * 310} y={900} k={1.3} from={(['left', 'top', 'right'] as const)[k]}><Padlock rotate={(k - 1) * 6} /></In>)}
-      </g>
-    ), action: 'Three padlocks land in a row, one after another; the tracker appears: three grey "?".'},
-  {at: 11, line: 'And the last one is invisible.', stage: 'close', ebo: ebo({eyes: 'suspicious', mouth: 'flat', lookX: 10, lookY: -12, headTilt: 6}),
-    board: () => <Glow x={badgeX(2, 3)} y={120} r={160} />, action: 'Close: Ebo leans in. The last "?" glows.'},
-  // ── No buffer ──
-  {at: 17, line: 'First. No buffer.', stage: 'react', ebo: ebo({eyes: 'wide', mouth: 'o', lookY: -18}), header: ['No', 'buffer'], dim: 17,
+    ), action: 'Three padlocks land in a row: a jar, FEES, a "?". The tracker appears: three grey "?".'},
+  // ── No safety net ──
+  {at: 27, line: 'First. No safety net.', stage: 'react', ebo: ebo({eyes: 'wide', mouth: 'o', lookY: -18}), header: ['No', 'safety net'], dim: 27,
     board: (t) => (
       <g>
         {badgeIn(t, 0, 'right')}
-        <In t={t} at={at(19)} x={820} y={1040} k={0.9} from="right"><FunJar empty /></In>
+        <In t={t} at={at(29)} x={840} y={1040} k={0.8} from="right"><BufferJar /></In>
       </g>
     ), action: 'The first lock lights up (green, an empty jar) and drops in big; an empty jar swoops in beside it.'},
-  {at: 20, line: 'One flat tire.', stage: 'story', header: ['No', 'buffer'],
-    board: (t) => <In t={t} at={at(21)} x={540} y={880} k={2.2} from="left"><FlatTire /></In>, action: 'A flat tire rolls in from the left and slumps.'},
-  {at: 23, line: 'One doctor\'s bill.', stage: 'story', header: ['No', 'buffer'],
-    board: (t) => <In t={t} at={at(24)} x={540} y={880} k={2.2} rot={4} from="right"><DoctorBill /></In>, action: 'A doctor\'s bill swoops in: $200.'},
-  {at: 26, line: 'No savings, so it goes on a card.', stage: 'scene', cam: 'reveal',
-    ebo: {x: 640, pose: {eyes: 'sad', mouth: 'flat'}, acts: [[33, {armR: [110, -10], hold: <CreditCard rotate={-10} />, eyes: 'half'}]]},
+  {at: 31, line: 'Your car breaks down. You borrow to fix it. Interest piles up.', stage: 'story', header: ['No', 'safety net'],
     board: (t) => (
       <g>
-        <In t={t} at={at(27)} x={260} y={1000} k={1} from="left"><FunJar empty /></In>
-        <In t={t} at={at(27) + 0.15} x={260} y={700} k={1.1} twist={0}><Mark kind="cross" /></In>
+        <In t={t} at={at(32)} x={250} y={640} k={1.1} from="left"><FlatTire /></In>
+        <In t={t} at={at(35)} x={410} y={790} k={0.8} rot={45} twist={0} from="drop"><Arrow /></In>
+        <In t={t} at={at(36)} x={540} y={940} k={0.8} rot={-4} from="top"><FeeSlip top="REPAIR" bottom="BILL" amount="$400" /></In>
+        <In t={t} at={at(39)} x={690} y={1110} k={0.8} rot={45} twist={0} from="drop"><Arrow /></In>
+        <In t={t} at={at(40)} x={800} y={1260} k={0.8} rot={-6} from="right"><CreditCard amount={t >= at(41) ? '$520' : '$400'} /></In>
+        <In t={t} at={at(41)} x={0} y={0} from="left"><Label x={330} y={1300} text="+ interest" red size={90} rot={-4} /></In>
       </g>
-    ), action: 'Ebo, the empty jar crossed out beside him… on "card" he pulls out a credit card.'},
-  {at: 34, line: 'Now a two-hundred-dollar problem costs three hundred.', stage: 'story',
+    ), action: 'Built left to right: a flat tire → a repair bill ($400) → a credit card… on "piles up" it ticks to $520: "+ interest".'},
+  {at: 43, line: 'Now you\'re paying for yesterday\'s emergency with tomorrow\'s paycheck.', stage: 'story', cam: 'push', header: ['No', 'safety net'],
     board: (t) => (
       <g>
-        <In t={t} at={at(36)} x={540} y={820} k={2.2} from="top"><CreditCard amount={t >= at(39) ? '$300' : '$200'} /></In>
-        <In t={t} at={at(39)} x={0} y={0}><Label x={540} y={1180} text="+ interest" red size={100} rot={-3} /></In>
+        <In t={t} at={at(47)} x={330} y={720} k={1.25} rot={-4} from="left"><CalNote title="YESTERDAY" note="emergency" /></In>
+        <In t={t} at={at(49)} x={560} y={960} k={1} rot={55} twist={0} from="drop"><Arrow color={RED} /></In>
+        <In t={t} at={at(50)} x={740} y={1190} k={1.25} rot={4} from="right"><CalNote title="NEXT" title2="PAYCHECK" note="paying for it" /></In>
       </g>
-    ), action: 'The card: $200… on "three hundred" it ticks up to $300. "+ interest".'},
-  {at: 41, line: 'Being broke is expensive.', stage: 'close', ebo: ebo({eyes: 'tired', mouth: 'flat'}), touch: 'facepalm',
-    board: (t) => <In t={t} at={at(44)} x={0} y={0} from="right"><Label x={540} y={430} text="expensive" red size={110} rot={-3} /></In>,
-    action: 'Close: Ebo facepalms. "expensive".'},
-  // ── The broke tax ──
-  {at: 45, line: 'Next. The broke tax.', stage: 'react', ebo: ebo({eyes: 'squint', mouth: 'flat', lookY: -18}), header: ['The broke', 'tax'], dim: 45,
+    ), action: 'A calendar page: YESTERDAY (emergency)… an arrow… NEXT PAYCHECK (paying for it).'},
+  // ── The poverty tax ──
+  {at: 52, line: 'Second. The poverty tax.', stage: 'react', ebo: ebo({eyes: 'squint', mouth: 'flat', lookY: -18}), header: ['The poverty', 'tax'], dim: 52,
     board: (t) => badgeIn(t, 1, 'left'), action: 'The second lock lights up (red, FEE) and drops in big.'},
-  {at: 49, line: 'Overdraft fees. Late fees.', stage: 'story', header: ['The broke', 'tax'],
+  {at: 56, line: 'Late fees. Overdraft charges.', stage: 'story', header: ['The poverty', 'tax'],
     board: (t) => (
       <g>
-        <In t={t} at={at(49)} x={540} y={720} k={1.3} rot={-8} from="left"><FeeStamp text="OVERDRAFT FEE" /></In>
-        <In t={t} at={at(51)} x={540} y={1020} k={1.3} rot={6} from="right"><FeeStamp text="LATE FEE" /></In>
+        <In t={t} at={at(56)} x={340} y={760} k={1.3} rot={-6} from="left"><FeeSlip top="LATE" bottom="FEE" amount="$35" /></In>
+        <In t={t} at={at(58)} x={740} y={1100} k={1.3} rot={6} from="right"><FeeSlip top="OVERDRAFT" bottom="FEE" amount="$38" /></In>
       </g>
-    ), action: 'OVERDRAFT FEE stamps down… LATE FEE stamps down under it.'},
-  {at: 53, line: 'Cheap shoes that last three months,', stage: 'scene', cam: 'push',
-    ebo: {x: 540, pose: {eyes: 'sad', mouth: 'flat', lookY: 18}},
+    ), action: 'LATE FEE $35 slams down… OVERDRAFT FEE $38 slams down beside it.'},
+  {at: 60, line: 'Cheap shoes that fall apart. You know the expensive pair lasts longer.', stage: 'story', cam: 'push', header: ['The poverty', 'tax'],
     board: (t) => (
       <g>
-        <In t={t} at={at(54)} x={540} y={700} k={1.6} from="top"><CheapShoe /></In>
-        <In t={t} at={at(58)} x={0} y={0}><Label x={540} y={480} text="3 months" red size={90} rot={-3} /></In>
+        <In t={t} at={at(60)} x={290} y={1000} k={1.3} from="left"><CheapShoe worn={t >= at(63)} /></In>
+        <In t={t} at={at(60) + 0.1} x={0} y={0} from="left"><Label x={290} y={740} text="cheap" size={90} /></In>
+        <In t={t} at={at(64)} x={0} y={0} from="drop"><Label x={290} y={1240} text="3 months" red size={76} rot={-3} /></In>
+        <In t={t} at={at(68)} x={780} y={1000} k={1.3} from="right"><GoodShoe /></In>
+        <In t={t} at={at(68) + 0.1} x={0} y={0} from="right"><Label x={780} y={740} text="better" size={90} /></In>
+        <In t={t} at={at(70)} x={0} y={0} from="drop"><Label x={770} y={1240} text="lasts longer" size={64} rot={3} /></In>
       </g>
-    ), action: 'Ebo looks down: a cheap shoe drops in, its sole flapping. "3 months".'},
-  {at: 59, line: 'so you buy them four times a year.', stage: 'story', cam: 'reveal',
+    ), action: 'CHEAP: a shoe… on "fall apart" its sole flaps off: "3 months". Then BETTER swoops in beside it: "lasts longer".'},
+  {at: 72, line: 'But your wallet says, "Not today, my friend."', stage: 'react', ebo: ebo({eyes: 'sad', mouth: 'flat', lookY: -14}), header: ['The poverty', 'tax'],
     board: (t) => (
       <g>
-        {[0, 1, 2, 3].map((k) => <In key={k} t={t} at={at(63) + k * 0.15} x={190 + k * 235} y={900} k={0.85} rot={k % 2 ? 8 : -8} from={k % 2 ? 'right' : 'left'}><CheapShoe /></In>)}
-        <In t={t} at={at(66)} x={0} y={0}><Label x={540} y={1140} text="x4 a year" red size={100} /></In>
+        <In t={t} at={at(74)} x={300} y={940} k={1.1} rot={-6} from="left"><EmptyWallet /></In>
+        <In t={t} at={at(76)} x={640} y={600} k={1} from="top"><SayBubble a="Not today," b="my friend." /></In>
       </g>
-    ), action: 'Four cheap shoes slap down in a row. "x4 a year".'},
-  {at: 67, line: 'The less you have, the more everything costs.', stage: 'react', ebo: ebo({eyes: 'open', mouth: 'flat', lookY: -14}),
+    ), action: 'Ebo, sad. His empty wallet swoops in… and speaks: "Not today, my friend."'},
+  // ── The escape fantasy ──
+  {at: 80, line: 'Third. The escape fantasy.', stage: 'react', ebo: ebo({eyes: 'happy', mouth: 'smile', lookY: -18}), header: ['The escape', 'fantasy'], dim: 80,
     board: (t) => (
       <g>
-        <In t={t} at={at(68)} x={0} y={0} from="left"><Label x={300} y={700} text="less $" size={100} /></In>
-        <In t={t} at={at(72)} x={0} y={0} from="right"><Label x={780} y={700} text="more cost" red size={100} /></In>
-        <In t={t} at={at(72)} x={540} y={700} k={1} twist={0}><path d="M -50 0 L 40 0 M 20 -24 L 44 0 L 20 24" fill="none" stroke={INK} strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" /></In>
+        {badgeIn(t, 2, 'top')}
+        <In t={t} at={at(82)} x={830} y={1060} k={0.75} rot={8} from="right"><LotteryTicket /></In>
       </g>
-    ), action: '"less $" → "more cost".'},
-  // ── The invisible lock ──
-  {at: 75, line: 'And the invisible lock?', stage: 'close', ebo: ebo({eyes: 'squint', mouth: 'flat', headTilt: -4}),
-    board: () => <Glow x={badgeX(2, 3)} y={120} r={160} />, action: 'Close: Ebo squints. The last "?" glows.'},
-  {at: 79, line: 'Waiting for one big break.', stage: 'react', ebo: ebo({eyes: 'happy', mouth: 'smile', lookY: -18}), header: ['Waiting for a', 'big break'], dim: 79,
-    board: (t) => badgeIn(t, 2, 'top'), action: 'THE PAYOFF: the "?" turns gold (a lucky 7) and drops in big. Ebo looks up, hopeful.'},
-  {at: 84, line: 'The lottery ticket.', stage: 'story', header: ['Waiting for a', 'big break'],
+    ), action: 'THE PAYOFF: the "?" turns gold ($) and drops in big; a lottery ticket swoops in beside it.'},
+  {at: 84, line: 'Waiting for that one lucky break. That viral idea. That miracle job.', stage: 'react', ebo: ebo({eyes: 'happy', mouth: 'smile', lookY: -20}), touch: 'thinkChin', header: ['The escape', 'fantasy'],
     board: (t) => (
       <g>
-        <Glow x={540} y={880} r={380} />
-        <In t={t} at={at(85)} x={540} y={880} k={2.2} rot={-4} from="right"><LotteryTicket /></In>
+        <In t={t} at={at(88)} x={230} y={720} k={1} from="left"><Thought kind="money" side={-1} /></In>
+        <In t={t} at={at(91)} x={540} y={540} k={1} from="top"><Thought kind="video" side={0} /></In>
+        <In t={t} at={at(94)} x={850} y={720} k={1} from="right"><Thought kind="job" side={1} /></In>
       </g>
-    ), action: 'A lottery ticket, glowing.'},
-  {at: 87, line: 'The viral idea.', stage: 'story', header: ['Waiting for a', 'big break'],
+    ), action: 'Ebo daydreams, chin on his hand. Three thought bubbles pop, one per phrase: $$$, a viral video, a briefcase.'},
+  {at: 96, line: 'But hope without a plan keeps you standing still.', stage: 'scene', cam: 'reveal',
+    ebo: {x: 320, pose: {eyes: 'half', mouth: 'flat'}, acts: [[103, {eyes: 'tired', armL: [12, 6], armR: [12, 6]}]]},
+    board: (t) => <In t={t} at={at(97)} x={770} y={FLOOR} k={1} from="right"><HopeSign noPlan={t >= at(100)} /></In>,
+    action: 'Ebo beside a wooden sign: HOPE… on "plan": "(no plan)". On "standing still" he stops moving.'},
+  // ── Where to start ──
+  {at: 105, line: 'So where do you start? Build a tiny buffer. Dodge the fees you can. Learn a skill that opens another door.', stage: 'story', header: ['So where do you', 'start?'],
     board: (t) => (
       <g>
-        <In t={t} at={at(88)} x={540} y={800} k={1} from="left"><Lightbulb x={0} y={0} scale={2.2} t={0} /></In>
-        <In t={t} at={at(89)} x={0} y={0}><Label x={540} y={1180} text="1M views?" red size={100} /></In>
+        <In t={t} at={at(110)} x={270} y={700} k={0.9} from="left"><BufferJar coins /></In>
+        <In t={t} at={at(112)} x={0} y={0} from="left"><Label x={270} y={960} text="tiny buffer" size={64} /></In>
+        <In t={t} at={at(114)} x={810} y={700} k={0.8} rot={5} from="right"><FeeSlip top="LATE" bottom="FEE" crossed={t >= at(116)} /></In>
+        <In t={t} at={at(116)} x={0} y={0} from="right"><Label x={810} y={960} text="dodge fees" size={64} /></In>
+        <In t={t} at={at(119)} x={540} y={1220} k={1.2} from="top"><SkillLaptop /></In>
+        <In t={t} at={at(121)} x={0} y={0} from="drop"><Label x={540} y={1470} text="learn a skill" size={64} /></In>
       </g>
-    ), action: 'A lightbulb: the viral idea. "1M views?"'},
-  {at: 90, line: 'The perfect job.', stage: 'story', header: ['Waiting for a', 'big break'],
-    board: (t) => <In t={t} at={at(91)} x={540} y={880} k={2.2} from="right"><BigPhone screen="job" /></In>, action: 'A job ad, APPLY.'},
-  {at: 93, line: 'Big breaks are rare.', stage: 'story', cam: 'push',
-    board: (t) => <In t={t} at={at(93)} x={540} y={880} k={2.2} rot={-4}><LotteryTicket lost={t >= at(96)} /></In>, action: 'The lottery ticket again… on "rare": NOT A WINNER.'},
-  {at: 97, line: 'Small wins are daily.', stage: 'story', cam: 'reveal',
-    board: (t) => (
-      <g>
-        {[0, 1, 2, 3, 4, 5, 6].map((k) => <In key={k} t={t} at={at(98) + k * 0.1} x={150 + (k % 4) * 260} y={760 + Math.floor(k / 4) * 260} k={0.9} from="top"><TenCoin /></In>)}
-        <In t={t} at={at(100)} x={0} y={0}><Label x={540} y={1300} text="every day" red size={100} /></In>
-      </g>
-    ), action: 'Small coins rain in, one a day, filling the frame. "every day".'},
-  // ── Break it small ──
-  {at: 101, line: 'So break it small.', stage: 'react', ebo: ebo({eyes: 'happy', mouth: 'smile', lookY: -16}), header: ['Break it', 'small'],
-    board: (t) => (
-      <g>
-        <Glow x={540} y={760} r={360} />
-        <In t={t} at={at(101)} x={540} y={760} k={2} from="top"><Padlock open={t >= at(104)} /></In>
-      </g>
-    ), action: 'A padlock… on "small" it pops open.'},
-  {at: 105, line: 'Save ten dollars a week.', stage: 'story', header: ['Save', '$10 a week'],
-    board: (t) => (
-      <g>
-        <g transform="translate(540 980) scale(2)"><FunJar empty={t < at(107) + 0.35} /></g>
-        {t < at(107) + 0.35 && <In t={t} at={at(106)} x={540} y={t >= at(107) ? 700 + (t - at(107)) * 900 : 700} k={1} from="top"><TenCoin /></In>}
-      </g>
-    ), action: 'A $10 coin drops into the jar; the jar fills.'},
-  {at: 110, line: 'A buffer, not a fortune.', stage: 'story', header: ['A', 'buffer'],
-    board: (t) => (
-      <g>
-        <g transform="translate(540 940) scale(1.6)"><FunJar /></g>
-        <In t={t} at={at(112)} x={0} y={0} from="right"><Label x={540} y={1330} text="not a fortune" red size={90} /></In>
-      </g>
-    ), action: 'The jar, with a little in it… "not a fortune".'},
-  {at: 115, line: 'Pay the bill before the fee.', stage: 'story', header: ['Pay before the', 'fee'],
-    board: (t) => (
-      <g>
-        <In t={t} at={at(117)} x={330} y={860} k={1.3} from="left"><BillDue /></In>
-        <In t={t} at={at(118)} x={330} y={620} k={1.2} twist={0} from="drop"><Mark kind="tick" /></In>
-        <In t={t} at={at(120)} x={780} y={900} k={0.8} rot={8} from="right"><FeeStamp text="LATE FEE" /></In>
-        <In t={t} at={at(120) + 0.15} x={780} y={900} k={1.2} twist={0}><Mark kind="cross" /></In>
-      </g>
-    ), action: 'The bill gets a tick… the LATE FEE gets a cross.'},
-  {at: 121, line: 'Buy once. Buy right.', stage: 'story', header: ['Buy once.', 'Buy right.'],
-    board: (t) => (
-      <g>
-        <In t={t} at={at(122)} x={540} y={900} k={2} from="top"><CheapShoe worn={false} /></In>
-        <In t={t} at={at(124)} x={820} y={640} k={1.2} twist={0} from="drop"><Mark kind="tick" /></In>
-      </g>
-    ), action: 'One good shoe, sole intact. A tick.'},
+    ), action: 'Three pictures, one per phrase: a jar with a few coins, a LATE FEE crossed out, a laptop with a gear.'},
   // ── The close ──
-  {at: 125, line: 'Nobody escapes in one jump.', stage: 'scene', cam: 'reveal',
-    ebo: {x: 540, pose: {eyes: 'wide', mouth: 'o'}, acts: [[128, {lift: -60, armL: [140, -10], armR: [140, -10], eyes: 'squeeze', mouth: 'grimace'}], [129, {lift: 0, eyes: 'tired', mouth: 'flat', armL: [12, 6], armR: [12, 6]}]]},
-    board: (t) => <In t={t} at={at(129)} x={0} y={0} from="top"><Label x={540} y={520} text="one jump? no." red size={100} rot={-3} /></In>,
-    action: 'Ebo jumps… and lands right where he was. "one jump? no."'},
-  {at: 130, line: 'You climb out. One step at a time.', stage: 'scene', cam: 'push',
-    ebo: {x: 380, pose: {eyes: 'happy', mouth: 'smile'}, acts: [[131, {armR: [120, -10]}], [134, {armR: [130, -10], lift: -20, eyes: 'happy', mouth: 'grin'}]]},
+  {at: 126, line: 'And remember: some locks need more than one person to break.', stage: 'story', cam: 'push',
     board: (t) => (
       <g>
-        <In t={t} at={at(130)} x={760} y={1500} k={1.4} from="right"><Ladder rungs={[131, 133, 134, 137].filter((k) => t >= at(k)).length} /></In>
-        {[0, 1, 2].map((k) => <In key={k} t={t} at={at(135) + k * 0.12} x={300 + k * 240} y={560} k={0.75} rot={(k - 1) * 8}><Padlock open /></In>)}
+        {t >= at(136) && <Glow x={230} y={880} r={300} />}
+        {(['jar', 'fees', 'q'] as const).map((face, k) => <In key={k} t={t} at={at(128) + k * 0.12} x={230 + k * 310} y={900} k={1.3} from={(['left', 'top', 'right'] as const)[k]}><Padlock rotate={(k - 1) * 6} face={face} open={k === 0 && t >= at(136)} /></In>)}
       </g>
-    ), action: 'A ladder: a rung lights on each word… Ebo reaches up, grinning; the three padlocks pop open.'},
+    ), action: 'The three locks again… on "break" the first pops open; the other two stay shut.'},
+  {at: 137, line: 'Poverty isn\'t always a choice. And escaping it isn\'t always a straight line.', stage: 'scene', cam: 'push',
+    ebo: {x: 290, pose: {eyes: 'open', mouth: 'smile'}},
+    board: (t) => (
+      <g>
+        <In t={t} at={at(143)} x={720} y={FLOOR} k={1} from="right"><HillPath /></In>
+        <In t={t} at={at(148)} x={0} y={0} from="top"><Label x={600} y={700} text="not a straight line" red size={64} rot={-3} /></In>
+      </g>
+    ), action: 'Ebo, front on. A hill swoops in beside him: a winding path climbs to a flag. "not a straight line".'},
 ];
 
-export const EP09_SECTIONS: string[] = EP09_PLAN.map((s) => (s.at < 17 ? 'The Hook' : s.at < 45 ? 'No Buffer' : s.at < 75 ? 'The Broke Tax' : s.at < 101 ? 'The Invisible Lock' : s.at < 125 ? 'Break It Small' : 'The Close'));
+export const EP09_SECTIONS: string[] = EP09_PLAN.map((s) => (s.at < 27 ? 'The Hook' : s.at < 52 ? 'No Safety Net' : s.at < 80 ? 'The Poverty Tax' : s.at < 105 ? 'The Escape Fantasy' : s.at < 126 ? 'Where To Start' : 'The Close'));
 
 export const ep09Times = () => {
   const starts = EP09_PLAN.map((s) => Math.max(0, WORDS[s.at].s - 0.08));
@@ -282,11 +242,11 @@ export const ep09ShotAt = (f: number) => {
 };
 
 /** A pop for each picture that lands without a swoop. */
-export const EP09_SLAMS: number[] = [4, 7, 39, 58, 66, 72, 93, 96, 100].map(at).concat([at(27) + 0.15, at(120) + 0.15]);
+export const EP09_SLAMS: number[] = [8, 35, 39, 41, 49, 64, 70, 100, 121].map(at);
 /** Swooshes (rule 21). */
 export const EP09_SWOOSH = () => {
-  const pieces = [3, 9, 19, 21, 24, 36, 44, 49, 51, 54, 68, 85, 88, 91, 101, 106, 111, 112, 117, 120, 122, 129, 130].map(at)
-    .concat([0, 1, 2].map((k) => at(9) + k * 0.18), [0, 1, 2, 3].map((k) => at(63) + k * 0.15), [0, 1, 2, 3, 4, 5, 6].map((k) => at(98) + k * 0.1));
+  const pieces = [4, 18, 29, 32, 36, 40, 47, 50, 56, 58, 60, 68, 74, 76, 82, 88, 91, 94, 97, 110, 114, 119, 143, 148].map(at)
+    .concat([0, 1, 2].map((k) => at(22) + k * 0.18), [0, 1, 2].map((k) => at(128) + k * 0.12));
   const reveals = EP09_PLAN.map((s, i) => ((s.cam ?? (s.stage === 'close' ? 'push' : 'reveal')) === 'reveal' && i > 0 ? TIMES[i].start : null)).filter((x): x is number => x !== null);
   return [...pieces.map((a) => ({at: a - 0.05, sfx: 'swoosh', vol: 0.7})), ...reveals.map((a) => ({at: a, sfx: 'swoosh', vol: 0.35}))];
 };
@@ -294,18 +254,13 @@ export const EP09_SWOOSH = () => {
 export const EP09_SFX = () => [
   ...EP09_SWOOSH(),
   ...SLOT_AT().map((a) => ({at: a + 0.05, sfx: 'pop', vol: 0.8})),
-  {at: at(7) + 0.1, sfx: 'stamp', vol: 0.9}, // the padlock slams
-  {at: at(49) + 0.15, sfx: 'stamp', vol: 0.9}, // OVERDRAFT FEE
-  {at: at(51) + 0.15, sfx: 'stamp', vol: 0.9}, // LATE FEE
-  {at: at(96), sfx: 'stamp', vol: 0.8}, // NOT A WINNER
-  {at: at(104), sfx: 'click', vol: 0.9}, // the lock pops open
-  ...[0, 1, 2].map((k) => ({at: at(135) + k * 0.12 + 0.17, sfx: 'click', vol: 0.7})), // the three locks pop open
-  {at: at(107) + 0.3, sfx: 'clink', vol: 0.8}, // the coin in the jar
-  {at: at(118), sfx: 'marker_tick', vol: 0.8},
-  {at: at(124), sfx: 'marker_tick', vol: 0.8},
-  {at: at(128), sfx: 'whoosh', vol: 0.6}, // the jump
-  {at: at(129), sfx: 'body_thud', vol: 0.7}, // …lands
-  ...[131, 133, 134, 137].map((k) => ({at: at(k), sfx: 'pop', vol: 0.5})), // the rungs
+  {at: at(20), sfx: 'body_thud', vol: 0.6}, // he slides back down the hole
+  {at: at(56) + 0.15, sfx: 'stamp', vol: 0.9}, // LATE FEE
+  {at: at(58) + 0.15, sfx: 'stamp', vol: 0.9}, // OVERDRAFT FEE
+  {at: at(63), sfx: 'pop', vol: 0.6}, // the sole flaps off
+  {at: at(116), sfx: 'marker_tick', vol: 0.8}, // the fee crossed out
+  {at: at(112), sfx: 'clink', vol: 0.7}, // coins in the jar
+  {at: at(136), sfx: 'click', vol: 0.9}, // the first lock pops open
 ];
 
 // ───────────────────────── performance ─────────────────────────

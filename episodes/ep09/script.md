@@ -1,39 +1,22 @@
-# Ebo Teaches Money, Ep 09: Why Some People Never Escape Poverty
+# Ep 09 — Why Some People Never Escape Poverty (v2, from the user's reference board)
 
-Status: draft for approval. Vertical, about 60 seconds. House rules 19-21: bold-and-blunt script, the tracker
-(three locks: no buffer · the broke tax · ? → waiting for a big break), Peanut-style animation with a picture on every
-key word (flat tire, doctor's bill, card, fees, cheap shoes, lottery ticket, $10). Ebo is the only voice.
-Care: the joke is never on poor people. It names the traps; the self-roast is Ebo's own habits.
+Voice: Ebo (Dan), confident and warm all the way through. No low/quiet directions. ~58s, 16 shots.
 
-## Hook
-EBO: Poverty isn't just low income.
-EBO: It's a trap. With three locks.
-EBO: And the last one is invisible.
-
-## Lock: no buffer (an empty jar)
-EBO: First. No buffer.
-EBO: One flat tire. One doctor's bill. No savings, so it goes on a card.
-EBO: Now a two-hundred-dollar problem costs three hundred.
-EBO: Being broke is expensive.
-
-## Lock: the broke tax (a fee stamp)
-EBO: Next. The broke tax.
-EBO: Overdraft fees. Late fees.
-EBO: Cheap shoes that last three months, so you buy them four times a year.
-EBO: The less you have, the more everything costs.
-
-## Lock: ? → waiting for a big break (a lottery ticket)
-EBO: And the invisible lock?
-EBO: Waiting for one big break.
-EBO: The lottery ticket. The viral idea. The perfect job.
-EBO: Big breaks are rare. Small wins are daily.
-
-## The fix
-EBO: So break it small.
-EBO: Save ten dollars a week. A buffer, not a fortune.
-EBO: Pay the bill before the fee.
-EBO: Buy once. Buy right.
-
-## The close
-EBO: Nobody escapes in one jump.
-EBO: You climb out. One step at a time.
+| # | Line | Picture |
+|---|---|---|
+| 1 | Ever noticed how being broke actually costs you more money? | Ebo shrugs at a stack of coins; a red arrow shoots up from it. |
+| 2 | It's like climbing out of a hole while someone keeps digging. | A little guy climbs out of a hole; above him a digger keeps shovelling. |
+| 3 | And three locks keep people down. | Three padlocks land in a row: a jar, FEES, a "?". They become the tracker. |
+| 4 | First. No safety net. | Lock 1 lights up; beside it an empty jar. |
+| 5 | Your car breaks down. You borrow to fix it. Interest piles up. | Flat tire → doctor's-style repair bill → credit card, built left to right with arrows. |
+| 6 | Now you're paying for yesterday's emergency with tomorrow's paycheck. | Calendar page TODAY (emergency) → arrow → NEXT PAYCHECK (paying for it). |
+| 7 | Second. The poverty tax. | Lock 2 lights up: FEES. |
+| 8 | Late fees. Overdraft charges. | LATE FEE $35 slams down, then OVERDRAFT FEE $38. |
+| 9 | Cheap shoes that fall apart. You know the expensive pair lasts longer. | CHEAP (3 months), sole flapping; then BETTER (longer) swoops in beside it. |
+| 10 | But your wallet says, "Not today, my friend." | Ebo shrugs, sad; his empty wallet's speech bubble: "Not today, my friend." |
+| 11 | Third. The escape fantasy. | The "?" lock turns gold; a lottery ticket swoops in beside it. |
+| 12 | Waiting for that one lucky break. That viral idea. That miracle job. | Ebo daydreams, chin on hands; three thought bubbles pop one per phrase: $$$, a viral video, a briefcase. |
+| 13 | But hope without a plan keeps you standing still. | Ebo stands still next to a wooden sign: HOPE (no plan). |
+| 14 | So where do you start? Build a tiny buffer. Dodge the fees you can. Learn a skill that opens another door. | Three pictures, one per phrase: a jar with a few coins, a FEES slip crossed out, a laptop with a gear. |
+| 15 | And remember: some locks need more than one person to break. | The three locks again; the first pops open, the others stay shut. |
+| 16 | Poverty isn't always a choice. And escaping it isn't always a straight line. | Ebo, front on; behind him a winding path climbs a hill to a flag. |
