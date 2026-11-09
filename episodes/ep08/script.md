@@ -1,47 +1,38 @@
 # Ebo Teaches Money, Ep 08: Why Nice Guys Get Taken Advantage Of
 
-Status: draft for approval. Vertical, about 75 to 85 seconds. Built to house rule 19 (the 3rd-Filter format):
-a tracker of three badges at the top (icons, no numbers), the last one a grey "?" until the payoff; a new picture every
-1-2 seconds; Ebo big along the bottom reacting, close-ups for the punches; tiny stories with Christy and Ama.
-Ebo is the nice guy (self-roast). Ebo is the only voice (he quotes the others), one take with Dan.
-
-Tracker: say yes to everything (an open door) · always available (a phone, lit up) · ? → liked vs. respected (a crown)
-
-## Cold open
-(A restaurant table. Everyone's gone. Ebo, alone, holding a receipt that unrolls to the floor.)
-EBO: …They said they'd get me next time.
-(beat)
-EBO (to camera): That was four "next times" ago.
+Status: v2 draft for approval, in the new "bold and blunt" scripting style (the user's pick, Nov 2026): short,
+hard-hitting statements, contrarian claims, no long set-ups. Vertical, about 60 to 70 seconds, house rule 19 format
+(tracker: an open door · a lit-up phone · ? → a crown). Ebo is the only voice. v1 (the joke-led version) is kept as script_v1.md.
 
 ## Hook
-EBO: Nice guys don't get used because they're nice.
-EBO: They get used for three reasons. And the last one… nobody wants to hear.
-(the tracker appears: three grey "?" badges)
+EBO: Being nice isn't your problem.
+EBO: Being available is.
+EBO: Every free yes teaches people your time is worthless.
+EBO: And nobody respects worthless things.
+EBO: Here's how nice guys get used. Three ways. The last one stings.
 
-## Badge: you say yes to everything
-EBO: First: you never say no.
-EBO: "Can you cover me?" Yes. "Can you help me move?" Yes. "Can I borrow your car?"
-(beat; the keys are already flying out of his hand)
-EBO: …Yes.
-EBO: When your yes is free, people stop asking. They start assuming.
+## Badge: you never say no (an open door)
+EBO: First. You never say no.
+EBO: Cover the bill? Yes. Help them move? Yes. Lend the car? Yes.
+EBO: A yes that costs nothing is worth nothing.
+EBO: People stop asking. They start expecting.
 
-## Badge: you're always available
-EBO: Next: you're always available.
-EBO: She texts at midnight. You reply in two seconds.
-EBO: When you're always there, your time looks cheap. And cheap things get used.
+## Badge: you're always available (a lit-up phone)
+EBO: Next. You answer instantly. Every call. Every text. Even at midnight.
+EBO: Instant replies say one thing: "I have nothing better to do."
+EBO: And people will make sure you don't.
 
-## Badge: ? (the payoff)
-EBO: And the real reason?
-(beat)
-EBO: You think being liked is the same as being respected.
-EBO: It's not. Liked is "he's so sweet." Respected is "let me check if he's free first."
+## Badge: ? → liked isn't respected (a crown)
+EBO: And the real problem?
+EBO: You're chasing liked. Not respected.
+EBO: Liked people get asked for favors.
+EBO: Respected people get asked for their time. Politely. In advance.
 
 ## The fix
-EBO: So keep the kindness. Lose the doormat.
-EBO: Say no without a speech. Reply when you're ready. And let people pay their own bill.
+EBO: So here's the rule. Kindness is a gift. Not a service.
+EBO: Say no. Don't explain.
+EBO: Reply when it suits you.
+EBO: Let people pay their own way.
 
 ## The close
-(Ebo slides the receipt back across the table.)
-EBO: Be kind. Not convenient.
-EBO (slow grin): Next time… is today.
-(hard cut back to the cold open: "They said they'd get me next time.")
+EBO: Be kind. Never convenient.
