@@ -6,7 +6,7 @@ import {RigCharacter} from '../cast/RigCharacter';
 import {Pose, POSES} from '../components/Character';
 import {POSE, CONTACT, frontOn, gentle} from '../cast/poses';
 import {Backdrop, SHADES} from './sets';
-import {StageSizeContext, Slam} from './exportCtx';
+import {StageSizeContext, Slam, Still} from './exportCtx';
 import {VFPS, Word, VStage, Framing, lipFrame, beatGesture} from './kit';
 import {C} from '../theme';
 import {AppPhone, ChainsHeld, ChainsWorn} from '../components/WantsProps';
@@ -377,7 +377,7 @@ export const EP07_PLAN: Shot[] = [
       </g>
     ), action: 'Rent, food, the bus line up… "Done." A big tick.'},
   {at: 165, line: 'Then give your wants a fixed amount.', stage: 'story', header: ['Wants', 'on purpose'],
-    board: (t) => <In t={t} at={at(169)} x={540} y={900} k={2.4}><FunJar /></In>, action: 'A jar: FUN MONEY.'},
+    board: (t) => <In t={t} at={at(165)} x={540} y={900} k={2.4}><FunJar /></In>, action: 'A jar: FUN MONEY.'},
   {at: 172, line: 'Your fun money. Spend it however you like, no guilt.', stage: 'story', header: ['Your', 'fun money'],
     board: (t) => (
       <g>
@@ -412,7 +412,7 @@ export const EP07_PLAN: Shot[] = [
 export const EP07_SECTIONS: string[] = EP07_PLAN.map((s) => (s.at < 47 ? 'The Hook' : s.at < 70 ? 'The Test' : s.at < 118 ? 'The Sneaky Ones' : s.at < 152 ? 'Wants Can Wait' : s.at < 190 ? 'Needs First' : 'The Close'));
 
 /** A pop for each new picture that lands (sfx), a tick for each green tick. */
-export const EP07_SLAMS: number[] = [190, 22, 29, 37, 54, 57, 60, 62, 64, 79, 86, 100, 103, 111, 121, 124, 130, 155, 161, 162, 163, 169, 175].map(at).concat([0, 1, 2].map((k) => at(97) + k * 0.3));
+export const EP07_SLAMS: number[] = [190, 22, 29, 37, 54, 57, 60, 62, 64, 79, 86, 100, 103, 111, 121, 124, 130, 155, 161, 162, 163, 165, 175].map(at).concat([0, 1, 2].map((k) => at(97) + k * 0.3));
 export const EP07_TICKS: number[] = [61, 63, 67, 164].map(at);
 
 export const ep07Times = () => {
@@ -500,8 +500,17 @@ export const Ep07Frame: React.FC<{f: number}> = ({f}) => {
   const overlay = (
     <g>
       {s.board?.(t)}
-      <Tracker t={t} />
-      {s.header && <Header text={s.header} />}
+      {/* the tracker and the header are their own graphics in the Animate file (not baked into the backgrounds) */}
+      {t >= TRACK_FROM() && (
+        <Still>
+          <Tracker t={t} />
+        </Still>
+      )}
+      {s.header && (
+        <Still>
+          <Header text={s.header} />
+        </Still>
+      )}
     </g>
   );
   return (
