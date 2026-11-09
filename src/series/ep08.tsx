@@ -320,8 +320,15 @@ export const ep08ShotAt = (f: number) => {
   for (let k = 0; k < TIMES.length; k++) if (t >= TIMES[k].start) i = k;
   return i;
 };
+/** Swooshes (rule 21): a loud one for each piece that swoops in from the side or the top, a soft one for each camera reveal. */
+export const EP08_SWOOSH = () => {
+  const pieces = [34, 42, 43, 44, 45, 46, 52, 55, 58, 64].map(at);
+  const reveals = EP08_PLAN.map((s, i) => ((s.cam ?? (s.stage === 'close' ? 'push' : 'reveal')) === 'reveal' && i > 0 ? TIMES[i].start : null)).filter((x): x is number => x !== null);
+  return [...pieces.map((a) => ({at: a - 0.05, sfx: 'swoosh', vol: 0.8})), ...reveals.map((a) => ({at: a, sfx: 'swoosh', vol: 0.4}))];
+};
 /** Sound effects beyond the pops (sfxCues.ts). */
 export const EP08_SFX = () => [
+  ...EP08_SWOOSH(),
   ...SLOT_AT().map((a) => ({at: a, sfx: 'pop', vol: 0.9})),
   {at: keysToss(), sfx: 'whoosh', vol: 0.8},
   {at: keysToss() + 0.5, sfx: 'clink', vol: 0.8},

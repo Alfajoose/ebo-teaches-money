@@ -32,3 +32,4 @@ HOW THEY'RE USED
   The videos play the track under the voice; the Animate files carry it on an "SFX" layer
   (Sync: Stream, one clip per scene), next to "Voice". The raw effects here are uncut; the mixer
   trims each to its hit and normalises it.
+  swoosh.mp3  ElevenLabs Sound Effects (flow olkFQ6OjOFDIZCKanif6, generation 2HpEWyoM4ej8MRNc8zJ0): the Peanut-style swoosh for pieces swooping in and camera reveals (rule 21).
