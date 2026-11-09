@@ -22,6 +22,7 @@ import type {NarrationTiming} from './sync';
 import {EboEp06, EP06_DURATION, EP06_W, EP06_H} from './series/ep06';
 import {EboEp07, EP07_DURATION, EP07_W, EP07_H} from './series/ep07';
 import {EboEp08, EP08_DURATION, EP08_W, EP08_H} from './series/ep08';
+import {EboEp09, EP09_DURATION, EP09_W, EP09_H} from './series/ep09';
 import {EboHandsSheet} from './cast/hands';
 import {EboContactSheet} from './cast/ContactSheet';
 import {EboEp05, EP05_DURATION, EP05_W, EP05_H} from './series/ep05';
@@ -95,6 +96,7 @@ export const RemotionRoot: React.FC = () => (
   <Composition id="EboTeachesMoney-Ep06" component={EboEp06} durationInFrames={EP06_DURATION} fps={30} width={EP06_W} height={EP06_H} />
   <Composition id="EboTeachesMoney-Ep07" component={EboEp07} durationInFrames={EP07_DURATION} fps={30} width={EP07_W} height={EP07_H} />
   <Composition id="EboTeachesMoney-Ep08" component={EboEp08} durationInFrames={EP08_DURATION} fps={30} width={EP08_W} height={EP08_H} />
+  <Composition id="EboTeachesMoney-Ep09" component={EboEp09} durationInFrames={EP09_DURATION} fps={30} width={EP09_W} height={EP09_H} />
   <Composition id="Ebo-Hands" component={EboHandsSheet} durationInFrames={1} fps={30} width={1080} height={1920} />
   <Composition id="Ebo-ContactPoses" component={EboContactSheet} durationInFrames={1} fps={30} width={1080} height={1920} />
   <Composition id="EboTeachesMoney-Ep05" component={EboEp05} durationInFrames={EP05_DURATION} fps={30} width={EP05_W} height={EP05_H} />

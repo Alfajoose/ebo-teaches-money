@@ -1,0 +1,39 @@
+{
+ "segments": [
+  {
+   "who": "ebo",
+   "src": "dan",
+   "from": 0.0,
+   "to": 5.4,
+   "gap": 0.3
+  },
+  {
+   "who": "ebo",
+   "src": "fix",
+   "from": 0.1,
+   "to": 2.05,
+   "gap": 0.5
+  },
+  {
+   "who": "ebo",
+   "src": "dan",
+   "from": 8.1,
+   "to": 28.45,
+   "gap": 0.45
+  },
+  {
+   "who": "ebo",
+   "src": "fix",
+   "from": 2.85,
+   "to": 6.1,
+   "gap": 0.5
+  },
+  {
+   "who": "ebo",
+   "src": "dan",
+   "from": 32.62,
+   "to": 53.0,
+   "gap": 0.5
+  }
+ ]
+}

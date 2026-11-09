@@ -1,0 +1,7 @@
+Voice take (ElevenLabs flow "Ebo Ep9 Escape Poverty", id KwPtcnorSyT5TRyDTA4c), 2026-11-09.
+  raw_dan.mp3   Dan (Ebo), eleven_v4, generation ch2sqyf2NnsMe2wNeEPM (52.8s, 940 credits), one take.
+  words_dan_raw.json  Scribe word timings (direction tags stripped).
+Assemble with: python3 -I scripts/voice-assemble.py episodes/ep09   (writes voice.mp3, words.json, env.json)
+2026-11-09 fix (the user didn't like the low, quiet delivery): "And the last one is invisible." and "And the invisible lock?
+Waiting for one big break." re-recorded in the confident tone (raw_fix.mp3, generation LVQgV4YhU8PpYHWUHu2a, 6.0s,
+177 credits) and spliced in by voice_edl.json.
