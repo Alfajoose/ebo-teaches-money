@@ -100,3 +100,7 @@ export const ep07Sfx = (w: {s: number; e: number}[], slams: number[], ticks: num
   {at: w[201].s - 0.25, sfx: 'clink', vol: 0.8}, // two chains off
   {at: w[203].s, sfx: 'cha_ching', vol: 0.6}, // "With want money."
 ];
+
+/** Ep8: a pop for each picture that lands (EP08_SLAMS), plus the plan's own cues (EP08_SFX: the badges, the
+ * keys tossed and landing offscreen, the phone buzzing, the reply, the tick). */
+export const ep08Sfx = (slams: number[], extra: Cue[]): Cue[] => [...slams.map((at) => ({at, sfx: 'pop', vol: 0.7})), ...extra];
