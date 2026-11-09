@@ -88,10 +88,11 @@ export const Place: React.FC<{m: M6; children: React.ReactNode}> = ({m, children
 };
 
 /** Graphic that slams in from above with a twist (translation + rotation only). */
-export const Slam: React.FC<{t: number; at: number; dist?: number; twist?: number; spin?: {deg: number; cx: number; cy: number}; children: React.ReactNode}> = ({
+export const Slam: React.FC<{t: number; at: number; dist?: number; dx?: number; twist?: number; spin?: {deg: number; cx: number; cy: number}; children: React.ReactNode}> = ({
   t,
   at,
   dist = -260,
+  dx = 0,
   twist = -14,
   spin,
   children,
@@ -102,7 +103,8 @@ export const Slam: React.FC<{t: number; at: number; dist?: number; twist?: numbe
   if (mode !== 'full' || t < at) return null;
   const u = interpolate((t - at) * 30, [0, 5], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.back(2.2))});
   // `spin`: an extra turn about a point (a wobble or sway after landing) kept on the matrix, so the Animate export stays one symbol
-  const matrix = mmul(mmul(T(0, (1 - u) * dist), R((1 - u) * twist, w / 2, 0)), spin ? R(spin.deg, spin.cx, spin.cy) : IDENT);
+  // `dx`: a sideways swoop (it comes in along an arc: across, and down the last stretch)
+  const matrix = mmul(mmul(T((1 - u) * dx, (dx ? (1 - u) * (1 - u) : 1 - u) * dist), R((1 - u) * twist, w / 2, 0)), spin ? R(spin.deg, spin.cx, spin.cy) : IDENT);
   if (cap) {
     const svg = renderToStaticMarkup(<g>{children}</g>);
     cap.graphics.push({key: `${at.toFixed(3)}:${hash(svg)}`, matrix, alpha: 1, svg});

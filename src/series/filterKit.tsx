@@ -39,11 +39,12 @@ export const Label: React.FC<{x: number; y: number; text: string; red?: boolean;
 );
 
 /** Something that lands at its time, at (x, y), at a fixed size `k` (static, never animated); it rocks once and settles. */
-export const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, children}) => {
+/** `from`: swoop in from the left, the right or the top (the Peanut-style entrance); default drops from above. */
+export const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; from?: 'left' | 'right' | 'top'; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, from, children}) => {
   const u = t - a - 0.17;
   const wob = u > 0 ? 4 * Math.sin(u * 16) * Math.exp(-u * 6) : 0;
   return (
-    <Slam t={t} at={a} dist={-70} twist={twist} spin={{deg: wob, cx: x, cy: y}}>
+    <Slam t={t} at={a} dist={from === 'top' ? -900 : -70} dx={from === 'left' ? -1100 : from === 'right' ? 1100 : 0} twist={from === 'left' ? -18 : from === 'right' ? 18 : twist} spin={{deg: wob, cx: x, cy: y}}>
       <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${k})`}>{children}</g>
     </Slam>
   );
@@ -116,3 +117,20 @@ export const Header: React.FC<{text: [string, string?]}> = ({text: [a, b]}) => (
     </text>
   </Still>
 );
+
+/** The camera swoop (rule 21): a fast zoom-out reveal at the top of the shot, or a slow push-in across it.
+ * Video only: the Animate export takes every frame back out of the camera, so the .fla stays camera-free. */
+export const swoopZoom = (kind: 'reveal' | 'push' | 'none', local: number, length: number) => {
+  if (kind === 'reveal') {
+    const u = Math.min(1, local / 0.5);
+    return 1 + 0.16 * (1 - u) ** 3;
+  }
+  if (kind === 'push') return 1 + 0.07 * Math.min(1, local / Math.max(0.5, length));
+  return 1;
+};
+/** The dim behind a title or badge: the scene fades back so the overlay reads. */
+export const Dim: React.FC<{t: number; at: number; until?: number}> = ({t, at, until}) => {
+  if (t < at || (until !== undefined && t > until)) return null;
+  const o = Math.min(0.62, (t - at) * 4);
+  return <rect x={-200} y={-200} width={1480} height={2320} fill="#FFF4DB" opacity={o} />;
+};
