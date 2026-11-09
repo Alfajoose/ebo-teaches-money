@@ -205,8 +205,8 @@ export const EP08_PLAN: Shot[] = [
     board: (t) => <In t={t} at={at(64)} x={0} y={0} from="top"><Label x={540} y={520} text="expecting" red size={100} /></In>,
     action: 'Christy and Ama, both holding out what they want, not even asking. "expecting".'},
   // ── 3. Always available ──
-  {at: 65, line: 'Next. You answer instantly.', stage: 'react', pose: {eyes: 'open', mouth: 'smile', lookY: -18}, header: ['You answer', 'instantly'],
-    board: (t) => bigBadge(t, 1, at(65)), action: 'The second badge lights up (orange, a phone lighting up) and drops in big.'},
+  {at: 65, line: 'Next. You answer instantly.', stage: 'react', pose: {eyes: 'open', mouth: 'smile', lookY: -18}, header: ['You answer', 'instantly'], dim: 65,
+    board: (t) => bigBadge(t, 1, at(65), 'left'), action: 'The second badge lights up (orange, a phone lighting up) and drops in big.'},
   {at: 69, line: 'Every call. Every text. Even at midnight.', stage: 'story', header: ['You answer', 'instantly'],
     board: (t) => (
       <g>
@@ -239,10 +239,10 @@ export const EP08_PLAN: Shot[] = [
   // ── 4. Liked isn't respected (the payoff) ──
   {at: 94, line: 'And the real problem?', stage: 'close', pose: {eyes: 'squint', mouth: 'flat', headTilt: -4},
     board: () => <Glow x={badgeX(2, 3)} y={120} r={160} />, action: 'Close, serious. The last "?" glows… a beat.'},
-  {at: 98, line: 'You\'re chasing liked. Not respected.', stage: 'react', pose: {eyes: 'wide', mouth: 'o', lookY: -18}, header: ['Liked isn\'t', 'respected'],
+  {at: 98, line: 'You\'re chasing liked. Not respected.', stage: 'react', pose: {eyes: 'wide', mouth: 'o', lookY: -18}, header: ['Liked isn\'t', 'respected'], dim: 98,
     board: (t) => (
       <g>
-        {bigBadge(t, 2, at(98))}
+        {bigBadge(t, 2, at(98), 'top')}
         <In t={t} at={at(100)} x={300} y={1060} k={1}><Heart /></In>
         <In t={t} at={at(101)} x={0} y={0}><Label x={540} y={1090} text="≠" size={140} /></In>
         <In t={t} at={at(102)} x={780} y={1080} k={0.85}><Crown /></In>
@@ -288,7 +288,7 @@ export const EP08_PLAN: Shot[] = [
     action: 'The same chat, answered the next morning, calmly: 9:00 AM.'},
   {at: 139, line: 'Let people pay their own way.', stage: 'story', header: ['Pay their', 'own way'],
     side: [{who: 'pretty', x: 420, pose: stand({armR: [60, -30], eyes: 'half', mouth: 'flat', lookY: 10}), hold: <Receipt len={260} rotate={-10} />}],
-    board: (t) => <In t={t} at={at(144)} x={790} y={760} k={1.4} twist={0}><Mark kind="tick" /></In>,
+    board: (t) => <In t={t} at={at(144)} x={790} y={760} k={1.4} twist={0} from="drop"><Mark kind="tick" /></In>,
     action: 'Christy holding her own receipt, reading it. A tick.'},
   // ── 6. The close ──
   {at: 145, line: 'Be kind.', stage: 'react', pose: {eyes: 'open', mouth: 'smile', lookY: -16},
@@ -322,7 +322,7 @@ export const ep08ShotAt = (f: number) => {
 };
 /** Swooshes (rule 21): a loud one for each piece that swoops in from the side or the top, a soft one for each camera reveal. */
 export const EP08_SWOOSH = () => {
-  const pieces = [34, 42, 43, 44, 45, 46, 52, 55, 58, 64].map(at);
+  const pieces = [...new Set([34, 42, 43, 44, 45, 46, 52, 55, 58, 64, 65, 98].map(at).concat(EP08_SLAMS))];
   const reveals = EP08_PLAN.map((s, i) => ((s.cam ?? (s.stage === 'close' ? 'push' : 'reveal')) === 'reveal' && i > 0 ? TIMES[i].start : null)).filter((x): x is number => x !== null);
   return [...pieces.map((a) => ({at: a - 0.05, sfx: 'swoosh', vol: 0.8})), ...reveals.map((a) => ({at: a, sfx: 'swoosh', vol: 0.4}))];
 };
@@ -399,9 +399,10 @@ export const Ep08Frame: React.FC<{f: number}> = ({f}) => {
                 const st = TIMES[i].start;
                 let x = c.x;
                 let moving = false;
-                if (c.enter) {
-                  const u = Math.min(1, local / (c.enter.dur ?? 0.45));
-                  x = c.enter.from + (c.x - c.enter.from) * (1 - (1 - u) ** 2);
+                const enter = c.enter ?? {from: c.x < 540 ? -300 : 1380, dur: 0.35};
+                if (enter) {
+                  const u = Math.min(1, local / (enter.dur ?? 0.45));
+                  x = enter.from + (c.x - enter.from) * (1 - (1 - u) ** 2);
                   moving = u < 1;
                 }
                 if (c.exit && t >= at(c.exit.at)) {
@@ -411,6 +412,11 @@ export const Ep08Frame: React.FC<{f: number}> = ({f}) => {
                 }
                 let p: Partial<Pose> = {...c.pose};
                 for (const [w, a] of c.acts ?? []) if (t >= at(w)) p = {...p, ...a};
+                // rule 21, every take moves: with no acting of their own they bob and tilt on Ebo's words
+                if (!c.acts) {
+                  const wi2 = WORDS.findIndex((w) => t >= w.s && t < w.e);
+                  if (wi2 >= 0) p = {...p, headTilt: (p.headTilt ?? 0) + (wi2 % 2 ? 6 : -5), tilt: (p.tilt ?? 0) + (wi2 % 3 === 0 ? 3 : 0), lift: (p.lift ?? 0) + (wi2 % 2 ? -4 : 0)};
+                }
                 if (moving) {
                   const ph = Math.floor((t - st) / 0.12) % 2;
                   p = {...p, legL: ph ? [20, 6] : [-8, 0], legR: ph ? [-8, 0] : [20, 6], lift: -6 * ph};

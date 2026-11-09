@@ -40,7 +40,9 @@ export const Label: React.FC<{x: number; y: number; text: string; red?: boolean;
 
 /** Something that lands at its time, at (x, y), at a fixed size `k` (static, never animated); it rocks once and settles. */
 /** `from`: swoop in from the left, the right or the top (the Peanut-style entrance); default drops from above. */
-export const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; from?: 'left' | 'right' | 'top'; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, from, children}) => {
+export const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; from?: 'left' | 'right' | 'top' | 'drop'; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, from: fromIn, children}) => {
+  // rule 21: by default a piece swoops in from the side it sits on (or from the top when it's central); 'drop' = the old short drop
+  const from = fromIn === 'drop' ? undefined : fromIn ?? (x === 0 && y === 0 ? 'top' : x < 470 ? 'left' : x > 610 ? 'right' : 'top');
   const u = t - a - 0.17;
   const wob = u > 0 ? 4 * Math.sin(u * 16) * Math.exp(-u * 6) : 0;
   return (
