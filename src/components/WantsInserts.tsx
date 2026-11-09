@@ -116,15 +116,20 @@ const ShirtDrawing: React.FC<{x?: number; y?: number; brand?: boolean}> = ({x = 
 /** The "want": a little purple blob with big eyes (the sneaky one). Origin at its centre.
  * mood: sneaky (eyes slid sideways), happy (smile), sad (frown). Extras: a disguise (hat and
  * moustache, holding a NEED sign), a waiting ticket. */
-const WantGuyDrawing: React.FC<{x?: number; y?: number; rotate?: number; mood?: 'sneaky' | 'happy' | 'sad'; disguise?: boolean; ticket?: boolean}> = ({x = 0, y = 0, rotate = 0, mood = 'sneaky', disguise = false, ticket = false}) => {
+const WantGuyDrawing: React.FC<{x?: number; y?: number; rotate?: number; mood?: 'sneaky' | 'happy' | 'sad'; disguise?: boolean; ticket?: boolean; t?: number}> = ({x = 0, y = 0, rotate = 0, mood = 'sneaky', disguise = false, ticket = false, t}) => {
   const px = mood === 'sneaky' ? 8 : 0;
+  // alive (when given the time): a gentle sway, and a blink every couple of seconds
+  const sway = t === undefined ? 0 : 3 * Math.sin(t * 2.3);
+  const blink = t !== undefined && (t * 30) % 78 < 4;
   return (
-    <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+    <g transform={`translate(${x} ${y}) rotate(${rotate + sway})`}>
       <ellipse cx={0} cy={0} rx={80} ry={64} fill="#8F6BD1" {...S} />
       <ellipse cx={-26} cy={-10} rx={18} ry={22} fill="#fff" {...S} strokeWidth={5} />
       <ellipse cx={26} cy={-10} rx={18} ry={22} fill="#fff" {...S} strokeWidth={5} />
       <circle cx={-26 + px} cy={mood === 'sad' ? -2 : -6} r={8} fill={C.ink} />
       <circle cx={26 + px} cy={mood === 'sad' ? -2 : -6} r={8} fill={C.ink} />
+      {blink && [-26, 26].map((ex) => <ellipse key={ex} cx={ex} cy={-10} rx={19} ry={23} fill="#8F6BD1" stroke={C.ink} strokeWidth={5} />)}
+      {blink && [-26, 26].map((ex) => <path key={`l${ex}`} d={`M ${ex - 14} -8 Q ${ex} 0 ${ex + 14} -8`} fill="none" stroke={C.ink} strokeWidth={5} strokeLinecap="round" />)}
       {mood === 'happy' && <path d="M -24 24 Q 0 44 24 24" fill="none" stroke={C.ink} strokeWidth={6} strokeLinecap="round" />}
       {mood === 'sad' && <path d="M -22 36 Q 0 20 22 36" fill="none" stroke={C.ink} strokeWidth={6} strokeLinecap="round" />}
       {mood === 'sneaky' && !disguise && <path d="M -16 30 Q 6 36 22 26" fill="none" stroke={C.ink} strokeWidth={6} strokeLinecap="round" />}

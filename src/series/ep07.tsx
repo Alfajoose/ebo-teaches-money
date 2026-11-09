@@ -45,6 +45,8 @@ const PLACE: Record<Stage, {x: number; y: number; scale: number}> = {
 
 // ───────────────────────── the drawn boards ─────────────────────────
 const MARKER = 'EboMarker';
+/** The lively pass (face acting, idle, props that react): on for the test composition. */
+const LIVELY = {on: false};
 /** A handwritten word. */
 const Label: React.FC<{x: number; y: number; text: string; red?: boolean; rot?: number; size?: number}> = ({x, y, text, red, rot = 0, size = 84}) => (
   <g transform={`translate(${x} ${y}) rotate(${rot})`}>
@@ -54,11 +56,16 @@ const Label: React.FC<{x: number; y: number; text: string; red?: boolean; rot?: 
   </g>
 );
 /** Something that slams in at its time, placed at (x, y), drawn at a fixed size `k` (static size, never animated). */
-const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, children}) => (
-  <Slam t={t} at={a} dist={-80} twist={twist}>
-    <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${k})`}>{children}</g>
-  </Slam>
-);
+const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, children}) => {
+  // lively: once it has landed it rocks once and settles (a damped wobble, rotation only)
+  const u = t - a - 0.17;
+  const wob = LIVELY.on && u > 0 ? 5 * Math.sin(u * 16) * Math.exp(-u * 6) : 0;
+  return (
+    <Slam t={t} at={a} dist={-80} twist={twist}>
+      <g transform={`translate(${x} ${y}) rotate(${rot + wob}) scale(${k})`}>{children}</g>
+    </Slam>
+  );
+};
 /** need on the left, want on the right, each slamming in on its word. */
 const Pair: React.FC<{t: number; needAt: number; wantAt: number; need: React.ReactNode; want: React.ReactNode; needText?: string; wantText?: string}> = ({t, needAt, wantAt, need, want, needText = 'need', wantText = 'want'}) => (
   <g>
@@ -106,7 +113,7 @@ export const EP07_PLAN: Shot[] = [
   {at: 25, line: 'We\'re broke because our wants are dressed up as needs.', stage: 'wide', pose: {eyes: 'open', mouth: 'smirk'},
     board: (t) => (
       <g>
-        <In t={t} at={at(29)} x={470} y={860} k={2.1}><WantGuy disguise /></In>
+        <In t={t} at={at(29)} x={470} y={860} k={2.1}><WantGuy disguise t={LIVELY.on ? t : undefined} /></In>
         <In t={t} at={at(31)} x={0} y={0}><Label x={540} y={400} text="a want in disguise" red rot={-3} size={76} /></In>
       </g>
     ), arms: (t) => (t >= at(29) ? POINT_L : null), action: 'A little purple want in a hat and moustache, holding up a NEED sign. He points at it.'},
@@ -159,14 +166,14 @@ export const EP07_PLAN: Shot[] = [
     action: 'Insert: the phone fills the frame, four apps; three grey out on "I watch one". Ebo winces in the corner.'},
   // ── 4. Wants can wait ──
   {at: 118, line: 'Here\'s the thing. Needs are urgent. Wants can wait.', stage: 'wide', pose: {eyes: 'open', mouth: 'smile'},
-    board: (t) => <Pair t={t} needAt={at(121)} wantAt={at(124)} need={<BillDue />} want={<WantGuy mood="happy" ticket />} needText="urgent" wantText="can wait" />, arms: pointAt(121, 124),
+    board: (t) => <Pair t={t} needAt={at(121)} wantAt={at(124)} need={<BillDue />} want={<WantGuy mood="happy" ticket t={LIVELY.on ? t : undefined} />} needText="urgent" wantText="can wait" />, arms: pointAt(121, 124),
     action: 'urgent: the rent bill, DUE TODAY. can wait: the want, holding ticket #99.'},
   {at: 127, line: 'So give every want a one-day pause. Still want it tomorrow? Fine, think about it.', stage: 'wide', pose: {eyes: 'happy', mouth: 'smile'},
     board: (t) => (
       <g>
         <In t={t} at={at(128)} x={540} y={830} k={1.5}><DayPage tomorrow={t >= at(137)} /></In>
         <In t={t} at={at(132)} x={0} y={0}><Label x={540} y={430} text="one-day pause" red rot={-3} /></In>
-        <In t={t} at={at(137)} x={860} y={660} k={1} twist={8}><WantGuy mood="happy" rotate={10} /></In>
+        <In t={t} at={at(137)} x={860} y={660} k={1} twist={8}><WantGuy mood="happy" rotate={10} t={LIVELY.on ? t : undefined} /></In>
       </g>
     ), action: 'A calendar page: TODAY… it turns to TOMORROW, and the want is still there, waiting.'},
   {at: 142, line: 'Forgot about it by tomorrow? It was never that important.', stage: 'bust', pose: {eyes: 'half', mouth: 'smirk'}, action: 'Close: a shrug.'},
@@ -187,14 +194,14 @@ export const EP07_PLAN: Shot[] = [
       <g>
         <In t={t} at={at(166)} x={0} y={0}><Label x={540} y={340} text="wants on purpose" red rot={-3} /></In>
         <In t={t} at={at(172)} x={420} y={820} k={1.5}><FunJar /></In>
-        <In t={t} at={at(175)} x={830} y={900} k={1.2} twist={8}><WantGuy mood="happy" /></In>
+        <In t={t} at={at(175)} x={830} y={900} k={1.2} twist={8}><WantGuy mood="happy" t={LIVELY.on ? t : undefined} /></In>
       </g>
     ), arms: (t) => (t >= at(172) ? POINT_L : null), action: '"wants on purpose"; a FUN MONEY jar with some cash in it, and the want, happy beside it.'},
   {at: 182, line: 'When it\'s gone, it\'s gone. Until next month.', stage: 'wide', pose: {eyes: 'half', mouth: 'flat'},
     board: (t) => (
       <g>
         <g transform="translate(420 820) scale(1.5)"><FunJar empty={t >= at(184)} /></g>
-        <g transform="translate(830 900) scale(1.2)"><WantGuy mood={t >= at(184) ? 'sad' : 'happy'} /></g>
+        <g transform="translate(830 900) scale(1.2)"><WantGuy mood={t >= at(184) ? 'sad' : 'happy'} t={LIVELY.on ? t : undefined} /></g>
       </g>
     ), action: 'The jar empties on "gone"; the want deflates. Dry.'},
   // ── 6. The close ──
@@ -230,6 +237,42 @@ const talking = (f: number) => (ENV[f] ?? 0) > 0.1;
 
 /** Extra acting by shot: (time in the shot, absolute time) → pose changes, what he holds, chains worn. */
 type Act = {pose?: Partial<Pose>; holdL?: React.ReactNode; chains?: number};
+/** Lively: a fresh face on each punch, held. Shot → [word, expression] in order. */
+const REACT: Record<number, [number, Partial<Pose>][]> = {
+  2: [[10, {eyes: 'tired', mouth: 'flat', headTilt: -4}], [12, {eyes: 'half', mouth: 'smirk', headTilt: 0}]],
+  3: [[19, {eyes: 'suspicious', mouth: 'flat'}], [24, {eyes: 'squint', mouth: 'smirk', headTilt: 5}]],
+  4: [[29, {eyes: 'suspicious', mouth: 'smirk', headTilt: 6}], [33, {eyes: 'wide', mouth: 'o', headTilt: 0}]],
+  5: [[45, {eyes: 'happy', mouth: 'laugh', headTilt: -5}]],
+  6: [[52, {eyes: 'wide', mouth: 'o'}], [58, {eyes: 'squint', mouth: 'smirk', headTilt: 6}]],
+  8: [[69, {eyes: 'sad', mouth: 'frown', headTilt: -6}]],
+  9: [[79, {eyes: 'suspicious', mouth: 'smirk', headTilt: 6}]],
+  11: [[96, {eyes: 'tired', mouth: 'flat'}], [98, {eyes: 'squint', mouth: 'grimace'}]],
+  12: [[104, {eyes: 'dollar', mouth: 'o'}]],
+  13: [[111, {eyes: 'angry', mouth: 'flat', headTilt: 4}]],
+  15: [[123, {eyes: 'wide', mouth: 'o'}], [126, {eyes: 'happy', mouth: 'smile', headTilt: -5}]],
+  16: [[133, {eyes: 'closed', mouth: 'smile'}], [137, {eyes: 'open', mouth: 'smile', headTilt: 5}]],
+  17: [[146, {eyes: 'half', mouth: 'smirk', headTilt: -8}], [149, {eyes: 'tired', mouth: 'flat', headTilt: 0}]],
+  18: [[164, {eyes: 'happy', mouth: 'grin'}]],
+  19: [[173, {eyes: 'happy', mouth: 'laugh', headTilt: 5}]],
+  20: [[184, {eyes: 'tired', mouth: 'flat'}], [187, {eyes: 'half', mouth: 'smirk'}]],
+  21: [[193, {eyes: 'wide', mouth: 'smile'}], [197, {eyes: 'squint', mouth: 'flat', headTilt: 5}]],
+};
+const reactAt = (i: number, t: number): Partial<Pose> => {
+  let r: Partial<Pose> = {};
+  for (const [k, p] of REACT[i] ?? []) if (t >= at(k)) r = p;
+  return r;
+};
+/** Lively: never frozen — a slow lean and a shoulder shift, a glance off and back while talking, a blink on every cut. */
+const idle = (t: number, l: number, f: number, i: number): Partial<Pose> => {
+  const glance = Math.floor(t / 1.7) % 3 === 1 && (t % 1.7) < 0.25 && talking(f) ? (Math.floor(t / 1.7) % 2 ? 7 : -7) : 0;
+  return {
+    tilt: 1.3 * Math.sin((t * 2 * Math.PI) / 3.1),
+    lift: 2.5 * Math.sin((t * 2 * Math.PI) / 2.3 + 1),
+    lookX: glance,
+    ...(i > 0 && l < 0.1 ? {eyes: 'closed' as const} : {}),
+  };
+};
+
 const ACTS: Record<number, (l: number, t: number) => Act> = {
   // eyes drop to the chains, then slowly come back up
   1: (l) => ({pose: {lookY: l < 0.35 ? 0 : l < 1.0 ? 18 : Math.max(0, 18 - (l - 1.0) * 40)}}),
@@ -252,8 +295,9 @@ const useMarkerFont = () => {
   }, [handle]);
 };
 
-export const Ep07Frame: React.FC<{f: number}> = ({f}) => {
+export const Ep07Frame: React.FC<{f: number; lively?: boolean}> = ({f, lively = false}) => {
   useMarkerFont();
+  LIVELY.on = lively;
   const t = f / VFPS;
   const i = ep07ShotAt(f);
   const s = EP07_PLAN[i];
@@ -264,6 +308,15 @@ export const Ep07Frame: React.FC<{f: number}> = ({f}) => {
   if (acted) pose = {...pose, ...acted};
   else if (!act.holdL) pose = beatGesture(pose, WORDS, ENV, f, TIMES[i].start, TIMES[i].start + TIMES[i].length); // hands on the beat (rule 15)
   pose = {...pose, ...act.pose} as Pose;
+  if (LIVELY.on) {
+    const id = idle(t, local, f, i);
+    // he looks at what he's pointing at (or at what just landed above him), then back to us
+    const pointing = acted && (acted.armR?.[0] ?? 0) >= 100 ? -16 : acted && (acted.armL?.[0] ?? 0) >= 100 ? 16 : 0;
+    const landed = s.stage === 'wide' && EP07_SLAMS.some((a) => t >= a && t < a + 0.6);
+    const look: Partial<Pose> = pointing || landed ? {lookX: pointing, lookY: -12} : {};
+    pose = {...pose, ...reactAt(i, t), tilt: (pose.tilt ?? 0) + (id.tilt ?? 0), lift: (pose.lift ?? 0) + (id.lift ?? 0),
+      lookX: look.lookX ?? (pose.lookX || id.lookX || 0), lookY: look.lookY ?? pose.lookY, ...(id.eyes ? {eyes: id.eyes} : {})} as Pose;
+  }
   const e = PLACE[s.stage];
   return (
     <StageSizeContext.Provider value={{w: EP07_W, h: EP07_H}}>
@@ -286,6 +339,15 @@ export const EboEp07: React.FC = () => (
     <Ep07Frame f={useCurrentFrame()} />
     <Html5Audio src={staticFile('ebo-ep07/voice.mp3')} />
     {/* sound effects (src/series/sfxCues.ts, mixed by scripts/sfx/mix.py) */}
+    <Html5Audio src={staticFile('ebo-ep07/sfx.mp3')} />
+  </>
+);
+
+/** Test: the lively pass on the whole episode (face acting, idle, props that react). */
+export const EboEp07Lively: React.FC = () => (
+  <>
+    <Ep07Frame f={useCurrentFrame()} lively />
+    <Html5Audio src={staticFile('ebo-ep07/voice.mp3')} />
     <Html5Audio src={staticFile('ebo-ep07/sfx.mp3')} />
   </>
 );

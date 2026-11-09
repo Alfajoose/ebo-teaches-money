@@ -69,6 +69,7 @@ type Prepared = {
   rest: Record<string, number>;
   origin: [number, number];
   handLocal: Record<string, [number, number]>; // per forearm layer: the hand tip in its own space
+  wrist: Record<string, {at: [number, number]; ang: number}>; // per forearm layer: the wrist (the forearm's end) and the forearm's direction, in its own space
 };
 const cache: Record<string, Prepared> = {};
 
@@ -103,14 +104,18 @@ const prepare = (id: CastId, view: number): Prepared => {
     return l.parent != null && byRig[l.parent] ? mul(world0(byRig[l.parent].name), eff[name].m as M) : (eff[name].m as M);
   };
   const handLocal: Record<string, [number, number]> = {};
+  const wrist: Record<string, {at: [number, number]; ang: number}> = {};
   for (const fore of [ARM_R_BACK[1], ARM_R_FRONT[1], LIMBS.armL[1]]) {
     const ml = meas.layers[fore];
     if (!ml || !byName[fore]) continue;
     const fp = ml.pivot;
     const fc = ml.center ?? fp;
     handLocal[fore] = ap(inv(world0(fore)), [fp[0] + (fc[0] - fp[0]) * 1.7, fp[1] + (fc[1] - fp[1]) * 1.7]);
+    const w0 = ap(inv(world0(fore)), fp);
+    const w1 = ap(inv(world0(fore)), [fp[0] + (fc[0] - fp[0]) * 1.8, fp[1] + (fc[1] - fp[1]) * 1.8]);
+    wrist[fore] = {at: w1, ang: (Math.atan2(w1[1] - w0[1], w1[0] - w0[0]) * 180) / Math.PI};
   }
-  const p: Prepared = {cfg, rig, view, byName, byRig, eff, rest, origin: [meas.layers.waist.pivot[0], meas.bounds[3]], handLocal};
+  const p: Prepared = {cfg, rig, view, byName, byRig, eff, rest, origin: [meas.layers.waist.pivot[0], meas.bounds[3]], handLocal, wrist};
   cache[key] = p;
   return p;
 };
@@ -136,6 +141,9 @@ export const handAnchors = (who: CastId) => {
   });
 };
 
+/** Hands (hands.tsx) are drawn at sheet size; this brings them to the forearm's width. */
+const HAND_K = 0.5;
+
 const pickFrame = (v: number | number[], t: number) => (Array.isArray(v) ? v[Math.floor(t / 4) % v.length] : v);
 
 type Props = {
@@ -148,6 +156,8 @@ type Props = {
   t?: number;
   children?: React.ReactNode; // held in the raised (right) hand
   holdL?: React.ReactNode; // held in the left hand
+  handR?: React.ReactNode; // a hand drawn on the end of the right forearm (wrist at the origin, fingers along +y, world px)
+  handL?: React.ReactNode; // the same on the left forearm
   wear?: React.ReactNode; // worn on the chest (drawn in the torso's own space, over the torso, under head and arms)
   mouthFrame?: number; // direct mouth swap (lip sync) — overrides pose.mouth
   eyeFrame?: number | number[]; // direct eye swap — overrides pose.eyes
@@ -156,7 +166,7 @@ type Props = {
   cycleOffset?: number; // shift the cycle in video frames (so two walkers aren't in step)
 };
 
-export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, holdL, wear, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
+export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, holdL, handR, handL, wear, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
   const mode = useLayerMode();
   const cap = useCapture();
   const cam = useContext(CameraContext);
@@ -318,6 +328,16 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
         {layers.map((l) => {
           const f = propFrame(l.name) ?? Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
           const g = <g key={l.name} transform={`matrix(${world(l.name).join(',')})`} dangerouslySetInnerHTML={{__html: l.frames[f]}} />;
+          // hands ride their forearm: drawn right after it, at the wrist, turned along it
+          const hand = l.name === armR[1] ? handR : l.name === LIMBS.armL[1] ? handL : undefined;
+          const wr = P.wrist[l.name];
+          if (hand && wr)
+            return (
+              <React.Fragment key={l.name}>
+                {g}
+                <g transform={`matrix(${world(l.name).join(',')}) translate(${wr.at[0]} ${wr.at[1]}) rotate(${wr.ang - 90}) scale(${HAND_K / cfg.scale})`}>{hand}</g>
+              </React.Fragment>
+            );
           if (!wear || base(l.name) !== 'torso') return g;
           // worn props ride the torso (the export keys them as a prop at the torso's screen matrix)
           return (
