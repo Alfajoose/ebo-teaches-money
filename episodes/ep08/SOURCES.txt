@@ -2,3 +2,6 @@ Voice take (ElevenLabs flow "Ebo Ep8 Nice Guys", id olkFQ6OjOFDIZCKanif6), 2026-
   raw_dan.mp3   Dan (Ebo), eleven_v4, generation X1diLH8zp0nnnT3EWl4M (61.8s, 1176 credits), one take.
   words_dan_raw.json  Scribe word timings (direction tags stripped).
 Assemble with: python3 -I scripts/voice-assemble.py episodes/ep08   (writes voice.mp3, words.json, env.json)
+v2 take (bold-and-blunt script, same flow), 2026-11-09:
+  raw_dan.mp3   Dan (Ebo), eleven_v4, generation JyLKToJdHXFLPHuUns0D (62.3s, 1083 credits), one take.
+  The v1 take is kept as raw_dan_v1.mp3 / words_dan_v1_raw.json.

@@ -2,33 +2,31 @@
 
 | # | time | size | line | action |
 |---|---|---|---|---|
-| 1 | 0.00s | mid | …They said they'd get me next time. | Cold open: a restaurant table, empty plates. Everyone's gone. Ebo, alone, holds up a receipt that hangs to the floor. |
-| 2 | 3.69s | close | That was four "next times" ago. | Close, deadpan to camera. |
-| 3 | 6.80s | react | Nice guys don't get used because they're nice. | A big pink heart (nice) above him… "not the problem". |
-| 4 | 9.45s | react | They get used for three reasons. | The tracker appears: three grey "?" badges. Ebo looks up at them. |
-| 5 | 11.74s | close | And the last one… nobody wants to hear. | Close: Ebo leans in. The last "?" badge glows. |
-| 6 | 14.82s | react | First: you never say no. | The first badge lights up (green, an open door) and drops in big. |
-| 7 | 16.72s | story | "Can you cover me?" Yes. | Story: Christy, all smiles, holds out the bill. "Yes." |
-| 8 | 18.46s | story | "Can you help me move?" Yes. | Ama, sweet, next to a growing stack of moving boxes. "Yes." |
-| 9 | 20.38s | story | "Can I borrow your car?" | Christy, hand out, wide-eyed… his car keys glow above her hand. |
-| 10 | 22.16s | close | …Yes. | Close, resigned: "…Yes." The keys are already flying out of his hand. |
-| 11 | 23.25s | react | When your yes is free, people stop asking. | A big handwritten YES… a red FREE price tag slaps onto it. |
-| 12 | 25.93s | story | They start assuming. | Christy and Ama, both holding out what they want, not even asking. "assuming". |
-| 13 | 27.29s | react | Next: you're always available. | The second badge lights up (orange, a phone lighting up) and drops in big. |
-| 14 | 29.81s | story | She texts at midnight. | Her text, big: "u up? need a favor". 12:00 AM. |
-| 15 | 31.01s | insert | You reply in two seconds. | Insert: the chat fills the frame; his reply pops in instantly: "On my way!" Ebo, eager, in the corner. |
-| 16 | 32.78s | react | When you're always there, your time looks cheap. | His time: a clock with a $0.99 sale tag. |
-| 17 | 35.45s | story | And cheap things get used. | A WELCOME doormat covered in muddy footprints. "used." |
-| 18 | 37.61s | close | And the real reason? | Close, serious. The last "?" glows… a beat. |
-| 19 | 39.34s | react | You think being liked is the same as being respected. | THE PAYOFF: the "?" turns purple, a crown, and drops in big; under it a heart ≠ a crown. |
-| 20 | 42.57s | close | It's not. | Close, firm, arms crossed. |
-| 21 | 43.52s | story | Liked is "he's so sweet." | Christy, gushing, little hearts around her: "he's so sweet". |
-| 22 | 46.22s | story | Respected is "let me check if he's free first." | Christy checks her phone before she asks: a crown over her. Respect. |
-| 23 | 49.37s | react | So keep the kindness. | The heart again, glowing. Keep it. |
-| 24 | 50.84s | react | Lose the doormat. | The doormat… on "doormat" it gets flung offscreen. |
-| 25 | 52.20s | story | Say no without a speech. | A long speech bubble of excuses, crossed out… a small, clean "No." |
-| 26 | 54.09s | story | Reply when you're ready. | The same chat, replied to the next morning, calmly: 9:00 AM. |
-| 27 | 55.52s | story | And let people pay their own bill. | Christy holding her own receipt, reading it. A tick. |
-| 28 | 57.50s | react | Be kind. | All three badges land together in the middle. Ebo, sincere. |
-| 29 | 58.52s | close | Not convenient. | Close: the line. |
-| 30 | 59.77s | mid | Next time… is today. | Back at the table: he slides the receipt across, offscreen. Slow grin. LOOP: hard cut back to "They said they'd get me next time." |
+| 1 | 0.00s | react | Being nice isn't your problem. | Straight in: a big pink heart (nice) above him… "not the problem". |
+| 2 | 3.04s | insert | Being available is. | Insert: his phone, lit up with a midnight "need a favor", glowing. "the problem". |
+| 3 | 5.04s | react | Every free yes teaches people your time is worthless. | A big YES with a red FREE tag… then his time: a clock marked down to $0.99. |
+| 4 | 8.88s | story | And nobody respects worthless things. | A WELCOME doormat covered in footprints. "worthless". |
+| 5 | 11.41s | react | Here's how nice guys get used. Three ways. | Ebo, hand on chin; on "Three ways" the tracker appears: three grey "?" badges. |
+| 6 | 14.69s | close | The last one stings. | Close: Ebo leans in. The last "?" badge glows. |
+| 7 | 16.40s | react | First. You never say no. | The first badge lights up (green, an open door) and drops in big. |
+| 8 | 18.32s | story | Cover the bill? Yes. | Story: Christy, all smiles, holds out the bill. "Yes." |
+| 9 | 19.60s | story | Help them move? Yes. | Ama, sweet, next to a growing stack of moving boxes. "Yes." |
+| 10 | 20.84s | close | Lend the car? Yes. | Close, resigned: "Yes." His car keys are already flying out of his hand. |
+| 11 | 22.31s | react | A yes that costs nothing is worth nothing. | YES again, tagged $0… "worth nothing". |
+| 12 | 25.16s | story | People stop asking. They start expecting. | Christy and Ama, both holding out what they want, not even asking. "expecting". |
+| 13 | 28.10s | react | Next. You answer instantly. | The second badge lights up (orange, a phone lighting up) and drops in big. |
+| 14 | 30.04s | story | Every call. Every text. Even at midnight. | Her text, big: "u up? need a favor". 12:00 AM. |
+| 15 | 32.72s | insert | Instant replies say one thing: | Insert: his reply pops in instantly: "On my way!" Ebo, eager, in the corner. |
+| 16 | 34.88s | story | "I have nothing better to do." | The message, handwritten big… and his time, on sale. |
+| 17 | 36.56s | story | And people will make sure you don't. | Christy and Ama, both already typing the next favor. "more favors". |
+| 18 | 38.64s | close | And the real problem? | Close, serious. The last "?" glows… a beat. |
+| 19 | 40.56s | react | You're chasing liked. Not respected. | THE PAYOFF: the "?" turns purple, a crown, and drops in big; under it a heart ≠ a crown. |
+| 20 | 43.36s | story | Liked people get asked for favors. | Christy, all hearts, holding out a box for him to carry. "favors". |
+| 21 | 45.56s | story | Respected people get asked for their time. Politely. In advance. | Christy checking his calendar before she asks: a crown over her. "in advance". |
+| 22 | 50.30s | close | So here's the rule. | Close, firm, arms crossed. |
+| 23 | 51.44s | react | Kindness is a gift. Not a service. | The heart, glowing: "a gift"… "not a service". |
+| 24 | 54.16s | story | Say no. Don't explain. | A clean "No." … and the long speech of excuses, crossed out. |
+| 25 | 56.24s | story | Reply when it suits you. | The same chat, answered the next morning, calmly: 9:00 AM. |
+| 26 | 57.84s | story | Let people pay their own way. | Christy holding her own receipt, reading it. A tick. |
+| 27 | 59.84s | react | Be kind. | All three badges land together in the middle. Ebo, sincere. |
+| 28 | 61.12s | close | Never convenient. | Close, arms crossed: the line. LOOP: hard cut back to "Being nice isn't your problem." |

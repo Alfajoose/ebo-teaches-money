@@ -44,6 +44,7 @@
    - **One plain backdrop** for the whole episode (cream), and a soft yellow glow behind whatever matters right now: a focus device, one thing at a time, never decoration (rule 6).
    - Rules 16–18 carry on inside it: contact poses for reactions, props given the room, a fresh face on each punch, never frozen.
    In code: `Tracker`, `Header`, `BigBadge`, `Glow` and the react / close / story / insert stages in `src/series/ep07.tsx`.
+20. **Scripts are bold and blunt (the house scripting style from Ep8, Nov 2026).** The user's pick: short, hard-hitting statements and a contrarian claim in the first line ("Being nice isn't your problem. Being available is."). No long set-ups or wind-ups; one idea per sentence; the lesson lands as a rule ("A yes that costs nothing is worth nothing."). The hook names the reasons and holds the last one back ("The last one stings.") to keep the tracker's "?" open. The comedy and the self-roast come from the pictures (Ebo saying yes, handing over his keys), not from jokes in the lines. Titles are bold life lessons ("Why Nice Guys Get Taken Advantage Of", "The Dangerous Side of Being Too Available").
 
 ## Shared rig (all five characters)
 
