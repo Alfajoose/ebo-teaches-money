@@ -21,7 +21,7 @@ rows = (len(shots) + COLS - 1) // COLS
 sheet = Image.new('RGB', (COLS * (PW + 40) + 40, 170 + rows * (PH + TXT + 40)), '#F6F0E4')
 d = ImageDraw.Draw(sheet)
 d.text((40, 40), 'EBO TEACHES MONEY · EP 07 · Wants vs. Needs', font=F('Bold', 40), fill='#1D1A1A')
-d.text((40, 100), 'v2 staging · Vertical · 1:20 · the prop gets the room: Ebo small below, the idea drawn big above him · close shots for the punches · still camera, hard cuts · loops', font=F('Regular', 24), fill='#55505A')
+d.text((40, 100), 'v3 · the 3rd-Filter style · 1:20, 44 shots · a tracker of four badges (the last a ? till the payoff) · a new picture every 1-2 s · Ebo big along the bottom, reacting · tiny stories with Ama and Christy · loops', font=F('Regular', 24), fill='#55505A')
 md = ['# Ep 07 — Wants vs. Needs: shot list', '', '| # | time | size | line | action |', '|---|---|---|---|---|']
 for i, (at, line, size, action) in enumerate(shots):
     line, action = eval(line), eval(action)

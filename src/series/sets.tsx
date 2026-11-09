@@ -303,6 +303,7 @@ export const SHADES = {
   mint: ['#F0FAF4', '#DCF1E5', '#C3E4D2'],
   peach: ['#FDF5EC', '#F8E5CF', '#EFD0AE'],
   sky: ['#F0F6FD', '#DDE9F8', '#C4D7EE'],
+  cream: ['#FFF9EA', '#FFF4DB', '#F9E9C4'],
 } as const;
 export type Shade = keyof typeof SHADES;
 
