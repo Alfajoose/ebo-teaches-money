@@ -256,18 +256,44 @@ const EmptyWalletDrawing: React.FC<{x?: number; y?: number; rotate?: number}> = 
   </g>
 );
 
-/** A speech bubble with two handwritten lines, its tail pointing down-left. */
-const SayBubbleDrawing: React.FC<{x?: number; y?: number; a?: string; b?: string}> = ({x = 0, y = 0, a = '', b}) => (
+/** A speech bubble with handwritten lines (`a`, `b`, or `lines`), its tail pointing down-left. `w`: its width. */
+const SayBubbleDrawing: React.FC<{x?: number; y?: number; a?: string; b?: string; lines?: string[]; size?: number; w?: number}> = ({x = 0, y = 0, a = '', b, lines, size = 72, w = 660}) => {
+  const ls = lines ?? (b ? [a, b] : [a]);
+  const lh = size * 1.12;
+  const hw = w / 2;
+  const hh = Math.max(110, (ls.length * lh) / 2 + 36);
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <path d={`M ${-hw + 30} ${-hh} Q ${-hw} ${-hh} ${-hw} ${-hh + 40} L ${-hw} ${hh - 40} Q ${-hw} ${hh} ${-hw + 40} ${hh} L ${-hw + 100} ${hh} L ${-hw + 60} ${hh + 90} L ${-hw + 200} ${hh} L ${hw - 40} ${hh} Q ${hw} ${hh} ${hw} ${hh - 40} L ${hw} ${-hh + 40} Q ${hw} ${-hh} ${hw - 40} ${-hh} Z`} fill="#fff" {...S} />
+      {ls.map((l, i) => (
+        <text key={i} y={(i - (ls.length - 1) / 2) * lh + size * 0.34} textAnchor="middle" fontFamily={MARKER} fontSize={size} fill={C.ink}>
+          {l}
+        </text>
+      ))}
+    </g>
+  );
+};
+
+/** A stick figure (the people in the tiny stories, as in the user's board). Origin at the hips. */
+const StickGuyDrawing: React.FC<{x?: number; y?: number; rotate?: number; pose?: 'stand' | 'climb' | 'dig'; sad?: boolean}> = ({x = 0, y = 0, rotate = 0, pose = 'stand', sad = false}) => {
+  const L = {stroke: C.ink, strokeWidth: 9, strokeLinecap: 'round' as const, fill: 'none'};
+  const arms = pose === 'climb' ? 'M 0 -84 L -80 -170 M 0 -84 L 84 -176' : pose === 'dig' ? 'M 0 -84 L -70 -40 M 0 -84 L -50 -10' : 'M 0 -84 L -50 -20 M 0 -84 L 50 -20';
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
+      <path d={`M 0 -100 L 0 0 M 0 0 L -36 96 M 0 0 L ${pose === 'dig' ? 50 : 36} 96 ${arms}`} {...L} />
+      <circle cx={0} cy={-148} r={48} fill="#fff" stroke={C.ink} strokeWidth={8} />
+      <circle cx={-16} cy={-156} r={6} fill={C.ink} />
+      <circle cx={16} cy={-156} r={6} fill={C.ink} />
+      <path d={sad ? 'M -16 -122 Q 0 -134 16 -122' : 'M -16 -130 Q 0 -116 16 -130'} {...L} strokeWidth={5} />
+      {pose === 'climb' && <path d="M 62 -210 q 10 -16 0 -28 M -66 -206 q -12 -14 -2 -28" fill="none" stroke="#6BB7E8" strokeWidth={7} strokeLinecap="round" />}
+    </g>
+  );
+};
+
+/** A heap of dug-up dirt (origin at its base, in the middle). */
+const DirtPileDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
   <g transform={`translate(${x} ${y})`}>
-    <path d="M -300 -110 Q -330 -110 -330 -70 L -330 70 Q -330 110 -290 110 L -230 110 L -270 200 L -130 110 L 290 110 Q 330 110 330 70 L 330 -70 Q 330 -110 290 -110 Z" fill="#fff" {...S} />
-    <text y={b ? -14 : 24} textAnchor="middle" fontFamily={MARKER} fontSize={72} fill={C.ink}>
-      {a}
-    </text>
-    {b && (
-      <text y={66} textAnchor="middle" fontFamily={MARKER} fontSize={72} fill={C.ink}>
-        {b}
-      </text>
-    )}
+    <path d="M -170 0 Q -120 -110 0 -120 Q 120 -110 170 0 Z" fill="#9C7A52" {...S} />
   </g>
 );
 
@@ -395,3 +421,5 @@ export const SkillLaptop = prop('SkillLaptop', SkillLaptopDrawing);
 export const HillPath = prop('HillPath', HillPathDrawing);
 export const BufferJar = prop('BufferJar', BufferJarDrawing);
 export const Arrow = prop('Arrow', ArrowDrawing);
+export const StickGuy = prop('StickGuy', StickGuyDrawing);
+export const DirtPile = prop('DirtPile', DirtPileDrawing);
