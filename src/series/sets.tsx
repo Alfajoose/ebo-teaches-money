@@ -296,13 +296,23 @@ const PlainFloor: React.FC<{color: string}> = ({color}) => (
  * Ebo's home base (house rule 9): a plain soft lilac backdrop, lighter in the middle. No room,
  * no furniture, no floor line: the acting carries the shot. Still, like every set.
  */
-export const Backdrop: React.FC<{id?: string; night?: boolean}> = ({id = 'backdrop', night = false}) => (
+/** Section shades for the plain backdrop (light centre, middle, edge): rule 17, each section can shift the shade a little. */
+export const SHADES = {
+  lilac: ['#F4F0FC', '#E6DEF7', '#D2C4EE'],
+  pink: ['#FDF1F3', '#F8DDE3', '#EEC4CF'],
+  mint: ['#F0FAF4', '#DCF1E5', '#C3E4D2'],
+  peach: ['#FDF5EC', '#F8E5CF', '#EFD0AE'],
+  sky: ['#F0F6FD', '#DDE9F8', '#C4D7EE'],
+} as const;
+export type Shade = keyof typeof SHADES;
+
+export const Backdrop: React.FC<{id?: string; night?: boolean; shade?: Shade}> = ({id = 'backdrop', night = false, shade = 'lilac'}) => (
   <g>
     <defs>
       <radialGradient id={`${id}-glow`} cx="0.5" cy="0.5" r="0.5">
-        <stop offset="0" stopColor={night ? '#5A5180' : '#F4F0FC'} />
-        <stop offset="0.22" stopColor={night ? '#463E68' : '#E6DEF7'} />
-        <stop offset="0.6" stopColor={night ? '#2E2848' : '#D2C4EE'} />
+        <stop offset="0" stopColor={night ? '#5A5180' : SHADES[shade][0]} />
+        <stop offset="0.22" stopColor={night ? '#463E68' : SHADES[shade][1]} />
+        <stop offset="0.6" stopColor={night ? '#2E2848' : SHADES[shade][2]} />
       </radialGradient>
     </defs>
     <rect x={-1040} y={-1400} width={4000} height={4000} fill={`url(#${id}-glow)`} />

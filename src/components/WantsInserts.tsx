@@ -118,8 +118,8 @@ const ShirtDrawing: React.FC<{x?: number; y?: number; brand?: boolean}> = ({x = 
  * moustache, holding a NEED sign), a waiting ticket. */
 const WantGuyDrawing: React.FC<{x?: number; y?: number; rotate?: number; mood?: 'sneaky' | 'happy' | 'sad'; disguise?: boolean; ticket?: boolean; t?: number}> = ({x = 0, y = 0, rotate = 0, mood = 'sneaky', disguise = false, ticket = false, t}) => {
   const px = mood === 'sneaky' ? 8 : 0;
-  // alive (when given the time): a gentle sway, and a blink every couple of seconds
-  const sway = t === undefined ? 0 : 3 * Math.sin(t * 2.3);
+  // alive (when given the time): a blink every couple of seconds
+  const sway = 0; // the sway is the caller's (on the symbol's matrix, so the Animate export stays one symbol)
   const blink = t !== undefined && (t * 30) % 78 < 4;
   return (
     <g transform={`translate(${x} ${y}) rotate(${rotate + sway})`}>

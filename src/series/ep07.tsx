@@ -4,8 +4,8 @@ import {NoScaleContext} from '../noScale';
 import {HandDrawnContext} from '../handDrawn';
 import {RigCharacter} from '../cast/RigCharacter';
 import {Pose} from '../components/Character';
-import {POSE, frontOn, gentle} from '../cast/poses';
-import {Backdrop} from './sets';
+import {POSE, CONTACT, frontOn, gentle} from '../cast/poses';
+import {Backdrop, SHADES, Shade} from './sets';
 import {StageSizeContext, Slam} from './exportCtx';
 import {VFPS, Word, VStage, Framing, lipFrame, beatGesture} from './kit';
 import {C} from '../theme';
@@ -56,13 +56,15 @@ const Label: React.FC<{x: number; y: number; text: string; red?: boolean; rot?: 
   </g>
 );
 /** Something that slams in at its time, placed at (x, y), drawn at a fixed size `k` (static size, never animated). */
-const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, children}) => {
-  // lively: once it has landed it rocks once and settles (a damped wobble, rotation only)
+const In: React.FC<{t: number; at: number; x: number; y: number; k?: number; rot?: number; twist?: number; alive?: boolean; children: React.ReactNode}> = ({t, at: a, x, y, k = 1, rot = 0, twist = -4, alive = false, children}) => {
+  // lively: once it has landed it rocks once and settles (a damped wobble); a living thing keeps a gentle sway.
+  // Rotation only, kept on the symbol's matrix (Slam's spin) so the Animate file gets one symbol, not one per frame.
   const u = t - a - 0.17;
   const wob = LIVELY.on && u > 0 ? 5 * Math.sin(u * 16) * Math.exp(-u * 6) : 0;
+  const sway = LIVELY.on && alive ? 3 * Math.sin(t * 2.3) : 0;
   return (
-    <Slam t={t} at={a} dist={-80} twist={twist}>
-      <g transform={`translate(${x} ${y}) rotate(${rot + wob}) scale(${k})`}>{children}</g>
+    <Slam t={t} at={a} dist={-80} twist={twist} spin={{deg: wob + sway, cx: x, cy: y}}>
+      <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${k})`}>{children}</g>
     </Slam>
   );
 };
@@ -113,7 +115,7 @@ export const EP07_PLAN: Shot[] = [
   {at: 25, line: 'We\'re broke because our wants are dressed up as needs.', stage: 'wide', pose: {eyes: 'open', mouth: 'smirk'},
     board: (t) => (
       <g>
-        <In t={t} at={at(29)} x={470} y={860} k={2.1}><WantGuy disguise t={LIVELY.on ? t : undefined} /></In>
+        <In t={t} at={at(29)} x={470} y={860} k={2.1} alive><WantGuy disguise t={LIVELY.on ? t : undefined} /></In>
         <In t={t} at={at(31)} x={0} y={0}><Label x={540} y={400} text="a want in disguise" red rot={-3} size={76} /></In>
       </g>
     ), arms: (t) => (t >= at(29) ? POINT_L : null), action: 'A little purple want in a hat and moustache, holding up a NEED sign. He points at it.'},
@@ -173,7 +175,7 @@ export const EP07_PLAN: Shot[] = [
       <g>
         <In t={t} at={at(128)} x={540} y={830} k={1.5}><DayPage tomorrow={t >= at(137)} /></In>
         <In t={t} at={at(132)} x={0} y={0}><Label x={540} y={430} text="one-day pause" red rot={-3} /></In>
-        <In t={t} at={at(137)} x={860} y={660} k={1} twist={8}><WantGuy mood="happy" rotate={10} t={LIVELY.on ? t : undefined} /></In>
+        <In t={t} at={at(137)} x={860} y={660} k={1} twist={8} alive><WantGuy mood="happy" rotate={10} t={LIVELY.on ? t : undefined} /></In>
       </g>
     ), action: 'A calendar page: TODAY… it turns to TOMORROW, and the want is still there, waiting.'},
   {at: 142, line: 'Forgot about it by tomorrow? It was never that important.', stage: 'bust', pose: {eyes: 'half', mouth: 'smirk'}, action: 'Close: a shrug.'},
@@ -194,7 +196,7 @@ export const EP07_PLAN: Shot[] = [
       <g>
         <In t={t} at={at(166)} x={0} y={0}><Label x={540} y={340} text="wants on purpose" red rot={-3} /></In>
         <In t={t} at={at(172)} x={420} y={820} k={1.5}><FunJar /></In>
-        <In t={t} at={at(175)} x={830} y={900} k={1.2} twist={8}><WantGuy mood="happy" t={LIVELY.on ? t : undefined} /></In>
+        <In t={t} at={at(175)} x={830} y={900} k={1.2} twist={8} alive><WantGuy mood="happy" t={LIVELY.on ? t : undefined} /></In>
       </g>
     ), arms: (t) => (t >= at(172) ? POINT_L : null), action: '"wants on purpose"; a FUN MONEY jar with some cash in it, and the want, happy beside it.'},
   {at: 182, line: 'When it\'s gone, it\'s gone. Until next month.', stage: 'wide', pose: {eyes: 'half', mouth: 'flat'},
@@ -295,7 +297,28 @@ const useMarkerFont = () => {
   }, [handle]);
 };
 
-export const Ep07Frame: React.FC<{f: number; lively?: boolean}> = ({f, lively = false}) => {
+/** Rule 16: reactions as contact poses (the arm lands on him). Shot → [from word (-1: the shot's start), pose or null to let go]. */
+const CONTACT_AT: Record<number, [number, string | null][]> = {
+  0: [[6, 'cheekWorry']], // "I don't get it."
+  1: [[-1, 'hmm']], // looking down at the chains
+  2: [[10, 'facepalm'], [12, null]], // "…Okay." / "I get it."
+  6: [[54, 'thinkChin']], // "would you have to replace it?"
+  8: [[69, 'cheekWorry']], // "No."
+  9: [[70, 'thinkChin']], // "Now watch the sneaky ones." (until he points)
+  13: [[106, 'thinking']], // "subscriptions"
+  14: [[115, 'bothCheeks']], // "…I watch one."
+  17: [[142, 'armsCrossed']], // "Forgot about it… never that important."
+  20: [[182, 'armsCrossed']], // "When it's gone, it's gone."
+};
+const contactAt = (i: number, t: number, start: number): Pose | null => {
+  let c: string | null = null;
+  for (const [k, name] of CONTACT_AT[i] ?? []) if (t >= (k < 0 ? start : at(k))) c = name;
+  return c ? CONTACT[c] : null;
+};
+/** Rule 17: each section shifts the backdrop shade a little. */
+const SECTION_SHADE: Record<string, Shade> = {'The Hook': 'lilac', 'The Test': 'pink', 'The Sneaky Ones': 'mint', 'Wants Can Wait': 'peach', 'Needs First': 'sky', 'The Close': 'lilac'};
+
+export const Ep07Frame: React.FC<{f: number; lively?: boolean}> = ({f, lively = true}) => {
   useMarkerFont();
   LIVELY.on = lively;
   const t = f / VFPS;
@@ -308,6 +331,9 @@ export const Ep07Frame: React.FC<{f: number; lively?: boolean}> = ({f, lively = 
   if (acted) pose = {...pose, ...acted};
   else if (!act.holdL) pose = beatGesture(pose, WORDS, ENV, f, TIMES[i].start, TIMES[i].start + TIMES[i].length); // hands on the beat (rule 15)
   pose = {...pose, ...act.pose} as Pose;
+  // a contact pose takes the arms (unless the shot's acting is already driving them)
+  const touch = !acted && !act.holdL ? contactAt(i, t, TIMES[i].start) : null;
+  if (touch) pose = {...pose, armL: touch.armL, armR: touch.armR, armFront: touch.armFront, contact: true, headTilt: touch.headTilt, view: 1};
   if (LIVELY.on) {
     const id = idle(t, local, f, i);
     // he looks at what he's pointing at (or at what just landed above him), then back to us
@@ -323,7 +349,7 @@ export const Ep07Frame: React.FC<{f: number; lively?: boolean}> = ({f, lively = 
       <NoScaleContext.Provider value>
         <HandDrawnContext.Provider value>
           <AbsoluteFill style={{background: '#000'}}>
-            <VStage framing={FRAMES[s.stage]} bg="#D2C4EE" blurBg={<Backdrop id="ep07" />} overlay={s.board?.(t)}>
+            <VStage framing={FRAMES[s.stage]} bg={SHADES[SECTION_SHADE[EP07_SECTIONS[i]]][2]} blurBg={<Backdrop id={`ep07-${SECTION_SHADE[EP07_SECTIONS[i]]}`} shade={SECTION_SHADE[EP07_SECTIONS[i]]} />} overlay={s.board?.(t)}>
               <RigCharacter who="ebo" x={e.x} y={e.y} scale={e.scale} t={f} pose={gentle(frontOn(pose))} holdL={act.holdL}
                 wear={<ChainsWorn count={act.chains ?? 3} />} mouthFrame={talking(f) ? lipFrame(ENV, WORDS, f) : undefined} />
             </VStage>
@@ -339,15 +365,6 @@ export const EboEp07: React.FC = () => (
     <Ep07Frame f={useCurrentFrame()} />
     <Html5Audio src={staticFile('ebo-ep07/voice.mp3')} />
     {/* sound effects (src/series/sfxCues.ts, mixed by scripts/sfx/mix.py) */}
-    <Html5Audio src={staticFile('ebo-ep07/sfx.mp3')} />
-  </>
-);
-
-/** Test: the lively pass on the whole episode (face acting, idle, props that react). */
-export const EboEp07Lively: React.FC = () => (
-  <>
-    <Ep07Frame f={useCurrentFrame()} lively />
-    <Html5Audio src={staticFile('ebo-ep07/voice.mp3')} />
     <Html5Audio src={staticFile('ebo-ep07/sfx.mp3')} />
   </>
 );
