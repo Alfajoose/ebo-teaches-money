@@ -54,6 +54,13 @@
    In code: `In` (from), `swoopZoom`, `Dim` in `src/series/filterKit.tsx`; side-character `enter` / `exit` / `acts` in `src/series/ep08.tsx`.
 22. **Ebo narrates on camera (Nov 2026, from Ep 10).** Most lines are Ebo talking to the viewer, lip-synced, big in the frame, with the picture for the line building up around him. We cut to the story action (Ebo and the cast living it, Ebo as voice-over) for the key beats only, and come back to Ebo after one or two action shots. Pace: scripts are read briskly (the Ep 10 take at 1.25×), one story per episode, explained step by step (cause → effect → fix), with the fixed cast (Recurring roles).
    In code: `Narrator` in `src/series/ep10.tsx`.
+   **Narration rules (after Ep 10, agreed with the user):**
+   - **One point of view.** Either Ebo tells his own story in the first person ("My neighbour's house looked perfect…"), or Ebo narrates and another couple or character lives the story. Never Ebo as both the narrator talking about "you" and the character on screen.
+   - **The narration adds, the picture shows.** Cut every line that only describes what's on screen; the voice says what the picture can't: why it matters, what someone is thinking, the turn.
+   - **Characters speak.** Short real lines for the cast in their own ElevenLabs voices (Ama, Mica, Christy…), not just Ebo plus speech bubbles.
+   - **Pauses are written in.** Pace comes from a tight script, with beats left for gags and reactions; don't speed a whole take up evenly.
+   - **Vary the narrator shots:** walk-and-talk through the scene, a close-up for the punchline, Ebo reacting beside the action, the big along-the-bottom framing only sometimes.
+   - **One moral, said once,** at the end.
 
 ## Recurring roles (from Ep 10, agreed with the user 2026-11-10)
 
