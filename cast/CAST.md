@@ -52,6 +52,8 @@
    - **Pieces swoop in** from the left, right or top along an arc (`In from=…`), and the scene dims behind a title or badge (`Dim`). A swoosh (`episodes/sfx/swoosh.mp3`) plays on each swoop, softer on camera reveals.
    - **Every take is animated.** Characters walk in and out of frame, change pose on nearly every word, and the listener reacts; Ebo nods on the words. Nobody freezes.
    In code: `In` (from), `swoopZoom`, `Dim` in `src/series/filterKit.tsx`; side-character `enter` / `exit` / `acts` in `src/series/ep08.tsx`.
+22. **Ebo narrates on camera (Nov 2026, from Ep 10).** Most lines are Ebo talking to the viewer, lip-synced, big in the frame, with the picture for the line building up around him. We cut to the story action (Ebo and the cast living it, Ebo as voice-over) for the key beats only, and come back to Ebo after one or two action shots. Pace: scripts are read briskly (the Ep 10 take at 1.25×), one story per episode, explained step by step (cause → effect → fix), with the fixed cast (Recurring roles).
+   In code: `Narrator` in `src/series/ep10.tsx`.
 
 ## Recurring roles (from Ep 10, agreed with the user 2026-11-10)
 

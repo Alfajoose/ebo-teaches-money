@@ -75,6 +75,15 @@ const Side: React.FC<{f: number; who: CastId; x: number; y?: number; s?: number;
   );
 };
 
+/** Ebo narrating to camera (rule 22): big along the bottom, lip-synced, a gesture on the beat, a nod on the words. */
+const Narrator: React.FC<{f: number; t: number; local: number; look?: number; armR?: [number, number]}> = ({f, t, look = 0, armR}) => {
+  const wi = WORDS.findIndex((w) => t >= w.s && t < w.e);
+  const beat = wi >= 0 ? Math.floor(wi / 3) % 3 : 0;
+  const gesture: Look = beat === 1 ? {armL: [70, -40], brows: 'up'} : beat === 2 ? {armL: [55, -50], armR: armR ?? [55, -50]} : {};
+  const eyes = beat === 1 ? 'squint' : beat === 2 ? 'happy' : 'half';
+  return <Ebo f={f} x={540} y={2170} s={2.25} talk p={{eyes, mouth: 'smile', lookX: look, headTilt: wi >= 0 ? (wi % 2 ? 3 : -2) : 0, ...(armR ? {armR} : {}), ...gesture}} />;
+};
+
 // ───────────────────────── the world ─────────────────────────
 const Sky: React.FC<{storm?: boolean}> = ({storm}) => <Backdrop id={storm ? 'ep10-storm' : 'ep10-sky'} shade="sky" night={storm} />;
 const Ground: React.FC<{storm?: boolean; y?: number}> = ({storm, y = FLOOR}) => (
@@ -131,7 +140,8 @@ const Room: React.FC = () => (
     <line x1={-300} y1={FLOOR - 10} x2={1380} y2={FLOOR - 10} stroke="#1D1A1A" strokeWidth={7} />
   </g>
 );
-const Filmer: React.FC<{x: number; y: number; k?: number}> = ({x, y, k = 0.55}) => (
+// (unused since rule 22; kept for later episodes)
+export const Filmer: React.FC<{x: number; y: number; k?: number}> = ({x, y, k = 0.55}) => (
   <g transform={`translate(${x} ${y}) scale(${k})`}>
     <StickGuy pose="climb" />
     <rect x={56} y={-250} width={60} height={100} rx={10} fill="#2B2B2B" stroke="#1D1A1A" strokeWidth={6} />
@@ -181,25 +191,16 @@ export const EP10_PLAN: Shot[] = [
         <Rain t={t} seed={1} />
       </g>
     )},
-  // 3 · You can marry a woman for how she looks. Or for how she builds.
-  {w: 8, line: 'You can marry a woman for how she looks. Or for how she builds.', section: 'Hook', cam: 'none',
-    draw: ({t}) => (
-      <Split
-        top={
-          <g>
-            <Backdrop id="ep10-split-a" shade="pink" />
-            <In t={t} at={at(14)} x={540} y={900} k={1.1} from="top"><FakeFront /></In>
-            <In t={t} at={at(16)} x={0} y={0} from="drop"><Label x={540} y={140} text="looks" size={90} /></In>
-          </g>
-        }
-        bottom={
-          <g>
-            <Backdrop id="ep10-split-b" shade="sky" />
-            <In t={t} at={at(20)} x={540} y={1500} k={4} rot={-6} from="top"><Brick /></In>
-            <In t={t} at={at(21)} x={0} y={0} from="drop"><Label x={540} y={1130} text="builds" red size={90} /></In>
-          </g>
-        }
-      />
+  // 3 · You can marry a woman for how she looks. Or for how she builds.  (Ebo narrates)
+  {w: 8, line: 'You can marry a woman for how she looks. Or for how she builds.', section: 'Hook', cam: 'push',
+    draw: ({t, f, local}) => (
+      <g>
+        <In t={t} at={at(14)} x={300} y={760} k={0.55} from="left"><FakeFront /></In>
+        <In t={t} at={at(16)} x={0} y={0} from="drop"><Label x={300} y={330} text="looks?" size={84} color="#8A8478" /></In>
+        <In t={t} at={at(20)} x={790} y={640} k={2.2} rot={-8} from="right"><Brick /></In>
+        <In t={t} at={at(21)} x={0} y={0} from="drop"><Label x={790} y={460} text="builds" red size={92} /></In>
+        <Narrator f={f} t={t} local={local} look={t >= at(20) ? 10 : t >= at(14) ? -10 : 0} />
+      </g>
     )},
   // 4 · Marriage is a house you build together. Every kind word is a brick. Every insult is a crack.
   {w: 22, line: 'Marriage is a house you build together. Every kind word is a brick. Every insult is a crack.', section: 'The House', cam: 'reveal',
@@ -236,36 +237,31 @@ export const EP10_PLAN: Shot[] = [
         </g>
       );
     }},
-  // 6 · Next door? Perfect paint. Fancy curtains. But nobody built the walls. Marry a woman who builds a home…
-  {w: 58, line: 'Next door? Perfect paint. Fancy curtains. But nobody built the walls. Marry a woman who builds a home, not just decorates a house.', section: 'Next Door', cam: 'reveal',
-    draw: ({t, f}) => {
-      const mica = walk(t, at(60), 1300, 680);
-      const christy = walk(t, at(62), 1400, 950);
+  // 6 · Next door? Perfect paint. Fancy curtains. But nobody built the walls. Marry a woman who builds a home…  (Ebo narrates)
+  {w: 58, line: 'Next door? Perfect paint. Fancy curtains. But nobody built the walls. Marry a woman who builds a home, not just decorates a house.', section: 'Next Door', cam: 'push',
+    draw: ({t, f, local}) => {
       const wob = t >= at(65) ? 6 * Math.sin((t - at(65)) * 7) * Math.exp(-(t - at(65)) * 1.2) : 0;
       return (
         <g>
-          <Ground />
-          <g transform={`translate(270 ${FLOOR - 60}) scale(0.72)`}><House lights={t >= at(75)} /></g>
-          <In t={t} at={at(59)} x={810} y={FLOOR - 60} k={0.72} from="right"><FakeFront side tilt={-3 + wob} /></In>
-          <Ebo f={f} x={140} y={FLOOR + 330} s={0.8} p={{eyes: 'happy', mouth: 'smile', lookX: t >= at(58) && t < at(69) ? 10 : 0}} />
-          <Side f={f} who="ama" x={400} y={FLOOR + 330} s={0.8} facing={-1} p={{eyes: 'happy', mouth: 'smile'}} k={2} />
-          <Side f={f} who="mica" x={mica.x} y={FLOOR + 330} s={0.8} facing={mica.moving ? -1 : 1} p={{eyes: 'happy', mouth: 'smile', armR: mica.moving ? [12, 6] : [70, -30], ...stride(t, mica.moving)}} k={3} />
-          <Side f={f} who="christy" x={christy.x} y={FLOOR + 330} s={0.8} facing={-1} p={{eyes: t >= at(65) ? 'wide' : 'happy', mouth: t >= at(65) ? 'o' : 'smile', ...stride(t, christy.moving)}} k={4} />
+          <Ground y={1080} />
+          <g transform="translate(270 1070) scale(0.6)"><House lights={t >= at(75)} /></g>
+          <In t={t} at={at(59)} x={800} y={1070} k={0.6} from="right"><FakeFront side tilt={-3 + wob} /></In>
+          {t >= at(66) && <In t={t} at={at(66)} x={0} y={0} from="drop"><Label x={800} y={540} text="no walls!" red size={84} rot={4} /></In>}
+          {t >= at(75) && <In t={t} at={at(75)} x={0} y={0} from="drop"><Label x={270} y={540} text="a home" size={84} rot={-3} /></In>}
+          <Narrator f={f} t={t} local={local} look={t >= at(69) ? -12 : t >= at(58) ? 12 : 0} />
         </g>
       );
     }},
-  // 7 · Then the storm comes. Every marriage gets one.
+  // 7 · Then the storm comes. Every marriage gets one.  (Ebo narrates, in the rain)
   {w: 81, line: 'Then the storm comes. Every marriage gets one.', section: 'The Storm', cam: 'reveal', storm: true,
-    draw: ({t}) => {
-      const fly = go(t, at(84), 0.55);
+    draw: ({t, f, local}) => {
+      const fly = go(t, at(84), 0.7);
       return (
         <g>
-          <Ground storm />
-          <In t={t} at={at(83)} x={540} y={380} from="top"><Storm w={1100} /></In>
-          <g transform={`translate(280 ${FLOOR}) scale(0.62)`}><House lights={false} /></g>
-          <g transform={`translate(810 ${FLOOR}) scale(0.62)`}><FakeFront tilt={-6 + 2 * Math.sin(t * 6)} side /></g>
-          {t >= at(84) && <Bill x={-250 + 400 * fly} y={1060} rot={-24} />}
-          {t >= at(84) && <Bill x={290 + 400 * fly} y={1060} rot={-24} />}
+          <In t={t} at={at(83)} x={540} y={300} from="top"><Storm w={1100} /></In>
+          {t >= at(84) && <Bill x={-300 + 760 * fly} y={760} rot={-24} />}
+          <Umbrella x={470} y={860} />
+          <Narrator f={f} t={t} local={local} armR={[140, -10]} />
           {t >= at(83) && <Rain t={t} seed={2} />}
         </g>
       );
@@ -323,48 +319,27 @@ export const EP10_PLAN: Shot[] = [
         </g>
       );
     }},
-  // 11 · Marry a woman who handles conflict with grace, and keeps your problems inside your walls.
-  {w: 122, line: 'Marry a woman who handles conflict with grace, and keeps your problems inside your walls.', section: 'With Grace', cam: 'none', storm: true,
-    draw: ({t, f}) => (
-      <Split
-        top={
-          <g>
-            <Sky storm />
-            <rect x={-200} y={760} width={1480} height={400} fill="#6F8F62" />
-            <line x1={-200} y1={760} x2={1280} y2={760} stroke="#1D1A1A" strokeWidth={7} />
-            <g transform="translate(540 790) scale(1.2)"><FakeFront fallen /></g>
-            <Side f={f} who="mica" x={380} y={900} s={1} p={{eyes: 'sad', mouth: 'frown'}} k={3} />
-            <Side f={f} who="christy" x={700} y={900} s={1} facing={-1} p={{eyes: 'sad', mouth: 'frown'}} k={4} />
-            {[90, 200, 880, 990].map((fx, i) => (
-              <In key={fx} t={t} at={at(126) + i * 0.15} x={fx} y={820 + (i % 2) * 20} from={fx < 540 ? 'left' : 'right'}><Filmer x={0} y={0} /></In>
-            ))}
-            <Rain t={t} seed={5} />
-          </g>
-        }
-        bottom={
-          <g>
-            <Sky storm />
-            <rect x={-200} y={1760} width={1480} height={400} fill="#6F8F62" />
-            <line x1={-200} y1={1760} x2={1280} y2={1760} stroke="#1D1A1A" strokeWidth={7} />
-            <g transform="translate(540 1760) scale(1.2)"><House lights /></g>
-            <rect x={472} y={1532} width={136} height={228} fill="#FFE07A" />
-            <g transform="translate(468 1760) scale(0.686 0.543)"><Door open={0.3 * (1 - go(t, at(134), 0.5))} /></g>
-            <Rain t={t} seed={6} />
-          </g>
-        }
-      />
+  // 11 · Marry a woman who handles conflict with grace, and keeps your problems inside your walls.  (Ebo narrates, at home)
+  {w: 122, line: 'Marry a woman who handles conflict with grace, and keeps your problems inside your walls.', section: 'With Grace', cam: 'push', storm: true,
+    draw: ({t, f, local}) => (
+      <g>
+        <Room />
+        <Window x={250} y={560} t={t} />
+        <g transform={`translate(700 ${FLOOR}) scale(1.3)`}><Door open={0.35 * (1 - go(t, at(134), 0.5))} /></g>
+        {t >= at(136) && <In t={t} at={at(136)} x={0} y={0} from="drop"><Label x={540} y={300} text="inside your walls" red size={78} rot={-2} /></In>}
+        <Narrator f={f} t={t} local={local} look={t >= at(134) ? 12 : 0} />
+      </g>
     )},
-  // 12 · Because the storm doesn't decide if a house stands. The builders do.
+  // 12 · Because the storm doesn't decide if a house stands. The builders do.  (Ebo narrates, the sun out)
   {w: 137, line: 'Because the storm doesn\'t decide if a house stands. The builders do.', section: 'The Answer', cam: 'reveal',
     draw: ({t, f, local}) => (
       <g>
-        <Ground />
+        <Ground y={1080} />
         <g transform={`translate(900 ${560 - 260 * easeOut(local / 1.2)})`}><Sun /></g>
-        <g transform={`translate(330 ${FLOOR}) scale(0.7)`}><House patch /></g>
-        <g transform={`translate(820 ${FLOOR})`}><FakeFront fallen /></g>
-        <Ebo f={f} x={150} y={FLOOR + 170} s={0.95} p={{eyes: 'happy', mouth: 'grin', armR: t >= at(147) ? [150, -10] : [12, 6], armL: t >= at(147) ? [150, -10] : [12, 6]}} />
-        <Side f={f} who="ama" x={500} y={FLOOR + 170} s={0.95} facing={-1} p={{eyes: 'happy', mouth: 'smile', armR: t >= at(147) ? [140, -10] : [12, 6]}} k={2} />
-        <In t={t} at={at(147)} x={0} y={0} from="top"><Label x={540} y={560} text="the builders do." red size={100} rot={-2} /></In>
+        <g transform="translate(280 1070) scale(0.6)"><House patch /></g>
+        <g transform="translate(810 1070) scale(0.85)"><FakeFront fallen /></g>
+        <In t={t} at={at(147)} x={0} y={0} from="top"><Label x={540} y={430} text="the builders do." red size={100} rot={-2} /></In>
+        <Narrator f={f} t={t} local={local} armR={t >= at(147) ? [120, -20] : undefined} />
       </g>
     )},
   // 13 · And remember: she's choosing a builder too. Be the man worth building with.
@@ -405,7 +380,7 @@ export const EP10_SFX = () => [
   {at: FALL + 0.45, sfx: 'drop', vol: 0.8},
   // swooshes on the pieces
   ...[14, 20, 30, 36, 59, 83, 91, 154, 147, 159].map((k) => ({at: at(k) - 0.05, sfx: 'swoosh', vol: 0.7})),
-  ...[0, 1, 2, 3].map((i) => ({at: at(126) + i * 0.15 - 0.05, sfx: 'swoosh', vol: 0.4})),
+  ...[66, 75, 136].map((k) => ({at: at(k) - 0.05, sfx: 'swoosh', vol: 0.5})), // the narrator shots' labels
   ...EP10_PLAN.map((s, i) => (s.cam === 'reveal' && i > 0 ? {at: START[i], sfx: 'swoosh', vol: 0.3} : null)).filter((x): x is {at: number; sfx: string; vol: number} => x !== null),
   // footsteps on the walk-ins
   ...[0, 0.12, 0.24, 0.36].map((d) => ({at: at(22) - 0.1 + d, sfx: 'footstep', vol: 0.4})),
