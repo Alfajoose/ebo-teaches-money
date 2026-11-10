@@ -143,7 +143,20 @@ export const VStage: React.FC<{
           </NoScaleContext.Provider>
         </LayerModeContext.Provider>,
       );
-    const part = (svg: string) => ({key: hash(svg), svg});
+    // empty wrappers (a moving prop leaves its <g transform> behind in the set pass) would make every frame a new
+    // background, so drop them before comparing
+    const bare = (svg: string) => {
+      let prev = '';
+      while (prev !== svg) {
+        prev = svg;
+        svg = svg.replace(/<g(?: [^>]*)?><\/g>/g, '');
+      }
+      return svg;
+    };
+    const part = (raw: string) => {
+      const svg = bare(raw);
+      return {key: hash(svg), svg};
+    };
     cap.background = {
       back: part(asSet(<g><rect width={VW} height={VH} fill={bg} />{screenBg}</g>)),
       world: part(asSet(<g>{blurBg}{children}</g>)),
