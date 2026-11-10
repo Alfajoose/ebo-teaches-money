@@ -1,0 +1,3 @@
+Ep 10 voice: raw_dan.mp3 = ElevenLabs eleven_v4, Dan (1cuDPO8sIMatoOE4Z2Zv), one take, 907 credits.
+Word timings: faster-whisper small.en locally (no Scribe), text from the script. voice.mp3 has 2.2 s of silence
+in front for the cold open; words.json and env.json are shifted to match.

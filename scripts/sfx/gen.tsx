@@ -9,6 +9,7 @@ import ep07Words from '../../src/series/data/ep07-words.json';
 import {EP07_DURATION, EP07_SLAMS, EP07_TICKS, EP07_GAG_SFX} from '../../src/series/ep07';
 import {EP08_DURATION, EP08_SLAMS, EP08_SFX} from '../../src/series/ep08';
 import {EP09_DURATION, EP09_SLAMS, EP09_SFX} from '../../src/series/ep09';
+import {EP10_DURATION, EP10_SLAMS, EP10_SFX} from '../../src/series/ep10';
 import {EP04_PLAN, ep04Times} from '../../src/series/ep04plan';
 import {K01_PLAN, K01_SHOT_TIMES, K01_DURATION} from '../../src/series/konka01';
 
@@ -36,6 +37,7 @@ out.ep05cut = {duration: EP05_DURATION / 30 + HOLD, cues: ep05Sfx(ep05Words, HOL
 out.ep06 = {duration: EP06_DURATION / 30, cues: ep06Sfx(ep06Words)};
 out.ep08 = {duration: EP08_DURATION / 30, cues: ep08Sfx(EP08_SLAMS, EP08_SFX())};
 out.ep09 = {duration: EP09_DURATION / 30, cues: ep08Sfx(EP09_SLAMS, EP09_SFX())}; // same recipe as Ep8
+out.ep10 = {duration: EP10_DURATION / 30, cues: ep08Sfx(EP10_SLAMS, EP10_SFX())};
 out.ep07 = {duration: EP07_DURATION / 30, cues: ep07Sfx(ep07Words, EP07_SLAMS, EP07_TICKS, EP07_GAG_SFX())};
 fs.writeFileSync(process.argv[2], JSON.stringify(out, null, 1));
 console.log('cues: ep04', c4.length, 'konka01', k.length);
