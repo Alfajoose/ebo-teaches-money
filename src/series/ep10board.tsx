@@ -8,16 +8,16 @@ import {Pose, POSES} from '../components/Character';
 import {POSE, CONTACT, frontOn, gentle} from '../cast/poses';
 import {Backdrop} from './sets';
 import {StageSizeContext} from './exportCtx';
-import {Label, RED, useMarkerFont} from './filterKit';
+import {Label, useMarkerFont} from './filterKit';
 import {Brick, BrickWall, Bucket, Door, FakeFront, Hammer, House, Plot, PostedPhone, Shout, Storm, Sun, TalkTable} from '../components/HouseProps';
-import {Arrow, SayBubble} from '../components/PovertyProps';
+import {Arrow, FeeSlip, Ladder, SayBubble} from '../components/PovertyProps';
 
 /**
  * Ep 10 "Marry a Woman Who…": the storyboard, one panel per frame (no voice yet, so these are stills, not the
  * animated episode). Ebo and his wife (Ama) build one house; next door the neighbours (Mica, Christy) only
  * decorate theirs; a storm hits both.
  */
-export const EP10_BOARD_PANELS = 12;
+export const EP10_BOARD_PANELS = 15;
 const FLOOR = 1500;
 
 type Look = Partial<Pose>;
@@ -44,21 +44,88 @@ const Ground: React.FC<{storm?: boolean}> = ({storm}) => (
 );
 const Sky: React.FC<{storm?: boolean}> = ({storm}) => <Backdrop id={storm ? 'ep10-storm' : 'ep10-sky'} shade="sky" night={storm} />;
 
-/** The 12 panels (the script's 12 lines, episodes/ep10/script.md). */
+/** Rain over the whole frame. */
+const Rain: React.FC<{seed?: number}> = ({seed = 0}) => (
+  <g>
+    {Array.from({length: 46}, (_, i) => {
+      const x = ((i * 137 + seed * 61) % 1300) - 110;
+      const y = ((i * 211 + seed * 97) % 1900) - 40;
+      return <line key={i} x1={x} y1={y} x2={x - 26} y2={y + 110} stroke="#9CC9EC" strokeWidth={6} strokeLinecap="round" opacity={0.8} />;
+    })}
+  </g>
+);
+/** Two stacked shots in one frame (top, bottom), each drawn in full-frame coordinates and shifted by its dy. */
+const Split: React.FC<{top: React.ReactNode; bottom: React.ReactNode; topDy?: number; bottomDy?: number}> = ({top, bottom, topDy = 0, bottomDy = 0}) => (
+  <g>
+    <defs>
+      <clipPath id="ep10-top"><rect x={0} y={0} width={1080} height={952} /></clipPath>
+      <clipPath id="ep10-bot"><rect x={0} y={968} width={1080} height={952} /></clipPath>
+    </defs>
+    <g clipPath="url(#ep10-top)"><g transform={`translate(0 ${topDy})`}>{top}</g></g>
+    <g clipPath="url(#ep10-bot)"><g transform={`translate(0 ${bottomDy})`}>{bottom}</g></g>
+    <rect x={-10} y={952} width={1100} height={16} fill="#1D1A1A" />
+  </g>
+);
+const Umbrella: React.FC<{x: number; y: number}> = ({x, y}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <line x1={0} y1={0} x2={0} y2={300} stroke="#1D1A1A" strokeWidth={10} strokeLinecap="round" />
+    <path d="M -230 10 Q -220 -160 0 -170 Q 220 -160 230 10 Q 175 -20 115 10 Q 58 -20 0 10 Q -58 -20 -115 10 Q -175 -20 -230 10 Z" fill="#3E7CB1" stroke="#1D1A1A" strokeWidth={7} strokeLinejoin="round" />
+  </g>
+);
+const Bill: React.FC<{x: number; y: number; rot?: number; k?: number}> = ({x, y, rot = -20, k = 0.45}) => (
+  <g>
+    <path d={`M ${x + 120} ${y - 30} l 90 -20 M ${x + 120} ${y + 10} l 110 0 M ${x + 120} ${y + 50} l 90 20`} stroke="#fff" strokeWidth={8} strokeLinecap="round" />
+    <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${k})`}><FeeSlip top="BILL" bottom="OVERDUE" amount="$900" /></g>
+  </g>
+);
+const Window: React.FC<{x: number; y: number; w?: number; h?: number; night?: boolean}> = ({x, y, w = 420, h = 520, night = true}) => (
+  <g>
+    <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={10} fill={night ? '#3B4A6B' : '#BFE3F5'} stroke="#1D1A1A" strokeWidth={10} />
+    <path d={`M ${x} ${y - h / 2} L ${x} ${y + h / 2} M ${x - w / 2} ${y} L ${x + w / 2} ${y}`} stroke="#1D1A1A" strokeWidth={8} />
+    {Array.from({length: 10}, (_, i) => <line key={i} x1={x - w / 2 + 30 + i * 38} y1={y - h / 2 + 30 + (i % 3) * 90} x2={x - w / 2 + 22 + i * 38} y2={y - h / 2 + 90 + (i % 3) * 90} stroke="#9CC9EC" strokeWidth={5} strokeLinecap="round" />)}
+  </g>
+);
+const Room: React.FC = () => (
+  <g>
+    <rect x={-200} y={-200} width={1480} height={2400} fill="#E9D3B4" />
+    <rect x={-200} y={FLOOR - 10} width={1480} height={700} fill="#B58A62" />
+    <line x1={-200} y1={FLOOR - 10} x2={1280} y2={FLOOR - 10} stroke="#1D1A1A" strokeWidth={7} />
+  </g>
+);
+
+/** The 15 panels (the script's 15 lines, episodes/ep10/script.md). */
 const PANELS: (() => React.ReactNode)[] = [
-  // 1 · You can marry a woman for how she looks. Or for how she builds.
+  // 1 · cold open: the pretty house crashes down in the rain
+  () => (
+    <g>
+      <Sky storm />
+      <Ground storm />
+      <g transform="translate(540 330)"><Storm w={1100} /></g>
+      <g transform={`translate(600 ${FLOOR})`}><FakeFront tilt={-58} side /></g>
+      <path d="M 180 1000 q 60 -40 120 0 M 150 1120 q 70 -40 140 0" fill="none" stroke="#fff" strokeWidth={8} strokeLinecap="round" />
+      <Rain />
+    </g>
+  ),
+  // 2 · That house looked perfect. Here's why it fell.
+  () => (
+    <g>
+      <Sky storm />
+      <Ground storm />
+      <g transform={`translate(800 ${FLOOR}) scale(1.3)`}><FakeFront fallen /></g>
+      <Ebo x={320} y={2150} s={2.1} p={{eyes: 'squint', mouth: 'flat', armL: [95, -6], armR: [140, -10]}} />
+      <Umbrella x={300} y={760} />
+      <Rain seed={1} />
+    </g>
+  ),
+  // 3 · You can marry a woman for how she looks. Or for how she builds.
   () => (
     <g>
       <Sky />
-      <Label x={540} y={360} text="how she looks?" size={90} color="#8A8478" />
-      <line x1={330} y1={330} x2={750} y2={330} stroke="#8A8478" strokeWidth={10} strokeLinecap="round" />
-      <Label x={540} y={520} text="how she BUILDS" red size={110} rot={-3} />
-      <g transform="translate(800 820) rotate(10) scale(1.8)"><Brick /></g>
-      <g transform="translate(690 670) rotate(55) scale(0.9)"><Arrow color={RED} /></g>
-      <Ebo x={540} y={2350} s={2.6} p={{eyes: 'squint', mouth: 'smirk', armR: [70, -30], brows: 'up'}} />
+      <g transform="translate(810 760) rotate(-12) scale(2.2)"><Brick /></g>
+      <Ebo x={470} y={2350} s={2.6} p={{eyes: 'squint', mouth: 'smirk', lookX: 12, lookY: -10, armL: [80, -30], brows: 'up'}} />
     </g>
   ),
-  // 2 · Because marriage is a house, and you're building it together.
+  // 4 · Because marriage is a house, and you're building it together.
   () => (
     <g>
       <Sky />
@@ -66,11 +133,9 @@ const PANELS: (() => React.ReactNode)[] = [
       <g transform={`translate(540 ${FLOOR + 140})`}><Plot /></g>
       <Ebo x={290} p={{eyes: 'happy', mouth: 'smile', legL: [20, 6], legR: [-8, 0]}} front={false} />
       <Side who="ama" x={800} facing={-1} p={{eyes: 'happy', mouth: 'smile', legL: [20, 6], legR: [-8, 0]}} />
-      <Label x={540} y={520} text="one house," size={96} />
-      <Label x={540} y={640} text="two builders" red size={96} />
     </g>
   ),
-  // 3 · Every kind word is a brick. Every insult is a crack.
+  // 5 · Every kind word is a brick. Every insult is a crack.
   () => (
     <g>
       <Sky />
@@ -83,36 +148,30 @@ const PANELS: (() => React.ReactNode)[] = [
       <g transform="translate(400 880) rotate(70) scale(0.6)"><Arrow /></g>
       <g transform="translate(780 560) scale(-1 1)"><SayBubble a="" size={52} w={440} /></g>
       <Label x={780} y={578} text="Ugh. Whatever." size={52} />
-      <g transform="translate(680 980) rotate(110) scale(0.6)"><Arrow color={RED} /></g>
-      <Label x={290} y={420} text="kind word = brick" size={60} />
-      <Label x={790} y={330} text="insult = crack" red size={60} />
     </g>
   ),
-  // 4 · Marry a woman who works with willing hands. When you both build, the walls go up fast.
+  // 6 · So marry a woman who works with willing hands. When you both build, the walls go up fast.
   () => (
     <g>
       <Sky />
       <Ground />
-      <g transform={`translate(540 ${FLOOR})`}><BrickWall w={460} rows={14} /></g>
+      <g transform={`translate(540 ${FLOOR})`}><BrickWall w={460} rows={16} /></g>
       <Ebo x={170} p={{eyes: 'happy', mouth: 'grin', armR: [110, -20]}} hold={<g transform="scale(0.8)"><Brick /></g>} />
       <Side who="ama" x={910} facing={-1} p={{eyes: 'happy', mouth: 'smile', armR: [110, -20]}} hold={<g transform="scale(0.8)"><Brick /></g>} />
-      <g transform="translate(540 820) rotate(-90)"><Arrow color={RED} /></g>
-      <Label x={540} y={360} text="willing hands" red size={100} />
+      <path d="M 300 760 l 0 -80 M 780 760 l 0 -80" stroke="#1D1A1A" strokeWidth={8} strokeLinecap="round" />
     </g>
   ),
-  // 5 · Now look next door. Perfect paint. Fancy curtains. But nobody built the walls.
+  // 7 · Now look next door. Perfect paint. Fancy curtains. But nobody built the walls.
   () => (
     <g>
       <Sky />
       <Ground />
       <g transform={`translate(540 ${FLOOR})`}><FakeFront side tilt={-4} /></g>
-      <Side who="mica" x={260} p={{eyes: 'happy', mouth: 'smile', armR: [60, -30]}} />
-      <Side who="christy" x={830} facing={-1} p={{eyes: 'happy', mouth: 'smile'}} />
-      <Label x={540} y={420} text="perfect paint." size={80} />
-      <Label x={540} y={1650} text="nobody built the walls" red size={74} rot={-2} />
+      <Side who="mica" x={240} p={{eyes: 'happy', mouth: 'smile', armR: [60, -30]}} />
+      <Side who="christy" x={850} facing={-1} p={{eyes: 'happy', mouth: 'smile'}} />
     </g>
   ),
-  // 6 · Marry a woman who builds a home, not just decorates a house.
+  // 8 · Marry a woman who builds a home, not just decorates a house.
   () => (
     <g>
       <Sky />
@@ -120,64 +179,93 @@ const PANELS: (() => React.ReactNode)[] = [
       <g transform={`translate(540 ${FLOOR})`}><House /></g>
       <Ebo x={200} p={{eyes: 'happy', mouth: 'smile'}} />
       <Side who="ama" x={880} facing={-1} p={{eyes: 'happy', mouth: 'smile'}} />
-      <Label x={540} y={430} text="a HOME," red size={110} />
-      <Label x={540} y={1680} text="not a decorated house" size={70} />
     </g>
   ),
-  // 7 · Then one day, the storm comes. Every marriage gets one. Money runs short. The roof starts to leak.
+  // 9 · Then the storm comes. Every marriage gets one.
   () => (
     <g>
       <Sky storm />
       <Ground storm />
-      <g transform={`translate(290 ${FLOOR}) scale(0.62)`}><House leak lights={false} /></g>
-      <g transform={`translate(800 ${FLOOR}) scale(0.62)`}><FakeFront tilt={-6} side /></g>
-      <g transform="translate(540 420)"><Storm w={1000} /></g>
-      <Label x={540} y={760} text="the storm" red size={120} />
-      <Label x={540} y={1680} text="every marriage gets one" size={66} />
+      <g transform="translate(540 380)"><Storm w={1100} /></g>
+      <g transform={`translate(280 ${FLOOR}) scale(0.62)`}><House lights={false} /></g>
+      <g transform={`translate(810 ${FLOOR}) scale(0.62)`}><FakeFront tilt={-6} side /></g>
+      <Bill x={150} y={1060} rot={-24} />
+      <Bill x={690} y={1060} rot={-24} />
+      <Rain seed={2} />
     </g>
   ),
-  // 8 · Next door, they shout. It ends up online. Now the whole street knows… and the wall comes down.
+  // 10 · Next door, they shout. It ends up online. Now the whole street knows… and the wall comes down.
+  () => (
+    <Split
+      topDy={-840}
+      top={
+        <g>
+          <Sky storm />
+          <Side who="christy" x={540} y={2350} s={2.6} p={{eyes: 'angry', mouth: 'scream', lookX: 12}} />
+          <g transform="translate(830 1080)"><Shout text="YOU!" rotate={8} /></g>
+          <Rain seed={3} />
+        </g>
+      }
+      bottomDy={0}
+      bottom={
+        <g>
+          <Sky storm />
+          <g transform="translate(540 1440) scale(1.5) rotate(-4)"><PostedPhone /></g>
+        </g>
+      }
+    />
+  ),
+  // 11 · In your house, she stays calm.
+  () => (
+    <g>
+      <Room />
+      <Window x={300} y={700} />
+      <Side who="ama" x={560} y={2350} s={2.6} p={{eyes: 'happy', mouth: 'smile', lookX: 10}} />
+    </g>
+  ),
+  // 12 · You find the leak, together. And you fix it.
   () => (
     <g>
       <Sky storm />
       <Ground storm />
-      <g transform={`translate(560 ${FLOOR + 40})`}><FakeFront tilt={-38} side /></g>
-      <Side who="mica" x={250} p={{eyes: 'wide', mouth: 'scream', armL: [80, -20], armR: [80, -20]}} />
-      <Side who="christy" x={860} facing={-1} p={{eyes: 'angry', mouth: 'scream', armR: [95, -10]}} />
-      <g transform="translate(260 760)"><Shout text="YOU!" rotate={-6} /></g>
-      <g transform="translate(860 720)"><Shout text="NO, YOU!" rotate={6} /></g>
-      <g transform="translate(540 420) scale(0.9)"><PostedPhone rotate={-4} /></g>
-      <Label x={540} y={1700} text="the whole street knows" red size={70} />
+      <g transform={`translate(430 ${FLOOR}) scale(1.15)`}><House patch lights /></g>
+      <g transform={`translate(860 ${FLOOR}) rotate(-14)`}><Ladder total={8} rungs={0} /></g>
+      <Ebo x={760} y={1060} s={1.2} p={{eyes: 'squint', mouth: 'flat', armL: [150, -10]}} front={false} />
+      <g transform="translate(640 820) rotate(-30) scale(0.7)"><Hammer /></g>
+      <Side who="ama" x={980} facing={-1} p={{eyes: 'open', mouth: 'smile', armR: [100, -20], armL: [90, -20]}} />
+      <Rain seed={4} />
     </g>
   ),
-  // 9 · In your house, she stays calm. You find the leak, together. And you fix it.
+  // 13 · Marry a woman who handles conflict with grace, and keeps your problems inside your walls.
   () => (
-    <g>
-      <Sky storm />
-      <Ground storm />
-      <g transform={`translate(540 ${FLOOR})`}><House patch lights /></g>
-      <Ebo x={200} p={{eyes: 'squint', mouth: 'flat', armR: [140, -10]}} hold={<g transform="scale(0.7)"><Hammer rotate={-20} /></g>} />
-      <Side who="ama" x={880} facing={-1} p={{eyes: 'open', mouth: 'smile', armR: [70, -20]}} hold={<g transform="scale(0.6)"><Bucket /></g>} />
-      <Label x={540} y={420} text="together" red size={110} />
-    </g>
+    <Split
+      top={
+        <g>
+          <Sky storm />
+          <rect x={-200} y={760} width={1480} height={400} fill="#6F8F62" />
+          <line x1={-200} y1={760} x2={1280} y2={760} stroke="#1D1A1A" strokeWidth={7} />
+          <g transform="translate(540 800) scale(1.2)"><FakeFront fallen /></g>
+          <Side who="mica" x={300} y={900} s={1.1} p={{eyes: 'sad', mouth: 'frown', armR: [60, -60]}} />
+          <Side who="christy" x={780} y={900} s={1.1} facing={-1} p={{eyes: 'sad', mouth: 'frown'}} />
+          <g transform="translate(150 300) scale(0.4) rotate(-8)"><PostedPhone /></g>
+          <g transform="translate(930 280) scale(0.4) rotate(8)"><PostedPhone /></g>
+          <Rain seed={5} />
+        </g>
+      }
+      bottom={
+        <g>
+          <Sky storm />
+          <rect x={-200} y={1760} width={1480} height={400} fill="#6F8F62" />
+          <line x1={-200} y1={1760} x2={1280} y2={1760} stroke="#1D1A1A" strokeWidth={7} />
+          <g transform="translate(540 1760) scale(1.2)"><House lights /></g>
+          <rect x={472} y={1532} width={136} height={228} fill="#FFE07A" />
+          <g transform="translate(468 1760) scale(0.686 0.543)"><Door open={0.3} /></g>
+          <Rain seed={6} />
+        </g>
+      }
+    />
   ),
-  // 10 · Marry a woman who handles conflict with grace, and keeps your problems inside your walls.
-  () => (
-    <g>
-      <rect x={-200} y={-200} width={1480} height={2400} fill="#E9D3B4" />
-      <rect x={-200} y={FLOOR - 10} width={1480} height={700} fill="#B58A62" />
-      <line x1={-200} y1={FLOOR - 10} x2={1280} y2={FLOOR - 10} stroke="#1D1A1A" strokeWidth={7} />
-      <rect x={150} y={600} width={260} height={220} rx={10} fill="#3B4A6B" stroke="#1D1A1A" strokeWidth={7} />
-      <path d="M 170 780 l 60 -60 l 40 30 l 60 -80 l 60 110" fill="none" stroke="#9DB4C9" strokeWidth={6} />
-      <Ebo x={300} p={{eyes: 'open', mouth: 'smile', armR: [40, -30]}} front={false} />
-      <Side who="ama" x={700} facing={-1} p={{eyes: 'happy', mouth: 'smile', armR: [40, -30]}} />
-      <g transform={`translate(500 ${FLOOR})`}><TalkTable /></g>
-      <g transform={`translate(870 ${FLOOR})`}><Door open={0.15} /></g>
-      <Label x={540} y={360} text="with grace" red size={110} />
-      <Label x={540} y={480} text="inside your walls" size={74} />
-    </g>
-  ),
-  // 11 · Because the storm doesn't decide if a house stands. The builders do.
+  // 14 · Because the storm doesn't decide if a house stands. The builders do.
   () => (
     <g>
       <Sky />
@@ -190,14 +278,13 @@ const PANELS: (() => React.ReactNode)[] = [
       <Label x={540} y={560} text="the builders do." red size={100} rot={-2} />
     </g>
   ),
-  // 12 · And remember: she's choosing a builder too. Be the man worth building with.
+  // 15 · And remember: she's choosing a builder too. Be the man worth building with.
   () => (
     <g>
       <Sky />
-      <Label x={540} y={400} text="she's choosing too." size={86} />
-      <Label x={540} y={560} text="be worth building with" red size={86} rot={-2} />
-      <g transform="translate(830 860) rotate(-8) scale(1.8)"><Brick /></g>
-      <Ebo x={500} y={2350} s={2.6} p={{eyes: 'happy', mouth: 'smile', lookX: 10}} />
+      <g transform="translate(850 980) rotate(-8) scale(2)"><Brick /></g>
+      <Ebo x={480} y={2560} s={3.1} p={{eyes: 'happy', mouth: 'smile', lookX: 8}} />
+      <Label x={540} y={420} text="be worth building with" red size={86} rot={-2} />
     </g>
   ),
 ];

@@ -7,11 +7,11 @@ panels_dir, out = sys.argv[1:3]
 rows_md = [r for r in open('episodes/ep10/script.md').read().splitlines() if re.match(r'\| \d+ \|', r)]
 shots = [[c.strip() for c in r.strip('|').split('|')][1:3] for r in rows_md]
 ims = sorted(glob.glob(f'{panels_dir}/s*.png'))
-TAGS = {0: 'Hook', 1: 'The house', 3: 'Willing hands', 4: 'Next door', 6: 'The storm', 9: 'With grace', 10: 'The answer', 11: 'Close'}
+TAGS = {0: 'Cold open', 2: 'Hook', 3: 'The house', 5: 'Willing hands', 6: 'Next door', 8: 'The storm', 10: 'She stays calm', 12: 'With grace', 13: 'The answer', 14: 'Close'}
 from PIL import ImageFont
 F = lambda w, s: ImageFont.truetype(f'/usr/share/fonts/opentype/inter/Inter-{w}.otf', s)
 INK, YEL, BLUE, GREY = '#1D1A1A', '#FCE7A6', '#CFE3FA', '#55505A'
-COLS, PW, PH, PAD, TXT = 6, 340, 604, 22, 330
+COLS, PW, PH, PAD, TXT = 8, 320, 569, 22, 330
 CW, CH = PW + 2 * PAD, 104 + PH + TXT
 rows = (len(shots) + COLS - 1) // COLS
 W = 30 + COLS * (CW + 18) + 12
@@ -27,7 +27,8 @@ d.text((W - 30 - d.textlength(info, font=F('Medium', 26)), 56), info, font=F('Me
 t = 0.0
 fmt = lambda s: f'{int(s // 60)}:{int(s % 60):02d}'
 for i, (line, pic) in enumerate(shots):
-    dur = len(line.split()) / 3.0 + 0.3
+    cold = line.startswith('*(')
+    dur = 2.0 if cold else len(line.split()) / 3.0 + 0.3
     x = 30 + (i % COLS) * (CW + 18)
     y = 150 + (i // COLS) * (CH + 18)
     d.rounded_rectangle([x, y, x + CW, y + CH], radius=20, fill='#fff', outline=INK, width=4)
@@ -40,7 +41,7 @@ for i, (line, pic) in enumerate(shots):
     sheet.paste(Image.open(ims[i]).convert('RGB').resize((PW, PH)), (x + PAD, y + 100))
     d.rectangle([x + PAD, y + 100, x + PAD + PW, y + 100 + PH], outline=INK, width=2)
     yy = y + 100 + PH + 14
-    for k, ln in enumerate(textwrap.wrap('EBO: ' + line, 28)[:6]):
+    for k, ln in enumerate(textwrap.wrap('EBO: ' + ('(no voice: rain, a creak, a crash)' if cold else line), 26)[:6]):
         if k == 0:
             d.text((x + PAD, yy), 'EBO:', font=F('Bold', 23), fill=INK)
             d.text((x + PAD + d.textlength('EBO: ', font=F('Bold', 23)), yy), ln[5:], font=F('Medium', 23), fill=INK)
@@ -48,7 +49,7 @@ for i, (line, pic) in enumerate(shots):
             d.text((x + PAD, yy), ln, font=F('Medium', 23), fill=INK)
         yy += 29
     yy += 8
-    for ln in textwrap.wrap(pic, 35)[:5]:
+    for ln in textwrap.wrap(pic, 33)[:5]:
         d.text((x + PAD, yy), ln, font=F('Regular', 19), fill=GREY)
         yy += 24
     t += dur
