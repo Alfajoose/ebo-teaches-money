@@ -53,6 +53,17 @@
    - **Every take is animated.** Characters walk in and out of frame, change pose on nearly every word, and the listener reacts; Ebo nods on the words. Nobody freezes.
    In code: `In` (from), `swoopZoom`, `Dim` in `src/series/filterKit.tsx`; side-character `enter` / `exit` / `acts` in `src/series/ep08.tsx`.
 
+## Recurring roles (from Ep 10, agreed with the user 2026-11-10)
+
+Cast the same people in the same roles every episode, so viewers get to know them.
+
+- **Ebo:** the lead. He lives the lesson and isn't perfect (he gets things wrong too).
+- **Ama:** Ebo's partner (his wife from Ep 10 on) and the sensible one. She has Ebo's full face set, so she gets the real acting.
+- **Mica:** the friend who always makes the wrong choice: the impulse buy, the post online. A running joke.
+- **Christy, Obuor:** recurring neighbours and background extras (limited faces, so react, don't talk). Obuor's flat no-outline style stands out; use him sparingly.
+- **Drawn extras** (stick figures, little round people) only for faceless roles: crowds, "someone digging".
+- **Ama Pretty** is retired (replaced by the new Ama).
+
 ## Shared rig (all five characters)
 
 Every character uses the same layer-parented rig with the same 16 layer names, so any animation written for one can be reused on the others.
