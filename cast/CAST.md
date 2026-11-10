@@ -64,6 +64,12 @@ Cast the same people in the same roles every episode, so viewers get to know the
 - **Drawn extras** (stick figures, little round people) only for faceless roles: crowds, "someone digging".
 - **Ama Pretty** is retired (replaced by the new Ama).
 
+## 3D (tried, not used)
+
+The series stays 2D (user's call, 2026-11-10). Two three.js experiments are kept for reference only: the Ep 10 cold open
+as a 3D world with Ebo as a 2D cutout (`src/series/ep10three.tsx`, `episodes/ep10/three_test/`), and a toy-style 3D
+Ebo (`src/cast/Ebo3D.tsx`, `cast/3d/`). Neither exports to Animate.
+
 ## Shared rig (all five characters)
 
 Every character uses the same layer-parented rig with the same 16 layer names, so any animation written for one can be reused on the others.
