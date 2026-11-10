@@ -7,11 +7,11 @@ panels_dir, out = sys.argv[1:3]
 rows_md = [r for r in open('episodes/ep10/script.md').read().splitlines() if re.match(r'\| \d+ \|', r)]
 shots = [[c.strip() for c in r.strip('|').split('|')][1:3] for r in rows_md]
 ims = sorted(glob.glob(f'{panels_dir}/s*.png'))
-TAGS = {0: 'Cold open', 2: 'Hook', 3: 'The house', 5: 'Willing hands', 6: 'Next door', 8: 'The storm', 10: 'She stays calm', 12: 'With grace', 13: 'The answer', 14: 'Close'}
+TAGS = {0: 'Cold open', 2: 'Hook', 3: 'The house', 4: 'Willing hands', 5: 'Next door', 6: 'The storm', 8: 'She stays calm', 10: 'With grace', 11: 'The answer', 12: 'Close'}
 from PIL import ImageFont
 F = lambda w, s: ImageFont.truetype(f'/usr/share/fonts/opentype/inter/Inter-{w}.otf', s)
 INK, YEL, BLUE, GREY = '#1D1A1A', '#FCE7A6', '#CFE3FA', '#55505A'
-COLS, PW, PH, PAD, TXT = 8, 320, 569, 22, 330
+COLS, PW, PH, PAD, TXT = 7, 320, 569, 22, 330
 CW, CH = PW + 2 * PAD, 104 + PH + TXT
 rows = (len(shots) + COLS - 1) // COLS
 W = 30 + COLS * (CW + 18) + 12
@@ -22,7 +22,7 @@ title = 'Ep10 Storyboard: Marry a Woman Who…'
 tw = d.textlength(title, font=F('Bold', 54))
 d.rounded_rectangle([30, 28, 30 + tw + 60, 112], radius=42, fill=BLUE)
 d.text((60, 40), title, font=F('Bold', 54), fill=INK)
-info = 'Ebo, Ama, the neighbours (Mica, Christy)  |  ~1:00  |  Ebo (Dan), voice'
+info = 'Ebo, Ama, the neighbours (Mica, Christy)  |  ~55s  |  Ebo (Dan), voice'
 d.text((W - 30 - d.textlength(info, font=F('Medium', 26)), 56), info, font=F('Medium', 26), fill=INK)
 t = 0.0
 fmt = lambda s: f'{int(s // 60)}:{int(s % 60):02d}'
