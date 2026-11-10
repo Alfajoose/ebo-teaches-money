@@ -10,7 +10,7 @@ import {Backdrop} from './sets';
 import {StageSizeContext} from './exportCtx';
 import {VFPS, Word, VStage, lipFrame} from './kit';
 import {In, Label, swoopZoom, useMarkerFont} from './filterKit';
-import {Brick, BrickWall, Bucket, Door, FakeFront, Hammer, House, Plot, PostedPhone, Shout, Storm, Sun} from '../components/HouseProps';
+import {Brick, BrickWall, Bucket, Door, Drip, FakeFront, Hammer, House, Plot, PostedPhone, RainSheet, Shout, SpeedLines, Storm, Sun} from '../components/HouseProps';
 import {Arrow, FeeSlip, Ladder, SayBubble, StickGuy} from '../components/PovertyProps';
 import wordsJson from './data/ep10-words.json';
 import envJson from './data/ep10-env.json';
@@ -83,16 +83,16 @@ const Ground: React.FC<{storm?: boolean; y?: number}> = ({storm, y = FLOOR}) => 
     <line x1={-300} y1={y - 10} x2={1380} y2={y - 10} stroke="#1D1A1A" strokeWidth={7} />
   </g>
 );
-/** Falling rain (moves with time). */
-const Rain: React.FC<{t: number; seed?: number}> = ({t, seed = 0}) => (
-  <g>
-    {Array.from({length: 46}, (_, i) => {
-      const x = ((i * 137 + seed * 61) % 1300) - 110;
-      const y = ((((i * 211 + seed * 97) % 2100) + t * 2300) % 2100) - 120;
-      return <line key={i} x1={x} y1={y} x2={x - 26} y2={y + 110} stroke="#9CC9EC" strokeWidth={6} strokeLinecap="round" opacity={0.8} />;
-    })}
-  </g>
-);
+/** Falling rain: two tiled sheets sliding down (one symbol in the Animate file, moved, not redrawn). */
+const Rain: React.FC<{t: number; seed?: number}> = ({t, seed = 0}) => {
+  const off = (t * 2300 + seed * 300) % 2100;
+  return (
+    <g>
+      <g transform={`translate(0 ${off})`}><RainSheet seed={seed} /></g>
+      <g transform={`translate(0 ${off - 2100})`}><RainSheet seed={seed} /></g>
+    </g>
+  );
+};
 const Split: React.FC<{top: React.ReactNode; bottom: React.ReactNode; topDy?: number}> = ({top, bottom, topDy = 0}) => (
   <g>
     <defs>
@@ -112,7 +112,7 @@ const Umbrella: React.FC<{x: number; y: number}> = ({x, y}) => (
 );
 const Bill: React.FC<{x: number; y: number; rot?: number}> = ({x, y, rot = -20}) => (
   <g>
-    <path d={`M ${x + 120} ${y - 30} l 90 -20 M ${x + 120} ${y + 10} l 110 0 M ${x + 120} ${y + 50} l 90 20`} stroke="#fff" strokeWidth={8} strokeLinecap="round" />
+    <g transform={`translate(${x + 120} ${y})`}><SpeedLines /></g>
     <g transform={`translate(${x} ${y}) rotate(${rot}) scale(0.45)`}><FeeSlip top="BILL" bottom="OVERDUE" amount="$900" /></g>
   </g>
 );
@@ -298,7 +298,7 @@ export const EP10_PLAN: Shot[] = [
         <g>
           <Room />
           <Window x={540} y={560} t={t} />
-          <ellipse cx={300} cy={-10 + drop} rx={14} ry={22} fill="#6BB7E8" stroke="#1D1A1A" strokeWidth={4} />
+          <g transform={`translate(300 ${-10 + drop})`}><Drip /></g>
           {!settled && <path d="M 250 900 q -30 -30 -10 -60 M 350 900 q 30 -30 10 -60" fill="none" stroke="#6BB7E8" strokeWidth={9} strokeLinecap="round" />}
           <Ebo f={f} x={settled ? 200 : 300} p={settled ? {eyes: 'open', mouth: 'o'} : {eyes: 'squeeze', mouth: 'scream', armL: [150, -20], armR: [150, -20], lift: -20 * Math.abs(Math.sin(t * 9))}} />
           <Side f={f} who="ama" x={800} facing={-1} p={{eyes: 'happy', mouth: 'smile', armR: t >= at(110) && !settled ? [40, -10] : [12, 6]}} k={2} />
@@ -392,6 +392,13 @@ const LEN = START.map((s, i) => (i + 1 < START.length ? START[i + 1] : END) - s)
 // ───────────────────────── sound ─────────────────────────
 /** Every piece that swoops in on a word (rule 21), and the effects (sfxCues). */
 export const EP10_SFX = () => [
+  // rain under every storm shot (indoors quieter), thunder on the cold open and on "storm"
+  {at: 0, sfx: 'rain', vol: 0.3, loop: START[2] + 0.3},
+  {at: at(83), sfx: 'rain', vol: 0.3, loop: START[8] - at(83)},
+  {at: START[8], sfx: 'rain', vol: 0.14, loop: START[9] - START[8]},
+  {at: START[9], sfx: 'rain', vol: 0.3, loop: START[11] - START[9] + 0.4},
+  {at: 0.1, sfx: 'thunder', vol: 0.9},
+  {at: at(83) - 0.05, sfx: 'thunder', vol: 1},
   // the cold open: creak, crash
   {at: 0.6, sfx: 'slide', vol: 0.5},
   {at: FALL + 0.42, sfx: 'body_thud', vol: 1},

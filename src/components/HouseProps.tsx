@@ -202,6 +202,25 @@ const ShoutDrawing: React.FC<{x?: number; y?: number; text?: string; rotate?: nu
   </g>
 );
 
+/** A sheet of rain streaks 1300 wide and 2100 tall (slide it down to make it fall; draw two to tile). */
+const RainSheetDrawing: React.FC<{seed?: number}> = ({seed = 0}) => (
+  <g>
+    {Array.from({length: 46}, (_, i) => {
+      const x = ((i * 137 + seed * 61) % 1300) - 110;
+      const y = ((i * 211 + seed * 97) % 2100) - 120;
+      return <line key={i} x1={x} y1={y} x2={x - 26} y2={y + 110} stroke="#9CC9EC" strokeWidth={6} strokeLinecap="round" opacity={0.8} />;
+    })}
+  </g>
+);
+
+/** A water drip (origin at its centre). */
+const DripDrawing: React.FC = () => <ellipse cx={0} cy={0} rx={14} ry={22} fill="#6BB7E8" stroke={C.ink} strokeWidth={4} />;
+
+/** Three white speed lines trailing to the right of something flying left-to-right (origin at their left end). */
+const SpeedLinesDrawing: React.FC = () => (
+  <path d="M 0 -30 l 90 -20 M 0 10 l 110 0 M 0 50 l 90 20" stroke="#fff" strokeWidth={8} strokeLinecap="round" />
+);
+
 const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P> => {
   const Wrapped: React.FC<P> = (props) => (
     <Prop name={name}>
@@ -224,3 +243,6 @@ export const Plot = prop('Plot', PlotDrawing);
 export const TalkTable = prop('TalkTable', TalkTableDrawing);
 export const Door = prop('Door', DoorDrawing);
 export const Shout = prop('Shout', ShoutDrawing);
+export const RainSheet = prop('RainSheet', RainSheetDrawing);
+export const Drip = prop('Drip', DripDrawing);
+export const SpeedLines = prop('SpeedLines', SpeedLinesDrawing);

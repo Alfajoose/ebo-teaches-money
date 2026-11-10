@@ -10,7 +10,7 @@ cues_path, ep, out = sys.argv[1:4]
 data = json.load(open(cues_path))[ep]
 SRC, CLEAN = 'episodes/sfx', 'out/sfx/clean'
 os.makedirs(CLEAN, exist_ok=True)
-CAP = {'typing': 1.04, 'marker_tick': 0.35, 'phone_buzz': 1.6, 'slide': 0.8, 'couch_flop': 0.7, 'cricket_night': 9.3}
+CAP = {'typing': 1.04, 'marker_tick': 0.35, 'phone_buzz': 1.6, 'slide': 0.8, 'couch_flop': 0.7, 'cricket_night': 9.3, 'rain': 12.0, 'thunder': 3.0}
 LEVEL = 0.55  # effects sit under the voice
 
 
