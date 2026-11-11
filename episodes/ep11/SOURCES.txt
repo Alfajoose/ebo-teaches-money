@@ -1,0 +1,5 @@
+Ep 11 voices (ElevenLabs eleven_v4, one take each; see cast_voices/VOICES.md):
+- raw_ebo_1x.mp3: Ebo (Dan), all his lines, 593 credits; raw_ebo.mp3 = the same sped up 1.15x (brisk, like Ep 10).
+- raw_mica/christy/obuor/ama.mp3: the cast's lines (84 + 50 + 79 + 61 credits; Obuor re-recorded without an accent, +79).
+Word timings: faster-whisper small.en locally. voice.mp3 = the lines spliced in story order with the silent beats
+(the party text, the cricket, the beat after Ama's question, the typed reply) per voice_edl.json.
