@@ -14,7 +14,7 @@ Christy (the neighbour); Obuor (the boss, one line).
 
 | # | Who | Line | Picture | Shot |
 |---|---|---|---|---|
-| 1 | — | *(buzz)* | Ebo, mouth full of jollof, phone buzzes. He answers in one ring. | action |
+| 1 | — | *(buzz)* | Ebo, mouth full of noodles, phone buzzes. He answers in one ring. | action |
 | 2 | MICA *(phone)* | Bro, you free? | Mica on the phone, already in the car. | action |
 | 3 | EBO | Always! | Ebo grabs his keys, still chewing. | action |
 | 4 | EBO | That was my problem. I was *always* free. | Ebo to camera, keys in hand. | narrator, close |

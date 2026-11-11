@@ -62,6 +62,11 @@
    - **Vary the narrator shots:** walk-and-talk through the scene, a close-up for the punchline, Ebo reacting beside the action, the big along-the-bottom framing only sometimes.
    - **One moral, said once,** at the end.
 
+## No Ghanaian references (user's standing rule)
+
+Keep the show culturally neutral: no Ghanaian accents in the cast's voices, no Ghanaian foods, words, places, money or
+customs in scripts, props or sets. (The characters' names stay as they are.) Check every new script and voice against this.
+
 ## Recurring roles (from Ep 10, agreed with the user 2026-11-10)
 
 Cast the same people in the same roles every episode, so viewers get to know them.

@@ -61,7 +61,7 @@ const Bubble: React.FC<{x: number; y: number; lines: string[]; flip?: boolean; w
 );
 
 const PANELS: (() => React.ReactNode)[] = [
-  // 1 · (buzz) Ebo, mouth full of jollof, answers in one ring
+  // 1 · (buzz) Ebo, mouth full of noodles, answers in one ring
   () => (
     <g>
       <Room />
