@@ -28,6 +28,7 @@ import {EboEp10, EP10_DURATION, EP10_W, EP10_H} from './series/ep10';
 import {Ep10ThreeTest, EP10_3D_DURATION, EP10_3D_W, EP10_3D_H} from './series/ep10three';
 import {Ebo3DTest, EBO3D_DURATION} from './series/ebo3dtest';
 import {Ep11Board, EP11_BOARD_PANELS} from './series/ep11board';
+import {EboEp11, EP11_DURATION, EP11_W, EP11_H} from './series/ep11';
 import {EboHandsSheet} from './cast/hands';
 import {EboContactSheet} from './cast/ContactSheet';
 import {EboEp05, EP05_DURATION, EP05_W, EP05_H} from './series/ep05';
@@ -107,6 +108,7 @@ export const RemotionRoot: React.FC = () => (
   <Composition id="Ep10-3D-Test" component={Ep10ThreeTest} durationInFrames={EP10_3D_DURATION} fps={30} width={EP10_3D_W} height={EP10_3D_H} />
   <Composition id="Ebo-3D-Test" component={Ebo3DTest} durationInFrames={EBO3D_DURATION} fps={30} width={1080} height={1920} />
   <Composition id="Ep11-Board" component={Ep11Board} durationInFrames={EP11_BOARD_PANELS} fps={30} width={1080} height={1920} />
+  <Composition id="EboTeachesMoney-Ep11" component={EboEp11} durationInFrames={EP11_DURATION} fps={30} width={EP11_W} height={EP11_H} />
   <Composition id="Ebo-Hands" component={EboHandsSheet} durationInFrames={1} fps={30} width={1080} height={1920} />
   <Composition id="Ebo-ContactPoses" component={EboContactSheet} durationInFrames={1} fps={30} width={1080} height={1920} />
   <Composition id="EboTeachesMoney-Ep05" component={EboEp05} durationInFrames={EP05_DURATION} fps={30} width={EP05_W} height={EP05_H} />
