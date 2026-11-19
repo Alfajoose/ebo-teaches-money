@@ -1,55 +1,66 @@
-# Ep 13: "I Said Sorry to a Chair" (storytime, doodle style, about 60 s)
+# Ep 13: "Someone Stepped on My Foot. I Said Sorry." (storytime, doodle style, about 55 s)
 
 **Style:**
-- Storytime: Ebo tells his own story in the first person.
-- The whole thing is drawn as sketchbook doodles (see `doodle_cast.png`).
-- No names are said. The roles are "my friend", "my wife", "my boss", "a waiter" and "some guy".
-- Lots of cuts (about 1 a second), with quick tangents and slapstick.
-- Ebo's narration is brisk, with a confident voice. The wife has a voice of her own.
+- Storytime: Ebo tells his own story in the first person, as voice-over.
+- The doodle cast acts it out on the sketchbook page (see `doodle_cast.png`).
+- No names are said. The roles are "my wife", "my boss", "my friend", "the waiter" and "a stranger".
+- About one cut a second.
+- Voices:
+  - Ebo: Dan, brisk.
+  - The wife: a voice of her own.
+  - The stranger: one line at the end.
 
-## Script
+## Shots
 
-**EBO (V.O.):**
-> So, a while back, I had a problem.
-> I said sorry. For *everything.*
-
-> Late to meet my friend? "Sorry, sorry, sorry." Okay. Fair.
-> But then some guy walks into *me*… and *I* say sorry.
-> The waiter brings me the wrong food? "Sorry! It's fine!"
-> I once said sorry… to a chair.
-
-**[TANGENT: Ebo now, close on his face]**
-> I'm not proud of it. It was a nice chair.
-
-> And the weird part? The more I apologised, the less anyone took me seriously.
-> My boss gave the big project to someone else.
-> My friend started calling me "Mr. Sorry."
-
-> Then one night, I'm mid-sorry, and my wife just… stops me.
-
-**WIFE:**
-> Stop saying sorry. Say thank you.
-
-**EBO:**
-> Sor— …thank you?
-
-> So I tried it.
-> Late again? "Thanks for waiting!" And my friend… smiled. Bought me a drink.
-> Boss fixed my mistake? "Thanks for catching that."
-> Next week, the big project? Mine.
-
-> Turns out "sorry" makes it about your mistake.
-> "Thank you" makes it about them.
-
-**[beat]**
-> Anyway. I still walk into that chair.
-> …Thanks, chair.
+| # | Beat | Who | Line | Picture |
+|---|---|---|---|---|
+| 1 | Hook | EBO | A stranger stepped on my foot. | Close on feet: a big shoe stomps on Ebo's sneaker |
+| 2 | Hook | EBO | And I said… | Ebo's face: X eyes, wobbly mouth, sweat |
+| 3 | Hook | EBO | "Sorry!" | Street: Ebo smiles politely, the stranger walks on |
+| 4 | Hook | EBO | My wife just stared at me. | The wife beside him, deadpan stare |
+| 5 | Hook | WIFE | "Do you know how many times you've said that today?" | Close on the wife, eyebrows up |
+| 6 | Hook | EBO | I didn't. | Ebo shrugs, big |
+| 7 | Hook | EBO | So she started counting. | The wife pulls out a little notepad, narrowed eyes |
+| 8 | The count | EBO | Asking the waiter for water? | Café: Ebo raises a hand to the waiter |
+| 9 | The count | EBO | "Sorry, could I get…" | Same, polite cringe smile |
+| 10 | The count | EBO | One. | Insert: notepad, one tally mark |
+| 11 | The count | EBO | Asking my boss a question? | Office: boss on his phone, Ebo steps up |
+| 12 | The count | EBO | "Sorry, quick question…" | Same, Ebo cringe-smiling |
+| 13 | The count | EBO | Two. | Notepad: two marks |
+| 14 | The count | EBO | Someone bumps into me? | Street: a guy barges into Ebo, motion lines |
+| 15 | The count | EBO | "Oh, sorry!" | Ebo apologises to the guy who bumped him |
+| 16 | The count | EBO | Three. | Notepad: three marks |
+| 17 | The count | EBO | By Friday? | Ebo surrounded by 'sorry' bubbles popping in |
+| 18 | The count | EBO | Forty-seven. | Notepad full of tallies, big red 47 scribbled |
+| 19 | The count | — | (beat) | Ebo's face: wide eyes, sweat |
+| 20 | The cost | EBO | Then she showed me the worse part. | The wife's face, serious |
+| 21 | The cost | EBO | The waiter forgot my water. | Café: waiter walks past with the water, Ebo's glass empty |
+| 22 | The cost | EBO | My boss answered my question… | Office: Ebo talks, boss still on phone |
+| 23 | The cost | EBO | …still looking at his phone. | Close on boss staring at his phone |
+| 24 | The cost | EBO | Every sorry made me a little smaller. | Ebo says sorry… |
+| 25 | The cost | EBO | (cont.) | …and is drawn smaller |
+| 26 | The cost | EBO | And people treated me that way. | Tiny Ebo between full-size people |
+| 27 | The rule | EBO | So she gave me one rule. | Warm page: the wife holds up one finger, Ebo listens |
+| 28 | The rule | WIFE | "Every time you want to say sorry…" | Close on the wife |
+| 29 | The rule | WIFE | "…say thank you." | Same, warm smile |
+| 30 | The rule | EBO | "Sorry I'm late"… | Café: Ebo rushes in, friend annoyed, bubble crossed out |
+| 31 | The rule | EBO | …became "Thanks for waiting!" | Friend grins, Ebo waves |
+| 32 | The rule | EBO | "Sorry, quick question"… | Office: bubble crossed out |
+| 33 | The rule | EBO | …became "Thanks for your time." | Ebo smiles, new bubble |
+| 34 | The change | EBO | Monday, I tried it. | Sunny office: Ebo walks in, standing tall |
+| 35 | The change | EBO | My boss put his phone down. | Phone face-down on the desk, boss turns to Ebo |
+| 36 | The change | EBO | Looked at me. | Close on boss, eyebrows up, looking straight out |
+| 37 | The change | EBO | Actually listened. | Boss leans in, Ebo talks, both smiling |
+| 38 | Button | EBO | Then, on the way home, | Sunset street: Ebo strolls, happy |
+| 39 | Button | EBO | a stranger stepped on my foot again. | The stomp again (same shot as 1) |
+| 40 | Button | EBO | I opened my mouth… "Thank—" | Ebo's face, eyes shut, mid-word |
+| 41 | Button | EBO | …No. | Ebo's eyes snap open |
+| 42 | Button | EBO | "Hey. That's my foot." | Ebo points, the stranger startled, sweating |
+| 43 | Button | STRANGER | "Oh— sorry!" | The stranger apologises; Ebo smiles. Flipped. |
 
 ## Notes
-- **Running gag:** the chair, which appears in the hook, the tangent and the button.
-- **The tangent cut:** Ebo is "now", in a different colour page (light yellow) so it reads as a cut-away.
-- **Slapstick:**
-  - the guy bumps into Ebo
-  - Ebo walks into the chair (BONK)
-  - Ebo's hands slap over his mouth on "Sor—"
-- **No on-screen text** except speech bubbles for short lines.
+- **The hook comes back flipped.** The stranger steps on his foot again, Ebo nearly says "thank you", stands up for himself, and the stranger ends up the one saying sorry.
+- **The notepad is the engine.** Each sorry gets a tally mark: 1, 2, 3… 47.
+- **The cost is shown, not said:** the forgotten water, the boss on his phone, Ebo shrinking.
+- **The page colour marks the turns:** warm yellow for the wife's rule, sunset for the button.
+- **On-screen text:** speech bubbles only, plus the 47 on the notepad.

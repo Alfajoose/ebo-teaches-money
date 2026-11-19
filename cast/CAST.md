@@ -62,6 +62,9 @@
    - **Vary the narrator shots:** walk-and-talk through the scene, a close-up for the punchline, Ebo reacting beside the action, the big along-the-bottom framing only sometimes.
    - **One moral, said once,** at the end.
 
+23. **Take the principle, never the surface (Nov 2026).** When a reference video inspires us, borrow *why* it works (holding the answer back, a hook the viewer recognises), never its words, its structure markers or its catchphrases ("three filters", "listen up", "close, but not exactly"). If a viewer could name the source, it's too close. Hooks must be **relatable**, things people actually do (saying sorry when someone else bumps you), not invented absurdities (saying sorry to a chair).
+24. **Storytime, doodle style (Ep 13 on).** Ebo tells his own story (first person, past tense, voice-over). The doodle cast (`src/components/DoodleCast.tsx`, sketchbook versions of the rigs) acts it out on the sketchbook page. No names are said: the roles are "my wife", "my friend", "my boss", "a stranger". The hook comes back at the end with a twist.
+
 ## No Ghanaian references (user's standing rule)
 
 Keep the show culturally neutral: no Ghanaian accents in the cast's voices, no Ghanaian foods, words, places, money or
