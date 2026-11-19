@@ -14,6 +14,7 @@ Built with [Remotion](https://remotion.dev). The characters come from the origin
 | 04 | The Ultimate Guide to Staying Broke: Ebo alone, six bad habits, one twist ending (4:34, 16:9 long-form) | [`ebo-teaches-money-ep04.mp4`](episodes/ep04/ebo-teaches-money-ep04.mp4) | [`Ebo_Teaches_Money_Ep04.fla`](episodes/ep04/Ebo_Teaches_Money_Ep04.fla) |
 | 10 | Marry a Woman Who…: one house, two builders, one storm (52 s, vertical) | [`ebo-teaches-money-ep10.mp4`](episodes/ep10/ebo-teaches-money-ep10.mp4) | [`Ebo_Teaches_Money_Ep10.fla`](episodes/ep10/Ebo_Teaches_Money_Ep10.fla) |
 | 11 | The Dangerous Side of Being Too Available: Ebo tells it first person, the cast speaks (40 s, vertical) | [`ebo-teaches-money-ep11.mp4`](episodes/ep11/ebo-teaches-money-ep11.mp4) | [`Ebo_Teaches_Money_Ep11.fla`](episodes/ep11/Ebo_Teaches_Money_Ep11.fla) |
+| 12 | Why Saying Sorry Too Much Makes People Respect You Less: Ebo narrates, stick-figure doodles act it out, 40 shots (42 s, vertical) | [`ebo-teaches-money-ep12.mp4`](episodes/ep12/ebo-teaches-money-ep12.mp4) | [`Ebo_Teaches_Money_Ep12.fla`](episodes/ep12/Ebo_Teaches_Money_Ep12.fla) |
 | 01 short | Same episode, tight 34.3 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
 
 To add the voice to an Animate file, follow the episode's `README.txt` (it takes three steps).
