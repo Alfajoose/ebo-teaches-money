@@ -143,7 +143,7 @@ const TickTockDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => 
 const BonkDrawing: React.FC<{x?: number; y?: number}> = ({x = 0, y = 0}) => (
   <g transform={`translate(${x} ${y})`}>
     <path d="M 0 -60 L 16 -18 L 60 -18 L 24 8 L 38 52 L 0 26 L -38 52 L -24 8 L -60 -18 L -16 -18 Z" fill="#FFE45C" stroke={INK} strokeWidth={6} strokeLinejoin="round" />
-    <text y={78} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={INK}>BONK</text>
+    <path d="M -90 -70 l -30 -30 M 90 -70 l 30 -30 M -100 40 l -40 10 M 100 40 l 40 10" stroke={INK} strokeWidth={6} strokeLinecap="round" />
   </g>
 );
 
