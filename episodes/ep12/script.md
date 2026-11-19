@@ -3,6 +3,7 @@
 Draft 4, 2026-11-19: Peanut density (user: still too few shots and scenes) — a new picture on nearly every phrase,
 about one cut a second. 40 shots, ~42 s, seven places (café, office, street, restaurant, lift, phone, the page).
 Ebo narrates and voices the stick guy; everyone else speaks in doodled bubbles. The 5-beat format.
+Props in context, no infographics (user's note): the "why" and the fix are shown with things in the scenes.
 
 | # | Beat | Line (Ebo) | Shot |
 |---|---|---|---|
@@ -24,14 +25,14 @@ Ebo narrates and voices the stick guy; everyone else speaks in doodled bubbles. 
 | 16 | Mistake | "Sorry for the late reply, sorry." | Close: his phone. |
 | 17 | Mistake | — | The group chat: his "sorry" bubbles stacking up the screen. |
 | 18 | Why | Don't be that guy. | Ebo to camera, close. |
-| 19 | Why | Every sorry tells people… | A counter appears over the stick guy: SORRY × 1. |
-| 20 | Why | …you messed up. | SORRY × 10 — he shrinks. |
-| 21 | Why | Say it enough… | SORRY × 47 — he's tiny. |
-| 22 | Why | …and they believe it. | His friends walk past without seeing him. |
+| 19 | Why | Every sorry tells people… | Office: the boss hands the BIG PROJECT folder right past him, to a coworker. |
+| 20 | Why | …you messed up. | Party invites handed out; he's skipped. "…me?" |
+| 21 | Why | Say it enough… | The team whiteboard: his name crossed off. |
+| 22 | Why | …and they believe it. | His friends walk past him while he waves. "hey—?" |
 | 23 | Fix | Here's the fix. | Ebo, finger up. |
-| 24 | Fix | Swap "sorry"… | "sorry" writes itself on the page. |
-| 25 | Fix | — | A red line crosses it out. |
-| 26 | Fix | …for "thank you". | "thank you" writes itself in. |
+| 24 | Fix | Swap "sorry"… | His fridge: a sticky note that says "sorry". |
+| 25 | Fix | — | A red pen crosses it out. |
+| 26 | Fix | …for "thank you". | "thank you" written underneath. |
 | 27 | Replay | — | Café door again; he walks in relaxed. |
 | 28 | Replay | "Thanks for waiting!" | Close: his smile. |
 | 29 | Replay | — | Friend: "No worries! Got you a drink." Slides a cup over. |
@@ -42,9 +43,9 @@ Ebo narrates and voices the stick guy; everyone else speaks in doodled bubbles. 
 | 34 | Replay | — | Lift: he holds the doors open for someone. "Thanks!" from them. |
 | 35 | Replay | "Thanks for your patience!" | Close: his phone. |
 | 36 | Replay | — | Reply pops in: "No problem!" |
-| 37 | Replay | Same mistakes. Different guy. | He grows back: THANKS → THANK YOU, taller than before. |
+| 37 | Replay | Same mistakes. Different guy. | Office: this time the boss hands the BIG PROJECT folder to him. |
 | 38 | Replay | — | Café: his knee hits the same chair. BONK. |
 | 39 | Replay | "…thanks, chair." | His friend cracks up. |
-| 40 | Close | "Sorry" makes it about your mistake. "Thank you" makes it about them. | Ebo close, slow push-in. |
+| 40 | Close | "Sorry" makes it about your mistake. "Thank you" makes it about them. | Ebo close; behind him the stick guy and his friend clink cups. |
 
 **Voice:** Ebo (Dan), one take, brisk, ~550 credits. Others in bubbles (no extra voices).

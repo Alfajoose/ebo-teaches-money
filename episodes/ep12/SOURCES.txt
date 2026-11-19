@@ -1,0 +1,2 @@
+Ep 12 voice: raw_ebo_1x.mp3 = ElevenLabs eleven_v4, Dan, one take (narration + the stick guy), 864 credits.
+raw_ebo.mp3 = 1.15x. Word timings: faster-whisper small.en locally. voice.mp3 = spliced with silent beats (voice_edl.json).

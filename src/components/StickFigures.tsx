@@ -8,6 +8,8 @@ import {C, FONT} from '../theme';
  * Origin at the hips. Angles in degrees: 0 = hanging straight down, + = swung forward (toward +x), elbow/knee relative.
  */
 const INK = C.ink;
+/** Animation context for the doodles: `l` = seconds into the shot (bubbles drop in), `f` = frame, `mouth` = Ebo's lip-sync frame. The board leaves the defaults (final state). */
+export const DoodleAnim = React.createContext<{l: number; f: number; mouth?: number}>({l: 99, f: 0});
 const L = {stroke: INK, strokeWidth: 10, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, fill: 'none'};
 
 export type StickPose = {
@@ -159,7 +161,14 @@ export const SketchPage = prop('SketchPage', SketchPageDrawing);
 export const DoodleTable = prop('DoodleTable', DoodleTableDrawing);
 export const DoodleChair = prop('DoodleChair', DoodleChairDrawing);
 export const DoodleCup = prop('DoodleCup', DoodleCupDrawing);
-export const DoodleBubble = prop('DoodleBubble', DoodleBubbleDrawing);
+const DoodleBubbleProp = prop('DoodleBubble', DoodleBubbleDrawing);
+/** A bubble that drops in at the start of its shot (translate only, house rule 2). */
+export const DoodleBubble: React.FC<React.ComponentProps<typeof DoodleBubbleDrawing>> = (props) => {
+  const {l} = React.useContext(DoodleAnim);
+  const u = Math.max(0, Math.min(1, (l - 0.06) / 0.14));
+  if (l < 0.06) return null;
+  return <g transform={`translate(0 ${-70 * (1 - u) ** 2})`}><DoodleBubbleProp {...props} /></g>;
+};
 export const MotionLines = prop('MotionLines', MotionLinesDrawing);
 export const TickTock = prop('TickTock', TickTockDrawing);
 export const Bonk = prop('Bonk', BonkDrawing);
