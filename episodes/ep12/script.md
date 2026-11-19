@@ -20,19 +20,19 @@ Props in context, no infographics (user's note): the "why" and the fix are shown
 | 11 | Mistake | — | Street: a guy glued to his phone walks toward him. |
 | 12 | Mistake | — | They collide. BONK. |
 | 13 | Mistake | "Oh— sorry!" | He apologises; the other guy never looks up. |
-| 14 | Mistake | "Sorry, it's fine!" | Restaurant: the waiter brings a fish. He ordered a burger. |
+| 14 | Mistake | "Sorry, it's fine!" | Restaurant: the waiter brings him a fish, while the next table happily gets HIS burger. |
 | 15 | Mistake | "Sorry!" | Lift: the doors close on his arm… he apologises to the lift. |
 | 16 | Mistake | "Sorry for the late reply, sorry." | Close: his phone. |
 | 17 | Mistake | — | The group chat: his "sorry" bubbles stacking up the screen. |
 | 18 | Why | Don't be that guy. | Ebo to camera, close. |
 | 19 | Why | Every sorry tells people… | Office: the boss hands the BIG PROJECT folder right past him, to a coworker. |
-| 20 | Why | …you messed up. | Party invites handed out; he's skipped. "…me?" |
-| 21 | Why | Say it enough… | The team whiteboard: his name crossed off. |
+| 20 | Why | …you messed up. | His friends take a group selfie; he's left out of frame. "…me?" |
+| 21 | Why | Say it enough… | The team high-fives; he's left with his hand up. |
 | 22 | Why | …and they believe it. | His friends walk past him while he waves. "hey—?" |
 | 23 | Fix | Here's the fix. | Ebo, finger up. |
-| 24 | Fix | Swap "sorry"… | His fridge: a sticky note that says "sorry". |
-| 25 | Fix | — | A red pen crosses it out. |
-| 26 | Fix | …for "thank you". | "thank you" written underneath. |
+| 24 | Fix | Swap "sorry"… | Close: he starts to say "Sor—" |
+| 25 | Fix | — | …catches himself, hands over his mouth. |
+| 26 | Fix | …for "thank you". | …and grins: "Thank you!" |
 | 27 | Replay | — | Café door again; he walks in relaxed. |
 | 28 | Replay | "Thanks for waiting!" | Close: his smile. |
 | 29 | Replay | — | Friend: "No worries! Got you a drink." Slides a cup over. |
