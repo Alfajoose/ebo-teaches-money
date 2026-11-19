@@ -19,6 +19,7 @@ import {Ep09Frame, EP09_DURATION, EP09_SHOT_TIMES, EP09_W, EP09_H, ep09ShotAt, E
 import {Ep10Frame, EP10_DURATION, EP10_SHOT_TIMES, EP10_W, EP10_H, ep10ShotAt, EP10_SECTIONS} from '../../src/series/ep10';
 import {Ep11Frame, EP11_DURATION, EP11_SHOT_TIMES, EP11_W, EP11_H, ep11ShotAt, EP11_SECTIONS} from '../../src/series/ep11';
 import {Ep12Frame, EP12_DURATION, EP12_SHOT_TIMES, EP12_W, EP12_H, ep12ShotAt, EP12_SECTIONS} from '../../src/series/ep12';
+import {Ep13Frame, EP13_DURATION, EP13_SHOT_TIMES, EP13_W, EP13_H, ep13ShotAt, EP13_SECTIONS} from '../../src/series/ep13';
 import {Capture, CaptureContext} from '../../src/series/exportCtx';
 
 const EPISODES = {
@@ -34,6 +35,7 @@ const EPISODES = {
   ep10: {name: 'Ep10', Frame: Ep10Frame, duration: EP10_DURATION, shotTimes: EP10_SHOT_TIMES, shotIndexAt: ep10ShotAt, toSource: (f: number) => f, width: EP10_W, height: EP10_H, sections: EP10_SECTIONS},
   ep11: {name: 'Ep11', Frame: Ep11Frame, duration: EP11_DURATION, shotTimes: EP11_SHOT_TIMES, shotIndexAt: ep11ShotAt, toSource: (f: number) => f, width: EP11_W, height: EP11_H, sections: EP11_SECTIONS},
   ep12: {name: 'Ep12', Frame: Ep12Frame, duration: EP12_DURATION, shotTimes: EP12_SHOT_TIMES, shotIndexAt: ep12ShotAt, toSource: (f: number) => f, width: EP12_W, height: EP12_H, sections: EP12_SECTIONS},
+  ep13: {name: 'Ep13', Frame: Ep13Frame, duration: EP13_DURATION, shotTimes: EP13_SHOT_TIMES, shotIndexAt: ep13ShotAt, toSource: (f: number) => f, width: EP13_W, height: EP13_H, sections: EP13_SECTIONS},
   konka01: {name: 'Konka Short01', Frame: K01Frame, duration: K01_DURATION, shotTimes: K01_SHOT_TIMES, shotIndexAt: k01ShotIndexAt, toSource: (f: number) => f, width: K01_W, height: K01_H, sections: K01_PLAN.map((p) => p.section)},
 };
 

@@ -1,0 +1,60 @@
+{
+ "segments": [
+  {
+   "who": "ebo",
+   "src": "ebo",
+   "from": 0.0,
+   "to": 5.3,
+   "gap": 0.2
+  },
+  {
+   "who": "wife",
+   "src": "wife",
+   "from": 0.0,
+   "to": 2.4,
+   "gap": 0.3
+  },
+  {
+   "who": "ebo",
+   "src": "ebo",
+   "from": 5.45,
+   "to": 7.45,
+   "gap": 0.25
+  },
+  {
+   "who": "ebo",
+   "src": "ebo",
+   "from": 7.75,
+   "to": 19.55,
+   "gap": 0.8
+  },
+  {
+   "who": "ebo",
+   "src": "ebo",
+   "from": 19.95,
+   "to": 32.15,
+   "gap": 0.25
+  },
+  {
+   "who": "wife",
+   "src": "wife",
+   "from": 3.22,
+   "to": 6.4,
+   "gap": 0.35
+  },
+  {
+   "who": "ebo",
+   "src": "ebo",
+   "from": 32.45,
+   "to": 49.35,
+   "gap": 0.3
+  },
+  {
+   "who": "stranger",
+   "src": "stranger",
+   "from": 0.0,
+   "to": 1.55,
+   "gap": 1.0
+  }
+ ]
+}
