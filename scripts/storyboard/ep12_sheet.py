@@ -3,11 +3,11 @@ import sys, glob, re, textwrap
 from PIL import Image, ImageDraw, ImageFont
 panels_dir, out = sys.argv[1:3]
 rows_md = [r for r in open('episodes/ep12/script.md').read().splitlines() if re.match(r'\| \d+ \|', r)]
-shots = [[c.strip() for c in r.strip('|').split('|')][1:5] for r in rows_md]
+shots = [[c.strip() for c in r.strip('|').split('|')][1:4] for r in rows_md]
 ims = sorted(glob.glob(f'{panels_dir}/s*.png'))
 F = lambda w, s: ImageFont.truetype(f'/usr/share/fonts/opentype/inter/Inter-{w}.otf', s)
 INK, YEL, BLUE, GREY, RED = '#1D1A1A', '#FCE7A6', '#CFE3FA', '#55505A', '#E5484D'
-COLS, PW, PH, PAD, TXT = 9, 300, 533, 20, 300
+COLS, PW, PH, PAD, TXT = 10, 270, 480, 16, 230
 CW, CH = PW + 2 * PAD, 104 + PH + TXT
 W = 30 + COLS * (CW + 18) + 12
 H = 150 + (CH + 18) * ((len(shots) + COLS - 1) // COLS) + 20
@@ -15,9 +15,10 @@ sheet = Image.new('RGB', (W, H), '#FFFDF8'); d = ImageDraw.Draw(sheet)
 title = 'Ep12 Storyboard: Why Saying Sorry Too Much Makes People Respect You Less'
 d.rounded_rectangle([30, 28, 30 + d.textlength(title, font=F('Bold', 50)) + 60, 112], radius=42, fill=BLUE)
 d.text((60, 42), title, font=F('Bold', 50), fill=INK)
-info = 'Experiment: Ebo narrates, his stick-figure doodles act it out  |  5-beat format  |  ~40s, 17 shots'
+info = 'Experiment: Ebo narrates, his stick-figure doodles act it out  |  5-beat format  |  ~42s, 40 shots'
 d.text((W - 30 - d.textlength(info, font=F('Medium', 26)), 128 - 30), info, font=F('Medium', 26), fill=GREY)
-for i, (beat, who, line, pic) in enumerate(shots):
+for i, (beat, line, pic) in enumerate(shots):
+    who = 'EBO' if line not in ('—', '') else 'NO LINE'
     x = 30 + (i % COLS) * (CW + 18); y = 150 + (i // COLS) * (CH + 18)
     d.rounded_rectangle([x, y, x + CW, y + CH], radius=20, fill='#fff', outline=INK, width=4)
     chip = f'{i + 1}. {beat}'
