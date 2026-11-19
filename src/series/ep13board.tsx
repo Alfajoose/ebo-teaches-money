@@ -20,7 +20,7 @@ const L = {stroke: INK, strokeWidth: 8, strokeLinecap: 'round' as const, strokeL
 export const Ep13Anim = React.createContext<{f: number; l: number; speaker?: string; mouth?: number}>({f: 0, l: 99});
 const VOICE: Partial<Record<DoodleWho, string>> = {ebo: 'ebo', wife: 'wife', guy: 'stranger'};
 /** A doodle person standing on the floor line (s = size). Lip-syncs when `talk` and it's their line; bobs and blinks. */
-const P: React.FC<{who: DoodleWho; x: number; s?: number; y?: number; pose?: DoodlePose; facing?: 1 | -1; hold?: React.ReactNode; talk?: boolean}> = ({who, x, s = 1.85, y = FLOOR, pose = {}, facing = 1, hold, talk}) => {
+const P: React.FC<{who: DoodleWho; x: number; s?: number; y?: number; pose?: DoodlePose; facing?: 1 | -1; hold?: React.ReactNode; holdL?: React.ReactNode; talk?: boolean}> = ({who, x, s = 1.85, y = FLOOR, pose = {}, facing = 1, hold, holdL, talk}) => {
   const {f, speaker, mouth} = React.useContext(Ep13Anim);
   let p: DoodlePose = pose;
   if (talk && speaker === VOICE[who] && mouth !== undefined) p = {...p, mouth: mouth as DoodlePose['mouth']};
@@ -28,7 +28,7 @@ const P: React.FC<{who: DoodleWho; x: number; s?: number; y?: number; pose?: Doo
   const eyes = p.eyes ?? 'dot';
   if (f > 0 && (eyes === 'dot' || eyes === 'side') && (f + seed) % 96 < 3) p = {...p, eyes: 'closed'};
   const bob = f > 0 ? 3 * Math.sin((f + seed) / 9) : 0;
-  return <g transform={`translate(${x} ${y}) scale(${s}) translate(0 ${-118 + bob / s})`}><DoodlePerson who={who} pose={p} facing={facing} hold={hold} /></g>;
+  return <g transform={`translate(${x} ${y}) scale(${s}) translate(0 ${-118 + bob / s})`}><DoodlePerson who={who} pose={p} facing={facing} hold={hold} holdL={holdL} /></g>;
 };
 /** A face close-up: the head fills the frame. */
 const Face: React.FC<{who: DoodleWho; pose?: DoodlePose; facing?: 1 | -1; talk?: boolean; dx?: number}> = ({who, pose, facing, talk, dx = 0}) => (
@@ -124,6 +124,19 @@ const Crossed: React.FC<{x: number; y: number; text: string[]; tail?: 1 | -1}> =
   <g><B x={x} y={y} text={text} tail={tail} w={440} /><path d={`M ${x - 330} ${y + 50} L ${x + 330} ${y - 50}`} stroke={RED} strokeWidth={16} strokeLinecap="round" /></g>
 );
 
+/** The wife's notepad in her hand (the tally, small). */
+const HeldPad: React.FC<{n: number; l: number; k?: number}> = ({n, l, k = 0.19}) => <g transform={`scale(${k}) translate(-200 -1300)`}><Tally n={n} l={l} /></g>;
+/** She ticks the pad, right there in the scene: the wife big at the left, Ebo still apologising behind her. */
+const Count: React.FC<{n: number; l: number; set: React.ReactNode; ebo: DoodlePose}> = ({n, l, set, ebo}) => {
+  const tick = l > 0.1 && l < 0.3 ? Math.sin(((l - 0.1) / 0.2) * Math.PI) : 0;
+  return (
+    <g>
+      {set}
+      <P who="ebo" x={860} s={1.4} pose={ebo} facing={-1} />
+      <P who="wife" x={250} s={2.7} pose={{armR: [95, -25], armL: [80 + 25 * tick, 30], eyes: 'side', mouth: 'flat', brows: 'angry'}} hold={<HeldPad n={n} l={l} />} />
+    </g>
+  );
+};
 const WAVE: DoodlePose = {armR: [125, 25]};
 const TALKER: DoodlePose = {armR: [70, 30]};
 const SHRUG: DoodlePose = {armL: [-70, -50], armR: [70, 50], brows: 'up', mouth: 'flat'};
@@ -142,16 +155,17 @@ export const PANELS: ((l: number) => React.ReactNode)[] = [
   // ── the count ──
   /* 8 */ () => <Page><Cafe /><P who="ebo" x={300} pose={WAVE} /><P who="waiter" x={800} facing={-1} /></Page>,
   /* 9 */ () => <Page><Cafe /><P who="ebo" x={300} pose={{...POLITE, armR: [125, 25]}} talk /><P who="waiter" x={800} facing={-1} /><B x={430} y={430} text={['sorry, could I get…']} tail={-1} w={494} /></Page>,
-  /* 10 */ (l) => <Page><Tally n={1} l={l} /></Page>,
+  /* 10 */ (l) => <Page><Count n={1} l={l} set={<Cafe />} ebo={{...POLITE, armR: [125, 25]}} /></Page>,
   /* 11 */ () => <Page><Office /><P who="boss" x={640} pose={{armR: [150, -40], eyes: 'side', mouth: 'flat'}} hold={<PhoneProp />} /><P who="ebo" x={250} pose={TALKER} /></Page>,
   /* 12 */ () => <Page><Office /><P who="boss" x={640} pose={{armR: [150, -40], eyes: 'side', mouth: 'flat'}} hold={<PhoneProp />} /><P who="ebo" x={250} pose={{...POLITE, armR: [70, 30]}} talk /><B x={460} y={430} text={['sorry, quick question…']} tail={-1} w={532} /></Page>,
-  /* 13 */ (l) => <Page><Tally n={2} l={l} /></Page>,
+  /* 13 */ (l) => <Page><Count n={2} l={l} set={<Office />} ebo={{...POLITE, armR: [70, 30]}} /></Page>,
   /* 14 */ (l) => <Page><Street /><P who="ebo" x={470} pose={{eyes: 'wide', mouth: 'o', lean: -10}} /><P who="guy" x={640 + 320 * (1 - Math.min(1, l / 0.25)) ** 2} facing={-1} pose={{lean: 14, eyes: 'side', armR: [60, 20]}} /><MotionLines x={900} y={1000} dir={-1} /></Page>,
   /* 15 */ () => <Page><Street /><P who="ebo" x={420} pose={POLITE} talk /><P who="guy" x={820} facing={-1} pose={{eyes: 'side', mouth: 'flat'}} /><B x={420} y={430} text={['oh, sorry!']} tail={-1} w={361} /></Page>,
-  /* 16 */ (l) => <Page><Tally n={3} l={l} /></Page>,
+  /* 16 */ (l) => <Page><Count n={3} l={l} set={<Street />} ebo={POLITE} /></Page>,
   /* 17 */ (l) => <Page><P who="ebo" x={540} s={2} pose={POLITE} talk />
     {[[260, 420, -8], [800, 380, 6], [230, 760, 4], [850, 740, -6], [540, 260, 0]].filter((_, i) => l > i * 0.14).map(([x, y, r], i) => <g key={i} transform={`rotate(${r} ${x} ${y})`}><DoodleBubble x={x} y={y} text={['sorry']} tail={x < 540 ? 1 : -1} w={260} /></g>)}</Page>,
-  /* 18 */ (l) => <Page><Tally n={47} big="47" l={l} /></Page>,
+  /* 18 */ (l) => <Page><Street /><P who="ebo" x={930} s={1.7} facing={-1} pose={{eyes: 'wide', mouth: 'o', brows: 'worried', lean: -8, sweat: l > 0.5}} />
+    <P who="wife" x={130 + 60 * Math.min(1, l / 0.25)} s={2.2} pose={{armR: [90, -10], eyes: 'dot', mouth: 'flat', brows: 'up'}} hold={<HeldPad n={47} l={l * 1.4} k={0.23} />} /></Page>,
   /* 19 */ () => <Page><Face who="ebo" pose={{eyes: 'wide', mouth: 'o', brows: 'worried', sweat: true}} /></Page>,
   // ── the cost ──
   /* 20 */ () => <Page><Face who="wife" pose={{brows: 'angry', mouth: 'flat', eyes: 'side'}} facing={-1} /></Page>,

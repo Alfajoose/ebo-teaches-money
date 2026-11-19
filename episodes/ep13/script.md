@@ -23,15 +23,15 @@
 | 7 | Hook | EBO | So she started counting. | The wife pulls out a little notepad, narrowed eyes |
 | 8 | The count | EBO | Asking the waiter for water? | Café: Ebo raises a hand to the waiter |
 | 9 | The count | EBO | "Sorry, could I get…" | Same, polite cringe smile |
-| 10 | The count | EBO | One. | Insert: notepad, one tally mark |
+| 10 | The count | EBO | One. | The wife, big in the café, ticks one mark on her pad; Ebo apologising behind her |
 | 11 | The count | EBO | Asking my boss a question? | Office: boss on his phone, Ebo steps up |
 | 12 | The count | EBO | "Sorry, quick question…" | Same, Ebo cringe-smiling |
-| 13 | The count | EBO | Two. | Notepad: two marks |
+| 13 | The count | EBO | Two. | Same in the office: a second mark |
 | 14 | The count | EBO | Someone bumps into me? | Street: a guy barges into Ebo, motion lines |
 | 15 | The count | EBO | "Oh, sorry!" | Ebo apologises to the guy who bumped him |
-| 16 | The count | EBO | Three. | Notepad: three marks |
+| 16 | The count | EBO | Three. | Same on the street: a third mark |
 | 17 | The count | EBO | By Friday? | Ebo surrounded by 'sorry' bubbles popping in |
-| 18 | The count | EBO | Forty-seven. | Notepad full of tallies, big red 47 scribbled |
+| 18 | The count | EBO | Forty-seven. | The wife shoves the packed pad into Ebo's face |
 | 19 | The count | — | (beat) | Ebo's face: wide eyes, sweat |
 | 20 | The cost | EBO | Then she showed me the worse part. | The wife's face, serious |
 | 21 | The cost | EBO | The waiter forgot my water. | Café: waiter walks past with the water, Ebo's glass empty |
@@ -63,4 +63,4 @@
 - **The notepad is the engine.** Each sorry gets a tally mark: 1, 2, 3… 47.
 - **The cost is shown, not said:** the forgotten water, the boss on his phone, Ebo shrinking.
 - **The page colour marks the turns:** warm yellow for the wife's rule, sunset for the button.
-- **On-screen text:** speech bubbles only, plus the 47 on the notepad.
+- **No infographics:** the count is acted out (the wife ticks her pad in the scene), and the only on-screen text is speech bubbles.
