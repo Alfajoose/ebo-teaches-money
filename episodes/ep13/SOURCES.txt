@@ -4,3 +4,4 @@ Ep 13 voices (ElevenLabs eleven_v4, one take each, 1180 credits total):
 - raw_stranger.mp3: Aaron McCall, "Oh— sorry!", 32 credits.
 Word timings: faster-whisper small.en locally. voice.mp3 = spliced per voice_edl.json (scripts/voice-assemble.py).
 - raw_outro_1x.mp3: Dan, the outro ("Say thank you. Save sorry for when you actually step on someone's foot."), 89 credits. raw_outro.mp3 = 1.15x.
+- raw_stranger.mp3 is now Mica's voice (Andray), "Oh— sorry!", 32 credits (the Obuor take is kept in cast_voices/stranger_obuor_raw.mp3).
