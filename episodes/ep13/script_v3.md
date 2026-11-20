@@ -1,0 +1,52 @@
+# Ep 13 v3: the reference storyboard, with the cast in real sets
+
+Same voice track. Ama is the wife, Obuor the boss (the narration says "his phone"), Christy the waiter and barista, Mica the stranger. No text on screen.
+
+| # | Beat | Who | Line | Picture |
+|---|---|---|---|---|
+| 1 | Hook | EBO | A stranger stepped on my foot. | Sidewalk: Ebo and Ama walking; a stranger (Mica, briefcase) hurries toward them |
+| 2 | Hook | EBO | (stepped) | Close on feet: the dress shoe stomps on Ebo's sneaker |
+| 3 | Hook | EBO | And I said… | Close: Ebo wincing, forcing a polite smile |
+| 4 | Hook | EBO | "Sorry!" | Ebo apologises; the stranger walks off without looking back |
+| 5 | Hook | EBO | My wife just stared at me. | Close: Ama, arms crossed, deadpan |
+| 6 | Hook | WIFE | "Do you know how many times you've said that today?" | Ama to Ebo, arms crossed |
+| 7 | Hook | EBO | I didn't know. | Ebo shrugs |
+| 8 | Hook | EBO | So she started counting. | Ama pulls out a notepad and pencil |
+| 9 | The count | EBO | Asking the waiter for water? | Restaurant: Ebo raises a hand; Ama across the table; Christy (waiter) at the side |
+| 10 | The count | EBO | "Sorry, could I get…" | Close: Ebo's cringe-smile, hand up |
+| 11 | The count | EBO | One. | Close: Ama writes a mark (pencil flick) |
+| 12 | The count | EBO | Asking my boss a question? | Office: Obuor behind his desk on his phone; Ebo in the doorway |
+| 13 | The count | EBO | "Sorry, quick question…" | Close: Ebo, cringe-smile |
+| 14 | The count | EBO | Two. | Ama in the doorway behind him, writing |
+| 15 | The count | EBO | Someone bumps into me? | Sidewalk: the stranger barges into Ebo |
+| 16 | The count | EBO | "Oh, sorry!" | Ebo apologises to the man who bumped him |
+| 17 | The count | EBO | Three. | Ama down the street, writing |
+| 18 | The count | EBO | By… | Automatic doors slide open; Ebo apologises to them |
+| 19 | The count | EBO | …Friday? | Café: Ebo apologises to Christy (barista) while he pays |
+| 20 | The count | EBO | Forty-seven. | Kitchen: Ama holds the full notepad up; Ebo shocked |
+| 21 | The count | — | (beat) | Close: Ebo, wide-eyed, sweating |
+| 22 | The cost | EBO | Then she showed me the worse part. | Close: Ama, serious |
+| 23 | The cost | EBO | The waiter forgot my water. | Restaurant: Christy walks past; Ebo's glass is empty |
+| 24 | The cost | EBO | My boss answered my question… | Office: Obuor waves him off, eyes on his phone |
+| 25 | The cost | EBO | …still looking at his phone. | Close: Obuor on his phone |
+| 26 | The cost | EBO | Every sorry made me a little smaller. | Ebo backs out of the office, hunched |
+| 27 | The cost | EBO | (smaller) | Living room: tiny Ebo on a huge couch |
+| 28 | The cost | EBO | And people treated me that way. | Sidewalk: tiny Ebo; Christy and Obuor stride past, big |
+| 29 | The rule | EBO | So she gave me one rule. | Kitchen table: Ama, finger up; Ebo, hand on chin; a mug between them |
+| 30 | The rule | WIFE | "Every time you want to say sorry…" | Close: Ama |
+| 31 | The rule | WIFE | "…say thank you." | Close: Ama, warm smile |
+| 32 | The rule | EBO | "Sorry I'm late"… | Restaurant: Ebo arrives hunched; Ama, arms crossed |
+| 33 | The rule | EBO | …became "Thanks for waiting!" | Ebo upright, waving; Ama smiles |
+| 34 | The rule | EBO | "Sorry, quick question"… | Office doorway: Ebo hunched |
+| 35 | The rule | EBO | …became "Thanks for your time." | Ebo upright with his papers |
+| 36 | The change | EBO | Monday, I tried it. | Sunny office: Ebo standing tall in the doorway |
+| 37 | The change | EBO | My boss put his phone down. | Insert: the phone slaps face-down on the desk |
+| 38 | The change | EBO | Looked at me. | Close: Obuor looks up, eyebrows raised |
+| 39 | The change | EBO | Actually listened. | Obuor leans in smiling; Ebo explains |
+| 40 | Button | EBO | Then, on the way home, | Sunset street: Ebo walks, happy |
+| 41 | Button | EBO | a stranger stepped on my foot again. | The stomp again, at dusk |
+| 42 | Button | EBO | I opened my mouth… "Thank—" | Close: Ebo, mid-word |
+| 43 | Button | EBO | …No. | Close: his eyes snap open |
+| 44 | Button | EBO | "Hey. That's my foot." | Low angle: Ebo standing tall, pointing |
+| 45 | Button | STRANGER | "Oh— sorry!" | The stranger (Mica) backs off apologising; Ebo, arms crossed, smirks |
+| 46 | Outro | EBO | "Say thank you. Save sorry for when you actually step on someone's foot." | Kitchen: Ebo to camera, open hands, then points down |
