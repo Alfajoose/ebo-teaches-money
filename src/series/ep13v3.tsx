@@ -27,8 +27,7 @@ const R: React.FC<{who: CastId; x: number; y?: number; s?: number; p?: Look; fac
   const front = who === 'ebo' || who === 'ama';
   let pose = {...(front ? POSE.stand : (POSES.standing as Pose)), ...p} as Pose;
   if (touch) pose = {...pose, ...CONTACT[touch], ...p, contact: true, view: 1} as Pose;
-  const seed = who.length * 17 + Math.round(x);
-  pose = {...pose, lift: (pose.lift ?? 0) + (f > 0 && !cycle ? 2.5 * Math.sin((f + seed) / 10) : 0), tilt: (pose.tilt ?? 0) + (f > 0 ? 1.1 * Math.sin((f + seed) / 15) : 0)};
+  // no sway: the user asked for no wobbly effects (still poses, the cast moves only when acting)
   const lip = talk && speaker === VOICE[who] ? mouth : undefined;
   return (
     <RigCharacter who={who} x={x} y={y} scale={s} facing={facing} t={f} noBlink={f === 0} mouthFrame={lip} cycle={cycle} pose={front && !touch && !cycle ? gentle(frontOn(pose)) : gentle(pose)} holdL={holdL}>
@@ -125,7 +124,7 @@ export const Ep13V3Board: React.FC = () => {
   return (
     <StageSizeContext.Provider value={{w: 1080, h: 1920}}>
       <NoScaleContext.Provider value>
-        <HandDrawnContext.Provider value>
+        <HandDrawnContext.Provider value={false}>
           <AbsoluteFill style={{background: '#FFFDF6'}}>
             <svg viewBox="0 0 1080 1920" width="100%" height="100%">{V3_PANELS[Math.min(f, V3_PANELS.length - 1)](99)}</svg>
           </AbsoluteFill>

@@ -67,6 +67,8 @@
 
 25. **No text graphics at all (Nov 2026, after Ep 13).** The user counts these as infographics: tally marks or counters, crossed-out words, speech bubbles that repeat a spoken line, a swarm of word bubbles, charts (even a chart on a wall), and any big number. The voices carry the words (the cast lip-syncs); the picture carries the action. A prop is fine when it's just an object (a notebook, a phone, a glass), not a readout.
 
+26. **No wobble (Nov 2026, after Ep 13).** No hand-drawn line waver on props (it shimmers when the camera pushes or a prop moves) and no idle sway on the cast. Lines stay clean and still; characters move only when they act. In code: `HandDrawnContext` off, no lift/tilt sine on poses, `ROUGH_PROPS = False` in the .fla exporter.
+
 ## No Ghanaian references (user's standing rule)
 
 Keep the show culturally neutral: no Ghanaian accents in the cast's voices, no Ghanaian foods, words, places, money or

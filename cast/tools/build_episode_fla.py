@@ -484,6 +484,7 @@ def ellipse(cx, cy, rx, ry):
 # ── hand-drawn style for props: the same static waver as the video's hd-rough filter,
 #    baked into the vector outlines (fixed seed, so it never changes between frames) ──
 
+ROUGH_PROPS = False  # the user asked for no wobbly lines (Nov 2026); True bakes the old hand-drawn waver into props
 ROUGH_AMP = 2.25    # max sideways shift of a line (= half the filter's wobble of 4.5)
 ROUGH_FREQ = 0.018  # waves per unit along a line (the filter's baseFrequency)
 ROUGH_STEP = 22     # long straight lines are split this often so the waver shows
@@ -737,7 +738,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
             if pr['key'] not in psyms:
                 pcount[pr['name']] = pcount.get(pr['name'], 0) + 1
                 psyms[pr['key']] = f"Props/{pr['name']} {pcount[pr['name']]:02d}"
-                graphic_symbol(lib, psyms[pr['key']], svg_to_elements(pr['svg'], rough=True))
+                graphic_symbol(lib, psyms[pr['key']], svg_to_elements(pr['svg'], rough=ROUGH_PROPS))
 
     # ── captions ──
     lib.folder('Captions')

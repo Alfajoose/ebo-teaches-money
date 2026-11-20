@@ -72,7 +72,7 @@ export const Ep13Frame: React.FC<{f: number}> = ({f}) => {
   return (
     <StageSizeContext.Provider value={{w: EP13_W, h: EP13_H}}>
       <NoScaleContext.Provider value>
-        <HandDrawnContext.Provider value>
+        <HandDrawnContext.Provider value={false}>
           <AbsoluteFill style={{background: '#FFFDF6'}}>
             <VStage framing={{zoom, cx: 540, cy: 960}} bg="#FFFDF6">
               <DoodleAnim.Provider value={{l: local, f}}>
