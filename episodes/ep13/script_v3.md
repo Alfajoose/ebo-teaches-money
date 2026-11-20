@@ -1,6 +1,6 @@
 # Ep 13 v3: the reference storyboard, with the cast in real sets
 
-Same voice track. Ama is the wife, Obuor the boss (the narration says "his phone"), Christy the waiter and barista, Mica the stranger. No text on screen.
+Same voice track. Ama is the wife, Obuor in his suit (the boss rig) the boss, Ama Pretty the waiter, Christy the barista, Mica the stranger. No text on screen.
 
 | # | Beat | Who | Line | Picture |
 |---|---|---|---|---|
@@ -12,7 +12,7 @@ Same voice track. Ama is the wife, Obuor the boss (the narration says "his phone
 | 6 | Hook | WIFE | "Do you know how many times you've said that today?" | Ama to Ebo, arms crossed |
 | 7 | Hook | EBO | I didn't know. | Ebo shrugs |
 | 8 | Hook | EBO | So she started counting. | Ama pulls out a notepad and pencil |
-| 9 | The count | EBO | Asking the waiter for water? | Restaurant, seated: Ebo raises a hand; Ama across the table; Christy (waiter) with a tray |
+| 9 | The count | EBO | Asking the waiter for water? | Restaurant, seated: Ebo raises a hand; Ama across the table; Ama Pretty (waiter) with a tray |
 | 10 | The count | EBO | "Sorry, could I get…" | Close: Ebo's cringe-smile, hand up |
 | 11 | The count | EBO | One. | Close: Ama writes a mark (pencil flick) |
 | 12 | The count | EBO | Asking my boss a question? | Office: Obuor behind his desk on his phone; Ebo in the doorway |
@@ -26,7 +26,7 @@ Same voice track. Ama is the wife, Obuor the boss (the narration says "his phone
 | 20 | The count | EBO | Forty-seven. | Kitchen: Ama holds the full notepad up; Ebo, seated at the table, shocked |
 | 21 | The count | — | (beat) | Close: Ebo, wide-eyed, sweating |
 | 22 | The cost | EBO | Then she showed me the worse part. | Close: Ama, serious |
-| 23 | The cost | EBO | The waiter forgot my water. | Restaurant: Christy walks past; Ebo's glass is empty |
+| 23 | The cost | EBO | The waiter forgot my water. | Restaurant: Ama Pretty (waiter) walks past; Ebo's glass is empty |
 | 24 | The cost | EBO | My boss answered my question… | Office: Obuor waves him off, eyes on his phone |
 | 25 | The cost | EBO | …still looking at his phone. | Close: Obuor on his phone |
 | 26 | The cost | EBO | Every sorry made me a little smaller. | Ebo backs out of the office, hunched |

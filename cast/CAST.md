@@ -176,6 +176,14 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 - **Mouth** (`mouth copy`, 4 frames) is also the same set as Mica's: 0 smile, 1 flat open, 2 O, 3 big open.
 - The library also contains an unused `Etoo` rig.
 
+## OBUOR (BOSS)
+
+- **File:** `masters/obuor_boss.fla` (Nov 2026). **Symbol:** `Obuor tricker`. **Cast id:** `boss`.
+- **Design:** Obuor in a black suit, white cuffs, red tie, big curly hair.
+- **Built on Ebo's part set** (15 mouths, eye + pupil frames), so he shares Ama's face mapping and lip-sync mood sets.
+- **One view (¾).** Export: `tools/export_rig.py <dir> "Obuor tricker" src/cast/data/boss.json`, then `node scripts/measure-rigs.mjs`.
+- **First role:** the boss in Ep13.
+
 ## AMA
 
 - **File:** `masters/Ama.fla` (new master, Nov 2026; the earlier `Ama_pretty.fla` is in git history). **Symbol:** `Ama`.
@@ -191,7 +199,7 @@ Expressions and mouth shapes are frame swaps on graphic symbols set to "single f
 - **Built on Ebo's part set, like Ama.** She shares Ama's face mapping and lip-sync mood sets.
 - **One view (¾).** The rig is exported from frame 0. A palette reference image on her `hand_top_1` layer is removed from the rig.
 - **Export:** same steps as Ama, with symbol `Ama port`, output to `src/cast/data/pretty.json`.
-- **First role:** Christy in Ep6.
+- **First role:** Christy in Ep6. Updated file Nov 2026 (her symbol trimmed to the frame-0 rest pose before export); the waiter in Ep13.
 
 ## CHRISTY
 

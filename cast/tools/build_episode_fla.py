@@ -43,9 +43,10 @@ CAST = {  # capture id -> (source folder, rig symbol, display name)
     'christy': ('christy', 'Christy', 'Christy'),
     'pretty': ('Ama_pretty', 'Ama port', 'Ama Pretty'),  # new version (Nov 2026), rig = its frame-0 rest pose
     'konka': ('konka', 'Symbol 2', 'Konka'),  # pose library: one drawn pose per frame
+    'boss': ('obuor_boss', 'Obuor tricker', 'Boss'),  # Obuor in a suit (cast/masters/obuor_boss.fla)
 }
 POSE_LIBRARY = {'konka'}
-LAYER_ORDER = ['konka', 'ebo', 'christy', 'pretty', 'mica', 'ama', 'obuor']  # top → bottom
+LAYER_ORDER = ['konka', 'ebo', 'christy', 'pretty', 'mica', 'ama', 'boss', 'obuor']  # top → bottom
 FONT_HEAVY = 'Arial-Black'
 FONT_BOLD = 'Arial-BoldMT'
 
