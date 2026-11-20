@@ -422,10 +422,10 @@ def circle(cx, cy, r):
     return pts
 
 def path_d(d):
-    """M/L/H/V/Q/C/Z (absolute and relative) → segment list. Cubics become two quads."""
-    toks = re.findall(r'[MLHVQCZmlhvqcz]|-?(?:\d+\.?\d*|\.\d+)(?:e-?\d+)?', d)
-    segs, i, cur, start, cmd = [], 0, (0.0, 0.0), (0.0, 0.0), None
-    nargs = {'M': 2, 'L': 2, 'H': 1, 'V': 1, 'Q': 4, 'C': 6}
+    """M/L/H/V/Q/T/C/Z (absolute and relative) → segment list. Cubics become two quads; T reflects the last quad control."""
+    toks = re.findall(r'[MLHVQTCZmlhvqtcz]|-?(?:\d+\.?\d*|\.\d+)(?:e-?\d+)?', d)
+    segs, i, cur, start, cmd, ctrl = [], 0, (0.0, 0.0), (0.0, 0.0), None, None
+    nargs = {'M': 2, 'L': 2, 'H': 1, 'V': 1, 'Q': 4, 'T': 2, 'C': 6}
     while i < len(toks):
         tk = toks[i]
         if tk.isalpha():
@@ -448,6 +448,8 @@ def path_d(d):
             v = [cur[0], v[0] + oy]
             C, rel = 'L', False
         pts = [(v[k] + ox, v[k + 1] + oy) for k in range(0, len(v), 2)]
+        if C not in 'QT':
+            ctrl = None
         if C == 'M':
             cur = start = pts[0]
             segs.append(('M', *cur))
@@ -457,7 +459,13 @@ def path_d(d):
             segs.append(('L', *cur))
         elif C == 'Q':
             segs.append(('Q', *pts[0], *pts[1]))
-            cur = pts[1]
+            ctrl, cur = pts[0], pts[1]
+            continue
+        elif C == 'T':
+            c = (2 * cur[0] - ctrl[0], 2 * cur[1] - ctrl[1]) if ctrl else cur
+            segs.append(('Q', *c, *pts[0]))
+            ctrl, cur = c, pts[0]
+            continue
         elif C == 'C':
             # split at t=0.5, then fit each half with one quad
             p0, p1, p2, p3 = cur, *pts
