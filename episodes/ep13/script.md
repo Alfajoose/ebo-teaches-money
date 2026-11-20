@@ -63,4 +63,4 @@
 - **The notepad is the engine.** Each sorry gets a tally mark: 1, 2, 3… 47.
 - **The cost is shown, not said:** the forgotten water, the boss on his phone, Ebo shrinking.
 - **The page colour marks the turns:** warm yellow for the wife's rule, sunset for the button.
-- **No infographics:** the count is acted out (the wife ticks her pad in the scene), and the only on-screen text is speech bubbles.
+- **No text on screen at all:** no speech bubbles, tally marks, crossed-out words or charts. The voices carry the words; the cast acts it out (Ama scribbles in a plain notebook, then holds it up in his face; Ebo apologises to everyone around him; he shrinks).

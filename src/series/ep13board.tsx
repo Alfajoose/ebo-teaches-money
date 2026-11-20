@@ -64,7 +64,7 @@ export const Glass: React.FC<{x: number; y: number; full?: boolean}> = ({x, y, f
 );
 export const Office: React.FC = () => (
   <g>
-    <path d="M 700 720 l 220 0 l 0 140 l -220 0 Z M 730 830 l 40 -50 l 40 30 l 40 -60 l 40 50" {...L} strokeWidth={6} />
+    <path d="M 700 680 l 220 0 l 0 200 l -220 0 Z M 810 680 l 0 200 M 700 780 l 220 0" {...L} strokeWidth={6} />
     <g transform={`translate(640 ${FLOOR})`}><path d="M -230 -260 L 230 -260 M -200 -260 L -200 0 M 200 -260 L 200 0" {...L} /></g>
     <Floor />
   </g>

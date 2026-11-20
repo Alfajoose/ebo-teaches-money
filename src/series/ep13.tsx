@@ -52,14 +52,13 @@ export const EP13_SFX = () => [
   {at: START[6] + 0.2, sfx: 'paper_flick', vol: 0.6}, // the notepad comes out
   ...[9, 12, 15].map((i) => ({at: START[i] + 0.15, sfx: 'marker_tick', vol: 0.8})), // one, two, three
   {at: START[13], sfx: 'whoosh', vol: 0.5}, {at: START[13] + 0.24, sfx: 'body_thud', vol: 0.7}, // the bump
-  ...[0, 1, 2, 3, 4].map((k) => ({at: START[16] + k * 0.14, sfx: 'pop', vol: 0.45})), // the sorry bubbles
-  ...Array.from({length: 8}, (_, k) => ({at: START[17] + k * 0.09, sfx: 'marker_tick', vol: 0.5})), {at: START[17] + 0.75, sfx: 'stamp', vol: 0.7}, // 47
+  ...[0, 0.3, 0.6].map((d) => ({at: START[16] + d, sfx: 'slide', vol: 0.35})), // he turns to apologise to each of them
+  {at: START[17] + 0.2, sfx: 'paper_flick', vol: 0.7}, // the notebook held up in his face
   {at: START[18] + 0.1, sfx: 'cricket', vol: 0.6},
   ...[0, 0.35, 0.7].map((d) => ({at: START[20] + d, sfx: 'footstep', vol: 0.5})), // the waiter walks past
   {at: START[21], sfx: 'typing', vol: 0.3}, // the boss on his phone
   {at: START[24], sfx: 'slide', vol: 0.5}, // Ebo shrinks
-  {at: START[29] + 0.3, sfx: 'paper_flick', vol: 0.5}, {at: START[31] + 0.3, sfx: 'paper_flick', vol: 0.5}, // crossed out
-  {at: START[30] + 0.1, sfx: 'clink', vol: 0.5},
+    {at: START[30] + 0.1, sfx: 'clink', vol: 0.5},
   {at: START[34] + 0.1, sfx: 'click', vol: 0.6}, // the phone goes down
   ...[0, 0.2, 0.4, 0.6, 0.8, 1.0].map((d) => ({at: START[37] + d, sfx: 'footstep', vol: 0.45})), // walking home
   {at: START[38] + 0.2, sfx: 'body_thud', vol: 0.9}, {at: START[38] + 0.22, sfx: 'crunch', vol: 0.5}, // the stomp again
