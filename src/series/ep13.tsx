@@ -6,13 +6,14 @@ import {StageSizeContext} from './exportCtx';
 import {VFPS, Word, VStage, lipFrame} from './kit';
 import {swoopZoom, useMarkerFont} from './filterKit';
 import {DoodleAnim} from '../components/StickFigures';
-import {PANELS, Ep13Anim} from './ep13board';
+import {Ep13Anim} from './ep13board';
+import {RIG_PANELS as PANELS} from './ep13rig';
 import wordsJson from './data/ep13-words.json';
 import envJson from './data/ep13-env.json';
 
 /**
  * EBO TEACHES MONEY — Ep 13 "Someone Stepped on My Foot. I Said Sorry." (vertical, ~59 s). The storytime style:
- * Ebo tells his own story in voice-over, the doodle cast acts it out on the sketchbook page. 43 shots, each one
+ * Ebo tells his own story in voice-over, the cast (Ebo, Ama, Mica, Christy, Obuor) acts it out on the sketchbook page. 43 shots, each one
  * of the storyboard's panels brought to life: bubbles drop in, the shoe stomps, the tally fills, Ebo shrinks,
  * everyone bobs and blinks, whoever is speaking lip-syncs, and the camera pushes in or pulls back on every cut.
  */

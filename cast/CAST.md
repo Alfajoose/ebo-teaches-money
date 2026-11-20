@@ -63,7 +63,7 @@
    - **One moral, said once,** at the end.
 
 23. **Take the principle, never the surface (Nov 2026).** When a reference video inspires us, borrow *why* it works (holding the answer back, a hook the viewer recognises), never its words, its structure markers or its catchphrases ("three filters", "listen up", "close, but not exactly"). If a viewer could name the source, it's too close. Hooks must be **relatable**, things people actually do (saying sorry when someone else bumps you), not invented absurdities (saying sorry to a chair).
-24. **Storytime, doodle style (Ep 13 on).** Ebo tells his own story (first person, past tense, voice-over). The doodle cast (`src/components/DoodleCast.tsx`, sketchbook versions of the rigs) acts it out on the sketchbook page. No names are said: the roles are "my wife", "my friend", "my boss", "a stranger". The hook comes back at the end with a twist.
+24. **Storytime, doodle style (Ep 13 on).** Ebo tells his own story (first person, past tense, voice-over). The cast rigs act it out on the sketchbook page (the user asked for their own characters over the doodle cast in `src/components/DoodleCast.tsx`). No names are said: the roles are "my wife", "my friend", "my boss", "a stranger". The hook comes back at the end with a twist.
 
 ## No Ghanaian references (user's standing rule)
 

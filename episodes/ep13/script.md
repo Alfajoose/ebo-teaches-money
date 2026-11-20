@@ -2,8 +2,8 @@
 
 **Style:**
 - Storytime: Ebo tells his own story in the first person, as voice-over.
-- The doodle cast acts it out on the sketchbook page (see `doodle_cast.png`).
-- No names are said. The roles are "my wife", "my boss", "my friend", "the waiter" and "a stranger".
+- The cast rigs act it out on the sketchbook page (the doodle-cast version is in git history).
+- No names are said. The roles: "my wife" (Ama), "my boss" (Christy), "the waiter" (Mica), "a stranger" (Obuor, whose voice says the last line). Ama is also the one waiting at the café in shots 30 and 31.
 - About one cut a second.
 - Voices:
   - Ebo: Dan, brisk.

@@ -34,6 +34,7 @@ import {EboEp12, EP12_DURATION, EP12_W, EP12_H} from './series/ep12';
 import {Ep13CastTest} from './series/ep13cast';
 import {Ep13Board, EP13_BOARD_PANELS} from './series/ep13board';
 import {EboEp13, EP13_DURATION, EP13_W, EP13_H} from './series/ep13';
+import {Ep13RigBoard} from './series/ep13rig';
 import {EboHandsSheet} from './cast/hands';
 import {EboContactSheet} from './cast/ContactSheet';
 import {EboEp05, EP05_DURATION, EP05_W, EP05_H} from './series/ep05';
@@ -116,6 +117,7 @@ export const RemotionRoot: React.FC = () => (
   <Composition id="EboTeachesMoney-Ep11" component={EboEp11} durationInFrames={EP11_DURATION} fps={30} width={EP11_W} height={EP11_H} />
   <Composition id="Ep12-Board" component={Ep12Board} durationInFrames={EP12_BOARD_PANELS} fps={30} width={1080} height={1920} />
   <Composition id="EboTeachesMoney-Ep13" component={EboEp13} durationInFrames={EP13_DURATION} fps={30} width={EP13_W} height={EP13_H} />
+  <Composition id="Ep13-RigBoard" component={Ep13RigBoard} durationInFrames={43} fps={30} width={1080} height={1920} />
   <Composition id="Ep13-Board" component={Ep13Board} durationInFrames={EP13_BOARD_PANELS} fps={30} width={1080} height={1920} />
   <Composition id="Ep13-CastTest" component={Ep13CastTest} durationInFrames={1} fps={30} width={1080} height={1920} />
   <Composition id="EboTeachesMoney-Ep12" component={EboEp12} durationInFrames={EP12_DURATION} fps={30} width={EP12_W} height={EP12_H} />

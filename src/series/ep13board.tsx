@@ -11,7 +11,7 @@ import {DoodlePerson, DoodlePose, DoodleWho} from '../components/DoodleCast';
  * Ep 13 "Someone Stepped on My Foot. I Said Sorry.": the storyboard. Storytime, all doodles on the sketchbook page:
  * Ebo tells it (voice-over), the doodle cast acts it out. One panel per beat, about one a second.
  */
-const FLOOR = 1520;
+export const FLOOR = 1520;
 const INK = '#1D1A1A';
 const RED = '#E5484D';
 const L = {stroke: INK, strokeWidth: 8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, fill: 'none'};
@@ -34,13 +34,13 @@ const P: React.FC<{who: DoodleWho; x: number; s?: number; y?: number; pose?: Doo
 const Face: React.FC<{who: DoodleWho; pose?: DoodlePose; facing?: 1 | -1; talk?: boolean; dx?: number}> = ({who, pose, facing, talk, dx = 0}) => (
   <P who={who} x={540 + dx - 14 * 4.2 * (facing ?? 1)} s={4.2} y={1000 + 353 * 4.2} pose={pose} facing={facing} talk={talk} />
 );
-const Floor: React.FC = () => <path d={`M 120 ${FLOOR} L 1020 ${FLOOR}`} {...L} />;
-const Page: React.FC<{tint?: string; children?: React.ReactNode}> = ({tint, children}) => (
+export const Floor: React.FC = () => <path d={`M 120 ${FLOOR} L 1020 ${FLOOR}`} {...L} />;
+export const Page: React.FC<{tint?: string; children?: React.ReactNode}> = ({tint, children}) => (
   <g><SketchPage />{tint && <rect x={-300} y={-300} width={1680} height={2600} fill={tint} opacity={0.35} />}{children}</g>
 );
 
 // ── sets ──
-const Street: React.FC<{dusk?: boolean}> = ({dusk}) => (
+export const Street: React.FC<{dusk?: boolean}> = ({dusk}) => (
   <g>
     {dusk && <circle cx={850} cy={560} r={90} {...L} fill="#FFB86B" />}
     <g transform="translate(0 100)"><path d="M 140 1420 L 140 760 L 360 760 L 360 1420 M 200 840 l 50 0 l 0 70 l -50 0 Z M 270 840 l 50 0 l 0 70 l -50 0 Z M 200 980 l 50 0 l 0 70 l -50 0 Z" {...L} strokeWidth={6} />
@@ -48,7 +48,7 @@ const Street: React.FC<{dusk?: boolean}> = ({dusk}) => (
     <Floor />
   </g>
 );
-const Cafe: React.FC<{cup?: boolean}> = ({cup}) => (
+export const Cafe: React.FC<{cup?: boolean}> = ({cup}) => (
   <g>
     <path d="M 160 640 l 200 0 l 0 160 l -200 0 Z M 260 700 l 0 160 M 160 780 l 200 0" {...L} strokeWidth={6} />
     <g transform={`translate(430 ${FLOOR})`}><DoodleTable /></g>
@@ -56,25 +56,25 @@ const Cafe: React.FC<{cup?: boolean}> = ({cup}) => (
     <Floor />
   </g>
 );
-const Glass: React.FC<{x: number; y: number; full?: boolean}> = ({x, y, full}) => (
+export const Glass: React.FC<{x: number; y: number; full?: boolean}> = ({x, y, full}) => (
   <g transform={`translate(${x} ${y})`}>
     {full && <path d="M -26 -60 L 26 -60 L 22 0 L -22 0 Z" fill="#9BD3F2" />}
     <path d="M -30 -90 L 30 -90 L 22 0 L -22 0 Z" {...L} strokeWidth={6} />
   </g>
 );
-const Office: React.FC = () => (
+export const Office: React.FC = () => (
   <g>
     <path d="M 700 720 l 220 0 l 0 140 l -220 0 Z M 730 830 l 40 -50 l 40 30 l 40 -60 l 40 50" {...L} strokeWidth={6} />
     <g transform={`translate(640 ${FLOOR})`}><path d="M -230 -260 L 230 -260 M -200 -260 L -200 0 M 200 -260 L 200 0" {...L} /></g>
     <Floor />
   </g>
 );
-const PhoneProp: React.FC<{r?: number}> = ({r = 0}) => <g transform={`rotate(${r})`}><rect x={-16} y={-46} width={32} height={56} rx={6} fill={INK} /><rect x={-11} y={-40} width={22} height={40} rx={3} fill="#6BB7E8" /></g>;
-const Pad: React.FC<{r?: number}> = ({r = -10}) => <g transform={`rotate(${r})`}><rect x={-28} y={-60} width={56} height={70} rx={4} fill="#fff" stroke={INK} strokeWidth={5} /><path d="M -16 -42 l 32 0 M -16 -28 l 32 0 M -16 -14 l 20 0" stroke={INK} strokeWidth={3} /></g>;
-const Sun: React.FC = () => <g><circle cx={860} cy={420} r={70} {...L} fill="#FFE45C" />{Array.from({length: 8}, (_, i) => <path key={i} d="M 0 -100 l 0 -30" {...L} transform={`translate(860 420) rotate(${i * 45})`} />)}</g>;
+export const PhoneProp: React.FC<{r?: number}> = ({r = 0}) => <g transform={`rotate(${r})`}><rect x={-16} y={-46} width={32} height={56} rx={6} fill={INK} /><rect x={-11} y={-40} width={22} height={40} rx={3} fill="#6BB7E8" /></g>;
+export const Pad: React.FC<{r?: number}> = ({r = -10}) => <g transform={`rotate(${r})`}><rect x={-28} y={-60} width={56} height={70} rx={4} fill="#fff" stroke={INK} strokeWidth={5} /><path d="M -16 -42 l 32 0 M -16 -28 l 32 0 M -16 -14 l 20 0" stroke={INK} strokeWidth={3} /></g>;
+export const Sun: React.FC = () => <g><circle cx={860} cy={420} r={70} {...L} fill="#FFE45C" />{Array.from({length: 8}, (_, i) => <path key={i} d="M 0 -100 l 0 -30" {...L} transform={`translate(860 420) rotate(${i * 45})`} />)}</g>;
 
 /** The notepad insert: the wife's tally. */
-const Tally: React.FC<{n: number; big?: string; l?: number}> = ({n: total, big, l = 99}) => {
+export const Tally: React.FC<{n: number; big?: string; l?: number}> = ({n: total, big, l = 99}) => {
   const n = total <= 3 ? (l > 0.15 ? total : total - 1) : Math.min(total, Math.round((total * l) / 0.7));
   const showBig = big && l > 0.75;
   const groups = Array.from({length: Math.ceil(n / 5)}, (_, g) => Math.min(5, n - g * 5));
@@ -98,7 +98,7 @@ const Tally: React.FC<{n: number; big?: string; l?: number}> = ({n: total, big, 
   );
 };
 /** A close-up of feet: Ebo's sneaker, and a big shoe coming down on it. */
-const Feet: React.FC<{l?: number}> = ({l = 99}) => {
+export const Feet: React.FC<{l?: number}> = ({l = 99}) => {
   const u = Math.min(1, l / 0.22);
   const stomp = u >= 1;
   return (
@@ -116,11 +116,11 @@ const Feet: React.FC<{l?: number}> = ({l = 99}) => {
   );
 };
 /** A speech bubble, drawn big enough to read on a phone. */
-const B: React.FC<{x: number; y: number; text: string[]; tail?: 1 | -1; w?: number}> = ({x, y, w = 400, ...r}) => (
+export const B: React.FC<{x: number; y: number; text: string[]; tail?: 1 | -1; w?: number}> = ({x, y, w = 400, ...r}) => (
   <g transform={`translate(${x} ${y}) scale(1.5)`}><DoodleBubble x={0} y={0} w={w} {...r} /></g>
 );
 /** A speech bubble with a red line through it. */
-const Crossed: React.FC<{x: number; y: number; text: string[]; tail?: 1 | -1}> = ({x, y, text, tail}) => (
+export const Crossed: React.FC<{x: number; y: number; text: string[]; tail?: 1 | -1}> = ({x, y, text, tail}) => (
   <g><B x={x} y={y} text={text} tail={tail} w={440} /><path d={`M ${x - 330} ${y + 50} L ${x + 330} ${y - 50}`} stroke={RED} strokeWidth={16} strokeLinecap="round" /></g>
 );
 
