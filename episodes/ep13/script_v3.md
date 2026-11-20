@@ -6,13 +6,13 @@ Same voice track. Ama is the wife, Obuor the boss (the narration says "his phone
 |---|---|---|---|---|
 | 1 | Hook | EBO | A stranger stepped on my foot. | Sidewalk: Ebo and Ama walking; a stranger (Mica, briefcase) hurries toward them |
 | 2 | Hook | EBO | (stepped) | Close on feet: the dress shoe stomps on Ebo's sneaker |
-| 3 | Hook | EBO | And I said… | Close: Ebo wincing, forcing a polite smile |
+| 3 | Hook | EBO | And I said… | Ebo hops, holding his foot, wincing through a polite smile |
 | 4 | Hook | EBO | "Sorry!" | Ebo apologises; the stranger walks off without looking back |
 | 5 | Hook | EBO | My wife just stared at me. | Close: Ama, arms crossed, deadpan |
 | 6 | Hook | WIFE | "Do you know how many times you've said that today?" | Ama to Ebo, arms crossed |
 | 7 | Hook | EBO | I didn't know. | Ebo shrugs |
 | 8 | Hook | EBO | So she started counting. | Ama pulls out a notepad and pencil |
-| 9 | The count | EBO | Asking the waiter for water? | Restaurant: Ebo raises a hand; Ama across the table; Christy (waiter) at the side |
+| 9 | The count | EBO | Asking the waiter for water? | Restaurant, seated: Ebo raises a hand; Ama across the table; Christy (waiter) with a tray |
 | 10 | The count | EBO | "Sorry, could I get…" | Close: Ebo's cringe-smile, hand up |
 | 11 | The count | EBO | One. | Close: Ama writes a mark (pencil flick) |
 | 12 | The count | EBO | Asking my boss a question? | Office: Obuor behind his desk on his phone; Ebo in the doorway |
@@ -22,8 +22,8 @@ Same voice track. Ama is the wife, Obuor the boss (the narration says "his phone
 | 16 | The count | EBO | "Oh, sorry!" | Ebo apologises to the man who bumped him |
 | 17 | The count | EBO | Three. | Ama down the street, writing |
 | 18 | The count | EBO | By… | Automatic doors slide open; Ebo apologises to them |
-| 19 | The count | EBO | …Friday? | Café: Ebo apologises to Christy (barista) while he pays |
-| 20 | The count | EBO | Forty-seven. | Kitchen: Ama holds the full notepad up; Ebo shocked |
+| 19 | The count | EBO | …Friday? | Café: Ebo apologises to Christy (barista) while he pays; Ama behind him, writing |
+| 20 | The count | EBO | Forty-seven. | Kitchen: Ama holds the full notepad up; Ebo, seated at the table, shocked |
 | 21 | The count | — | (beat) | Close: Ebo, wide-eyed, sweating |
 | 22 | The cost | EBO | Then she showed me the worse part. | Close: Ama, serious |
 | 23 | The cost | EBO | The waiter forgot my water. | Restaurant: Christy walks past; Ebo's glass is empty |
@@ -32,13 +32,13 @@ Same voice track. Ama is the wife, Obuor the boss (the narration says "his phone
 | 26 | The cost | EBO | Every sorry made me a little smaller. | Ebo backs out of the office, hunched |
 | 27 | The cost | EBO | (smaller) | Living room: tiny Ebo on a huge couch |
 | 28 | The cost | EBO | And people treated me that way. | Sidewalk: tiny Ebo; Christy and Obuor stride past, big |
-| 29 | The rule | EBO | So she gave me one rule. | Kitchen table: Ama, finger up; Ebo, hand on chin; a mug between them |
+| 29 | The rule | EBO | So she gave me one rule. | Kitchen table, both seated: Ama slides a coffee mug across to Ebo (hand on chin) |
 | 30 | The rule | WIFE | "Every time you want to say sorry…" | Close: Ama |
 | 31 | The rule | WIFE | "…say thank you." | Close: Ama, warm smile |
 | 32 | The rule | EBO | "Sorry I'm late"… | Restaurant: Ebo arrives hunched; Ama, arms crossed |
-| 33 | The rule | EBO | …became "Thanks for waiting!" | Ebo upright, waving; Ama smiles |
+| 33 | The rule | EBO | …became "Thanks for waiting!" | Split frame: hunched | upright and waving, Ama smiling |
 | 34 | The rule | EBO | "Sorry, quick question"… | Office doorway: Ebo hunched |
-| 35 | The rule | EBO | …became "Thanks for your time." | Ebo upright with his papers |
+| 35 | The rule | EBO | …became "Thanks for your time." | Split frame: hunched | upright with his papers |
 | 36 | The change | EBO | Monday, I tried it. | Sunny office: Ebo standing tall in the doorway |
 | 37 | The change | EBO | My boss put his phone down. | Insert: the phone slaps face-down on the desk |
 | 38 | The change | EBO | Looked at me. | Close: Obuor looks up, eyebrows raised |

@@ -363,3 +363,22 @@ export const StompClose: React.FC<{l?: number; dusk?: boolean}> = ({l = 99, dusk
     </g>
   );
 };
+
+/** A wooden chair, front-on: the back shows above whoever sits in it (drawn behind them), the seat and legs below. */
+export const ChairSet: React.FC<{x: number; tone?: string}> = ({x, tone = '#A8744A'}) => (
+  <g transform={`translate(${x} ${FLOOR})`}>
+    <rect x={-120} y={-560} width={240} height={220} rx={22} fill={tone} {...ln} />
+    <rect x={-90} y={-530} width={180} height={36} rx={10} fill="#C08A5C" {...thin} />
+    <rect x={-140} y={-340} width={280} height={40} rx={10} fill={tone} {...ln} />
+    <path d="M -120 -300 L -130 0 M 120 -300 L 130 0" {...ln} strokeWidth={14} />
+  </g>
+);
+
+/** A waiter's round tray with a glass of water on it. */
+const TrayDrawing: React.FC = () => (
+  <g>
+    <g transform="translate(0 -16)"><WaterGlassDrawing full /></g>
+    <ellipse cx={0} cy={0} rx={110} ry={20} fill="#C9CDD4" {...ln} />
+  </g>
+);
+export const Tray = prop('Tray', TrayDrawing);
