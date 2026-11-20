@@ -13,7 +13,7 @@ import envJson from './data/ep13-env.json';
 
 /**
  * EBO TEACHES MONEY — Ep 13 "Someone Stepped on My Foot. I Said Sorry." (vertical, ~59 s). The storytime style:
- * Ebo tells his own story in voice-over, the cast (Ebo, Ama, Mica, Christy, Obuor) acts it out on the sketchbook page. 43 shots, each one
+ * Ebo tells his own story in voice-over, the cast (Ebo, Ama, Mica, Christy, Obuor) acts it out on the sketchbook page. 44 shots, each one
  * of the storyboard's panels brought to life: bubbles drop in, the shoe stomps, the tally fills, Ebo shrinks,
  * everyone bobs and blinks, whoever is speaking lip-syncs, and the camera pushes in or pulls back on every cut.
  */
@@ -32,10 +32,10 @@ const START = [
   at(43), at(48), at(51), at(52), at(56), at(58), at(59), at(61), after(61, 0.1), at(62),
   at(69), at(74), at(79), at(84), at(89), at(91), at(97), at(103), at(110), at(113),
   at(116), at(120), at(123), at(128), at(132), at(138), at(141), at(143), at(148), at(155),
-  at(160) + 0.22, at(161), at(165),
+  at(160) + 0.22, at(161), at(165), at(168) - 0.25,
 ].map((s) => Math.max(0, s));
 export const EP13_SHOT_TIMES = START;
-export const EP13_SECTIONS = START.map((_, i) => (i < 7 ? 'Hook' : i < 19 ? 'The Count' : i < 26 ? 'The Cost' : i < 33 ? 'The Rule' : i < 37 ? 'The Change' : 'Button'));
+export const EP13_SECTIONS = START.map((_, i) => (i < 7 ? 'Hook' : i < 19 ? 'The Count' : i < 26 ? 'The Cost' : i < 33 ? 'The Rule' : i < 37 ? 'The Change' : i < 43 ? 'Button' : 'Outro'));
 export const ep13ShotAt = (f: number) => {
   const t = f / VFPS;
   let i = 0;
@@ -44,7 +44,7 @@ export const ep13ShotAt = (f: number) => {
 };
 const LEN = START.map((s, i) => (i + 1 < START.length ? START[i + 1] : END) - s);
 /** Close-ups and inserts push in; everything else pulls back. (1-based shot numbers) */
-const PUSH = new Set([2, 5, 10, 13, 16, 18, 19, 20, 23, 28, 29, 36, 40, 41]);
+const PUSH = new Set([2, 5, 10, 13, 16, 18, 19, 20, 23, 28, 29, 36, 40, 41, 44]);
 
 // ───────────────────────── sound ─────────────────────────
 export const EP13_SFX = () => [

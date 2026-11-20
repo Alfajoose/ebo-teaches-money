@@ -57,6 +57,7 @@
 | 41 | Button | EBO | …No. | Ebo's eyes snap open |
 | 42 | Button | EBO | "Hey. That's my foot." | Ebo points, the stranger startled, sweating |
 | 43 | Button | STRANGER | "Oh— sorry!" | The stranger apologises; Ebo smiles. Flipped. |
+| 44 | Outro | EBO | "Say thank you. Save sorry for when you actually step on someone's foot." | Ebo to camera, warm page: open hands, then a point down |
 
 ## Notes
 - **The hook comes back flipped.** The stranger steps on his foot again, Ebo nearly says "thank you", stands up for himself, and the stranger ends up the one saying sorry.

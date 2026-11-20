@@ -15,7 +15,7 @@ Built with [Remotion](https://remotion.dev). The characters come from the origin
 | 10 | Marry a Woman Who…: one house, two builders, one storm (52 s, vertical) | [`ebo-teaches-money-ep10.mp4`](episodes/ep10/ebo-teaches-money-ep10.mp4) | [`Ebo_Teaches_Money_Ep10.fla`](episodes/ep10/Ebo_Teaches_Money_Ep10.fla) |
 | 11 | The Dangerous Side of Being Too Available: Ebo tells it first person, the cast speaks (40 s, vertical) | [`ebo-teaches-money-ep11.mp4`](episodes/ep11/ebo-teaches-money-ep11.mp4) | [`Ebo_Teaches_Money_Ep11.fla`](episodes/ep11/Ebo_Teaches_Money_Ep11.fla) |
 | 12 | Why Saying Sorry Too Much Makes People Respect You Less: Ebo narrates, stick-figure doodles act it out, 40 shots (42 s, vertical) | [`ebo-teaches-money-ep12.mp4`](episodes/ep12/ebo-teaches-money-ep12.mp4) | [`Ebo_Teaches_Money_Ep12.fla`](episodes/ep12/Ebo_Teaches_Money_Ep12.fla) |
-| 13 | Someone Stepped on My Foot. I Said Sorry.: storytime: Ebo, Ama, Mica, Christy and Obuor act it out, no text on screen, 43 shots (59 s, vertical) | [`ebo-teaches-money-ep13.mp4`](episodes/ep13/ebo-teaches-money-ep13.mp4) | [`Ebo_Teaches_Money_Ep13.fla`](episodes/ep13/Ebo_Teaches_Money_Ep13.fla) |
+| 13 | Someone Stepped on My Foot. I Said Sorry.: storytime: Ebo, Ama, Mica, Christy and Obuor act it out, no text on screen, 44 shots with the moral as the outro (63 s, vertical) | [`ebo-teaches-money-ep13.mp4`](episodes/ep13/ebo-teaches-money-ep13.mp4) | [`Ebo_Teaches_Money_Ep13.fla`](episodes/ep13/Ebo_Teaches_Money_Ep13.fla) |
 | 01 short | Same episode, tight 34.3 s cut with a cold open | [`ebo-teaches-money-ep01-short.mp4`](episodes/ep01/ebo-teaches-money-ep01-short.mp4) | n/a |
 
 To add the voice to an Animate file, follow the episode's `README.txt` (it takes three steps).

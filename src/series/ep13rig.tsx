@@ -130,6 +130,8 @@ export const RIG_PANELS: ((l: number) => React.ReactNode)[] = [
   /* 41 */ () => <Page tint="#FFD9B0"><Close who="ebo" p={{eyes: 'wide', mouth: 'flat'}} /></Page>,
   /* 42 */ () => <Page tint="#FFD9B0"><Street dusk /><R who="ebo" x={330} p={{...POSE.pointAtYou, brows: 'angry', eyes: 'squint', mouth: 'flat'}} talk /><R who="obuor" x={780} facing={-1} p={{...POSE.shocked, sweat: 1}} /></Page>,
   /* 43 */ () => <Page tint="#FFD9B0"><Street dusk /><R who="ebo" x={330} p={{...POSE.smug}} /><R who="obuor" x={780} facing={-1} p={{...POSE.nervous, sweat: 1, mouth: 'grin'}} talk /></Page>,
+  // ── the outro: the moral, to camera ──
+  /* 44 */ (l) => <Page tint="#FFF3C4"><R who="ebo" x={540} y={1930} s={2.25} p={l < 1.35 ? {...POSE.explainBoth, eyes: 'happy', mouth: 'smile'} : {...POSE.point, eyes: 'open', mouth: 'smile', lookX: 10}} talk /></Page>,
 ];
 
 export const Ep13RigBoard: React.FC = () => {

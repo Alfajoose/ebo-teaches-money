@@ -54,7 +54,14 @@
    "src": "stranger",
    "from": 0.0,
    "to": 1.55,
-   "gap": 1.0
+   "gap": 0.6
+  },
+  {
+   "who": "ebo",
+   "src": "outro",
+   "from": 0.0,
+   "to": 4.15,
+   "gap": 0.9
   }
  ]
 }
