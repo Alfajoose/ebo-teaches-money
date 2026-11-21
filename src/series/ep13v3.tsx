@@ -7,6 +7,7 @@ import {CastId} from '../cast/castConfig';
 import {Pose, POSES} from '../components/Character';
 import {POSE, CONTACT, frontOn, gentle} from '../cast/poses';
 import {StageSizeContext} from './exportCtx';
+import {Prop} from '../prop';
 import {useMarkerFont} from './filterKit';
 import {Ep13Anim} from './ep13board';
 import {
@@ -67,13 +68,13 @@ const NoteInsert: React.FC<{n: number; l: number; bg: string}> = ({n, l, bg}) =>
     <g>
       <rect x={-300} y={-300} width={1680} height={2600} fill={bg} />
       {/* her other arm holding the pad from below */}
-      <path d={`M -60 2100 L ${cx - 200} ${cy + 360}`} stroke="#1D1A1A" strokeWidth={150} strokeLinecap="round" />
-      <path d={`M -60 2100 L ${cx - 200} ${cy + 360}`} stroke={skin} strokeWidth={136} strokeLinecap="round" />
+      <Prop name="HoldingArm"><g transform="translate(0 0)"><path d={`M -60 2100 L ${cx - 200} ${cy + 360}`} stroke="#1D1A1A" strokeWidth={150} strokeLinecap="round" />
+      <path d={`M -60 2100 L ${cx - 200} ${cy + 360}`} stroke={skin} strokeWidth={136} strokeLinecap="round" /></g></Prop>
       <g transform={`translate(${cx} ${cy}) scale(${K}) rotate(-4)`}><Notepad pencil={false} notes={n} draw={draw} /></g>
       {/* the writing arm and the pencil, its tip on the line */}
-      <path d={`M ${tip[0] + 215} ${tip[1] + 310} L 1300 2150`} stroke="#1D1A1A" strokeWidth={130} strokeLinecap="round" />
+      <Prop name="WritingHand"><g transform="translate(0 0)"><path d={`M ${tip[0] + 215} ${tip[1] + 310} L 1300 2150`} stroke="#1D1A1A" strokeWidth={130} strokeLinecap="round" />
       <path d={`M ${tip[0] + 215} ${tip[1] + 310} L 1300 2150`} stroke={skin} strokeWidth={116} strokeLinecap="round" />
-      <g transform={`translate(${tip[0]} ${tip[1]}) scale(2) rotate(180)`}><Pencil /></g>
+      <g transform={`translate(${tip[0]} ${tip[1]}) scale(2) rotate(180)`}><Pencil /></g></g></Prop>
     </g>
   );
 };

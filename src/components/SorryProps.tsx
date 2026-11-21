@@ -23,6 +23,15 @@ const prop = <P extends object>(name: string, Drawing: React.FC<P>): React.FC<P>
 
 // ───────────────────────── sets ─────────────────────────
 
+/** A piece of a set (a building, a window, the fridge…) as its own prop symbol, so the Animate background is only
+ * the walls, floor and sky, and every object in the set can be moved or edited on its own. */
+const Piece: React.FC<{name: string; children: React.ReactNode}> = ({name, children}) => (
+  <Prop name={name}>
+    <g transform="translate(0 0)">{children}</g>
+  </Prop>
+);
+
+
 /** The street: a shop with a striped awning, brick buildings, a hydrant and a lamp post, the sidewalk and the kerb. */
 export const SidewalkSet: React.FC<{dusk?: boolean}> = ({dusk}) => {
   const sky = dusk ? '#F7C99E' : '#EAF1F4';
@@ -31,21 +40,21 @@ export const SidewalkSet: React.FC<{dusk?: boolean}> = ({dusk}) => {
   return (
     <g>
       <rect x={-300} y={-300} width={1680} height={2600} fill={sky} />
-      {dusk && <circle cx={820} cy={430} r={110} fill="#FFB061" stroke={K} strokeWidth={6} />}
+      {dusk && <Piece name="SettingSun"><circle cx={820} cy={430} r={110} fill="#FFB061" stroke={K} strokeWidth={6} /></Piece>}
       {/* far buildings */}
-      <path d="M 380 1520 L 380 560 L 560 560 L 560 470 L 700 470 L 700 1520 Z" fill={dusk ? '#D9A88F' : '#E3E1DC'} {...thin} />
+      <Piece name="FarBuildings"><path d="M 380 1520 L 380 560 L 560 560 L 560 470 L 700 470 L 700 1520 Z" fill={dusk ? '#D9A88F' : '#E3E1DC'} {...thin} /></Piece>
       {/* the shop, left */}
-      <rect x={-60} y={300} width={460} height={1220} fill={wallA} {...ln} />
+      <Piece name="ShopFront"><rect x={-60} y={300} width={460} height={1220} fill={wallA} {...ln} />
       {[0, 1].map((r) => [0, 1].map((c) => <rect key={`${r}${c}`} x={40 + c * 170} y={380 + r * 210} width={110} height={140} fill="#BFD9E6" {...thin} />))}
       <path d="M -60 860 L 400 860 L 440 960 L -60 960 Z" fill="#fff" {...ln} />
       {[0, 1, 2, 3, 4].map((i) => <path key={i} d={`M ${-60 + i * 100} 860 L ${-10 + i * 100} 860 L ${40 + i * 100} 960 L ${-10 + i * 100} 960 Z`} fill={C.red} />)}
       <path d="M -60 860 L 400 860 L 440 960 L -60 960 Z" fill="none" {...ln} />
       <rect x={0} y={1010} width={260} height={360} fill="#BFD9E6" {...ln} />
-      <rect x={290} y={1060} width={90} height={460} fill="#8A5A3C" {...ln} />
+      <rect x={290} y={1060} width={90} height={460} fill="#8A5A3C" {...ln} /></Piece>
       {/* brick building, right */}
-      <rect x={700} y={360} width={480} height={1160} fill={wallB} {...ln} />
+      <Piece name="BrickBuilding"><rect x={700} y={360} width={480} height={1160} fill={wallB} {...ln} />
       {[0, 1, 2, 3].map((r) => [0, 1].map((c) => <rect key={`${r}${c}`} x={770 + c * 170} y={440 + r * 230} width={110} height={150} fill="#BFD9E6" {...thin} />))}
-      {[0, 1, 2, 3, 4, 5].map((i) => <path key={i} d={`M 710 ${420 + i * 180} l 40 0 M 1080 ${500 + i * 180} l 40 0`} {...thin} opacity={0.4} />)}
+      {[0, 1, 2, 3, 4, 5].map((i) => <path key={i} d={`M 710 ${420 + i * 180} l 40 0 M 1080 ${500 + i * 180} l 40 0`} {...thin} opacity={0.4} />)}</Piece>
       {/* sidewalk and kerb */}
       <rect x={-300} y={FLOOR} width={1680} height={190} fill="#D8D5CF" />
       {[0, 1, 2, 3, 4].map((i) => <path key={i} d={`M ${-80 + i * 300} ${FLOOR} l -60 190`} {...thin} />)}
@@ -53,12 +62,12 @@ export const SidewalkSet: React.FC<{dusk?: boolean}> = ({dusk}) => {
       <rect x={-300} y={FLOOR + 230} width={1680} height={900} fill="#8F8E92" />
       <path d={`M -300 ${FLOOR} L 1380 ${FLOOR}`} {...ln} />
       {/* lamp post and hydrant */}
-      <path d={`M 640 ${FLOOR} L 640 640 Q 640 590 700 590 L 740 590`} {...ln} strokeWidth={12} fill="none" />
-      <path d="M 720 590 l 60 0 l -10 34 l -40 0 Z" fill={dusk ? '#FFE07A' : '#F2EBD0'} {...ln} />
-      <g transform={`translate(980 ${FLOOR})`}>
+      <Piece name="LampPost"><path d={`M 640 ${FLOOR} L 640 640 Q 640 590 700 590 L 740 590`} {...ln} strokeWidth={12} fill="none" />
+      <path d="M 720 590 l 60 0 l -10 34 l -40 0 Z" fill={dusk ? '#FFE07A' : '#F2EBD0'} {...ln} /></Piece>
+      <Piece name="Hydrant"><g transform={`translate(980 ${FLOOR})`}>
         <path d="M -38 0 L -38 -120 Q 0 -165 38 -120 L 38 0 Z" fill={C.red} {...ln} />
         <rect x={-58} y={-100} width={116} height={28} rx={10} fill={C.red} {...ln} />
-      </g>
+      </g></Piece>
     </g>
   );
 };
@@ -68,12 +77,12 @@ export const RestaurantSet: React.FC = () => (
   <g>
     <rect x={-300} y={-300} width={1680} height={2600} fill="#F2DCC4" />
     <rect x={-300} y={1140} width={1680} height={380} fill="#C98F63" {...ln} />
-    <rect x={120} y={360} width={440} height={560} fill="#CFE3EC" {...ln} />
+    <Piece name="RestaurantWindow"><rect x={120} y={360} width={440} height={560} fill="#CFE3EC" {...ln} />
     <path d="M 340 360 L 340 920 M 120 640 L 560 640" {...ln} />
-    <path d="M 160 920 L 160 760 L 230 760 L 230 700 L 300 700 L 300 920 M 380 920 L 380 680 L 520 680 L 520 920" {...thin} opacity={0.45} fill="none" />
-    <rect x={700} y={420} width={240} height={180} fill="#F6E7B8" {...ln} />
-    <path d="M 730 570 L 790 490 L 840 540 L 880 470 L 910 570 Z" fill="#9CC48A" {...thin} />
-    <path d="M 760 260 L 760 330 M 700 330 L 820 330 L 790 380 L 730 380 Z" {...ln} fill="#F3D27A" />
+    <path d="M 160 920 L 160 760 L 230 760 L 230 700 L 300 700 L 300 920 M 380 920 L 380 680 L 520 680 L 520 920" {...thin} opacity={0.45} fill="none" /></Piece>
+    <Piece name="PictureFrame"><rect x={700} y={420} width={240} height={180} fill="#F6E7B8" {...ln} />
+    <path d="M 730 570 L 790 490 L 840 540 L 880 470 L 910 570 Z" fill="#9CC48A" {...thin} /></Piece>
+    <Piece name="PendantLamp"><path d="M 760 260 L 760 330 M 700 330 L 820 330 L 790 380 L 730 380 Z" {...ln} fill="#F3D27A" /></Piece>
     <rect x={-300} y={FLOOR} width={1680} height={900} fill="#B07A52" />
     {[0, 1, 2, 3, 4, 5].map((i) => <path key={i} d={`M -300 ${FLOOR + 60 + i * 70} L 1380 ${FLOOR + 60 + i * 70}`} {...thin} opacity={0.35} />)}
     <path d={`M -300 ${FLOOR} L 1380 ${FLOOR}`} {...ln} />
@@ -97,17 +106,17 @@ export const RestaurantTable = prop('RestaurantTable', RestaurantTableDrawing);
 export const OfficeSet: React.FC<{sunny?: boolean}> = ({sunny}) => (
   <g>
     <rect x={-300} y={-300} width={1680} height={2600} fill={sunny ? '#F4EBD8' : '#E6E3DE'} />
-    <rect x={540} y={380} width={380} height={460} fill={sunny ? '#FFF2C2' : '#CFE0EA'} {...ln} />
-    {Array.from({length: 9}, (_, i) => <path key={i} d={`M 540 ${420 + i * 46} L 920 ${420 + i * 46}`} {...thin} />)}
-    <g transform={`translate(-30 ${FLOOR})`}>
+    <Piece name="BlindsWindow"><rect x={540} y={380} width={380} height={460} fill={sunny ? '#FFF2C2' : '#CFE0EA'} {...ln} />
+    {Array.from({length: 9}, (_, i) => <path key={i} d={`M 540 ${420 + i * 46} L 920 ${420 + i * 46}`} {...thin} />)}</Piece>
+    <Piece name="OfficeDoor"><g transform={`translate(-30 ${FLOOR})`}>
       <rect x={0} y={-860} width={300} height={860} fill="#F7F5F1" {...ln} />
       <path d="M 300 -860 L 380 -830 L 380 -20 L 300 0 Z" fill="#C79A6E" {...ln} />
       <circle cx={360} cy={-420} r={10} fill={K} />
-    </g>
-    <g transform={`translate(960 ${FLOOR})`}>
+    </g></Piece>
+    <Piece name="FilingCabinet"><g transform={`translate(960 ${FLOOR})`}>
       <rect x={-90} y={-520} width={180} height={520} fill="#B9BEC6" {...ln} />
       {[0, 1, 2].map((i) => <g key={i}><rect x={-70} y={-500 + i * 170} width={140} height={140} fill="#C9CDD4" {...thin} /><rect x={-25} y={-450 + i * 170} width={50} height={14} rx={6} fill={K} /></g>)}
-    </g>
+    </g></Piece>
     <rect x={-300} y={FLOOR} width={1680} height={900} fill="#A9B0B8" />
     <path d={`M -300 ${FLOOR} L 1380 ${FLOOR}`} {...ln} />
   </g>
@@ -135,16 +144,16 @@ export const OfficeDesk = prop('OfficeDesk', OfficeDeskDrawing);
 export const KitchenSet: React.FC = () => (
   <g>
     <rect x={-300} y={-300} width={1680} height={2600} fill="#F5EAD0" />
-    {[0, 1, 2].map((i) => <rect key={i} x={60 + i * 200} y={420} width={180} height={240} fill="#E9C99A" {...ln} />)}
-    {[0, 1, 2].map((i) => <circle key={i} cx={130 + i * 200} cy={620} r={9} fill={K} />)}
-    <rect x={20} y={960} width={640} height={50} fill="#D6D2CB" {...ln} />
+    <Piece name="WallCabinets">{[0, 1, 2].map((i) => <rect key={i} x={60 + i * 200} y={420} width={180} height={240} fill="#E9C99A" {...ln} />)}
+    {[0, 1, 2].map((i) => <circle key={i} cx={130 + i * 200} cy={620} r={9} fill={K} />)}</Piece>
+    <Piece name="KitchenCounter"><rect x={20} y={960} width={640} height={50} fill="#D6D2CB" {...ln} />
     <rect x={40} y={1010} width={600} height={510} fill="#E9C99A" {...ln} />
     <path d="M 240 1010 L 240 1520 M 440 1010 L 440 1520" {...thin} />
-    <path d="M 300 960 L 300 880 Q 300 850 330 850 L 370 850" {...ln} fill="none" />
-    <rect x={720} y={500} width={300} height={1020} rx={22} fill="#F4F4F2" {...ln} />
-    <path d="M 720 900 L 1020 900 M 760 600 l 0 200 M 760 960 l 0 260" {...ln} />
-    <rect x={260} y={180} width={300} height={190} fill="#CFE3EC" {...ln} />
-    <path d="M 410 180 L 410 370" {...ln} />
+    <path d="M 300 960 L 300 880 Q 300 850 330 850 L 370 850" {...ln} fill="none" /></Piece>
+    <Piece name="Fridge"><rect x={720} y={500} width={300} height={1020} rx={22} fill="#F4F4F2" {...ln} />
+    <path d="M 720 900 L 1020 900 M 760 600 l 0 200 M 760 960 l 0 260" {...ln} /></Piece>
+    <Piece name="KitchenWindow"><rect x={260} y={180} width={300} height={190} fill="#CFE3EC" {...ln} />
+    <path d="M 410 180 L 410 370" {...ln} /></Piece>
     <rect x={-300} y={FLOOR} width={1680} height={900} fill="#D9B98F" />
     {[0, 1, 2, 3, 4, 5, 6].map((i) => <path key={i} d={`M ${-200 + i * 220} ${FLOOR} l -80 400`} {...thin} opacity={0.35} />)}
     <path d={`M -300 ${FLOOR} L 1380 ${FLOOR}`} {...ln} />
@@ -166,8 +175,8 @@ export const KitchenTable = prop('KitchenTable', KitchenTableDrawing);
 export const LivingRoomSet: React.FC = () => (
   <g>
     <rect x={-300} y={-300} width={1680} height={2600} fill="#EFE3CF" />
-    <rect x={380} y={420} width={320} height={220} fill="#F6E7B8" {...ln} />
-    <path d="M 410 610 L 480 520 L 540 580 L 600 500 L 670 610 Z" fill="#B7CFA0" {...thin} />
+    <Piece name="LivingRoomPicture"><rect x={380} y={420} width={320} height={220} fill="#F6E7B8" {...ln} />
+    <path d="M 410 610 L 480 520 L 540 580 L 600 500 L 670 610 Z" fill="#B7CFA0" {...thin} /></Piece>
     <rect x={-300} y={FLOOR} width={1680} height={900} fill="#C9A47E" />
     <path d={`M -300 ${FLOOR} L 1380 ${FLOOR}`} {...ln} />
   </g>
@@ -189,9 +198,9 @@ export const BigCouch = prop('BigCouch', BigCouchDrawing);
 export const AutoDoorSet: React.FC = () => (
   <g>
     <rect x={-300} y={-300} width={1680} height={2600} fill="#E2E6E9" />
-    <rect x={60} y={380} width={960} height={1140} fill="#9AA3AC" {...ln} />
+    <Piece name="StoreEntrance"><rect x={60} y={380} width={960} height={1140} fill="#9AA3AC" {...ln} /></Piece>
     <rect x={-300} y={FLOOR} width={1680} height={900} fill="#CFCBC4" />
-    <rect x={240} y={FLOOR} width={600} height={30} fill="#7E858D" {...ln} />
+    <Piece name="DoorTrack"><rect x={240} y={FLOOR} width={600} height={30} fill="#7E858D" {...ln} /></Piece>
     <path d={`M -300 ${FLOOR} L 1380 ${FLOOR}`} {...ln} />
   </g>
 );
@@ -213,10 +222,10 @@ export const AutoDoors = prop('AutoDoors', AutoDoorsDrawing);
 export const CafeSet: React.FC = () => (
   <g>
     <rect x={-300} y={-300} width={1680} height={2600} fill="#EFE1CC" />
-    <rect x={560} y={300} width={440} height={300} rx={14} fill="#2F3532" {...ln} />
-    {[0, 1, 2, 3].map((i) => <path key={i} d={`M 600 ${360 + i * 60} q 40 -16 80 0 t 80 0 M 860 ${360 + i * 60} l 90 0`} stroke="#F2EFE6" strokeWidth={6} fill="none" strokeLinecap="round" />)}
-    <rect x={80} y={700} width={420} height={40} fill="#B98A5E" {...ln} />
-    {[0, 1, 2, 3].map((i) => <rect key={i} x={110 + i * 95} y={640} width={60} height={60} rx={8} fill={['#E8D2B0', '#F2F2F2', '#D9A27A', '#F2F2F2'][i]} {...thin} />)}
+    <Piece name="MenuBoard"><rect x={560} y={300} width={440} height={300} rx={14} fill="#2F3532" {...ln} />
+    {[0, 1, 2, 3].map((i) => <path key={i} d={`M 600 ${360 + i * 60} q 40 -16 80 0 t 80 0 M 860 ${360 + i * 60} l 90 0`} stroke="#F2EFE6" strokeWidth={6} fill="none" strokeLinecap="round" />)}</Piece>
+    <Piece name="CupShelf"><rect x={80} y={700} width={420} height={40} fill="#B98A5E" {...ln} />
+    {[0, 1, 2, 3].map((i) => <rect key={i} x={110 + i * 95} y={640} width={60} height={60} rx={8} fill={['#E8D2B0', '#F2F2F2', '#D9A27A', '#F2F2F2'][i]} {...thin} />)}</Piece>
     <rect x={-300} y={FLOOR} width={1680} height={900} fill="#B08560" />
     <path d={`M -300 ${FLOOR} L 1380 ${FLOOR}`} {...ln} />
   </g>
@@ -364,26 +373,26 @@ export const StompClose: React.FC<{l?: number; dusk?: boolean}> = ({l = 99, dusk
       {[0, 1, 2].map((i) => <path key={i} d={`M ${100 + i * 380} 1330 l -120 600`} {...thin} />)}
       <path d="M -300 1330 L 1380 1330" {...ln} />
       {/* his sneaker and leg */}
-      <rect x={250} y={-300} width={170} height={1310} fill="#D3D6C8" {...ln} />
-      <g transform="translate(360 1300) scale(1.7)"><SneakerDrawing /></g>
+      <Piece name="EboLegSneaker"><rect x={250} y={-300} width={170} height={1310} fill="#D3D6C8" {...ln} />
+      <g transform="translate(360 1300) scale(1.7)"><SneakerDrawing /></g></Piece>
       {/* the stranger's trouser leg and dress shoe */}
-      <g transform={`translate(0 ${-520 * (1 - u) ** 2})`}>
+      <Prop name="StrangerLegShoe"><g transform={`translate(0 ${-520 * (1 - u) ** 2})`}>
         <path d="M 560 -300 L 860 -300 L 840 1000 L 560 1010 Z" fill="#7C808A" {...ln} />
         <path d="M 600 -300 L 640 1000" {...thin} opacity={0.5} />
         <g transform="translate(650 1220) scale(1.85)"><DressShoeDrawing /></g>
-      </g>
+      </g></Prop>
     </g>
   );
 };
 
 /** A wooden chair, front-on: the back shows above whoever sits in it (drawn behind them), the seat and legs below. */
 export const ChairSet: React.FC<{x: number; tone?: string}> = ({x, tone = '#A8744A'}) => (
-  <g transform={`translate(${x} ${FLOOR})`}>
+  <Prop name="Chair"><g transform={`translate(${x} ${FLOOR})`}>
     <rect x={-120} y={-560} width={240} height={220} rx={22} fill={tone} {...ln} />
     <rect x={-90} y={-530} width={180} height={36} rx={10} fill="#C08A5C" {...thin} />
     <rect x={-140} y={-340} width={280} height={40} rx={10} fill={tone} {...ln} />
     <path d="M -120 -300 L -130 0 M 120 -300 L 130 0" {...ln} strokeWidth={14} />
-  </g>
+  </g></Prop>
 );
 
 /** A waiter's round tray with a glass of water on it. */

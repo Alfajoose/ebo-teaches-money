@@ -69,6 +69,8 @@
 
 26. **No wobble (Nov 2026, after Ep 13).** No hand-drawn line waver on props (it shimmers when the camera pushes or a prop moves) and no idle sway on the cast. Lines stay clean and still; characters move only when they act. In code: `HandDrawnContext` off, no lift/tilt sine on poses, `ROUGH_PROPS = False` in the .fla exporter.
 
+27. **Sets split into background + props (Nov 2026).** In the Animate file the Background layer is only walls, floor, sky and street; every object in a set (buildings, windows, doors, cabinets, fridge, lamp post, hydrant, pictures, chairs, tables, counters) is its own prop symbol on the Props layer, and anything that moves inside a shot (arms in an insert, a falling shoe) is a prop too. In code: wrap set objects in `Piece` (`src/components/SorryProps.tsx`).
+
 ## No Ghanaian references (user's standing rule)
 
 Keep the show culturally neutral: no Ghanaian accents in the cast's voices, no Ghanaian foods, words, places, money or
