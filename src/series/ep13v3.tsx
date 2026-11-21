@@ -22,7 +22,7 @@ import {
 type Look = Partial<Pose>;
 const VOICE: Partial<Record<CastId, string>> = {ebo: 'ebo', ama: 'wife', mica: 'stranger'};
 const S = 1.2;
-const R: React.FC<{who: CastId; x: number; y?: number; s?: number; p?: Look; facing?: 1 | -1; hold?: React.ReactNode; holdL?: React.ReactNode; talk?: boolean; touch?: keyof typeof CONTACT; cycle?: 'fastWalk' | 'walk'}> = ({who, x, y = FLOOR, s = S, p = {}, facing = 1, hold, holdL, talk, touch, cycle}) => {
+const R: React.FC<{who: CastId; x: number; y?: number; s?: number; p?: Look; facing?: 1 | -1; hold?: React.ReactNode; holdL?: React.ReactNode; talk?: boolean; touch?: keyof typeof CONTACT; cycle?: 'fastWalk' | 'walk'; turn?: 'side' | 'back'}> = ({who, x, y = FLOOR, s = S, p = {}, facing = 1, hold, holdL, talk, touch, cycle, turn}) => {
   const {f, speaker, mouth} = React.useContext(Ep13Anim);
   const front = who === 'ebo' || who === 'ama';
   let pose = {...(front ? POSE.stand : (POSES.standing as Pose)), ...p} as Pose;
@@ -30,7 +30,7 @@ const R: React.FC<{who: CastId; x: number; y?: number; s?: number; p?: Look; fac
   // no sway: the user asked for no wobbly effects (still poses, the cast moves only when acting)
   const lip = talk && speaker === VOICE[who] ? mouth : undefined;
   return (
-    <RigCharacter who={who} x={x} y={y} scale={s} facing={facing} t={f} noBlink={f === 0} mouthFrame={lip} cycle={cycle} pose={front && !touch && !cycle ? gentle(frontOn(pose)) : gentle(pose)} holdL={holdL}>
+    <RigCharacter who={who} x={x} y={y} scale={s} facing={facing} t={f} noBlink={f === 0} mouthFrame={lip} cycle={cycle} pose={turn ? gentle({...pose, view: turn === 'back' ? 3 : 0} as Pose) : front && !touch && !cycle ? gentle(frontOn(pose)) : gentle(pose)} holdL={holdL}>
       {hold}
     </RigCharacter>
   );
@@ -68,58 +68,58 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
   /* 1 */ (l) => <g><SidewalkSet /><R who="ama" x={walk(l, 160, 260)} s={1.05} /><R who="ebo" x={walk(l, 340, 440)} p={{eyes: 'happy', mouth: 'smile'}} /><R who="mica" x={walk(l, 1100, 820, 0.8)} facing={-1} p={{eyes: 'half', mouth: 'flat'}} cycle="fastWalk" hold={<g transform="scale(0.5)"><Briefcase /></g>} /></g>,
   /* 2 */ (l) => <StompClose l={l} />,
   /* 3 */ (l) => <g><SidewalkSet /><R who="ebo" x={540} y={1780} s={1.7} p={{eyes: 'squint', mouth: 'grin', sweat: 1, brows: 'sad', legR: [35, -30], armR: [20, 10], armL: [-25, -10], lift: -40 * Math.abs(Math.sin(l * 7)), tilt: 6 * Math.sin(l * 7)}} /></g>,
-  /* 4 */ (l) => <g><SidewalkSet /><R who="ebo" x={330} p={{...NERVOUS, tilt: 10}} talk /><R who="mica" x={walk(l, 640, 980, 1)} facing={1} p={{eyes: 'half', mouth: 'flat'}} cycle="fastWalk" hold={<g transform="scale(0.5)"><Briefcase /></g>} /></g>,
+  /* 4 */ (l) => <g><SidewalkSet /><R who="ebo" turn="side" facing={1} x={330} p={{...NERVOUS, tilt: 10}} talk /><R who="mica" x={walk(l, 640, 980, 1)} facing={1} p={{eyes: 'half', mouth: 'flat'}} cycle="fastWalk" hold={<g transform="scale(0.5)"><Briefcase /></g>} /></g>,
   /* 5 */ () => <g><SidewalkSet /><Close who="ama" touch="armsCrossed" p={{eyes: 'half', mouth: 'flat', brows: 'up'}} /></g>,
-  /* 6 */ () => <g><SidewalkSet /><R who="ama" x={330} touch="armsCrossed" p={{eyes: 'half', mouth: 'flat'}} talk /><R who="ebo" x={760} p={{eyes: 'open', mouth: 'flat'}} /></g>,
+  /* 6 */ () => <g><SidewalkSet /><R who="ama" x={330} touch="armsCrossed" p={{eyes: 'half', mouth: 'flat'}} talk /><R who="ebo" turn="side" facing={-1} x={760} p={{eyes: 'open', mouth: 'flat'}} /></g>,
   /* 7 */ () => <g><SidewalkSet /><R who="ebo" x={360} s={1.5} p={{...POSE.shrug}} talk /><R who="ama" x={800} p={{eyes: 'half', mouth: 'flat'}} /></g>,
   /* 8 */ () => <g><SidewalkSet /><R who="ebo" x={300} p={{...POSE.shrug, mouth: 'flat'}} /><R who="ama" x={720} s={1.4} p={{eyes: 'squint', mouth: 'smirk', armR: [70, 20]}} hold={PAD} /></g>,
   // ── the count ──
-  /* 9 */ () => <g><RestaurantSet /><ChairSet x={300} /><ChairSet x={720} /><R who="ama" x={720} y={SEAT} p={{eyes: 'half', mouth: 'flat', armR: [60, 20]}} hold={PAD} /><R who="ebo" x={300} y={SEAT} p={{...POSE.wave, mouth: 'smile'}} /><RestaurantTable x={510} glass="full" /><R who="pretty" x={980} facing={-1} p={{eyes: 'open', mouth: 'smile', armR: [80, 10]}} hold={<g transform="scale(0.7)"><Tray /></g>} /></g>,
+  /* 9 */ () => <g><RestaurantSet /><ChairSet x={300} /><ChairSet x={720} /><R who="ama" x={720} y={SEAT} p={{eyes: 'half', mouth: 'flat', armR: [60, 20]}} hold={PAD} /><R who="ebo" turn="side" facing={1} x={300} y={SEAT} p={{...POSE.wave, mouth: 'smile'}} /><RestaurantTable x={510} glass="full" /><R who="pretty" x={980} facing={-1} p={{eyes: 'open', mouth: 'smile', armR: [80, 10]}} hold={<g transform="scale(0.7)"><Tray /></g>} /></g>,
   /* 10 */ () => <g><RestaurantSet /><Close who="ebo" p={{...NERVOUS, armR: [150, 20]}} talk /></g>,
   /* 11 */ (l) => <g><RestaurantSet /><Close who="ama" x={500} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /></g>,
-  /* 12 */ () => <g><OfficeSet /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" x={180} p={{...NERVOUS, mouth: 'smile'}} /></g>,
+  /* 12 */ () => <g><OfficeSet /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={180} p={{...NERVOUS, mouth: 'smile'}} /></g>,
   /* 13 */ () => <g><OfficeSet /><Close who="ebo" x={420} p={{...NERVOUS, armR: [70, 20]}} talk /></g>,
-  /* 14 */ (l) => <g><OfficeSet /><R who="ama" x={150} s={1.0} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" x={420} p={NERVOUS} /></g>,
+  /* 14 */ (l) => <g><OfficeSet /><R who="ama" x={150} s={1.0} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={420} p={NERVOUS} /></g>,
   /* 15 */ (l) => <g><SidewalkSet /><R who="ebo" x={420} p={{...POSE.shocked, tilt: -12}} /><R who="mica" x={walk(l, 900, 620, 0.25)} facing={-1} p={{eyes: 'half', mouth: 'flat', tilt: 10}} hold={<g transform="scale(0.5)"><Briefcase /></g>} /><Whoosh x={1060} y={980} /></g>,
-  /* 16 */ () => <g><SidewalkSet /><R who="ebo" x={360} p={NERVOUS} talk /><R who="mica" x={830} facing={1} p={{eyes: 'half', mouth: 'flat'}} /></g>,
+  /* 16 */ () => <g><SidewalkSet /><R who="ebo" turn="side" facing={1} x={360} p={NERVOUS} talk /><R who="mica" x={830} facing={1} p={{eyes: 'half', mouth: 'flat'}} /></g>,
   /* 17 */ (l) => <g><SidewalkSet /><R who="ebo" x={360} p={NERVOUS} /><R who="ama" x={860} s={0.95} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /></g>,
-  /* 18 */ (l) => <g><AutoDoorSet /><AutoDoors open={Math.min(1, l / 0.3)} /><R who="ebo" x={540} p={{...NERVOUS, tilt: 12}} talk /></g>,
-  /* 19 */ (l) => <g><CafeSet /><R who="christy" x={720} facing={-1} p={{eyes: 'open', mouth: 'smile'}} /><CafeCounter x={700} /><R who="ama" x={70} s={0.95} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /><R who="ebo" x={380} p={{...NERVOUS, armR: [90, 10]}} talk /></g>,
+  /* 18 */ (l) => <g><AutoDoorSet /><AutoDoors open={Math.min(1, l / 0.3)} /><R who="ebo" turn="back" facing={1} x={540} p={{...NERVOUS, tilt: 12}} talk /></g>,
+  /* 19 */ (l) => <g><CafeSet /><R who="christy" x={720} facing={-1} p={{eyes: 'open', mouth: 'smile'}} /><CafeCounter x={700} /><R who="ama" x={70} s={0.95} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /><R who="ebo" turn="side" facing={1} x={380} p={{...NERVOUS, armR: [90, 10]}} talk /></g>,
   /* 20 */ (l) => <g><KitchenSet /><ChairSet x={760} /><R who="ebo" x={760} y={SEAT} p={{...POSE.shocked, sweat: l > 0.4 ? 1 : 0}} /><KitchenTable x={600} /><R who="ama" x={260} s={1.3} p={{eyes: 'half', mouth: 'flat', brows: 'up', armR: [90, -10]}} hold={<g transform="scale(0.9)"><Notepad pencil={false} /></g>} /></g>,
   /* 21 */ () => <g><KitchenSet /><Close who="ebo" p={{eyes: 'wide', mouth: 'o', sweat: 1, brows: 'sad'}} /></g>,
   // ── the cost ──
   /* 22 */ () => <g><KitchenSet /><Close who="ama" p={{eyes: 'half', mouth: 'flat', brows: 'angry'}} /></g>,
-  /* 23 */ (l) => <g><RestaurantSet /><ChairSet x={300} /><R who="ebo" x={300} y={SEAT} p={{...POSE.wave, eyes: 'sad', mouth: 'frown'}} /><RestaurantTable x={510} glass="empty" /><R who="pretty" x={walk(l, 700, 1080, 1.4)} facing={1} p={{eyes: 'half', mouth: 'smile'}} /></g>,
-  /* 24 */ () => <g><OfficeSet /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat', armL: [60, 10]}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" x={260} p={{...POSE.explain, mouth: 'smile'}} /></g>,
+  /* 23 */ (l) => <g><RestaurantSet /><ChairSet x={300} /><R who="ebo" turn="side" facing={1} x={300} y={SEAT} p={{...POSE.wave, eyes: 'sad', mouth: 'frown'}} /><RestaurantTable x={510} glass="empty" /><R who="pretty" x={walk(l, 700, 1080, 1.4)} facing={1} p={{eyes: 'half', mouth: 'smile'}} /></g>,
+  /* 24 */ () => <g><OfficeSet /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat', armL: [60, 10]}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={260} p={{...POSE.explain, mouth: 'smile'}} /></g>,
   /* 25 */ () => <g><OfficeSet /><Close who="boss" facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /></g>,
   /* 26 */ (l) => <g><OfficeSet /><R who="ebo" x={walk(l, 360, 120, 1.2)} p={SLUMP} /></g>,
   /* 27 */ () => <g><LivingRoomSet /><BigCouch /><R who="ebo" x={540} s={0.55} y={FLOOR - 230} p={{eyes: 'sad', mouth: 'frown'}} /></g>,
   /* 28 */ (l) => <g><SidewalkSet /><R who="christy" x={walk(l, 120, 420, 1.4)} s={1.5} facing={1} p={{eyes: 'half', mouth: 'flat'}} cycle="walk" /><R who="ebo" x={600} s={0.6} p={{eyes: 'sad', mouth: 'frown'}} /><R who="obuor" x={walk(l, 980, 760, 1.4)} s={1.5} facing={-1} p={{eyes: 'half', mouth: 'flat'}} cycle="fastWalk" /></g>,
   // ── the rule ──
-  /* 29 */ (l) => <g><KitchenSet /><ChairSet x={290} /><ChairSet x={790} /><R who="ama" x={290} y={SEAT} p={{eyes: 'happy', mouth: 'smile', armR: [70, 10]}} /><R who="ebo" x={790} y={SEAT} touch="thinkChin" p={{eyes: 'open', mouth: 'flat'}} /><KitchenTable x={540} /><g transform={`translate(${540 - 150 + 260 * Math.min(1, Math.max(0, (l - 0.2) / 0.6))} ${FLOOR - 360})`}><Mug /></g></g>,
+  /* 29 */ (l) => <g><KitchenSet /><ChairSet x={290} /><ChairSet x={790} /><R who="ama" x={290} y={SEAT} p={{eyes: 'happy', mouth: 'smile', armR: [70, 10]}} /><R who="ebo" turn="side" facing={-1} x={790} y={SEAT} touch="thinkChin" p={{eyes: 'open', mouth: 'flat'}} /><KitchenTable x={540} /><g transform={`translate(${540 - 150 + 260 * Math.min(1, Math.max(0, (l - 0.2) / 0.6))} ${FLOOR - 360})`}><Mug /></g></g>,
   /* 30 */ () => <g><KitchenSet /><Close who="ama" p={{mouth: 'smile', eyes: 'open'}} talk /></g>,
   /* 31 */ () => <g><KitchenSet /><Close who="ama" p={{mouth: 'smile', eyes: 'happy'}} talk /></g>,
-  /* 32 */ () => <g><RestaurantSet /><ChairSet x={760} /><R who="ama" x={760} y={SEAT} touch="armsCrossed" p={{eyes: 'half', mouth: 'flat'}} /><RestaurantTable x={560} glass="none" /><R who="ebo" x={260} p={SLUMP} /></g>,
+  /* 32 */ () => <g><RestaurantSet /><ChairSet x={760} /><R who="ama" x={760} y={SEAT} touch="armsCrossed" p={{eyes: 'half', mouth: 'flat'}} /><RestaurantTable x={560} glass="none" /><R who="ebo" turn="side" facing={1} x={260} p={SLUMP} /></g>,
   /* 33 */ (l) => <Split l={l}
-    left={<g><RestaurantSet /><ChairSet x={760} /><R who="ama" x={760} y={SEAT} touch="armsCrossed" p={{eyes: 'half', mouth: 'flat'}} /><RestaurantTable x={560} glass="none" /><R who="ebo" x={260} p={SLUMP} /></g>}
-    right={<g><RestaurantSet /><ChairSet x={760} /><R who="ama" x={760} y={SEAT} p={{...POSE.happy}} /><RestaurantTable x={560} glass="none" /><R who="ebo" x={260} p={{...POSE.wave, mouth: 'grin', eyes: 'happy'}} talk /></g>} />,
-  /* 34 */ () => <g><OfficeSet /><R who="ebo" x={180} p={SLUMP} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /></g>,
+    left={<g><RestaurantSet /><ChairSet x={760} /><R who="ama" x={760} y={SEAT} touch="armsCrossed" p={{eyes: 'half', mouth: 'flat'}} /><RestaurantTable x={560} glass="none" /><R who="ebo" turn="side" facing={1} x={260} p={SLUMP} /></g>}
+    right={<g><RestaurantSet /><ChairSet x={760} /><R who="ama" x={760} y={SEAT} p={{...POSE.happy}} /><RestaurantTable x={560} glass="none" /><R who="ebo" turn="side" facing={1} x={260} p={{...POSE.wave, mouth: 'grin', eyes: 'happy'}} talk /></g>} />,
+  /* 34 */ () => <g><OfficeSet /><R who="ebo" turn="side" facing={1} x={180} p={SLUMP} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /></g>,
   /* 35 */ (l) => <Split l={l}
-    left={<g><OfficeSet /><R who="ebo" x={180} p={SLUMP} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /></g>}
+    left={<g><OfficeSet /><R who="ebo" turn="side" facing={1} x={180} p={SLUMP} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /></g>}
     right={<g><OfficeSet /><R who="ebo" x={260} p={{...TALL, armR: [40, 20]}} hold={<g transform="scale(0.8)"><Papers /></g>} talk /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'open'}} hold={PHONE} /><OfficeDesk x={700} /></g>} />,
   // ── the change ──
   /* 36 */ () => <g><OfficeSet sunny /><R who="ebo" x={180} p={TALL} /><OfficeDesk x={700} /></g>,
   /* 37 */ (l) => <g><OfficeSet /><Zoom k={2.4} cx={600} cy={1300}><OfficeDesk x={700} mug={false} /><g transform={`translate(640 ${FLOOR - 262 + -120 * (1 - Math.min(1, l / 0.18)) ** 2}) scale(1.5)`}><Smartphone down /></g></Zoom>
     {l > 0.18 && <path d="M 300 900 l -60 -40 M 860 900 l 60 -40 M 580 760 l 0 -70" stroke="#1D1A1A" strokeWidth={10} strokeLinecap="round" />}</g>,
   /* 38 */ () => <g><OfficeSet /><Close who="boss" facing={-1} p={{eyes: 'open', mouth: 'flat', brows: 'up'}} /></g>,
-  /* 39 */ () => <g><OfficeSet sunny /><R who="boss" x={700} facing={-1} p={{eyes: 'happy', mouth: 'smile', tilt: -10}} /><OfficeDesk x={700} /><R who="ebo" x={260} p={{...POSE.explainBoth, mouth: 'grin'}} talk /></g>,
+  /* 39 */ () => <g><OfficeSet sunny /><R who="boss" x={700} facing={-1} p={{eyes: 'happy', mouth: 'smile', tilt: -10}} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={260} p={{...POSE.explainBoth, mouth: 'grin'}} talk /></g>,
   // ── the button ──
   /* 40 */ (l) => <g><SidewalkSet dusk /><R who="ebo" x={walk(l, 200, 560, 1.4)} p={{eyes: 'happy', mouth: 'smile'}} cycle="fastWalk" /></g>,
   /* 41 */ (l) => <StompClose l={l} dusk />,
   /* 42 */ () => <g><SidewalkSet dusk /><Close who="ebo" p={{eyes: 'closed', mouth: 'grin'}} talk /></g>,
   /* 43 */ () => <g><SidewalkSet dusk /><Close who="ebo" p={{eyes: 'wide', mouth: 'flat'}} /></g>,
   /* 44 */ () => <g><Zoom k={1.35} cx={540} cy={1800}><SidewalkSet dusk /></Zoom><R who="ebo" x={540} y={2000} s={2.1} p={{...POSE.pointAtYou, brows: 'angry', eyes: 'squint', mouth: 'flat'}} talk /></g>,
-  /* 45 */ () => <g><SidewalkSet dusk /><R who="ebo" x={330} touch="armsCrossed" p={{eyes: 'happy', mouth: 'smirk'}} /><R who="mica" x={780} facing={-1} p={{...POSE.nervous, sweat: 1, mouth: 'grin', tilt: 8}} talk /></g>,
+  /* 45 */ () => <g><SidewalkSet dusk /><R who="ebo" turn="side" facing={1} x={330} touch="armsCrossed" p={{eyes: 'happy', mouth: 'smirk'}} /><R who="mica" x={780} facing={-1} p={{...POSE.nervous, sweat: 1, mouth: 'grin', tilt: 8}} talk /></g>,
   // ── the outro: the moral, to camera ──
   /* 46 */ (l) => <g><KitchenSet /><R who="ebo" x={540} y={1930} s={2.25} p={l < 1.35 ? {...POSE.explainBoth, eyes: 'happy', mouth: 'smile'} : {...POSE.point, eyes: 'open', mouth: 'smile', lookX: 10}} talk /></g>,
 ];
