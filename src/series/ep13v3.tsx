@@ -77,7 +77,7 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
   /* 9 */ () => <g><RestaurantSet /><ChairSet x={300} /><ChairSet x={720} /><R who="ama" x={720} y={SEAT} p={{eyes: 'half', mouth: 'flat', armR: [60, 20]}} hold={PAD} /><R who="ebo" turn="side" facing={1} x={300} y={SEAT} p={{...POSE.wave, mouth: 'smile'}} /><RestaurantTable x={510} glass="full" /><R who="pretty" x={980} facing={-1} p={{eyes: 'open', mouth: 'smile', armR: [80, 10]}} hold={<g transform="scale(0.7)"><Tray /></g>} /></g>,
   /* 10 */ () => <g><RestaurantSet /><Close who="ebo" p={{...NERVOUS, armR: [150, 20]}} talk /></g>,
   /* 11 */ (l) => <g><RestaurantSet /><Close who="ama" x={500} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /></g>,
-  /* 12 */ () => <g><OfficeSet /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={180} p={{...NERVOUS, mouth: 'smile'}} /></g>,
+  /* 12 */ () => <g><OfficeSet /><R who="boss" x={610} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><OfficeDesk x={680} /><R who="ebo" x={300} y={FLOOR + 330} s={1.75} turn="back" p={{...NERVOUS, armR: [30, 10]}} /></g>,
   /* 13 */ () => <g><OfficeSet /><Close who="ebo" x={420} p={{...NERVOUS, armR: [70, 20]}} talk /></g>,
   /* 14 */ (l) => <g><OfficeSet /><R who="ama" x={150} s={1.0} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={420} p={NERVOUS} /></g>,
   /* 15 */ (l) => <g><SidewalkSet /><R who="ebo" x={420} p={{...POSE.shocked, tilt: -12}} /><R who="mica" x={walk(l, 900, 620, 0.25)} facing={-1} p={{eyes: 'half', mouth: 'flat', tilt: 10}} hold={<g transform="scale(0.5)"><Briefcase /></g>} /><Whoosh x={1060} y={980} /></g>,
@@ -90,7 +90,7 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
   // ── the cost ──
   /* 22 */ () => <g><KitchenSet /><Close who="ama" p={{eyes: 'half', mouth: 'flat', brows: 'angry'}} /></g>,
   /* 23 */ (l) => <g><RestaurantSet /><ChairSet x={300} /><R who="ebo" turn="side" facing={1} x={300} y={SEAT} p={{...POSE.wave, eyes: 'sad', mouth: 'frown'}} /><RestaurantTable x={510} glass="empty" /><R who="pretty" x={walk(l, 700, 1080, 1.4)} facing={1} p={{eyes: 'half', mouth: 'smile'}} /></g>,
-  /* 24 */ () => <g><OfficeSet /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat', armL: [60, 10]}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={260} p={{...POSE.explain, mouth: 'smile'}} /></g>,
+  /* 24 */ () => <g><OfficeSet /><R who="boss" x={610} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat', armL: [60, 10]}} hold={PHONE} /><OfficeDesk x={680} /><R who="ebo" x={300} y={FLOOR + 330} s={1.75} turn="back" p={{...POSE.explain}} /></g>,
   /* 25 */ () => <g><OfficeSet /><Close who="boss" facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /></g>,
   /* 26 */ (l) => <g><OfficeSet /><R who="ebo" x={walk(l, 360, 120, 1.2)} p={SLUMP} /></g>,
   /* 27 */ () => <g><LivingRoomSet /><BigCouch /><R who="ebo" x={540} s={0.55} y={FLOOR - 230} p={{eyes: 'sad', mouth: 'frown'}} /></g>,
@@ -108,11 +108,11 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
     left={<g><OfficeSet /><R who="ebo" turn="side" facing={1} x={180} p={SLUMP} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /></g>}
     right={<g><OfficeSet /><R who="ebo" x={260} p={{...TALL, armR: [40, 20]}} hold={<g transform="scale(0.8)"><Papers /></g>} talk /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'open'}} hold={PHONE} /><OfficeDesk x={700} /></g>} />,
   // ── the change ──
-  /* 36 */ () => <g><OfficeSet sunny /><R who="ebo" x={180} p={TALL} /><OfficeDesk x={700} /></g>,
+  /* 36 */ (l) => <g><OfficeSet sunny /><R who="boss" x={610} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><OfficeDesk x={680} /><R who="ebo" x={walk(l, 160, 320, 1.1)} y={walk(l, FLOOR + 520, FLOOR + 330, 1.1)} s={1.75} turn="back" p={{...TALL, legL: l < 1.1 && Math.floor(l * 5) % 2 ? [-18, 0] : [4, 0], legR: l < 1.1 && Math.floor(l * 5) % 2 ? [4, 0] : [-18, 0]}} /></g>,
   /* 37 */ (l) => <g><OfficeSet /><Zoom k={2.4} cx={600} cy={1300}><OfficeDesk x={700} mug={false} /><g transform={`translate(640 ${FLOOR - 262 + -120 * (1 - Math.min(1, l / 0.18)) ** 2}) scale(1.5)`}><Smartphone down /></g></Zoom>
     {l > 0.18 && <path d="M 300 900 l -60 -40 M 860 900 l 60 -40 M 580 760 l 0 -70" stroke="#1D1A1A" strokeWidth={10} strokeLinecap="round" />}</g>,
   /* 38 */ () => <g><OfficeSet /><Close who="boss" facing={-1} p={{eyes: 'open', mouth: 'flat', brows: 'up'}} /></g>,
-  /* 39 */ () => <g><OfficeSet sunny /><R who="boss" x={700} facing={-1} p={{eyes: 'happy', mouth: 'smile', tilt: -10}} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={260} p={{...POSE.explainBoth, mouth: 'grin'}} talk /></g>,
+  /* 39 */ () => <g><OfficeSet sunny /><R who="boss" x={610} facing={-1} p={{eyes: 'happy', mouth: 'smile', tilt: -10}} /><OfficeDesk x={680} /><R who="ebo" x={300} y={FLOOR + 330} s={1.75} turn="back" p={{...POSE.explainBoth}} /></g>,
   // ── the button ──
   /* 40 */ (l) => <g><SidewalkSet dusk /><R who="ebo" x={walk(l, 200, 560, 1.4)} p={{eyes: 'happy', mouth: 'smile'}} cycle="fastWalk" /></g>,
   /* 41 */ (l) => <StompClose l={l} dusk />,

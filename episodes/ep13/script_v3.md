@@ -15,7 +15,7 @@ Same voice track. Ama is the wife, Obuor in his suit (the boss rig) the boss, Am
 | 9 | The count | EBO | Asking the waiter for water? | Restaurant, seated: Ebo raises a hand; Ama across the table; Ama Pretty (waiter) with a tray |
 | 10 | The count | EBO | "Sorry, could I get…" | Close: Ebo's cringe-smile, hand up |
 | 11 | The count | EBO | One. | Close: Ama writes a mark (pencil flick) |
-| 12 | The count | EBO | Asking my boss a question? | Office: Obuor behind his desk on his phone; Ebo in the doorway |
+| 12 | The count | EBO | Asking my boss a question? | Over Ebo's shoulder (his back to us): the boss behind his desk, on his phone |
 | 13 | The count | EBO | "Sorry, quick question…" | Close: Ebo, cringe-smile |
 | 14 | The count | EBO | Two. | Ama in the doorway behind him, writing |
 | 15 | The count | EBO | Someone bumps into me? | Sidewalk: the stranger barges into Ebo |
@@ -27,7 +27,7 @@ Same voice track. Ama is the wife, Obuor in his suit (the boss rig) the boss, Am
 | 21 | The count | — | (beat) | Close: Ebo, wide-eyed, sweating |
 | 22 | The cost | EBO | Then she showed me the worse part. | Close: Ama, serious |
 | 23 | The cost | EBO | The waiter forgot my water. | Restaurant: Ama Pretty (waiter) walks past; Ebo's glass is empty |
-| 24 | The cost | EBO | My boss answered my question… | Office: Obuor waves him off, eyes on his phone |
+| 24 | The cost | EBO | My boss answered my question… | Over Ebo's shoulder: the boss waves him off, eyes on his phone |
 | 25 | The cost | EBO | …still looking at his phone. | Close: Obuor on his phone |
 | 26 | The cost | EBO | Every sorry made me a little smaller. | Ebo backs out of the office, hunched |
 | 27 | The cost | EBO | (smaller) | Living room: tiny Ebo on a huge couch |
@@ -39,10 +39,10 @@ Same voice track. Ama is the wife, Obuor in his suit (the boss rig) the boss, Am
 | 33 | The rule | EBO | …became "Thanks for waiting!" | Split frame: hunched | upright and waving, Ama smiling |
 | 34 | The rule | EBO | "Sorry, quick question"… | Office doorway: Ebo hunched |
 | 35 | The rule | EBO | …became "Thanks for your time." | Split frame: hunched | upright with his papers |
-| 36 | The change | EBO | Monday, I tried it. | Sunny office: Ebo standing tall in the doorway |
+| 36 | The change | EBO | Monday, I tried it. | Sunny office, from behind: Ebo walks up to the boss's desk, standing tall |
 | 37 | The change | EBO | My boss put his phone down. | Insert: the phone slaps face-down on the desk |
 | 38 | The change | EBO | Looked at me. | Close: Obuor looks up, eyebrows raised |
-| 39 | The change | EBO | Actually listened. | Obuor leans in smiling; Ebo explains |
+| 39 | The change | EBO | Actually listened. | Over Ebo's shoulder: the boss leans in, smiling, listening |
 | 40 | Button | EBO | Then, on the way home, | Sunset street: Ebo walks, happy |
 | 41 | Button | EBO | a stranger stepped on my foot again. | The stomp again, at dusk |
 | 42 | Button | EBO | I opened my mouth… "Thank—" | Close: Ebo, mid-word |
