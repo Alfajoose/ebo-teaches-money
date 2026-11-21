@@ -94,8 +94,8 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
   /* 23 */ (l) => <g><RestaurantSet /><ChairSet x={300} /><R who="ebo" turn="side" facing={1} x={300} y={SEAT} p={{...POSE.wave, eyes: 'sad', mouth: 'frown'}} /><RestaurantTable x={510} glass="empty" /><R who="pretty" x={walk(l, 700, 1080, 1.4)} facing={1} p={{eyes: 'half', mouth: 'smile'}} /></g>,
   /* 24 */ () => <g><OfficeSet /><R who="boss" x={610} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat', armL: [60, 10]}} hold={PHONE} /><OfficeDesk x={680} /><R who="ebo" x={300} y={FLOOR + 330} s={1.75} turn="back" p={{...POSE.explain}} /></g>,
   /* 25 */ () => <g><OfficeSet /><Close who="boss" facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><DeskClose /></g>,
-  /* 26 */ (l) => <g><OfficeSet /><R who="ebo" x={walk(l, 360, 120, 1.2)} p={SLUMP} /></g>,
-  /* 27 */ () => <g><LivingRoomSet /><BigCouch /><R who="ebo" x={540} s={0.55} y={FLOOR - 230} p={{eyes: 'sad', mouth: 'frown'}} /></g>,
+  /* 26 */ (l) => <g><LivingRoomSet /><BigCouch /><R who="ebo" x={540} y={FLOOR - 230} s={1.25 - 0.45 * Math.min(1, l / 1.2)} p={{eyes: 'sad', mouth: 'frown', tilt: 4}} /></g>,
+  /* 27 */ (l) => <g><LivingRoomSet /><BigCouch /><R who="ebo" x={540} y={FLOOR - 230} s={0.8 - 0.25 * Math.min(1, l / 0.5)} p={{eyes: 'sad', mouth: 'frown', tilt: 4}} /></g>,
   /* 28 */ (l) => <g><SidewalkSet /><R who="christy" x={walk(l, 120, 420, 1.4)} s={1.5} facing={1} p={{eyes: 'half', mouth: 'flat'}} cycle="walk" /><R who="ebo" x={600} s={0.6} p={{eyes: 'sad', mouth: 'frown'}} /><R who="obuor" x={walk(l, 980, 760, 1.4)} s={1.5} facing={-1} p={{eyes: 'half', mouth: 'flat'}} cycle="fastWalk" /></g>,
   // ── the rule ──
   /* 29 */ (l) => <g><KitchenSet /><ChairSet x={290} /><ChairSet x={790} /><R who="ama" x={290} y={SEAT} p={{eyes: 'happy', mouth: 'smile', armR: [70, 10]}} /><R who="ebo" turn="side" facing={-1} x={790} y={SEAT} touch="thinkChin" p={{eyes: 'open', mouth: 'flat'}} /><KitchenTable x={540} /><g transform={`translate(${540 - 150 + 260 * Math.min(1, Math.max(0, (l - 0.2) / 0.6))} ${FLOOR - 360})`}><Mug /></g></g>,
@@ -135,6 +135,8 @@ export const v3Start = (at: (k: number) => number, after: (k: number, d?: number
   at(148), at(155), at(160) + 0.22, at(161), at(165), at(168) - 0.25,
 ].map((s) => Math.max(0, s));
 export const V3_PUSH = new Set([2, 3, 5, 10, 11, 13, 21, 22, 25, 30, 31, 37, 38, 41, 42, 43, 46]);
+/** Shots that continue the previous one with no cut (no camera move at the join). */
+export const V3_HOLD = new Set([27]);
 export const v3Section = (i: number) => (i < 8 ? 'Hook' : i < 21 ? 'The Count' : i < 28 ? 'The Cost' : i < 35 ? 'The Rule' : i < 39 ? 'The Change' : i < 45 ? 'Button' : 'Outro');
 
 export const Ep13V3Board: React.FC = () => {

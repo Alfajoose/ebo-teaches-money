@@ -29,8 +29,8 @@ Same voice track. Ama is the wife, Obuor in his suit (the boss rig) the boss, Am
 | 23 | The cost | EBO | The waiter forgot my water. | Restaurant: Ama Pretty (waiter) walks past; Ebo's glass is empty |
 | 24 | The cost | EBO | My boss answered my question… | Over Ebo's shoulder: the boss waves him off, eyes on his phone |
 | 25 | The cost | EBO | …still looking at his phone. | Close: Obuor on his phone |
-| 26 | The cost | EBO | Every sorry made me a little smaller. | Ebo backs out of the office, hunched |
-| 27 | The cost | EBO | (smaller) | Living room: tiny Ebo on a huge couch |
+| 26 | The cost | EBO | Every sorry made me a little smaller. | Living room: Ebo on the huge couch, shrinking as he speaks |
+| 27 | The cost | EBO | (smaller) | (same shot, no cut) he shrinks down to tiny |
 | 28 | The cost | EBO | And people treated me that way. | Sidewalk: tiny Ebo; Christy and Obuor stride past, big |
 | 29 | The rule | EBO | So she gave me one rule. | Kitchen table, both seated: Ama slides a coffee mug across to Ebo (hand on chin) |
 | 30 | The rule | WIFE | "Every time you want to say sorry…" | Close: Ama |

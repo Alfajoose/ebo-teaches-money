@@ -7,7 +7,7 @@ import {VFPS, Word, VStage, lipFrame} from './kit';
 import {swoopZoom, useMarkerFont} from './filterKit';
 import {DoodleAnim} from '../components/StickFigures';
 import {Ep13Anim} from './ep13board';
-import {V3_PANELS as PANELS, V3_PUSH as PUSH, v3Section, v3Start} from './ep13v3';
+import {V3_PANELS as PANELS, V3_PUSH as PUSH, V3_HOLD as HOLD, v3Section, v3Start} from './ep13v3';
 import wordsJson from './data/ep13-words.json';
 import envJson from './data/ep13-env.json';
 
@@ -51,12 +51,12 @@ export const EP13_SFX = () => [
   {at: START[20] + 0.1, sfx: 'cricket', vol: 0.6},
   ...[0, 0.35, 0.7, 1.05].map((d) => ({at: START[22] + d, sfx: 'footstep', vol: 0.45})), // the waiter walks past
   {at: START[23], sfx: 'typing', vol: 0.3}, // the boss on his phone
-  {at: START[25], sfx: 'slide', vol: 0.4}, // he backs out
+  {at: START[25] + 0.2, sfx: 'slide', vol: 0.4}, // he shrinks into the couch
   {at: START[28] + 0.2, sfx: 'clink', vol: 0.5}, // the mug on the kitchen table
   {at: START[36] + 0.18, sfx: 'slap', vol: 0.8}, {at: START[36] + 0.2, sfx: 'click', vol: 0.6}, // the phone slapped face-down
   ...[0, 0.25, 0.5, 0.75, 1.0, 1.25].map((d) => ({at: START[39] + d, sfx: 'footstep', vol: 0.45})), // walking home
   {at: START[40] + 0.2, sfx: 'body_thud', vol: 0.9}, {at: START[40] + 0.22, sfx: 'crunch', vol: 0.5}, // the stomp again
-  ...START.slice(1).map((s) => ({at: s, sfx: 'swoosh', vol: 0.16})), // a soft swoosh on every cut
+  ...START.slice(1).filter((_, k) => k !== 25).map((s) => ({at: s, sfx: 'swoosh', vol: 0.16})), // a soft swoosh on every cut (not into the held shot 27)
 ];
 export const EP13_SLAMS: number[] = [];
 
@@ -66,7 +66,7 @@ export const Ep13Frame: React.FC<{f: number}> = ({f}) => {
   const t = f / VFPS;
   const i = ep13ShotAt(f);
   const local = t - START[i];
-  const zoom = swoopZoom(PUSH.has(i + 1) ? 'push' : 'reveal', local, LEN[i]);
+  const zoom = HOLD.has(i + 1) || HOLD.has(i + 2) ? 1 : swoopZoom(PUSH.has(i + 1) ? 'push' : 'reveal', local, LEN[i]);
   const speaker = Object.keys(ENV).find((k) => (ENV[k][f] ?? 0) > 0.1);
   const mouth = speaker ? lipFrame(ENV[speaker], WORDS, f) : undefined;
   return (
