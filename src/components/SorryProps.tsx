@@ -270,11 +270,23 @@ const SneakerDrawing: React.FC = () => (
 export const Sneaker = prop('Sneaker', SneakerDrawing);
 
 /** A spiral notepad (pages blank) and a pencil. */
-const NotepadDrawing: React.FC<{pencil?: boolean}> = ({pencil = true}) => (
+/** One handwritten note line on the notepad (a scribble, never a number), row i. */
+export const noteLine = (i: number) => {
+  const y = -54 + i * 22;
+  let d = `M -50 ${y}`;
+  for (let k = 0; k < 10; k++) d += ` q 5 ${k % 2 ? 7 : -7} 10 0`;
+  return d;
+};
+/** A spiral notepad and a pencil. `notes`: handwritten lines on the page; `draw` (0..1): the last one being written. */
+const NotepadDrawing: React.FC<{pencil?: boolean; notes?: number; draw?: number}> = ({pencil = true, notes = 0, draw = 1}) => (
   <g>
     <rect x={-70} y={-95} width={140} height={190} rx={8} fill="#fff" {...ln} />
     {[0, 1, 2, 3, 4, 5].map((i) => <circle key={i} cx={-50 + i * 20} cy={-95} r={8} fill="none" {...thin} />)}
-    {[0, 1, 2, 3, 4].map((i) => <path key={i} d={`M -50 ${-50 + i * 30} L 50 ${-50 + i * 30}`} stroke="#CFE0F2" strokeWidth={4} />)}
+    {[0, 1, 2, 3, 4, 5, 6].map((i) => <path key={i} d={`M -50 ${-50 + i * 22} L 50 ${-50 + i * 22}`} stroke="#CFE0F2" strokeWidth={3} />)}
+    {Array.from({length: Math.min(notes, 7)}, (_, i) => (
+      <path key={i} d={noteLine(i)} fill="none" stroke="#2C3E70" strokeWidth={4} strokeLinecap="round" pathLength={1}
+        strokeDasharray={i === notes - 1 && draw < 1 ? '1 1' : undefined} strokeDashoffset={i === notes - 1 && draw < 1 ? 1 - draw : undefined} />
+    ))}
     {pencil && <g transform="translate(40 20) rotate(-35)">
       <rect x={-12} y={-110} width={24} height={150} fill="#F3C53F" {...thin} />
       <path d="M -12 40 L 0 70 L 12 40 Z" fill="#E8C9A0" {...thin} />
@@ -382,3 +394,13 @@ const TrayDrawing: React.FC = () => (
   </g>
 );
 export const Tray = prop('Tray', TrayDrawing);
+
+/** A pencil on its own (tip at the origin, pointing down-left). */
+const PencilDrawing: React.FC = () => (
+  <g transform="rotate(-35) translate(0 -70)">
+    <rect x={-12} y={-110} width={24} height={150} fill="#F3C53F" {...thin} />
+    <path d="M -12 40 L 0 70 L 12 40 Z" fill="#E8C9A0" {...thin} />
+    <rect x={-12} y={-130} width={24} height={20} fill={C.pink} {...thin} />
+  </g>
+);
+export const Pencil = prop('Pencil', PencilDrawing);

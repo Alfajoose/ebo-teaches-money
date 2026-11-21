@@ -11,7 +11,7 @@ import {useMarkerFont} from './filterKit';
 import {Ep13Anim} from './ep13board';
 import {
   AutoDoorSet, AutoDoors, BigCouch, Briefcase, CafeCounter, CafeSet, FLOOR, KitchenSet, KitchenTable, LivingRoomSet, Notepad, OfficeDesk, OfficeSet,
-  ChairSet, Papers, RestaurantSet, RestaurantTable, SidewalkSet, Smartphone, StompClose, Tray, Mug,
+  ChairSet, Pencil, noteLine, Papers, RestaurantSet, RestaurantTable, SidewalkSet, Smartphone, StompClose, Tray, Mug,
 } from '../components/SorryProps';
 
 /**
@@ -56,6 +56,27 @@ const NERVOUS: Look = {...POSE.nervous, mouth: 'grin', eyes: 'happy', sweat: 1};
 const SLUMP: Look = {...POSE.sad, eyes: 'sad', mouth: 'frown', tilt: 6};
 const TALL: Look = {...POSE.happy, eyes: 'open', mouth: 'smile'};
 const PAD = <g transform="scale(0.55) rotate(-8)"><Notepad /></g>;
+/** Insert (storyboard 8): Ama's notepad, close. Her arm writes note line `n` with the pencil while the other holds the pad. */
+const NoteInsert: React.FC<{n: number; l: number; bg: string}> = ({n, l, bg}) => {
+  const draw = Math.min(1, Math.max(0, (l - 0.05) / 0.45));
+  const K = 4.2, cx = 540, cy = 1000;
+  const y = -54 + (n - 1) * 22;
+  const tip = [cx + K * (-50 + 100 * draw), cy + K * (y + (Math.floor(draw * 20) % 2 ? 5 : -5))];
+  const skin = '#7E5E42';
+  return (
+    <g>
+      <rect x={-300} y={-300} width={1680} height={2600} fill={bg} />
+      {/* her other arm holding the pad from below */}
+      <path d={`M -60 2100 L ${cx - 200} ${cy + 360}`} stroke="#1D1A1A" strokeWidth={150} strokeLinecap="round" />
+      <path d={`M -60 2100 L ${cx - 200} ${cy + 360}`} stroke={skin} strokeWidth={136} strokeLinecap="round" />
+      <g transform={`translate(${cx} ${cy}) scale(${K}) rotate(-4)`}><Notepad pencil={false} notes={n} draw={draw} /></g>
+      {/* the writing arm and the pencil, its tip on the line */}
+      <path d={`M ${tip[0] + 215} ${tip[1] + 310} L 1300 2150`} stroke="#1D1A1A" strokeWidth={130} strokeLinecap="round" />
+      <path d={`M ${tip[0] + 215} ${tip[1] + 310} L 1300 2150`} stroke={skin} strokeWidth={116} strokeLinecap="round" />
+      <g transform={`translate(${tip[0]} ${tip[1]}) scale(2) rotate(180)`}><Pencil /></g>
+    </g>
+  );
+};
 const PHONE = <g transform="scale(0.55)"><Smartphone /></g>;
 /** Speed lines for a walk-past / bump (marks only, no words). */
 const Whoosh: React.FC<{x: number; y: number; dir?: 1 | -1}> = ({x, y, dir = 1}) => (
@@ -78,16 +99,16 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
   // ── the count ──
   /* 9 */ () => <g><RestaurantSet /><ChairSet x={300} /><ChairSet x={720} /><R who="ama" x={720} y={SEAT} facing={-1} p={{eyes: 'half', mouth: 'flat', armR: [60, 20]}} hold={PAD} /><R who="ebo" turn="side" facing={1} x={300} y={SEAT} p={{...POSE.wave, mouth: 'smile'}} /><RestaurantTable x={510} glass="full" /><R who="pretty" x={980} facing={-1} p={{eyes: 'open', mouth: 'smile', armR: [80, 10]}} hold={<g transform="scale(0.7)"><Tray /></g>} /></g>,
   /* 10 */ () => <g><RestaurantSet /><Close who="ebo" turn="side" facing={1} p={{...NERVOUS, armR: [150, 20]}} talk /></g>,
-  /* 11 */ (l) => <g><RestaurantSet /><Close who="ama" x={500} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /></g>,
+  /* 11 */ (l) => <NoteInsert n={1} l={l} bg="#F2DCC4" />,
   /* 12 */ () => <g><OfficeSet /><R who="boss" x={610} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><OfficeDesk x={680} /><R who="ebo" x={300} y={FLOOR + 330} s={1.75} turn="back" p={{...NERVOUS, armR: [30, 10]}} /></g>,
   /* 13 */ () => <g><OfficeSet /><Close who="ebo" x={420} turn="side" facing={1} p={{...NERVOUS, armR: [70, 20]}} talk /></g>,
-  /* 14 */ (l) => <g><OfficeSet /><R who="ama" x={150} s={1.0} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /><R who="boss" x={700} facing={-1} p={{...POSE.checkPhone, eyes: 'half'}} hold={PHONE} /><OfficeDesk x={700} /><R who="ebo" turn="side" facing={1} x={420} p={NERVOUS} /></g>,
+  /* 14 */ (l) => <NoteInsert n={2} l={l} bg="#E6E3DE" />,
   /* 15 */ (l) => <g><SidewalkSet /><R who="ebo" turn="side" facing={1} x={420} p={{...POSE.shocked, tilt: -12}} /><R who="mica" x={walk(l, 900, 620, 0.25)} facing={-1} p={{eyes: 'half', mouth: 'flat', tilt: 10}} hold={<g transform="scale(0.5)"><Briefcase /></g>} /><Whoosh x={1060} y={980} /></g>,
   /* 16 */ () => <g><SidewalkSet /><R who="ebo" turn="side" facing={1} x={360} p={NERVOUS} talk /><R who="mica" x={830} facing={1} p={{eyes: 'half', mouth: 'flat'}} /></g>,
-  /* 17 */ (l) => <g><SidewalkSet /><R who="ebo" turn="side" facing={1} x={360} p={NERVOUS} /><R who="ama" x={860} s={0.95} facing={-1} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /></g>,
+  /* 17 */ (l) => <NoteInsert n={3} l={l} bg="#EAF1F4" />,
   /* 18 */ (l) => <g><AutoDoorSet /><AutoDoors open={Math.min(1, l / 0.3)} /><R who="ebo" turn="back" facing={1} x={540} p={{...NERVOUS, tilt: 12}} talk /></g>,
   /* 19 */ (l) => <g><CafeSet /><R who="christy" x={720} facing={-1} p={{eyes: 'open', mouth: 'smile'}} /><CafeCounter x={700} /><R who="ama" x={70} s={0.95} p={{eyes: 'half', mouth: 'flat', armR: [70 - 14 * Math.sin(Math.min(1, l / 0.3) * Math.PI), 20]}} hold={PAD} /><R who="ebo" turn="side" facing={1} x={380} p={{...NERVOUS, armR: [90, 10]}} talk /></g>,
-  /* 20 */ (l) => <g><KitchenSet /><ChairSet x={760} /><R who="ebo" x={760} y={SEAT} p={{...POSE.shocked, sweat: l > 0.4 ? 1 : 0}} /><KitchenTable x={600} /><R who="ama" x={260} s={1.3} p={{eyes: 'half', mouth: 'flat', brows: 'up', armR: [90, -10]}} hold={<g transform="scale(0.9)"><Notepad pencil={false} /></g>} /></g>,
+  /* 20 */ (l) => <g><KitchenSet /><ChairSet x={760} /><R who="ebo" x={760} y={SEAT} p={{...POSE.shocked, sweat: l > 0.4 ? 1 : 0}} /><KitchenTable x={600} /><R who="ama" x={260} s={1.3} p={{eyes: 'half', mouth: 'flat', brows: 'up', armR: [90, -10]}} hold={<g transform="scale(0.9)"><Notepad pencil={false} notes={7} /></g>} /></g>,
   /* 21 */ () => <g><KitchenSet /><Close who="ebo" turn="side" facing={-1} p={{eyes: 'wide', mouth: 'o', sweat: 1, brows: 'sad'}} /></g>,
   // ── the cost ──
   /* 22 */ () => <g><KitchenSet /><Close who="ama" p={{eyes: 'half', mouth: 'flat', brows: 'angry'}} /></g>,

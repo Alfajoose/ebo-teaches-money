@@ -14,16 +14,16 @@ Same voice track. Ama is the wife, Obuor in his suit (the boss rig) the boss, Am
 | 8 | Hook | EBO | So she started counting. | Ama pulls out a notepad and pencil |
 | 9 | The count | EBO | Asking the waiter for water? | Restaurant, seated: Ebo raises a hand; Ama across the table; Ama Pretty (waiter) with a tray |
 | 10 | The count | EBO | "Sorry, could I get…" | Close: Ebo's cringe-smile, hand up |
-| 11 | The count | EBO | One. | Close: Ama writes a mark (pencil flick) |
+| 11 | The count | EBO | One. | Insert (storyboard 8): Ama's hand writes a note line on her pad |
 | 12 | The count | EBO | Asking my boss a question? | Over Ebo's shoulder (his back to us): the boss behind his desk, on his phone |
 | 13 | The count | EBO | "Sorry, quick question…" | Close: Ebo, cringe-smile |
-| 14 | The count | EBO | Two. | Ama in the doorway behind him, writing |
+| 14 | The count | EBO | Two. | Insert: she writes a second note line |
 | 15 | The count | EBO | Someone bumps into me? | Sidewalk: the stranger barges into Ebo |
 | 16 | The count | EBO | "Oh, sorry!" | Ebo apologises to the man who bumped him |
-| 17 | The count | EBO | Three. | Ama down the street, writing |
+| 17 | The count | EBO | Three. | Insert: a third note line |
 | 18 | The count | EBO | By… | Automatic doors slide open; Ebo apologises to them |
 | 19 | The count | EBO | …Friday? | Café: Ebo apologises to Christy (barista) while he pays; Ama behind him, writing |
-| 20 | The count | EBO | Forty-seven. | Kitchen: Ama holds the full notepad up; Ebo, seated at the table, shocked |
+| 20 | The count | EBO | Forty-seven. | Kitchen: Ama holds up the notepad, full of notes; Ebo, seated at the table, shocked |
 | 21 | The count | — | (beat) | Close: Ebo, wide-eyed, sweating |
 | 22 | The cost | EBO | Then she showed me the worse part. | Close: Ama, serious |
 | 23 | The cost | EBO | The waiter forgot my water. | Restaurant: Ama Pretty (waiter) walks past; Ebo's glass is empty |
