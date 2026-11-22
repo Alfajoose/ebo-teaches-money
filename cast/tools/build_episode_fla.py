@@ -927,7 +927,9 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         # one Animate scene per section of the episode (Window > Scene); each starts at frame 1
         bounds = [sc['start'] for sc in scenes] + [total]
         for k, sc in enumerate(scenes):
-            parts.append((slice_timeline(tl, bounds[k], bounds[k + 1], f"{k + 1} {sc['name']}"), bounds[k], bounds[k + 1]))
+            # a name that already starts with its number ("01 Hook", one scene per shot) is used as is
+            nm = sc['name'] if re.match(r'\d', sc['name']) else f"{k + 1} {sc['name']}"
+            parts.append((slice_timeline(tl, bounds[k], bounds[k + 1], nm), bounds[k], bounds[k + 1]))
         print(f'scenes: {len(scenes)} ({", ".join(sc["name"] for sc in scenes)})')
         # each scene gets its own character symbols holding only that scene's animation (the user: entering a
         # character in one scene must not show the whole episode), so a scene is self-contained
