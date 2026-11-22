@@ -172,11 +172,18 @@ def import_rig(lib, src_dir, rig_symbol, folder):
         lib.write_symbol(copies[n], rename[n], '1' if copies[n].get('symbolType', 'graphic') == 'graphic' else '0')
     return rename, copies[rig_symbol]
 
-def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total):
-    """recs: list over frames of None or {locals, frames}. Bakes keyframes per layer."""
+def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total, n_views=1):
+    """recs: list over frames of None or {locals, frames}. Bakes keyframes per layer.
+    The rig's own frames (its views: Ebo's ¾ / front / front hands-in / back) stay at the start of the symbol, as
+    the user keeps them, and the animation follows from frame OFF (= rig length + 1); returns OFF."""
     el = copy.deepcopy(rig_el)
     tl = el.find(f'{N("timeline")}/{N("DOMTimeline")}')
     tl.set('name', anim_name.split('/')[-1])
+    # the views are the rig symbol's first n_views keyframes (anything after them in a master, like Ama's test
+    # animation, is left out)
+    starts = sorted({int(fr.get('index')) for fr in tl.iter(N('DOMFrame'))})
+    rig_len = starts[n_views] if len(starts) > n_views else max((int(fr.get('index')) + int(fr.get('duration', '1')) for fr in tl.iter(N('DOMFrame'))), default=1)
+    OFF = rig_len + 1
     for layer in tl.findall(f'{N("layers")}/{N("DOMLayer")}'):
         lname = layer.get('name')
         frames_el = layer.find(N('frames'))
@@ -210,17 +217,25 @@ def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total):
             if st != last:
                 keys.append((f, st))
                 last = st
+        # keep the rig's view frames; the last one holds until the animation starts
+        views = [fr for fr in frames_el.findall(N('DOMFrame')) if int(fr.get('index')) < rig_len]
+        for v in views:
+            for k in ('tweenType', 'motionTweenSnap', 'easeMethodName', 'acceleration'):
+                v.attrib.pop(k, None)
+        if views:
+            lastv = views[-1]
+            lastv.set('duration', str(OFF - int(lastv.get('index'))))
         for fr in list(frames_el):
-            frames_el.remove(fr)
+            if fr not in views:
+                frames_el.remove(fr)
         if not keys:
-            frames_el.append(tmpl)
             continue
         if keys[0][0] != 0:
             keys[0] = (0, keys[0][1])
         for i, (f, st) in enumerate(keys):
             end = keys[i + 1][0] if i + 1 < len(keys) else total
             fr = copy.deepcopy(tmpl)
-            fr.set('index', str(f))
+            fr.set('index', str(f + OFF))
             if end - f > 1:
                 fr.set('duration', str(end - f))
             else:
@@ -244,7 +259,7 @@ def build_anim_symbol(lib, rig_el, rig_name, anim_name, recs, total):
                 inst.set('loop', 'single frame')
             frames_el.append(fr)
     lib.write_symbol(el, anim_name, '1')
-    return el
+    return OFF
 
 def build_poselib_symbol(lib, rig_el, anim_name, recs, total):
     """A pose-library character (Konka): his own symbol, re-keyed so each frame shows the pose the
@@ -753,9 +768,14 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         anim_name = f"{disp}/{disp} – {cap.get('episode', 'Ep01')}"
         if who in POSE_LIBRARY:
             build_poselib_symbol(lib, rig_el, anim_name, recs, total)
+            off = 0
         else:
-            build_anim_symbol(lib, rig_el, rename[rig_sym], anim_name, recs, total)
-        char_layers[who] = (disp, anim_name, recs)
+            try:
+                n_views = int(json.load(open(Path(__file__).resolve().parents[2] / 'src' / 'cast' / 'data' / f'{who}.json')).get('views') or 1)
+            except (OSError, ValueError):
+                n_views = 1
+            off = build_anim_symbol(lib, rig_el, rename[rig_sym], anim_name, recs, total, n_views)
+        char_layers[who] = (disp, anim_name, recs, off)
 
     # ── graphics ──
     lib.folder('Graphics')
@@ -920,14 +940,15 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
     for who in LAYER_ORDER:
         if who not in char_layers:
             continue
-        disp, anim, recs = char_layers[who]
+        disp, anim, recs, off = char_layers[who]
         states = [rkey(r['outer']) if r else None for r in recs]
         keys = []
         shot_starts = {sc['start'] for sc in (cap.get('scenes') or [])}
         for f, st, tween in linear_keys(states, breaks=shot_starts):
             # a key where the character enters/leaves or a move starts; a steady move between two keys is a tween,
             # so the character's symbol plays on unbroken instead of restarting on every frame
-            keys.append((f, [inst(anim, list(st), first=f, loop='loop')] if st else [], tween))
+            # the symbol's first frames are the rig's views; the animation starts at `off` and plays once
+            keys.append((f, [inst(anim, list(st), first=f + off, loop='play once' if off else 'loop')] if st else [], tween))
         add_layer(disp, keys, '#4FFFFF')
     # props behind the cast
     if any(prop_states(False)):
@@ -975,7 +996,8 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         print(f'scenes: {len(scenes)} ({", ".join(sc["name"] for sc in scenes)})')
         # each scene gets its own character symbols holding only that scene's animation (the user: entering a
         # character in one scene must not show the whole episode), so a scene is self-contained
-        anim_names = {anim for (_, anim, _) in char_layers.values()}
+        anim_names = {anim for (_, anim, _, _) in char_layers.values()}
+        anim_off = {anim: off for (_, anim, _, off) in char_layers.values()}
         loaded = {}
         for k, (t, a, b) in enumerate(parts):
             made = {}
@@ -990,7 +1012,19 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
                     src_tl = src_root.find(f"{N('timeline')}/{N('DOMTimeline')}")
                     new_name = f"{src_name} – {t.get('name')}"
                     root = ET.Element(N('DOMSymbolItem'), {kk: vv for kk, vv in src_root.attrib.items() if kk not in ('name', 'itemID', 'lastModified')})
-                    ET.SubElement(root, N('timeline')).append(slice_timeline(src_tl, a, b, new_name.split('/')[-1]))
+                    off = anim_off[src_name]
+                    sl = slice_timeline(src_tl, a + off, b + off, new_name.split('/')[-1])
+                    if off:
+                        # put the rig's view frames back in front of this scene's animation
+                        src_layers = src_tl.findall(f"{N('layers')}/{N('DOMLayer')}")
+                        for L_src, L_new in zip(src_layers, sl.findall(f"{N('layers')}/{N('DOMLayer')}")):
+                            fe = L_new.find(N('frames'))
+                            for fr in fe.findall(N('DOMFrame')):
+                                fr.set('index', str(int(fr.get('index')) + off))
+                            views = [copy.deepcopy(fr) for fr in L_src.find(N('frames')).findall(N('DOMFrame')) if int(fr.get('index')) < off]
+                            for k, fr in enumerate(views):
+                                fe.insert(k, fr)
+                    ET.SubElement(root, N('timeline')).append(sl)
                     lib.write_symbol(root, new_name, '1')
                     made[src_name] = new_name
                 inst.set('libraryItemName', made[src_name])

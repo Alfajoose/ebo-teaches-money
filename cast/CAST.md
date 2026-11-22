@@ -73,6 +73,8 @@
 
 28. **Fixed camera, no vignette (Nov 2026).** The camera holds still on every shot (no push-in / pull-back on cuts) and there's no dark vignette; framing changes are cuts between shots. In Animate the Background layer is just the set, one symbol per location, and nothing is keyed per frame because of the camera. In code: `zoom = 1` and `<VStage plain>`.
 
+29. **Animate export: one scene per shot, views kept in the symbol (Nov 2026, after the user's shot_4.fla).** Each shot is its own Animate scene. Each character in a shot is its own symbol: the rig's views first, exactly as in the master (Ebo: frames 1-4 = ¾, front, front hands-in, back), then that shot's animation on the same layers. The shot places it with First frame = the animation start, Play once, so the views stay inside for later edits. A steady move across the frame is one key with a classic tween.
+
 ## No Ghanaian references (user's standing rule)
 
 Keep the show culturally neutral: no Ghanaian accents in the cast's voices, no Ghanaian foods, words, places, money or
