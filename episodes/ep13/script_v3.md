@@ -31,7 +31,7 @@ Same voice track. Ama is the wife, Obuor in his suit (the boss rig) the boss, Am
 | 25 | The cost | EBO | …still looking at his phone. | Close: Obuor on his phone |
 | 26 | The cost | EBO | Every sorry made me a little smaller. | Living room: Ebo on the huge couch, shrinking as he speaks |
 | 27 | The cost | EBO | (smaller) | (same shot, no cut) he shrinks down to tiny |
-| 28 | The cost | EBO | And people treated me that way. | Sidewalk: tiny Ebo; Christy and Obuor stride past, big |
+| 28 | The cost | EBO | And people treated me that way. | Sidewalk: tiny Ebo; Christy and Obuor stand over him, staring and pointing; he looks from one to the other |
 | 29 | The rule | EBO | So she gave me one rule. | Kitchen table, both seated: Ama slides a coffee mug across to Ebo (hand on chin) |
 | 30 | The rule | WIFE | "Every time you want to say sorry…" | Close: Ama |
 | 31 | The rule | WIFE | "…say thank you." | Close: Ama, warm smile |

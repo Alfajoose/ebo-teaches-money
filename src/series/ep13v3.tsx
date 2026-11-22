@@ -118,7 +118,10 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
   /* 25 */ () => <g><OfficeSet /><Close who="boss" facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><DeskClose /></g>,
   /* 26 */ (l) => <g><LivingRoomSet /><BigCouch /><R who="ebo" x={540} y={FLOOR - 230} s={1.25 - 0.45 * Math.min(1, l / 1.2)} p={{eyes: 'sad', mouth: 'frown', tilt: 4}} /></g>,
   /* 27 */ (l) => <g><LivingRoomSet /><BigCouch /><R who="ebo" x={540} y={FLOOR - 230} s={0.8 - 0.25 * Math.min(1, l / 0.5)} p={{eyes: 'sad', mouth: 'frown', tilt: 4}} /></g>,
-  /* 28 */ (l) => <g><SidewalkSet /><R who="christy" x={walk(l, 120, 420, 1.4)} s={1.5} facing={1} p={{eyes: 'half', mouth: 'flat'}} cycle="walk" /><R who="ebo" x={600} s={0.6} p={{eyes: 'sad', mouth: 'frown'}} /><R who="obuor" x={walk(l, 980, 760, 1.4)} s={1.5} facing={-1} p={{eyes: 'half', mouth: 'flat'}} cycle="fastWalk" /></g>,
+  /* 28 */ (l) => <g><SidewalkSet />
+    <R who="christy" x={210} s={1.5} facing={1} p={{eyes: 'wide', mouth: 'o', lookY: 14, armR: l > 0.15 ? [78, 0] : [10, 0]}} />
+    <R who="obuor" x={880} s={1.5} facing={-1} p={{eyes: 'wide', mouth: 'o', lookY: 14, armR: l > 0.35 ? [78, 0] : [10, 0]}} />
+    <R who="ebo" x={545} s={0.55} turn="side" facing={Math.floor(l / 0.4) % 2 ? -1 : 1} p={{eyes: 'wide', mouth: 'wobbly', sweat: 1, brows: 'sad'}} /></g>,
   // ── the rule ──
   /* 29 */ (l) => <g><KitchenSet /><ChairSet x={290} /><ChairSet x={790} /><R who="ama" x={290} y={SEAT} p={{eyes: 'happy', mouth: 'smile', armR: [70, 10]}} /><R who="ebo" turn="side" facing={-1} x={790} y={SEAT} touch="thinkChin" p={{eyes: 'open', mouth: 'flat'}} /><KitchenTable x={540} /><g transform={`translate(${540 - 150 + 260 * Math.min(1, Math.max(0, (l - 0.2) / 0.6))} ${FLOOR - 360})`}><Mug /></g></g>,
   /* 30 */ () => <g><KitchenSet /><Close who="ama" p={{mouth: 'smile', eyes: 'open'}} talk /></g>,
