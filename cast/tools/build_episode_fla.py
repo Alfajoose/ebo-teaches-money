@@ -975,7 +975,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
     doc.set('width', str(W))
     doc.set('height', str(H))
     doc.set('frameRate', str(fps))
-    doc.set('backgroundColor', '#000000')
+    doc.set('backgroundColor', '#FFFFFF')  # white stage, as in the user's masters (the Frame Picker draws its thumbnails on it)
     doc.set('currentTimeline', '1')
     doc.set('filetypeGUID', tmpl_doc.get('filetypeGUID', ''))
     doc.set('fileGUID', hashlib.md5(out_fla.encode()).hexdigest().upper())
