@@ -1,0 +1,2 @@
+Voice: ElevenLabs eleven_v4, Dan (Ebo's voice), one take, 1081 credits.
+voice_1x.mp3 = as generated (64.4 s); voice.mp3 = 1.15x (56 s).
