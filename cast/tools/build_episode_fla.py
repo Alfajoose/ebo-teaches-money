@@ -918,9 +918,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
     med = ET.SubElement(doc, N('media'))
     for m in media_els:
         med.append(m)
-    syms = ET.SubElement(doc, N('symbols'))
-    for href, iid, icon in lib.symbols:
-        ET.SubElement(syms, N('Include'), {'href': href, 'itemIcon': icon, 'loadImmediate': 'false', 'itemID': iid})
+    syms = ET.SubElement(doc, N('symbols'))  # filled below, once the per-scene symbols exist
     tls = ET.SubElement(doc, N('timelines'))
     scenes = cap.get('scenes')
     parts = []  # (timeline, first frame, end frame)
@@ -930,8 +928,37 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         for k, sc in enumerate(scenes):
             parts.append((slice_timeline(tl, bounds[k], bounds[k + 1], f"{k + 1} {sc['name']}"), bounds[k], bounds[k + 1]))
         print(f'scenes: {len(scenes)} ({", ".join(sc["name"] for sc in scenes)})')
+        # each scene gets its own character symbols holding only that scene's animation (the user: entering a
+        # character in one scene must not show the whole episode), so a scene is self-contained
+        anim_names = {anim for (_, anim, _) in char_layers.values()}
+        loaded = {}
+        for k, (t, a, b) in enumerate(parts):
+            made = {}
+            for inst in t.iter(N('DOMSymbolInstance')):
+                src_name = inst.get('libraryItemName')
+                if src_name not in anim_names:
+                    continue
+                if src_name not in made:
+                    if src_name not in loaded:
+                        loaded[src_name] = ET.parse(work / 'LIBRARY' / (src_name + '.xml')).getroot()
+                    src_root = loaded[src_name]
+                    src_tl = src_root.find(f"{N('timeline')}/{N('DOMTimeline')}")
+                    new_name = f"{src_name} – {t.get('name')}"
+                    root = ET.Element(N('DOMSymbolItem'), {kk: vv for kk, vv in src_root.attrib.items() if kk not in ('name', 'itemID', 'lastModified')})
+                    ET.SubElement(root, N('timeline')).append(slice_timeline(src_tl, a, b, new_name.split('/')[-1]))
+                    lib.write_symbol(root, new_name, '1')
+                    made[src_name] = new_name
+                inst.set('libraryItemName', made[src_name])
+                inst.set('firstFrame', str(max(0, int(inst.get('firstFrame', '0')) - a)))
+        # the whole-episode character symbols are no longer used by any scene: drop them from the library
+        drop = {n + '.xml' for n in anim_names}
+        lib.symbols = [sym for sym in lib.symbols if sym[0] not in drop]
+        for n in anim_names:
+            (work / 'LIBRARY' / (n + '.xml')).unlink(missing_ok=True)
     else:
         parts.append((tl, 0, total))
+    for href, iid, icon in lib.symbols:
+        ET.SubElement(syms, N('Include'), {'href': href, 'itemIcon': icon, 'loadImmediate': 'false', 'itemID': iid})
     if voice:
         ET.SubElement(fol, N('DOMFolderItem'), {'name': 'Voice', 'itemID': new_id()})
         for k, (t, a, b) in enumerate(parts):
