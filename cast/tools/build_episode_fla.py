@@ -126,6 +126,9 @@ class Library:
             self.folders.append(name)
 
     def write_symbol(self, root, name, icon='1'):
+        # Advanced Layers on (as in the user's masters): Animate greys out the Camera and Layer Parenting without it
+        for t in root.iter(N('DOMTimeline')):
+            t.set('layerDepthEnabled', 'true')
         root.set('name', name)
         root.set('itemID', new_id())
         root.set('lastModified', str(int(time.time())))
@@ -1055,6 +1058,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
             add_sound_layer(t, name, b - a, 'SFX', '#FF9933')
         print(f'sfx: {sfx} embedded ({len(parts)} clip{"s" if len(parts) > 1 else ""}, Sync: Stream)')
     for t, _, _ in parts:
+        t.set('layerDepthEnabled', 'true')  # Advanced Layers: Camera and Layer Parenting available in every scene
         tls.append(t)
     ET.ElementTree(doc).write(work / 'DOMDocument.xml', encoding='utf-8', xml_declaration=False)
 
