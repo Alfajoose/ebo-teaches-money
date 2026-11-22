@@ -70,6 +70,42 @@ def matrix_el(parent, m):
 def rkey(m):
     return tuple(round(v, 3) for v in m)
 
+def linear_keys(states, tol=0.6, tol_s=0.003, breaks=()):
+    """Per-frame placements (matrix tuples or None) → [(frame, state, tween)]: a key at each change, where a run
+    of frames that moves in a straight line at a steady pace becomes one key tweened to the run's last frame."""
+    def near(m, n):
+        return all(abs(a - b) <= (tol_s if k < 4 else tol) for k, (a, b) in enumerate(zip(m, n)))
+    def lerp(m, n, u):
+        return tuple(a + (b - a) * u for a, b in zip(m, n))
+    out, f, total = [], 0, len(states)
+    while f < total:
+        st = states[f]
+        if st is None or f + 1 >= total or states[f + 1] is None or states[f + 1] == st or (f + 1) in breaks:
+            out.append((f, st, False))
+            g = f + 1
+            while g < total and states[g] == st:
+                g += 1
+            f = g
+            continue
+        e = f + 1
+        while e + 1 < total and (e + 1) not in breaks and states[e + 1] is not None and states[e + 1] != states[e] and all(
+                near(states[k], lerp(st, states[e + 1], (k - f) / (e + 1 - f))) for k in range(f + 1, e + 1)):
+            e += 1
+        out.append((f, st, True))
+        if (e + 1) in breaks or e + 1 >= total:
+            # a shot ends here: close the tween on the shot's last frame, the next shot starts fresh
+            out.append((e, states[e], False))
+            f = e + 1
+        else:
+            f = e  # the move's last frame starts the next key
+    # drop a repeated key (same state, no tween) the walk can leave behind
+    clean = []
+    for k in out:
+        if clean and not clean[-1][2] and clean[-1][1] == k[1] and not k[2]:
+            continue
+        clean.append(k)
+    return clean
+
 def safe_name(s):
     s = s.split('/')[-1].replace('&#032', '').strip()
     return re.sub(r'\s+', ' ', s) or 'item'
@@ -837,9 +873,15 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         fe = ET.SubElement(L, N('frames'))
         if not keys or keys[0][0] != 0:
             keys = [(0, [])] + keys
-        for i, (f, els) in enumerate(keys):
+        for i, key in enumerate(keys):
+            f, els = key[0], key[1]
+            tween = len(key) > 2 and key[2]
             end = keys[i + 1][0] if i + 1 < len(keys) else total
-            fr = ET.SubElement(fe, N('DOMFrame'), {'index': str(f), 'keyMode': '9728'})
+            fr = ET.SubElement(fe, N('DOMFrame'), {'index': str(f), 'keyMode': '22017' if tween else '9728'})
+            if tween:
+                # a classic tween to the next key: one move = one key, not a key per frame
+                fr.set('tweenType', 'motion')
+                fr.set('motionTweenSnap', 'true')
             if end - f > 1:
                 fr.set('duration', str(end - f))
             ee = ET.SubElement(fr, N('elements'))
@@ -880,12 +922,12 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
             continue
         disp, anim, recs = char_layers[who]
         states = [rkey(r['outer']) if r else None for r in recs]
-        keys, last = [], object()
-        for f, st in enumerate(states):
-            # a new key when the placement changes or the character enters/leaves
-            if st != last:
-                keys.append((f, [inst(anim, list(st), first=f, loop='loop')] if st else []))
-                last = st
+        keys = []
+        shot_starts = {sc['start'] for sc in (cap.get('scenes') or [])}
+        for f, st, tween in linear_keys(states, breaks=shot_starts):
+            # a key where the character enters/leaves or a move starts; a steady move between two keys is a tween,
+            # so the character's symbol plays on unbroken instead of restarting on every frame
+            keys.append((f, [inst(anim, list(st), first=f, loop='loop')] if st else [], tween))
         add_layer(disp, keys, '#4FFFFF')
     # props behind the cast
     if any(prop_states(False)):
