@@ -4,10 +4,10 @@ import {NoScaleContext} from '../noScale';
 import {HandDrawnContext} from '../handDrawn';
 import {StageSizeContext} from './exportCtx';
 import {VFPS, Word, VStage, lipFrame} from './kit';
-import {swoopZoom, useMarkerFont} from './filterKit';
+import {useMarkerFont} from './filterKit';
 import {DoodleAnim} from '../components/StickFigures';
 import {Ep13Anim} from './ep13board';
-import {V3_PANELS as PANELS, V3_PUSH as PUSH, V3_HOLD as HOLD, v3Section, v3Start} from './ep13v3';
+import {V3_PANELS as PANELS, v3Section, v3Start} from './ep13v3';
 import wordsJson from './data/ep13-words.json';
 import envJson from './data/ep13-env.json';
 
@@ -36,7 +36,6 @@ export const ep13ShotAt = (f: number) => {
   for (let k = 0; k < START.length; k++) if (t >= START[k]) i = k;
   return i;
 };
-const LEN = START.map((s, i) => (i + 1 < START.length ? START[i + 1] : END) - s);
 
 // ───────────────────────── sound ─────────────────────────
 export const EP13_SFX = () => [
@@ -66,7 +65,8 @@ export const Ep13Frame: React.FC<{f: number}> = ({f}) => {
   const t = f / VFPS;
   const i = ep13ShotAt(f);
   const local = t - START[i];
-  const zoom = HOLD.has(i + 1) || HOLD.has(i + 2) ? 1 : swoopZoom(PUSH.has(i + 1) ? 'push' : 'reveal', local, LEN[i]);
+  // a fixed camera (the user's call): no push-ins or pull-backs, so the Animate file has no per-frame camera keys
+  const zoom = 1;
   const speaker = Object.keys(ENV).find((k) => (ENV[k][f] ?? 0) > 0.1);
   const mouth = speaker ? lipFrame(ENV[speaker], WORDS, f) : undefined;
   return (
@@ -74,7 +74,7 @@ export const Ep13Frame: React.FC<{f: number}> = ({f}) => {
       <NoScaleContext.Provider value>
         <HandDrawnContext.Provider value={false}>
           <AbsoluteFill style={{background: '#FFFDF6'}}>
-            <VStage framing={{zoom, cx: 540, cy: 960}} bg="#FFFDF6">
+            <VStage framing={{zoom, cx: 540, cy: 960}} bg="#FFFDF6" plain>
               <DoodleAnim.Provider value={{l: local, f}}>
                 <Ep13Anim.Provider value={{f: f + 1, l: local, speaker, mouth}}>{PANELS[i](local)}</Ep13Anim.Provider>
               </DoodleAnim.Provider>

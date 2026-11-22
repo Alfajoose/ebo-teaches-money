@@ -94,7 +94,9 @@ export const VStage: React.FC<{
   screenBg?: React.ReactNode; // full-frame background in screen space (scribble / red burst)
   children?: React.ReactNode;
   overlay?: React.ReactNode;
-}> = ({framing, shakeX = 0, shakeY = 0, bg = '#3B3550', blurBg, screenBg, children, overlay}) => {
+  /** no vignette, and in the Animate export the background is the set alone (no backdrop / vignette symbols) */
+  plain?: boolean;
+}> = ({framing, shakeX = 0, shakeY = 0, bg = '#3B3550', blurBg, screenBg, children, overlay, plain}) => {
   const {zoom, cx, cy} = framing;
   const {w: VW, h: VH} = useStageSize();
   const cam = `translate(${VW / 2 + shakeX} ${VH / 2 + shakeY}) scale(${zoom}) translate(${-cx} ${-cy})`;
@@ -122,7 +124,7 @@ export const VStage: React.FC<{
         </g>
       )}
       <g transform={cam}>{children}</g>
-      <rect width={VW} height={VH} fill="url(#vvig)" />
+      {!plain && <rect width={VW} height={VH} fill="url(#vvig)" />}
       {mode === 'full' ? overlay : null}
     </svg>
   );
@@ -161,6 +163,7 @@ export const VStage: React.FC<{
       back: part(asSet(<g><rect width={VW} height={VH} fill={bg} />{screenBg}</g>)),
       world: part(asSet(<g>{blurBg}{children}</g>)),
       cam: camM,
+      plain: !!plain,
       front: part(
         asSet(
           <rect width={VW} height={VH} fill="url(#vvig)" />,

@@ -892,7 +892,8 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         add_layer('Props', keyed(prop_states(False), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
     # background (set only)
     if bsyms.get('camera'):
-        add_layer('Background', keyed(bstates, lambda f, st: [inst(st[0], [1, 0, 0, 1, 0, 0]), inst(st[1], list(st[2])), inst(st[3], [1, 0, 0, 1, 0, 0])]), '#9933CC')
+        plain = all(fr['background'].get('plain') for fr in frames)
+        add_layer('Background', keyed(bstates, lambda f, st: [inst(st[1], list(st[2]))] if plain else [inst(st[0], [1, 0, 0, 1, 0, 0]), inst(st[1], list(st[2])), inst(st[3], [1, 0, 0, 1, 0, 0])]), '#9933CC')
     elif bsyms:
         add_layer('Background', keyed(bstates, lambda f, k: [inst(bsyms[k], [1, 0, 0, 1, 0, 0])]), '#9933CC')
     else:

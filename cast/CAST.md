@@ -71,6 +71,8 @@
 
 27. **Sets split into background + props (Nov 2026).** In the Animate file the Background layer is only walls, floor, sky and street; every object in a set (buildings, windows, doors, cabinets, fridge, lamp post, hydrant, pictures, chairs, tables, counters) is its own prop symbol on the Props layer, and anything that moves inside a shot (arms in an insert, a falling shoe) is a prop too. In code: wrap set objects in `Piece` (`src/components/SorryProps.tsx`).
 
+28. **Fixed camera, no vignette (Nov 2026).** The camera holds still on every shot (no push-in / pull-back on cuts) and there's no dark vignette; framing changes are cuts between shots. In Animate the Background layer is just the set, one symbol per location, and nothing is keyed per frame because of the camera. In code: `zoom = 1` and `<VStage plain>`.
+
 ## No Ghanaian references (user's standing rule)
 
 Keep the show culturally neutral: no Ghanaian accents in the cast's voices, no Ghanaian foods, words, places, money or

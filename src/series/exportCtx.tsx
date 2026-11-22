@@ -41,7 +41,7 @@ export type PropRecord = {name: string; key: string; matrix: M6; svg: string; fr
  * world space with the camera matrix that frames it, and the vignette on top.
  */
 type SvgPart = {key: string; svg: string};
-export type BackgroundRecord = {back: SvgPart; world: SvgPart; cam: M6; front: SvgPart};
+export type BackgroundRecord = {back: SvgPart; world: SvgPart; cam: M6; front: SvgPart; plain?: boolean};
 export type Capture = {chars: CharRecord[]; graphics: GraphicRecord[]; props: PropRecord[]; caption: string | null; background?: BackgroundRecord};
 export type LayerMode = 'full' | 'set' | 'bg';
 
