@@ -7,7 +7,7 @@ const pw = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const {chromium} = pw.chromium ? pw : pw.default; // ESM or CommonJS build
 
 const dir = path.resolve('src/cast/data');
-const names = ['ebo', 'mica', 'obuor', 'ama', 'christy', 'pretty', 'boss'];
+const names = ['ebo', 'mica', 'obuor', 'ama', 'christy', 'pretty', 'boss', 'etoo', 'konka'];
 const mul = (m1, m2) => {
   const [a1, b1, c1, d1, x1, y1] = m1, [a2, b2, c2, d2, x2, y2] = m2;
   return [a1 * a2 + c1 * b2, b1 * a2 + d1 * b2, a1 * c2 + c1 * d2, b1 * c2 + d1 * d2, a1 * x2 + c1 * y2 + x1, b1 * x2 + d1 * y2 + y1];
@@ -25,8 +25,11 @@ const measure = async (key, rig, view) => {
       return [l.name, v ? {m: v.m ?? l.m, first: v.first ?? l.first, show: v.show} : {m: l.m, first: l.first, show: true}];
     }),
   );
-  const shown = rig.layers.filter((l) => eff[l.name].show);
   const byRig = Object.fromEntries(rig.layers.filter((l) => l.rig != null).map((l) => [l.rig, l]));
+  // a layer whose parent isn't drawn in this view isn't drawn either (a forearm left on when its upper arm is off)
+  const parentShown = (l) => l.parent == null || !byRig[l.parent] || (eff[byRig[l.parent].name].show && parentShown(byRig[l.parent]));
+  for (const l of rig.layers) if (!parentShown(l)) eff[l.name].show = false;
+  const shown = rig.layers.filter((l) => eff[l.name].show);
   const world = (l) => (l.parent != null && byRig[l.parent] ? mul(world(byRig[l.parent]), eff[l.name].m) : eff[l.name].m);
   const body = shown
     .map((l) => `<g id="L_${l.name}" transform="matrix(${world(l).join(',')})">${l.frames[eff[l.name].first] || ''}</g>`)

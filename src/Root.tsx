@@ -121,7 +121,7 @@ export const RemotionRoot: React.FC = () => (
   <Composition id="Ep12-Board" component={Ep12Board} durationInFrames={EP12_BOARD_PANELS} fps={30} width={1080} height={1920} />
   <Composition id="EboTeachesMoney-Ep13" component={EboEp13} durationInFrames={EP13_DURATION} fps={30} width={EP13_W} height={EP13_H} />
   <Composition id="Ep13-V3Board" component={Ep13V3Board} durationInFrames={46} fps={30} width={1080} height={1920} />
-  <Composition id="ViewTest" component={ViewTest} durationInFrames={7} fps={30} width={1920} height={1080} />
+  <Composition id="ViewTest" component={ViewTest} durationInFrames={9} fps={30} width={1920} height={1080} />
   <Composition id="Ep13-Props" component={Ep13Props} durationInFrames={10} fps={30} width={1080} height={1920} />
   <Composition id="Ep13-RigBoard" component={Ep13RigBoard} durationInFrames={44} fps={30} width={1080} height={1920} />
   <Composition id="Ep13-Board" component={Ep13Board} durationInFrames={EP13_BOARD_PANELS} fps={30} width={1080} height={1920} />

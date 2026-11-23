@@ -6,6 +6,8 @@ import ama from './data/ama.json';
 import christy from './data/christy.json';
 import pretty from './data/pretty.json';
 import boss from './data/boss.json';
+import etoo from './data/etoo.json';
+import konka from './data/konka_rig.json';
 
 /**
  * The show's cast, exported from the user's .fla files (cast/tools/export_rig.py).
@@ -25,7 +27,7 @@ export const EYES_FALLBACK: Partial<Record<Eyes, Eyes>> = {angry: 'squint', susp
 export const LIP_MOOD: Partial<Record<Mouth, 'happy' | 'sad' | 'neutral'>> = {frown: 'sad', wobbly: 'sad', grimace: 'sad', scream: 'sad', o: 'sad', flat: 'neutral'};
 export const MOUTH_FALLBACK: Partial<Record<Mouth, Mouth>> = {teeth: 'grin', laugh: 'grin', grimace: 'wobbly'};
 
-export type CastId = 'ebo' | 'mica' | 'obuor' | 'ama' | 'christy' | 'pretty' | 'boss';
+export type CastId = 'ebo' | 'mica' | 'obuor' | 'ama' | 'christy' | 'pretty' | 'boss' | 'etoo' | 'konka';
 
 export type CastConfig = {
   name: string;
@@ -58,6 +60,25 @@ const MOUTH_B: CastConfig['mouth'] = {smile: 0, grin: 3, o: 2, scream: 3, frown:
 
 const S = 0.68; // one shared factor keeps the cast's relative heights as drawn
 
+/** The face of rigs built on Ebo's part set (eyes + separate pupils, 15–16 mouths, same order). */
+const EBO_FACE: Pick<CastConfig, 'eyeLayers' | 'eyes' | 'pupils' | 'mouth' | 'lip'> = {
+  eyeLayers: ['eye_1', 'eye_2'],
+  eyes: {},
+  pupils: {
+    layers: ['pupil_1', 'pupil_2'],
+    eyes: {
+      open: [null, null], dollar: [null, null], wide: [0, 0], closed: [12, 7], happy: [9, 4], half: [7, 3],
+      sad: [10, 3], squint: [11, 2], angry: [5, 1], suspicious: [11, 5], tired: [10, 3], squeeze: [8, 7],
+    },
+  },
+  mouth: {smile: 6, grin: 1, o: 5, scream: 11, frown: 13, flat: 0, wobbly: [7, 9], smirk: 2, snore: [12, 5], teeth: 2, laugh: 4, grimace: 9},
+  lip: {
+    happy: [6, [3, 1], [1, 3], 5],
+    neutral: [0, [3, 1], [3, 12], 12],
+    sad: [13, [11, 10], [8, 10], 12],
+  },
+};
+
 export const CAST: Record<CastId, CastConfig> = {
   // Ebo (new master, Oct 2026): 4 views, an in-front right arm, eye_1/eye_2 (14 shapes) with
   // separate pupils (8: 3 = flat-top, 4 = flat-bottom, 7 = none) and 15 mouths. See cast/CAST.md.
@@ -87,7 +108,9 @@ export const CAST: Record<CastId, CastConfig> = {
     hide: [],
     blinkOffset: 0,
   },
-  mica: {name: 'Mica', rig: mica as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_B, hide: [], blinkOffset: 23},
+  // Mica (new master, Nov 2026, cast/masters/mica_drip.fla, symbol 'Obuor fast walk'): views front / ¾ / side / back, on Ebo's part set
+  // his eyes are the shades he wears (drawn per view), so they're never swapped for expressions
+  mica: {name: 'Mica', rig: mica as RigData, scale: S, ...EBO_FACE, eyeLayers: [], pupils: undefined, hide: [], blinkOffset: 23},
   obuor: {name: 'Obuor', rig: obuor as RigData, scale: S, eyeLayers: ['eye_1', 'eye_2'], eyes: EYES_5, mouth: MOUTH_B, hide: [], blinkOffset: 41},
   // Ama (new master, Nov 2026, cast/masters/Ama.fla): built on Ebo's part set — the same 15 mouths
   // in the same order and Ebo's eye + pupil frames — so she shares his face and lip-sync mapping.
@@ -138,6 +161,15 @@ export const CAST: Record<CastId, CastConfig> = {
     hide: [],
     blinkOffset: 13,
   },
+  // Etoo (new, Nov 2026, cast/masters/Etoo.fla, symbol 'Ebo'): bald, dark red shirt; views front / ¾ / side / back.
+  // Ebo's part set, but only 3 pupil frames (0 round, 1 and 2 lids), so his pupils map more simply.
+  etoo: {
+    name: 'Etoo', rig: etoo as RigData, scale: S, ...EBO_FACE,
+    pupils: {layers: ['pupil_1', 'pupil_2'], eyes: {open: [null, null], dollar: [null, null], wide: [0, 0], closed: [12, 2], happy: [9, 2], half: [7, 1], sad: [10, 1], squint: [11, 2], angry: [5, 1], suspicious: [11, 1], tired: [10, 1], squeeze: [8, 2]}},
+    hide: [], blinkOffset: 31,
+  },
+  // Konka (now a full rig, Nov 2026, cast/masters/Konka_rig.fla, symbol 'Obuor'): views front / ¾ / side / back, Ebo's part set
+  konka: {name: 'Konka', rig: konka as RigData, scale: S, ...EBO_FACE, hide: [], blinkOffset: 47},
   // Christy's eye_1 layer holds both eyes (exported as eye_1 + eye_1__2); her eye_2 layer is a stray copy parked off-canvas.
   christy: {name: 'Christy', rig: christy as RigData, scale: S, eyeLayers: ['eye_1', 'eye_1__2'], eyes: EYES_7, mouth: MOUTH_A, hide: ['eye_2'], blinkOffset: 71},
   // Ama Pretty (new version, Nov 2026, cast/masters/Ama_pretty.fla, symbol 'Ama port'): built on the

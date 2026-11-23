@@ -56,6 +56,25 @@ const LIMBS = {
 const ARM_R_BACK = ['hand_top_2', 'hand_down_2'] as const;
 const ARM_R_FRONT = ['hand_top_2_front', 'hand_down_2_front'] as const;
 
+/**
+ * The Nov 2026 masters (front / ¾ / side / back views) name their arms by side, each with a back and a front
+ * drawing: handback_L_top, handfront_R_down … (spellings vary: handabck, handfront_l). The arm on the drawing's
+ * right side plays the old armL (the near arm), the left side the old armR. Every pair an arm has is posed; the
+ * view shows whichever is drawn there.
+ */
+const normArm = (n: string) => n.toLowerCase().replace('handabck', 'handback').replace(/_+$/, '');
+const sidePairs = (byName: Record<string, unknown>, side: 'l' | 'r'): [string, string][] => {
+  const names = Object.keys(byName);
+  const find = (kind: string, part: string) => names.find((n) => normArm(n) === `hand${kind}_${side}_${part}`);
+  const out: [string, string][] = [];
+  for (const kind of ['front', 'back']) {
+    const top = find(kind, 'top');
+    const down = find(kind, 'down');
+    if (top && down) out.push([top, down]);
+  }
+  return out;
+};
+
 type Layer = RigData['layers'][number];
 type Eff = {m: number[]; first: number; show: boolean};
 
@@ -88,8 +107,11 @@ const prepare = (id: CastId, view: number): Prepared => {
     const v = l.views?.[view];
     eff[l.name] = v ? {m: v.m ?? l.m, first: v.first ?? l.first, show: v.show} : {m: l.m, first: l.first, show: true};
   }
+  // a layer whose parent isn't drawn in this view isn't drawn either (a forearm left on when its upper arm is off)
+  const parentShown = (l: Layer): boolean => l.parent == null || !byRig[l.parent] || (eff[byRig[l.parent].name].show && parentShown(byRig[l.parent]));
+  for (const l of rig.layers) if (!parentShown(l)) eff[l.name] = {...eff[l.name], show: false};
   const rest: Record<string, number> = {};
-  const pairs = [...Object.values(LIMBS), ARM_R_FRONT];
+  const pairs = [...Object.values(LIMBS), ARM_R_FRONT, ...sidePairs(byName, 'r'), ...sidePairs(byName, 'l')];
   for (const [upper, lower] of pairs) {
     if (!meas.layers[upper] || !meas.layers[lower]) continue;
     const pu = meas.layers[upper].pivot;
@@ -105,7 +127,7 @@ const prepare = (id: CastId, view: number): Prepared => {
   };
   const handLocal: Record<string, [number, number]> = {};
   const wrist: Record<string, {at: [number, number]; ang: number}> = {};
-  for (const fore of [ARM_R_BACK[1], ARM_R_FRONT[1], LIMBS.armL[1]]) {
+  for (const fore of [ARM_R_BACK[1], ARM_R_FRONT[1], LIMBS.armL[1], ...[...sidePairs(byName, 'r'), ...sidePairs(byName, 'l')].map((pr) => pr[1])]) {
     const ml = meas.layers[fore];
     if (!ml || !byName[fore]) continue;
     const fp = ml.pivot;
@@ -207,8 +229,19 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
     rot[lower] = lowerAbs - rest[base(lower)] - ru;
   };
   const armLUp = cfg.armLMax !== undefined && view !== 3 ? Math.min(pose.armL[0], cfg.armLMax) : pose.armL[0];
-  setLimb(LIMBS.armL[0], LIMBS.armL[1], armLUp, armLUp + pose.armL[1]);
-  setLimb(armR[0], armR[1], -pose.armR[0], -(pose.armR[0] + pose.armR[1]));
+  let armL: readonly [string, string] = LIMBS.armL;
+  const pairsA = sidePairs(byName, 'r');
+  const pairsB = sidePairs(byName, 'l');
+  if (pairsA.length || pairsB.length) {
+    // the side-named arms: pose every pair, hold things in the one drawn in this view
+    for (const [u, d] of pairsA) setLimb(u, d, armLUp, armLUp + pose.armL[1]);
+    for (const [u, d] of pairsB) setLimb(u, d, -pose.armR[0], -(pose.armR[0] + pose.armR[1]));
+    armL = pairsA.find(([u]) => eff[u]?.show) ?? pairsA[0] ?? armL;
+    armR = pairsB.find(([u]) => eff[u]?.show) ?? pairsB[0] ?? armR;
+  } else {
+    setLimb(LIMBS.armL[0], LIMBS.armL[1], armLUp, armLUp + pose.armL[1]);
+    setLimb(armR[0], armR[1], -pose.armR[0], -(pose.armR[0] + pose.armR[1]));
+  }
   setLimb(LIMBS.legL[0], LIMBS.legL[1], -pose.legL[0], -(pose.legL[0] - pose.legL[1]));
   setLimb(LIMBS.legR[0], LIMBS.legR[1], -pose.legR[0], -(pose.legR[0] - pose.legR[1]));
 
@@ -288,7 +321,7 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   const rLayer: PropLayer = armR[1] === ARM_R_FRONT[1] ? 'prop_R_front' : 'prop_R';
   const rigHeldR = place(rLayer, children, armR[1], holdRot);
   const holdRotL = cyc ? 0 : -0.6 * (40 - (pose.armL[0] + pose.armL[1]));
-  const rigHeldL = place('prop_L', holdL, LIMBS.armL[1], holdRotL);
+  const rigHeldL = place('prop_L', holdL, armL[1], holdRotL);
   for (const name of Object.keys(PROP_LAYERS) as PropLayer[]) {
     if (!byName[name]) continue;
     eff[name] = {...eff[name], show: !!active[name]};
@@ -329,7 +362,7 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
           const f = propFrame(l.name) ?? Math.min(l.frames.length - 1, Math.max(0, frameFor(l.name, eff[l.name].first)));
           const g = <g key={l.name} transform={`matrix(${world(l.name).join(',')})`} dangerouslySetInnerHTML={{__html: l.frames[f]}} />;
           // hands ride their forearm: drawn right after it, at the wrist, turned along it
-          const hand = l.name === armR[1] ? handR : l.name === LIMBS.armL[1] ? handL : undefined;
+          const hand = l.name === armR[1] ? handR : l.name === armL[1] ? handL : undefined;
           const wr = P.wrist[l.name];
           if (hand && wr)
             return (
@@ -356,7 +389,7 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
           </CameraContext.Provider>
         )}
         {holdL && !rigHeldL && (
-          <g transform={`translate(${ap(world(LIMBS.armL[1]), P.handLocal[LIMBS.armL[1]] ?? [0, 0]).join(' ')}) rotate(${holdRotL}) scale(${facing / cfg.scale} ${1 / cfg.scale})`}>{holdL}</g>
+          <g transform={`translate(${ap(world(armL[1]), P.handLocal[armL[1]] ?? [0, 0]).join(' ')}) rotate(${holdRotL}) scale(${facing / cfg.scale} ${1 / cfg.scale})`}>{holdL}</g>
         )}
       </g>
     </g>

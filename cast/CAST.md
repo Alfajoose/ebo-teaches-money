@@ -97,6 +97,22 @@ The series stays 2D (user's call, 2026-11-10). Two three.js experiments are kept
 as a 3D world with Ebo as a 2D cutout (`src/series/ep10three.tsx`, `episodes/ep10/three_test/`), and a toy-style 3D
 Ebo (`src/cast/Ebo3D.tsx`, `cast/3d/`). Neither exports to Animate.
 
+## VIEWS (Nov 2026 masters)
+
+The user's new masters key four views in the rig symbol: frame 1 = front, 2 = ¾, 3 = side, 4 = back. They're exported
+with `tools/export_rig.py <dir> <symbol> <out.json> 1,0,0,3,2`, so every rig uses the show's view slots:
+0 = ¾, 1 = front, 2 = front (old "hands-in" slot), 3 = back, 4 = side. Then `node scripts/measure-rigs.mjs`.
+
+- **With views now:** Ebo (`Ebo.fla`), Etoo (`Etoo.fla`, new: bald, dark red shirt; symbol `Ebo`), Konka (`Konka_rig.fla`,
+  symbol `Obuor`, cast id `konka`, data `konka_rig.json`), Mica (`mica_drip.fla`, symbol `Obuor fast walk`), Ama Pretty
+  (`Ama_pretty.fla`, symbol `Ama`).
+- **Still one view (¾):** Ama, Christy, Obuor, the boss.
+- **Arms** are named by side with a back and a front drawing (`handback_L_top`, `handfront_R_down`…); the renderer poses
+  every pair and shows the one drawn in that view. A forearm whose upper arm isn't drawn in a view isn't drawn either.
+- **Mica's eyes** are his shades (per view), never swapped for expressions.
+- **To check in Konka's file:** a solid-black eye frame shows over his eye in the front, ¾ and side views, and a stray
+  arm piece floats above his head in the ¾ view.
+
 ## Shared rig (all five characters)
 
 Every character uses the same layer-parented rig with the same 16 layer names, so any animation written for one can be reused on the others.
