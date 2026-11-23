@@ -1049,6 +1049,13 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         parts.append((tl, 0, total))
     for href, iid, icon in lib.symbols:
         ET.SubElement(syms, N('Include'), {'href': href, 'itemIcon': icon, 'loadImmediate': 'false', 'itemID': iid})
+    # each scene keeps only the layers it uses: a character (or captions / graphics / props) layer that's empty for the
+    # whole scene is left out, so a shot lists only who's in it
+    for t, _, _ in parts:
+        lay = t.find(N('layers'))
+        for L in list(lay.findall(N('DOMLayer'))):
+            if not any(len(fr.find(N('elements')) if fr.find(N('elements')) is not None else []) for fr in L.iter(N('DOMFrame'))):
+                lay.remove(L)
     if voice:
         ET.SubElement(fol, N('DOMFolderItem'), {'name': 'Voice', 'itemID': new_id()})
         for k, (t, a, b) in enumerate(parts):
