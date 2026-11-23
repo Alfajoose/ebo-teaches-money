@@ -110,8 +110,8 @@ with `tools/export_rig.py <dir> <symbol> <out.json> 1,0,0,3,2`, so every rig use
 - **Arms** are named by side with a back and a front drawing (`handback_L_top`, `handfront_R_down`…); the renderer poses
   every pair and shows the one drawn in that view. A forearm whose upper arm isn't drawn in a view isn't drawn either.
 - **Mica's eyes** are his shades (per view), never swapped for expressions.
-- **To check in Konka's file:** a solid-black eye frame shows over his eye in the front, ¾ and side views, and a stray
-  arm piece floats above his head in the ¾ view.
+- **To check in Konka's file:** a solid-black eye frame shows over his eye in the front, ¾ and side views.
+- An arm with no forearm drawn in a view keeps its drawn pose there (the renderer can't measure its rest angle).
 
 ## Shared rig (all five characters)
 

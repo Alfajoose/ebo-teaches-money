@@ -110,6 +110,16 @@ const prepare = (id: CastId, view: number): Prepared => {
   // a layer whose parent isn't drawn in this view isn't drawn either (a forearm left on when its upper arm is off)
   const parentShown = (l: Layer): boolean => l.parent == null || !byRig[l.parent] || (eff[byRig[l.parent].name].show && parentShown(byRig[l.parent]));
   for (const l of rig.layers) if (!parentShown(l)) eff[l.name] = {...eff[l.name], show: false};
+  // two arms stacked on the same spot in a view (Konka's ¾: left and right drawn over each other) are one arm there:
+  // keep the right one in front and the left one behind, as Ebo's ¾ is built
+  const sameBox = (a?: number[], b?: number[]) => !!a && !!b && a.every((v, i) => Math.abs(v - b[i]) < 3);
+  for (const kind of ['front', 'back'] as const) {
+    const r = sidePairs(byName, 'r').find(([u]) => normArm(u).startsWith(`hand${kind}_`));
+    const l = sidePairs(byName, 'l').find(([u]) => normArm(u).startsWith(`hand${kind}_`));
+    if (r && l && eff[r[0]].show && eff[l[0]].show && sameBox((meas.layers[r[0]] as {box?: number[]})?.box, (meas.layers[l[0]] as {box?: number[]})?.box)) {
+      for (const n of kind === 'front' ? l : r) eff[n] = {...eff[n], show: false};
+    }
+  }
   const rest: Record<string, number> = {};
   const pairs = [...Object.values(LIMBS), ARM_R_FRONT, ...sidePairs(byName, 'r'), ...sidePairs(byName, 'l')];
   for (const [upper, lower] of pairs) {
@@ -224,6 +234,8 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
   const dxy: Record<string, [number, number]> = {};
   rot.head = pose.headTilt;
   const setLimb = (upper: string, lower: string, upperAbs: number, lowerAbs: number) => {
+    // an arm whose rest direction isn't known in this view (its forearm isn't drawn there) stays as drawn
+    if (rest[base(upper)] === undefined || rest[base(lower)] === undefined) return;
     const ru = upperAbs - rest[base(upper)];
     rot[upper] = ru;
     rot[lower] = lowerAbs - rest[base(lower)] - ru;
