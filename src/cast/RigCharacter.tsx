@@ -7,6 +7,7 @@ import measureJson from './data/measure.json';
 import {CameraContext, mmul, R as Rm, S as Sm, T as Tm, useCapture, useLayerMode} from '../series/exportCtx';
 import {useContext} from 'react';
 import {handPropOf, PROP_LAYERS, PropLayer} from './handProps';
+import {Prop} from '../prop';
 
 /**
  * Renders one of the user's Adobe Animate characters (exported rig) in a pose.
@@ -89,6 +90,7 @@ type Prepared = {
   origin: [number, number];
   handLocal: Record<string, [number, number]>; // per forearm layer: the hand tip in its own space
   wrist: Record<string, {at: [number, number]; ang: number}>; // per forearm layer: the wrist (the forearm's end) and the forearm's direction, in its own space
+  localBox: Record<string, number[]>;
 };
 const cache: Record<string, Prepared> = {};
 
@@ -147,7 +149,16 @@ const prepare = (id: CastId, view: number): Prepared => {
     const w1 = ap(inv(world0(fore)), [fp[0] + (fc[0] - fp[0]) * 1.8, fp[1] + (fc[1] - fp[1]) * 1.8]);
     wrist[fore] = {at: w1, ang: (Math.atan2(w1[1] - w0[1], w1[0] - w0[0]) * 180) / Math.PI};
   }
-  const p: Prepared = {cfg, rig, view, byName, byRig, eff, rest, origin: [meas.layers.waist.pivot[0], meas.bounds[3]], handLocal, wrist};
+  // each layer's drawn box in its own space (from the measured box in rig space), for costumes
+  const localBox: Record<string, number[]> = {};
+  for (const l of rig.layers) {
+    const box = (meas.layers[l.name] as {box?: number[]} | undefined)?.box;
+    if (!box) continue;
+    const iv = inv(world0(l.name));
+    const pts = [[box[0], box[1]], [box[2], box[1]], [box[0], box[3]], [box[2], box[3]]].map((q) => ap(iv, q as [number, number]));
+    localBox[l.name] = [Math.min(...pts.map((q) => q[0])), Math.min(...pts.map((q) => q[1])), Math.max(...pts.map((q) => q[0])), Math.max(...pts.map((q) => q[1]))];
+  }
+  const p: Prepared = {cfg, rig, view, byName, byRig, eff, rest, origin: [meas.layers.waist.pivot[0], meas.bounds[3]], handLocal, wrist, localBox};
   cache[key] = p;
   return p;
 };
@@ -191,6 +202,9 @@ type Props = {
   handR?: React.ReactNode; // a hand drawn on the end of the right forearm (wrist at the origin, fingers along +y, world px)
   handL?: React.ReactNode; // the same on the left forearm
   wear?: React.ReactNode; // worn on the chest (drawn in the torso's own space, over the torso, under head and arms)
+  /** costume pieces, each drawn from that body part's own box [x0, y0, x1, y1] in its local space, so one drawing
+   * fits every rig: head (over the head, under the face), chest (over the torso), hips (over the tops of the legs) */
+  dress?: {head?: (b: number[]) => React.ReactNode; chest?: (b: number[]) => React.ReactNode; hips?: (b: number[]) => React.ReactNode};
   mouthFrame?: number; // direct mouth swap (lip sync) — overrides pose.mouth
   eyeFrame?: number | number[]; // direct eye swap — overrides pose.eyes
   noBlink?: boolean;
@@ -198,7 +212,7 @@ type Props = {
   cycleOffset?: number; // shift the cycle in video frames (so two walkers aren't in step)
 };
 
-export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, holdL, handR, handL, wear, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
+export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, facing = 1, pose, t = 0, children, holdL, handR, handL, wear, dress, mouthFrame, eyeFrame: eyeOverride, noBlink, cycle, cycleOffset = 0}) => {
   const mode = useLayerMode();
   const cap = useCapture();
   const cam = useContext(CameraContext);
@@ -383,6 +397,20 @@ export const RigCharacter: React.FC<Props> = ({who, x = 0, y = 0, scale = 1, fac
                 <g transform={`matrix(${world(l.name).join(',')}) translate(${wr.at[0]} ${wr.at[1]}) rotate(${wr.ang - 90}) scale(${HAND_K / cfg.scale})`}>{hand}</g>
               </React.Fragment>
             );
+          // costume pieces: the hat over the head, the collar over the torso, the kilt over the last leg drawn
+          const lastLegTop = [...layers].reverse().find((q) => /^leg_top/.test(q.name))?.name;
+          const piece = (fn: ((b: number[]) => React.ReactNode) | undefined, space: string, name: string) =>
+            fn && P.localBox[space] ? (
+              <CameraContext.Provider key={name} value={mmul(outer, world(space)) as M}>
+                <Prop name={name}><g transform={`matrix(${world(space).join(',')})`}>{fn(P.localBox[space])}</g></Prop>
+              </CameraContext.Provider>
+            ) : null;
+          const extra = [
+            l.name === 'head' ? piece(dress?.head, 'head', 'CostumeHead') : null,
+            base(l.name) === 'torso' ? piece(dress?.chest, l.name, 'CostumeChest') : null,
+            l.name === lastLegTop ? piece(dress?.hips, 'waist', 'CostumeHips') : null,
+          ].filter(Boolean);
+          if (extra.length && !(wear && base(l.name) === 'torso')) return <React.Fragment key={l.name}>{g}{extra}</React.Fragment>;
           if (!wear || base(l.name) !== 'torso') return g;
           // worn props ride the torso (the export keys them as a prop at the torso's screen matrix)
           return (
