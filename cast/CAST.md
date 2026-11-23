@@ -75,6 +75,8 @@
 
 29. **Animate export: one scene per shot ("01 Hook", "02 Hook"…; the user's final call), views kept in the symbol (Nov 2026, after the user's shot_4.fla).** Each shot is its own Animate scene. Each character in a shot is its own symbol: the rig's views first, exactly as in the master (Ebo: frames 1-4 = ¾, front, front hands-in, back), then that shot's animation on the same layers. The shot places it with First frame = the animation start, Play once, so the views stay inside for later edits. A steady move across the frame is one key with a classic tween.
 
+30. **Backgrounds are never animated, and sit at 50% in Animate (Nov 2026).** The Background layer and the still set pieces (the 'Set' layer: buildings, windows, furniture) get one key per shot and 50% alpha, so the animation reads over them. Anything that moves (doors, phone, arms in inserts, the stomp) is on the Props layer. In the video they stay at full strength.
+
 ## No Ghanaian references (user's standing rule)
 
 Keep the show culturally neutral: no Ghanaian accents in the cast's voices, no Ghanaian foods, words, places, money or

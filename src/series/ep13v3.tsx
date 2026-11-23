@@ -46,7 +46,7 @@ const Split: React.FC<{left: React.ReactNode; right: React.ReactNode; l: number}
     <rect x={-300} y={-300} width={1680} height={2600} fill="#FFFDF6" />
     <defs><clipPath id="splitL"><rect x={0} y={480} width={540} height={960} /></clipPath><clipPath id="splitR"><rect x={540} y={480} width={540} height={960} /></clipPath></defs>
     <g clipPath="url(#splitL)"><g transform="translate(0 480) scale(0.5)">{left}</g></g>
-    {l > 0.25 && <g clipPath="url(#splitR)"><g transform="translate(540 480) scale(0.5)">{right}</g></g>}
+    {<g clipPath="url(#splitR)"><g transform="translate(540 480) scale(0.5)">{right}</g></g>}
     <path d="M 540 470 L 540 1450" stroke="#1D1A1A" strokeWidth={10} />
     <rect x={0} y={480} width={1080} height={960} fill="none" stroke="#1D1A1A" strokeWidth={10} />
   </g>
@@ -137,7 +137,7 @@ export const V3_PANELS: ((l: number) => React.ReactNode)[] = [
   // ── the change ──
   /* 36 */ (l) => <g><OfficeSet sunny /><R who="boss" x={610} facing={-1} p={{...POSE.checkPhone, eyes: 'half', mouth: 'flat'}} hold={PHONE} /><OfficeDesk x={680} /><R who="ebo" x={walk(l, 160, 320, 1.1)} y={walk(l, FLOOR + 520, FLOOR + 330, 1.1)} s={1.75} turn="back" p={{...TALL, legL: l < 1.1 && Math.floor(l * 5) % 2 ? [-18, 0] : [4, 0], legR: l < 1.1 && Math.floor(l * 5) % 2 ? [4, 0] : [-18, 0]}} /></g>,
   /* 37 */ (l) => <g><OfficeSet /><Zoom k={2.4} cx={600} cy={1300}><OfficeDesk x={700} mug={false} /><g transform={`translate(640 ${FLOOR - 262 + -120 * (1 - Math.min(1, l / 0.18)) ** 2}) scale(1.5)`}><Smartphone down /></g></Zoom>
-    {l > 0.18 && <path d="M 300 900 l -60 -40 M 860 900 l 60 -40 M 580 760 l 0 -70" stroke="#1D1A1A" strokeWidth={10} strokeLinecap="round" />}</g>,
+    {l > 0.18 && <Prop name="ImpactLines"><g transform="translate(0 0)"><path d="M 300 900 l -60 -40 M 860 900 l 60 -40 M 580 760 l 0 -70" stroke="#1D1A1A" strokeWidth={10} strokeLinecap="round" /></g></Prop>}</g>,
   /* 38 */ () => <g><OfficeSet /><Close who="boss" facing={-1} p={{eyes: 'open', mouth: 'flat', brows: 'up'}} /><DeskClose /></g>,
   /* 39 */ () => <g><OfficeSet sunny /><R who="boss" x={610} facing={-1} p={{eyes: 'happy', mouth: 'smile', tilt: -10}} /><OfficeDesk x={680} /><R who="ebo" x={300} y={FLOOR + 330} s={1.75} turn="back" p={{...POSE.explainBoth}} /></g>,
   // ── the button ──

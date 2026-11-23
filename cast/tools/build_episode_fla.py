@@ -540,6 +540,13 @@ def ellipse(cx, cy, rx, ry):
 # ── hand-drawn style for props: the same static waver as the video's hd-rough filter,
 #    baked into the vector outlines (fixed seed, so it never changes between frames) ──
 
+# the background and the still set pieces sit at 50% in Animate, so the animation reads over them (the user's call)
+BG_ALPHA = 0.5
+# a set's still pieces (src/components/SorryProps.tsx `Piece` names + furniture): the 'Set' layer, never animated
+SET_PIECES = {'FarBuildings', 'ShopFront', 'BrickBuilding', 'LampPost', 'Hydrant', 'SettingSun', 'RestaurantWindow', 'PictureFrame',
+              'PendantLamp', 'BlindsWindow', 'OfficeDoor', 'FilingCabinet', 'WallCabinets', 'KitchenCounter', 'Fridge', 'KitchenWindow',
+              'LivingRoomPicture', 'StoreEntrance', 'DoorTrack', 'MenuBoard', 'CupShelf', 'RestaurantTable', 'OfficeDesk', 'KitchenTable',
+              'BigCouch', 'CafeCounter', 'Chair', 'EboLegSneaker'}
 ROUGH_PROPS = False  # the user asked for no wobbly lines (Nov 2026); True bakes the old hand-drawn waver into props
 ROUGH_AMP = 2.25    # max sideways shift of a line (= half the filter's wobble of 4.5)
 ROUGH_FREQ = 0.018  # waves per unit along a line (the filter's baseFrequency)
@@ -936,8 +943,15 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
     gstates = [tuple((g['key'], rkey(g['matrix'])) for g in fr['graphics']) for fr in frames]
     add_layer('Graphics', keyed(gstates, lambda f, st: [inst(gsyms[k], list(m)) for k, m in st]), '#FF4FFF')
     # props held / drawn in front of the cast
-    def prop_states(front):
-        return [tuple((p['key'], rkey(p['matrix'])) for p in fr.get('props', []) if p['front'] == front) for fr in frames]
+    def prop_states(front, kind=None):
+        # kind: 'set' = the still pieces of a set (buildings, furniture…), 'moving' = everything else, None = both
+        def keep(p):
+            if p['front'] != front:
+                return False
+            if kind is None:
+                return True
+            return (p['name'] in SET_PIECES) == (kind == 'set')
+        return [tuple((p['key'], rkey(p['matrix'])) for p in fr.get('props', []) if keep(p)) for fr in frames]
     if any(prop_states(True)):
         add_layer('Props front', keyed(prop_states(True), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
     # characters
@@ -961,13 +975,15 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
             # the symbol's first frames are the rig's views; the animation starts at `off` and plays once
             keys.append((f, [inst(anim, list(st), first=f + off, loop='play once' if off else 'loop')] if st else [], tween))
         add_layer(disp, keys, '#4FFFFF')
-    # props behind the cast
-    if any(prop_states(False)):
-        add_layer('Props', keyed(prop_states(False), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
+    # props behind the cast: the moving ones, then the still set pieces on their own layer (never animated, 50%)
+    if any(prop_states(False, 'moving')):
+        add_layer('Props', keyed(prop_states(False, 'moving'), lambda f, st: [inst(psyms[k], list(m)) for k, m in st]), '#FF9933')
+    if any(prop_states(False, 'set')):
+        add_layer('Set', keyed(prop_states(False, 'set'), lambda f, st: [inst(psyms[k], list(m), alpha=BG_ALPHA) for k, m in st]), '#CC9966')
     # background (set only)
     if bsyms.get('camera'):
         plain = all(fr['background'].get('plain') for fr in frames)
-        add_layer('Background', keyed(bstates, lambda f, st: [inst(st[1], list(st[2]))] if plain else [inst(st[0], [1, 0, 0, 1, 0, 0]), inst(st[1], list(st[2])), inst(st[3], [1, 0, 0, 1, 0, 0])]), '#9933CC')
+        add_layer('Background', keyed(bstates, lambda f, st: [inst(st[1], list(st[2]), alpha=BG_ALPHA)] if plain else [inst(st[0], [1, 0, 0, 1, 0, 0]), inst(st[1], list(st[2])), inst(st[3], [1, 0, 0, 1, 0, 0])]), '#9933CC')
     elif bsyms:
         add_layer('Background', keyed(bstates, lambda f, k: [inst(bsyms[k], [1, 0, 0, 1, 0, 0])]), '#9933CC')
     else:
