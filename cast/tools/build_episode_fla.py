@@ -948,7 +948,14 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         states = [rkey(r['outer']) if r else None for r in recs]
         keys = []
         shot_starts = {sc['start'] for sc in (cap.get('scenes') or [])}
-        for f, st, tween in linear_keys(states, breaks=shot_starts):
+        # no tweens (the user's call): a key on every frame the placement changes, the symbol playing on unbroken
+        last_st = object()
+        frame_keys = []
+        for f, st in enumerate(states):
+            if st != last_st or f in shot_starts:
+                frame_keys.append((f, st, False))
+                last_st = st
+        for f, st, tween in frame_keys:
             # a key where the character enters/leaves or a move starts; a steady move between two keys is a tween,
             # so the character's symbol plays on unbroken instead of restarting on every frame
             # the symbol's first frames are the rig's views; the animation starts at `off` and plays once
