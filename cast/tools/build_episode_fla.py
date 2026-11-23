@@ -1096,28 +1096,20 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
                 anim_src = next((src for src, new in (scene_syms[k].items() if k < len(scene_syms) else []) if who_of_anim.get(src) == vcast.get(spk)), None)
                 (inside if anim_src else outside).append((spk, anim_src))
             for spk, anim_src in inside:
-                # the line plays inside the speaker's own symbol, from where its animation starts
-                name = f"Voice/{label} - {spk}.mp3" if scenes else f"Voice/{spk}.mp3"
+                # Animate doesn't reliably play a stream sound inside a graphic symbol (it cuts out wherever the
+                # instance is re-keyed, e.g. while the character moves), so each speaker's lines go on their own
+                # "Voice – <name>" layer in the scene, placed just above that character's layer
+                disp = char_layers[vcast[spk]][0]
+                name = f"Voice/{label} - {disp}.mp3"
                 med.append(embed_sound(work, tracks[spk][0], t0, t1 - t0, name))
-                sym_name = scene_syms[k][anim_src]
-                path = work / 'LIBRARY' / (sym_name + '.xml')
-                tree = ET.parse(path)
-                stl = tree.getroot().find(f"{N('timeline')}/{N('DOMTimeline')}")
-                off = anim_off[anim_src]
-                add_sound_layer(stl, name, b - a)
-                fr = stl.find(f"{N('layers')}/{N('DOMLayer')}/{N('frames')}/{N('DOMFrame')}")
-                if off:
-                    # silent while the views play, the line starts with the animation
-                    fr.set('duration', str(off))
-                    fr.attrib.pop('soundName', None); fr.attrib.pop('soundSync', None)
-                    for e in list(fr):
-                        fr.remove(e)
-                    fr.append(ET.Element(N('elements')))
-                    snd = ET.SubElement(fr.getparent() if hasattr(fr, 'getparent') else stl.find(f"{N('layers')}/{N('DOMLayer')}/{N('frames')}"), N('DOMFrame'), {'index': str(off), 'duration': str(b - a), 'keyMode': '9728', 'soundName': name, 'soundSync': 'stream'})
-                    env = ET.SubElement(snd, N('SoundEnvelope'))
-                    ET.SubElement(env, N('SoundEnvelopePoint'), {'level0': '32768', 'level1': '32768'})
-                    ET.SubElement(snd, N('elements'))
-                tree.write(path, encoding='utf-8', xml_declaration=False)
+                add_sound_layer(t, name, b - a, f'Voice – {disp}')
+                lay = t.find(N('layers'))
+                Ls = lay.findall(N('DOMLayer'))
+                vL = Ls[0]
+                target = next((L for L in Ls if L.get('name') == disp), None)
+                if target is not None:
+                    lay.remove(vL)
+                    lay.insert(list(lay).index(target), vL)
             if outside or not tracks:
                 # lines whose speaker isn't in the shot (voice-over), or no speaker info: on the scene's Voice layer
                 if tracks:
