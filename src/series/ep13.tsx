@@ -29,8 +29,8 @@ const after = (k: number, d = 0) => WORDS[k].e + 0.08 + d;
 /** When each of the 46 panels starts (storyboard v3, from the word timings). */
 const START = v3Start(at, after);
 export const EP13_SHOT_TIMES = START;
-/** One Animate scene per story section (Hook, The Count, …): the user found one per shot hard to work with. */
-export const EP13_SECTIONS = START.map((_, i) => v3Section(i));
+/** One Animate scene per shot ("01 Hook", "02 Hook", …): the user's final call, hard but effective. */
+export const EP13_SECTIONS = START.map((_, i) => `${String(i + 1).padStart(2, '0')} ${v3Section(i)}`);
 export const ep13ShotAt = (f: number) => {
   const t = f / VFPS;
   let i = 0;
