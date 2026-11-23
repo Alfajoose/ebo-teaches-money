@@ -997,6 +997,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
     tls = ET.SubElement(doc, N('timelines'))
     scenes = cap.get('scenes')
     parts = []  # (timeline, first frame, end frame)
+    scene_syms = []  # per scene: {whole-episode character symbol: that scene's symbol}
     if scenes:
         # one Animate scene per section of the episode (Window > Scene); each starts at frame 1
         bounds = [sc['start'] for sc in scenes] + [total]
@@ -1012,6 +1013,7 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
         loaded = {}
         for k, (t, a, b) in enumerate(parts):
             made = {}
+            scene_syms.append(made)
             for inst in t.iter(N('DOMSymbolInstance')):
                 src_name = inst.get('libraryItemName')
                 if src_name not in anim_names:
@@ -1058,12 +1060,78 @@ def main(capture_path, bg_dir, cast_src, out_fla, work, svg_dir=None, voice=None
                 lay.remove(L)
     if voice:
         ET.SubElement(fol, N('DOMFolderItem'), {'name': 'Voice', 'itemID': new_id()})
+        # who says what (words.json next to the voice) and which character each voice belongs to (voice_cast.json)
+        vdir = Path(voice).parent
+        words = json.load(open(vdir / 'words.json')) if (vdir / 'words.json').exists() else []
+        vcast = json.load(open(vdir / 'voice_cast.json')) if (vdir / 'voice_cast.json').exists() else {}
+        speakers = sorted({w.get('who') for w in words if w.get('who')})
+        tracks = {}
+        import tempfile
+        vtmp = Path(tempfile.mkdtemp())  # speaker tracks live outside the .fla's folder
+        if scenes and words and vcast:
+            import subprocess
+            for spk in speakers:
+                spans = []
+                for w in words:
+                    if w.get('who') != spk:
+                        continue
+                    a0, b0 = max(0.0, w['s'] - 0.06), w['e'] + 0.12
+                    if spans and a0 <= spans[-1][1] + 0.25:
+                        spans[-1][1] = max(spans[-1][1], b0)
+                    else:
+                        spans.append([a0, b0])
+                expr = '+'.join(f'between(t,{x:.3f},{y:.3f})' for x, y in spans) or '0'
+                out = vtmp / f'voice_{spk}.wav'
+                subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', voice, '-af', f"volume='if({expr},1,0)':eval=frame", '-ac', '1', '-ar', '44100', str(out)], check=True)
+                tracks[spk] = (str(out), spans)
+        who_of_anim = {anim: who for who, (_, anim, _, _) in char_layers.items()}
         for k, (t, a, b) in enumerate(parts):
-            name = f"Voice/{k + 1:02d} {t.get('name').split(' ', 1)[-1] if scenes else 'voice'}.mp3"
-            item = embed_sound(work, voice, a / fps, (b - a) / fps, name)
-            med.append(item)
-            add_sound_layer(t, name, b - a)
-        print(f'voice: {voice} embedded ({len(parts)} clip{"s" if len(parts) > 1 else ""}, Sync: Stream)')
+            label = t.get('name') if scenes else 'voice'
+            t0, t1 = a / fps, b / fps
+            # speakers with a line in this scene, and whether their character is on screen here
+            inside, outside = [], []
+            for spk, (_, spans) in tracks.items():
+                if not any(x < t1 and y > t0 for x, y in spans):
+                    continue
+                anim_src = next((src for src, new in (scene_syms[k].items() if k < len(scene_syms) else []) if who_of_anim.get(src) == vcast.get(spk)), None)
+                (inside if anim_src else outside).append((spk, anim_src))
+            for spk, anim_src in inside:
+                # the line plays inside the speaker's own symbol, from where its animation starts
+                name = f"Voice/{label} - {spk}.mp3" if scenes else f"Voice/{spk}.mp3"
+                med.append(embed_sound(work, tracks[spk][0], t0, t1 - t0, name))
+                sym_name = scene_syms[k][anim_src]
+                path = work / 'LIBRARY' / (sym_name + '.xml')
+                tree = ET.parse(path)
+                stl = tree.getroot().find(f"{N('timeline')}/{N('DOMTimeline')}")
+                off = anim_off[anim_src]
+                add_sound_layer(stl, name, b - a)
+                fr = stl.find(f"{N('layers')}/{N('DOMLayer')}/{N('frames')}/{N('DOMFrame')}")
+                if off:
+                    # silent while the views play, the line starts with the animation
+                    fr.set('duration', str(off))
+                    fr.attrib.pop('soundName', None); fr.attrib.pop('soundSync', None)
+                    for e in list(fr):
+                        fr.remove(e)
+                    fr.append(ET.Element(N('elements')))
+                    snd = ET.SubElement(fr.getparent() if hasattr(fr, 'getparent') else stl.find(f"{N('layers')}/{N('DOMLayer')}/{N('frames')}"), N('DOMFrame'), {'index': str(off), 'duration': str(b - a), 'keyMode': '9728', 'soundName': name, 'soundSync': 'stream'})
+                    env = ET.SubElement(snd, N('SoundEnvelope'))
+                    ET.SubElement(env, N('SoundEnvelopePoint'), {'level0': '32768', 'level1': '32768'})
+                    ET.SubElement(snd, N('elements'))
+                tree.write(path, encoding='utf-8', xml_declaration=False)
+            if outside or not tracks:
+                # lines whose speaker isn't in the shot (voice-over), or no speaker info: on the scene's Voice layer
+                if tracks:
+                    import subprocess
+                    mix = vtmp / f'voice_out_{k}.wav'
+                    ins = [x for spk, _ in outside for x in ('-i', tracks[spk][0])]
+                    subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', *ins, '-filter_complex', f'amix=inputs={len(outside)}:normalize=0', str(mix)] if len(outside) > 1 else ['ffmpeg', '-nostdin', '-v', 'error', '-y', *ins, str(mix)], check=True)
+                    src = str(mix)
+                else:
+                    src = voice
+                name = f"Voice/{label}.mp3"
+                med.append(embed_sound(work, src, t0, t1 - t0, name))
+                add_sound_layer(t, name, b - a)
+        print(f'voice: {voice} embedded (Sync: Stream){" — each line inside its speaker" if tracks else ""}')
     if sfx:
         # the sound-effects track, cut per scene like the voice, on its own layer
         ET.SubElement(fol, N('DOMFolderItem'), {'name': 'SFX', 'itemID': new_id()})
